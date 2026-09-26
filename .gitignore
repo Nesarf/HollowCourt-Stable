@@ -1,0 +1,108 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Gradle keeps its own build directory inside android/, which the root rule
+# above does not reach -- a leading slash anchors a pattern to the top level.
+/android/build/
+/android/.kotlin/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Widget Preview related
+.widget_preview/
+
+# --------------------------------------------------------------- Hollow Court
+
+# Build output. dist/ is where the three installers are staged before they are
+# copied to the Bundle directory; none of it belongs in history, and neither
+# does anything that a build drops elsewhere.
+/dist/
+*.apk
+*.aab
+*.msi
+*.AppImage
+*.exe
+
+# The harvested seed sources and the artifact built from them are GONE, not ignored: they were
+# deleted on 2026-09-22 at the owner's instruction, and only `data/drinks/` and `data/names/`
+# remain, both first-party and both tracked (docs/DESIGN.md 15).
+
+# The same artifact, in the form the application bundles -- **and these two lines are gone now.**
+# They outlived the directory they named: after the rename to `assets/drinks/` and `assets/names/`
+# they ignored nothing while still telling a reader that the shipped library is a git-ignored
+# artifact of third-party data, which had stopped being true, since `assets/drinks/library.json` and
+# `assets/names/names.json` are tracked and byte-identical to their `data/` sources (checked by
+# sha256, not by eye). An ignore rule that matches nothing is harmless only until somebody believes it.
+
+
+# Python bytecode from the tools.
+__pycache__/
+
+# The audio project's working state. The project file is small and worth
+# keeping; its caches, its generated banks and its validation cache are not.
+/audio/wwise/**/.cache/
+/audio/wwise/**/GeneratedSoundBanks/
+/audio/wwise/**/*.validationcache
+
+# Scratch from the art tools.
+/art/scratch/
+
+# Android release signing material. The key IS the application's identity: whoever holds it can
+# publish updates to every installation, and losing it means no update can ever reach them again.
+# Neither the keystore nor its passwords belong in a repository.
+android/key.properties
+*.jks
+*.keystore
+
+# API keys and other credentials, by the shape of the file rather than by a list of the ones we happen to have
+# today. The Android block above is the same rule for the one case that already existed; this is the general
+# version, added on 2026-09-26 when the owner obtained a model-provider key. A key belongs in an environment
+# variable or in a file outside the repository -- never here, because a repository is copied, mirrored and
+# published, and the public mirror is built from exactly these files.
+.env
+.env.*
+!.env.example
+*.key
+secrets/
+.secrets/

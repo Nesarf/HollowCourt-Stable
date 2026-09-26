@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The Windows installer, as section 14's P4 asks for.
+
+  **WiX v4+ source, not v3.** `wix build` from the dotnet tool is v5, and the v3
+  vocabulary (`candle`/`light`, `<Product>`, `<Directory>` trees built by hand) is
+  gone: the package element is `<Package>`, and `<Files Include>` harvests a folder
+  recursively instead of one `<Component>` per file. Writing v3 syntax against a v5
+  compiler fails on the first element.
+
+  **perUser, and that is a decision rather than a default.** The cellar is one
+  person's bottles in their own documents folder; a machine-wide install would ask for
+  elevation to put a private notes app on a shared machine, and section 1's positioning
+  is a cellar a reader owns. `Scope="perUser"` also means the installer never needs
+  administrator rights, which is the difference between an install and an interruption.
+
+  **The release folder arrives as $(ReleaseDir) rather than as a relative path.** WiX
+  resolves a relative path against the working directory and not against this file, so
+  a path written relative to the source is looked for in the wrong place and reported as
+  a missing file. A preprocessor variable removes the question, and it also lets the
+  build script name the folder once.
+
+  **The shortcut is a separate component from the harvested files, and it has to be.**
+  A `<Files>` element generates its own components and none of them can carry a
+  `<Shortcut>`; so the executable is declared explicitly — with the shortcut — and
+  excluded from the harvest. Without the `Exclude` the same file lands in two
+  components and the build fails with a duplicate-file error, which is how this was
+  found.
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <Package
+      Name="空庭 Hollow Court"
+      Manufacturer="S.M.Y.T."
+      Version="1.0.1020"
+      UpgradeCode="7C4E1B62-5A3D-4F18-9E77-2B6D4A0C51E3"
+      ProductCode="27DEBDC5-3E60-4CE3-A8D0-09A1503CB8C7"
+      Scope="perUser"
+      Compressed="yes">
+
+    <!-- **A REBUILD AT THE SAME VERSION DOES NOT REPLACE THE FILES, AND THAT COST A ROUND.**
+         1.0.514 was rebuilt with the share code, installed with exit=0, and the product registered, while
+         `hollow_court.exe` on disk kept its old timestamp; Windows Installer treats the same version
+         with the same ProductCode as a REPAIR and only replaces a file whose version is higher. "Installed
+         successfully" and "the new code is on the machine" are two different facts, and the second is the one
+         the fourth consequence of this rule exists for: bump Version and ProductCode together, even for a
+         rebuild of the same round. -->
+
+    <!-- **WHY THE VERSION HAS THREE FIELDS HERE AND FOUR IN THE APP.** The owner names a round
+         `1.0.0.514`, and that is what the About screen shows, because the packaging scripts pass it as the
+         `APP_VERSION` compile-time define. Windows Installer compares **only the first three fields** of
+         `ProductVersion` and ignores a fourth, so an MSI stamped `1.0.0.514` would compare as *equal*
+         to the installed `1.0.0` — the MajorUpgrade rule below looks for OLDER versions, would not
+         fire, and with a new ProductCode Windows would install a second copy beside the first rather
+         than replacing it. Putting the round number in the third field keeps it comparable: 1.0.514
+         is greater than 1.0.0, so the upgrade fires. Probed rather than assumed: WiX accepted the
+         three-field form and the built MSI carries `1.0.514` and no four-field string at all.
+         The file in the bundle is named after **this** value, not the app's, because the name of an
+         artifact should say what the artifact reports. -->
+
+    <!-- THE TWO GUIDS, AND WHY ONE OF THEM IS WRITTEN DOWN.
+
+         `UpgradeCode` names the product family and never changes: it is how a new version finds the
+         old one to replace.
+
+         `ProductCode` names *this version*, and it was missing here, so WiX generated a fresh one on
+         every build. That looked harmless and was not: two builds of 1.0.0 were two different
+         products, so installing the second over the first was not a repair but a second product
+         beside it, and `msiexec /x <the-rebuilt-msi>` answered 1605 ERROR_UNKNOWN_PRODUCT: the
+         package names a product that is not the one installed. That is how this was found, by
+         running the uninstall half of `install_test.cmd` for the first time after the install half
+         had already been called verified.
+
+         [decision] So it is pinned, and the rule that goes with it is the MSI rule: **bump Version
+         and ProductCode together, and leave UpgradeCode alone.** A new version must carry a new
+         ProductCode or Windows treats it as the same product and refuses the upgrade; the same
+         version must keep its ProductCode or nothing can find it to repair or remove it.
+
+         **`AllowSameVersionUpgrades` is deliberately NOT set**, and it was tried: with a pinned
+         ProductCode a same-version rebuild is a *reinstall of the same product*, which needs no
+         upgrade rule at all, and allowing same-version upgrades made the validator report ICE61:
+         "this product should remove only older versions of itself", because the rule it generates
+         also removes products of the current version. The pinned ProductCode is what makes the
+         rebuild behave; the allowance would only be needed if the code changed without the version,
+         which is the thing the rule above forbids.
+    -->
+    <MajorUpgrade
+        AllowDowngrades="no"
+        DowngradeErrorMessage="A newer version of 空庭 is already installed." />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- WHERE THIS INSTALLS, AND WHAT THAT COSTS.
+
+         The application goes to E:\Hollow Court Win rather than to the user profile, because that
+         is where this machine keeps its data and 78 MB of Flutter runtime does not belong on the
+         system drive. That is a decision with three consequences worth stating rather than
+         discovering:
+
+         1. **The drive letter is now a requirement.** TARGETDIR's child is `Name`d, and the
+            property below overrides the path outright, so on a machine with no E: drive the
+            install fails unless the caller overrides it:
+                msiexec /i hollow-court-1.0.0.msi INSTALLFOLDER="D:\Hollow Court Win"
+            The property is public precisely so that override exists. A default that cannot be
+            moved is a default that cannot be shipped anywhere else.
+
+         2. **`Scope="perUser"` now describes less than it used to.** It still means no elevation
+            is requested and the registration is per-user, but the files are no longer in the
+            user's profile, so two accounts on one machine share one copy. That is what a fixed
+            path means, and it is the trade the location was chosen for.
+
+         3. **The uninstall still removes the files**, because INSTALLFOLDER is what
+            RemoveFolder names, and that resolves to whatever path was actually used.
+
+         If this ever ships to someone else, the fixed drive is the first thing to revisit: the
+         alternative is a per-user path with the drive left to the reader, which is what the
+         earlier build did and what put 78 MB on C:. -->
+    <!-- **The publisher, and the one place Windows shows a tagline.** "Publisher" in Programs and Features is
+         this attribute; ARPCOMMENTS is the comment column beside it, which is the closest thing the platform
+         offers to a motto. -->
+    <Property Id="ARPCOMMENTS" Value="F.D.C.U.S." />
+
+    <Property Id="INSTALLFOLDER" Value="E:\Hollow Court Win" />
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppShortcutFolder" Name="Hollow Court" />
+    </StandardDirectory>
+
+    <Feature Id="Main" Title="空庭" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentGroupRef Id="Shortcuts" />
+    </Feature>
+
+  </Package>
+
+  <Fragment>
+    <!-- The directory the property above points at, declared without a parent on purpose.
+
+         WiX v5 declares TARGETDIR itself as a virtual symbol, so writing it out is an error rather
+         than a shadow: WIX7009, whose suggested `override` attribute the compiler then rejects as
+         not being an attribute of `Directory` at all. WIX5437 recommends `StandardDirectory`
+         instead, and TARGETDIR is not one of the standard folders that element accepts. A
+         top-level `Directory` in a Fragment is parented under TARGETDIR for you, which is what
+         this relies on; the Name matches the property's last segment so the two cannot drift into
+         describing different places. -->
+    <Directory Id="INSTALLFOLDER" Name="Hollow Court Win" />
+  </Fragment>
+
+  <Fragment>
+    <!-- Everything the Flutter Windows release build produced, minus the one file the
+         shortcut component owns. The path is relative to this file. -->
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Files Include="$(ReleaseDir)\**">
+        <Exclude Files="$(ReleaseDir)\hollow_court.exe" />
+      </Files>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <!-- The executable and the shortcut, in one component, and the two directories are
+         deliberately different, which is what the first version got wrong.
+
+         **The component's directory is INSTALLFOLDER, the executable's home.** The group
+         said `AppShortcutFolder` in the first version, so the *file* went to the Start Menu
+         folder and the shortcut pointed at an install directory with no executable in it.
+         The install still reported success and laid down 17 of its 19 files, which is what
+         "installable and usable" is supposed to catch, and did, one run later.
+
+         Only the shortcut names AppShortcutFolder, which is why it carries its own
+         `Directory` attribute. A component has one directory; a shortcut can be placed
+         independently of the file it points at, and conflating the two is the bug above. -->
+    <ComponentGroup Id="Shortcuts" Directory="INSTALLFOLDER">
+      <Component Id="StartMenuShortcut" Guid="A1F0C7D8-3B4E-4C29-8D15-6E9A2F7B4C08">
+        <File Id="HollowCourtExe"
+              Source="$(ReleaseDir)\hollow_court.exe"
+              KeyPath="yes">
+          <Shortcut Id="StartMenuLink"
+                    Name="空庭"
+                    Description="A beverage cellar you actually own."
+                    Directory="AppShortcutFolder"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Advertise="no" />
+        </File>
+        <!-- The two folders this package creates by name. ICE64 asks for a removal entry
+             for anything put in the user profile, and these are the two that can be
+             named; the rest are hashed sub-directories generated by the harvest above,
+             which is a limitation recorded in packaging/README.md rather than papered
+             over. A `RemoveFolder` is a child of `Component` and not of `File`, which the
+             first attempt got wrong and the compiler said so. -->
+        <RemoveFolder Id="RemoveShortcutFolder" Directory="AppShortcutFolder" On="uninstall" />
+        <RemoveFolder Id="RemoveInstallFolder" Directory="INSTALLFOLDER" On="uninstall" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+</Wix>

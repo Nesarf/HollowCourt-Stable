@@ -1,0 +1,255 @@
+{
+  "_why": [
+    "**Where every file in this repository comes from, as data rather than as prose.**",
+    "docs/asset-provenance.md was written by hand on 2026-09-25 and answered the owner's question honestly;",
+    "this file is the same answer in a form a test can check. Every tracked file that ships must match exactly",
+    "one rule below, or test/data/provenance_test.dart fails -- so adding a third-party asset cannot happen",
+    "quietly, and removing one (as the OFL letterforms were removed) shows up as a number that moved.",
+    "",
+    "Rules are matched in order, first match wins. `class` is one of:",
+    "  self          -- written here",
+    "  generated     -- produced by a tool in this repository, from something written here",
+    "  template      -- Flutter's own platform template, kept because it is the supported way to host the app",
+    "  thirdParty    -- somebody else's, kept for a reason that is stated",
+    "  excluded      -- not shipped: the private working notes and the probing kit"
+  ],
+  "_classes": {
+    "self": "written in this repository",
+    "generated": "produced by this repository's own tools rather than drawn by hand. The live case is the icons under art/render/, which art/make_icon.py and art/render_icons.sh build from art/*.svg. **A generated file is declared rather than quietly mixed in with the drawn ones.** An earlier line of work also produced character art through a locally hosted image model, one receipt per figure naming the prompt, seed, model, size, sampler and step count; that line was dropped and its code removed, and what was learned from it now lives in the commit messages rather than in a document of its own -- because a generated image without its parameters is an image nobody can reproduce or argue with.",
+    "thirdParty": "somebody else's, kept for a stated reason",
+    "excluded": "not shipped to the public mirror",
+    "platform": "the platform's own host files -- Flutter's Windows, Linux and Android templates. **Not ours and not claimed, and not something to replace**: an application has to be hosted by something, and hand-writing these would raise a count without removing a dependency."
+  },
+  "rules": [
+    {
+      "glob": ".metadata",
+      "class": "platform",
+      "why": "Flutter's own project metadata"
+    },
+    {
+      "glob": "audio/**",
+      "class": "self",
+      "why": "this project's sound design and the script that generates it"
+    },
+    {
+      "glob": "windows/**",
+      "class": "platform",
+      "why": "Flutter's Windows host, including its CMake and plugin registrants"
+    },
+    {
+      "glob": "tools/**",
+      "class": "excluded",
+      "why": "the probing kit: how the study notes were made"
+    },
+    {
+      "glob": "an earlier survey**",
+      "class": "excluded",
+      "why": "study notes about other people's products"
+    },
+    {
+      "glob": "tool/push_public.sh",
+      "class": "excluded",
+      "why": "the machinery of keeping things out describes what is kept out"
+    },
+    {
+      "glob": "tool/sanitise_public.py",
+      "class": "excluded",
+      "why": "as above"
+    },
+    {
+      "glob": "audio/wwise/**",
+      "class": "excluded",
+      "why": "Wwise project: Factory work units and generated banks are Audiokinetic's"
+    },
+    {
+      "glob": "windows/runner/**",
+      "class": "platform",
+      "why": "Flutter's Windows host: removing it would mean hand-writing the host"
+    },
+    {
+      "glob": "linux/**",
+      "class": "platform",
+      "why": "Flutter's Linux host"
+    },
+    {
+      "glob": "android/app/src/main/kotlin/**",
+      "class": "platform",
+      "why": "Flutter's Android entry point"
+    },
+    {
+      "glob": "android/app/src/main/AndroidManifest.xml",
+      "class": "platform",
+      "why": "Flutter's manifest, edited here"
+    },
+    {
+      "glob": "android/app/src/debug/**",
+      "class": "platform",
+      "why": "Flutter's debug manifest"
+    },
+    {
+      "glob": "android/app/src/profile/**",
+      "class": "platform",
+      "why": "Flutter's profile manifest"
+    },
+    {
+      "glob": "android/app/build.gradle*",
+      "class": "platform",
+      "why": "Flutter's Gradle host, edited here"
+    },
+    {
+      "glob": "android/build.gradle*",
+      "class": "platform",
+      "why": "Flutter's Gradle host"
+    },
+    {
+      "glob": "android/settings.gradle*",
+      "class": "platform",
+      "why": "Flutter's Gradle host"
+    },
+    {
+      "glob": "android/gradle.properties",
+      "class": "platform",
+      "why": "Flutter's Gradle host"
+    },
+    {
+      "glob": "android/gradle/**",
+      "class": "platform",
+      "why": "the Gradle wrapper"
+    },
+    {
+      "glob": "android/gradlew*",
+      "class": "platform",
+      "why": "the Gradle wrapper"
+    },
+    {
+      "glob": "android/.gitignore",
+      "class": "platform",
+      "why": "Flutter's ignore list for this host"
+    },
+    {
+      "glob": "android/*.properties",
+      "class": "platform",
+      "why": "Flutter's Gradle host"
+    },
+    {
+      "glob": "art/render/**",
+      "class": "generated",
+      "why": "rendered from art/*.svg by art/render_icons.sh"
+    },
+    {
+      "glob": "assets/icon/**",
+      "class": "generated",
+      "why": "the same mark, at the size the launcher wants"
+    },
+    {
+      "glob": "android/app/src/main/res/**",
+      "class": "generated",
+      "why": "the mark, in the five densities Android asks for"
+    },
+    {
+      "glob": "windows/runner/resources/app_icon.ico",
+      "class": "generated",
+      "why": "the mark, assembled from seven separately drawn sizes"
+    },
+    {
+      "glob": "docs/architecture*.svg",
+      "class": "generated",
+      "why": "drawn by this repository's own tooling"
+    },
+    {
+      "glob": "docs/architecture*.html",
+      "class": "generated",
+      "why": "as above"
+    },
+    {
+      "glob": "audio/*-spectrum.png",
+      "class": "generated",
+      "why": "spectrum captures of this project's own sound design"
+    },
+    {
+      "glob": "packaging/**/*.png",
+      "class": "generated",
+      "why": "captures taken by this repository's own scripts"
+    },
+    {
+      "glob": "lib/**",
+      "class": "self",
+      "why": "the application"
+    },
+    {
+      "glob": "data/**",
+      "class": "self",
+      "why": "the library: authored here, with the IBA's facts cited per file"
+    },
+    {
+      "glob": "assets/**",
+      "class": "self",
+      "why": "the shipped copies of the library and the names"
+    },
+    {
+      "glob": "test/**",
+      "class": "self",
+      "why": "the suite"
+    },
+    {
+      "glob": "tool/**",
+      "class": "self",
+      "why": "this repository's own tooling"
+    },
+    {
+      "glob": "docs/**",
+      "class": "self",
+      "why": "written here"
+    },
+    {
+      "glob": "packaging/**",
+      "class": "self",
+      "why": "the three platform recipes and their scripts"
+    },
+    {
+      "glob": "art/**",
+      "class": "self",
+      "why": "the mark's geometry, the cup outlines, the generators"
+    },
+    {
+      "glob": "audio/*.wav",
+      "class": "self",
+      "why": "effects designed for this application"
+    },
+    {
+      "glob": "pubspec.yaml",
+      "class": "self",
+      "why": "the build's own declaration"
+    },
+    {
+      "glob": "pubspec.lock",
+      "class": "self",
+      "why": "the resolved dependency set, generated from pubspec.yaml"
+    },
+    {
+      "glob": "analysis_options.yaml",
+      "class": "self",
+      "why": "the analyzer's rules for this repository"
+    },
+    {
+      "glob": "README.md",
+      "class": "self",
+      "why": "written here"
+    },
+    {
+      "glob": ".gitignore",
+      "class": "self",
+      "why": "this repository's ignore list"
+    },
+    {
+      "glob": ".gitattributes",
+      "class": "self",
+      "why": "the line-ending rules this repository depends on"
+    }
+  ],
+  "_floor": {
+    "_why": "**自 主 化 is about our own work, not about the platform we build on** (owner, 2026-09-25). Flutter's engine, the Dart SDK, its packages and its platform host files are what the application is built *with*; the question this file answers is whether anything **of ours** is somebody else's. The answer must be no: `thirdParty` has to stay empty. The platform files are counted and reported separately so that nothing is hidden by the framing.",
+    "of_our_own": 1.0,
+    "thirdParty_allowed": 0
+  }
+}

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" width="720" height="320">
+  <defs>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#E6E4E1" stop-opacity="0.13"/>
+      <stop offset="30%"  stop-color="#E6E4E1" stop-opacity="0.045"/>
+      <stop offset="70%"  stop-color="#E6E4E1" stop-opacity="0.02"/>
+      <stop offset="100%" stop-color="#E6E4E1" stop-opacity="0.10"/>
+    </linearGradient>
+
+    <!-- Liquid: light at the top and dark at the bottom, imitating light coming from above -->
+    <linearGradient id="negroni" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#E0703A" stop-opacity="0.80"/>
+      <stop offset="45%"  stop-color="#C1440E" stop-opacity="0.86"/>
+      <stop offset="100%" stop-color="#7E2607" stop-opacity="0.94"/>
+    </linearGradient>
+
+    <!-- Surface: one step brighter than the body of the liquid, to give the sense that "this is a surface" -->
+    <radialGradient id="surface" cx="38%" cy="35%" r="75%">
+      <stop offset="0%"   stop-color="#F7C79B" stop-opacity="0.92"/>
+      <stop offset="70%"  stop-color="#DE7A42" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#B8461A" stop-opacity="0.86"/>
+    </radialGradient>
+
+    <radialGradient id="mouth" cx="50%" cy="50%" r="55%">
+      <stop offset="0%"   stop-color="#05060A" stop-opacity="0.90"/>
+      <stop offset="100%" stop-color="#0D0E12" stop-opacity="0.55"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="720" height="320" fill="#0D0E12"/>
+
+  <!-- ══════════ 1. Cocktail martini glass ══════════ -->
+  <g>
+    <!-- Body (glass) -->
+    <path d="M 60 90 L 180 90 L 124 196 L 116 196 Z"
+          fill="url(#glass)" stroke="#8B8C94" stroke-width="1.3" stroke-linejoin="round"/>
+    <!-- Inner rim of the mouth (dark laid down first, so the opening reads as empty) -->
+    <ellipse cx="120" cy="90" rx="60" ry="10" fill="url(#mouth)"/>
+    <!-- Main body of the liquid -->
+    <path d="M 80 116 L 160 116 L 123 180 L 117 180 Z" fill="url(#negroni)"/>
+    <!-- Surface ellipse -->
+    <ellipse cx="120" cy="116" rx="40" ry="6.5" fill="url(#surface)"/>
+    <!-- Mouth ellipse (stroke) -->
+    <ellipse cx="120" cy="90" rx="60" ry="10" fill="none" stroke="#9A9BA3" stroke-width="1.3"/>
+    <!-- Glass highlight -->
+    <path d="M 74 96 L 78 128" stroke="#E6E4E1" stroke-width="1.6" opacity="0.30" stroke-linecap="round"/>
+    <path d="M 166 96 L 163 126" stroke="#E6E4E1" stroke-width="1.1" opacity="0.14" stroke-linecap="round"/>
+    <!-- Stem and foot -->
+    <path d="M 120 196 L 120 242" stroke="#8B8C94" stroke-width="1.8" stroke-linecap="round"/>
+    <ellipse cx="120" cy="248" rx="34" ry="5" fill="url(#glass)" stroke="#8B8C94" stroke-width="1.2"/>
+    <path d="M 92 251 L 148 251" stroke="#E6E4E1" stroke-width="0.9" opacity="0.12" stroke-linecap="round"/>
+  </g>
+
+  <!-- ══════════ 2. Highball glass ══════════ -->
+  <g>
+    <path d="M 310 68 L 410 68 L 407 250 L 313 250 Z"
+          fill="url(#glass)" stroke="#8B8C94" stroke-width="1.3" stroke-linejoin="round"/>
+    <ellipse cx="360" cy="68" rx="50" ry="8" fill="url(#mouth)"/>
+    <!-- Liquid -->
+    <path d="M 313 120 L 407 120 L 405 246 L 315 246 Z" fill="url(#negroni)"/>
+    <!-- Ice cubes (drawn first, then partly covered by the surface) -->
+    <g opacity="0.5">
+      <path d="M 336 142 L 358 133 L 375 148 L 368 174 L 344 176 L 331 160 Z"
+            fill="#DCE6EA" opacity="0.20" stroke="#E6E4E1" stroke-width="0.9" stroke-opacity="0.30"/>
+      <path d="M 376 152 L 394 146 L 402 162 L 393 182 L 375 180 Z"
+            fill="#DCE6EA" opacity="0.14" stroke="#E6E4E1" stroke-width="0.8" stroke-opacity="0.22"/>
+    </g>
+    <ellipse cx="360" cy="120" rx="47" ry="6.5" fill="url(#surface)"/>
+    <ellipse cx="360" cy="68" rx="50" ry="8" fill="none" stroke="#9A9BA3" stroke-width="1.3"/>
+    <path d="M 322 82 L 325 116" stroke="#E6E4E1" stroke-width="1.8" opacity="0.26" stroke-linecap="round"/>
+    <path d="M 398 82 L 396 116" stroke="#E6E4E1" stroke-width="1.2" opacity="0.12" stroke-linecap="round"/>
+    <path d="M 313 244 L 407 244" stroke="#E6E4E1" stroke-width="1.0" opacity="0.10"/>
+  </g>
+
+  <!-- ══════════ 3. Lowball old fashioned glass ══════════ -->
+  <g>
+    <path d="M 540 172 L 660 172 L 655 250 L 545 250 Z"
+          fill="url(#glass)" stroke="#8B8C94" stroke-width="1.3" stroke-linejoin="round"/>
+    <ellipse cx="600" cy="172" rx="60" ry="9.5" fill="url(#mouth)"/>
+    <path d="M 544 200 L 656 200 L 653 246 L 547 246 Z" fill="url(#negroni)"/>
+    <!-- One large ice cube -->
+    <path d="M 572 206 L 608 197 L 633 213 L 626 238 L 588 242 L 566 226 Z"
+          fill="#DCE6EA" opacity="0.22" stroke="#E6E4E1" stroke-width="1.0" stroke-opacity="0.32"/>
+    <path d="M 572 206 L 608 197 L 633 213" stroke="#E6E4E1" stroke-width="0.9" stroke-opacity="0.22" fill="none"/>
+    <ellipse cx="600" cy="200" rx="56" ry="8" fill="url(#surface)"/>
+    <ellipse cx="600" cy="172" rx="60" ry="9.5" fill="none" stroke="#9A9BA3" stroke-width="1.3"/>
+    <path d="M 552 184 L 555 214" stroke="#E6E4E1" stroke-width="1.7" opacity="0.28" stroke-linecap="round"/>
+    <path d="M 648 184 L 646 214" stroke="#E6E4E1" stroke-width="1.1" opacity="0.12" stroke-linecap="round"/>
+  </g>
+
+  <path d="M 30 262 L 690 262" stroke="#8B8C94" stroke-width="0.8" opacity="0.14"/>
+</svg>

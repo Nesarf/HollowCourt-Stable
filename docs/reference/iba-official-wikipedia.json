@@ -1,0 +1,640 @@
+{
+  "source": "zh.wikipedia.org/wiki/IBA官方鸡尾酒列表 — fetched 2026-09-23 through the local proxy, in three variants (zh-hans/zh-hk/zh-tw)",
+  "license": "CC BY-SA 4.0. This is a REFERENCE for translation work; it is not shipped in the app bundle.",
+  "why": "The library is referenced against the IBA official list (DESIGN.md 15.1). This file records what that list calls each drink in each Chinese variant, so a name can be checked against a source instead of a machine conversion.",
+  "official_count": 89,
+  "absent_from_our_library": [
+    {
+      "en": "Old Fashioned",
+      "zh-Hans": "古典",
+      "zh-HK": "古典",
+      "zh-TW": "古典"
+    },
+    {
+      "en": "Paradise",
+      "zh-Hans": "天堂",
+      "zh-HK": "天堂",
+      "zh-TW": "天堂"
+    },
+    {
+      "en": "Planter's Punch",
+      "zh-Hans": "殖民者潘趣",
+      "zh-HK": "殖民者潘趣",
+      "zh-TW": "殖民者潘趣"
+    },
+    {
+      "en": "Porto flip",
+      "zh-Hans": "波特菲丽普",
+      "zh-HK": "波特菲麗普",
+      "zh-TW": "波特菲麗普"
+    },
+    {
+      "en": "Ramos Gin Fizz",
+      "zh-Hans": "拉莫斯琴费士",
+      "zh-HK": "拉莫斯琴費士",
+      "zh-TW": "拉莫斯琴費士"
+    },
+    {
+      "en": "Rusty Nail",
+      "zh-Hans": "锈钉",
+      "zh-HK": "鏽釘",
+      "zh-TW": "鏽釘"
+    },
+    {
+      "en": "Sazerac",
+      "zh-Hans": "萨泽拉克",
+      "zh-HK": "薩澤拉克",
+      "zh-TW": "薩澤拉克"
+    },
+    {
+      "en": "Sidecar",
+      "zh-Hans": "边车",
+      "zh-HK": "邊車",
+      "zh-TW": "邊車"
+    },
+    {
+      "en": "Stinger",
+      "zh-Hans": "毒刺",
+      "zh-HK": "毒刺",
+      "zh-TW": "毒刺"
+    },
+    {
+      "en": "Tuxedo",
+      "zh-Hans": "燕尾服",
+      "zh-HK": "燕尾服",
+      "zh-TW": "燕尾服"
+    },
+    {
+      "en": "Vieux Carré",
+      "zh-Hans": "老广场",
+      "zh-HK": "老廣場",
+      "zh-TW": "老廣場"
+    },
+    {
+      "en": "Whiskey Sour",
+      "zh-Hans": "威士忌沙瓦",
+      "zh-HK": "威士忌沙瓦",
+      "zh-TW": "威士忌沙瓦"
+    },
+    {
+      "en": "White lady",
+      "zh-Hans": "白色佳人",
+      "zh-HK": "白色佳人",
+      "zh-TW": "白色佳人"
+    },
+    {
+      "en": "Golden dream",
+      "zh-Hans": "金色梦幻",
+      "zh-HK": "金色夢幻",
+      "zh-TW": "金色夢幻"
+    },
+    {
+      "en": "Barracuda",
+      "zh-Hans": "梭子鱼",
+      "zh-HK": "梭子魚",
+      "zh-TW": "梭子魚"
+    },
+    {
+      "en": "Yellow Bird",
+      "zh-Hans": "黄鸟",
+      "zh-HK": "黃鳥",
+      "zh-TW": "黃鳥"
+    }
+  ],
+  "official": [
+    {
+      "en": "",
+      "zh-Hans": "亚历山大",
+      "zh-HK": "亞歷山大",
+      "zh-TW": "亞歷山大"
+    },
+    {
+      "en": "",
+      "zh-Hans": "美国佬",
+      "zh-HK": "美國佬",
+      "zh-TW": "美國佬"
+    },
+    {
+      "en": "Angel Face",
+      "zh-Hans": "天使面孔",
+      "zh-HK": "天使面孔",
+      "zh-TW": "天使面孔"
+    },
+    {
+      "en": "",
+      "zh-Hans": "飞行",
+      "zh-HK": "飛行",
+      "zh-TW": "飛行"
+    },
+    {
+      "en": "Between the Sheets",
+      "zh-Hans": "床笫之间",
+      "zh-HK": "床笫之間",
+      "zh-TW": "床笫之間"
+    },
+    {
+      "en": "Boulevardier",
+      "zh-Hans": "花花公子",
+      "zh-HK": "花花公子",
+      "zh-TW": "花花公子"
+    },
+    {
+      "en": "Brandy crusta",
+      "zh-Hans": "白兰地库斯塔",
+      "zh-HK": "白蘭地庫斯塔",
+      "zh-TW": "白蘭地庫斯塔"
+    },
+    {
+      "en": "Casino",
+      "zh-Hans": "赌场",
+      "zh-HK": "賭場",
+      "zh-TW": "賭場"
+    },
+    {
+      "en": "",
+      "zh-Hans": "三叶草俱乐部",
+      "zh-HK": "三葉草俱樂部",
+      "zh-TW": "三葉草俱樂部"
+    },
+    {
+      "en": "",
+      "zh-Hans": "黛绮丽",
+      "zh-HK": "黛綺麗",
+      "zh-TW": "黛綺麗"
+    },
+    {
+      "en": "Dry Martini",
+      "zh-Hans": "乾马丁尼",
+      "zh-HK": "乾馬天尼",
+      "zh-TW": "乾馬丁尼"
+    },
+    {
+      "en": "Gin Fizz",
+      "zh-Hans": "琴费士",
+      "zh-HK": "琴費士",
+      "zh-TW": "琴費士"
+    },
+    {
+      "en": "Hanky panky",
+      "zh-Hans": "翻云覆雨",
+      "zh-HK": "翻雲覆雨",
+      "zh-TW": "翻雲覆雨"
+    },
+    {
+      "en": "John Collins",
+      "zh-Hans": "约翰可林斯",
+      "zh-HK": "約翰可林斯",
+      "zh-TW": "約翰可林斯"
+    },
+    {
+      "en": "Last word",
+      "zh-Hans": "临别一语",
+      "zh-HK": "臨別一語",
+      "zh-TW": "臨別一語"
+    },
+    {
+      "en": "",
+      "zh-Hans": "曼哈顿",
+      "zh-HK": "曼哈頓",
+      "zh-TW": "曼哈頓"
+    },
+    {
+      "en": "Martinez",
+      "zh-Hans": "马丁尼兹",
+      "zh-HK": "馬天尼茲",
+      "zh-TW": "馬丁尼茲"
+    },
+    {
+      "en": "Mary Pickford",
+      "zh-Hans": "玛丽毕克馥",
+      "zh-HK": "瑪麗畢克馥",
+      "zh-TW": "瑪麗畢克馥"
+    },
+    {
+      "en": "Monkey Gland",
+      "zh-Hans": "猴腺",
+      "zh-HK": "猴腺",
+      "zh-TW": "猴腺"
+    },
+    {
+      "en": "",
+      "zh-Hans": "内格罗尼",
+      "zh-HK": "內格羅尼",
+      "zh-TW": "內格羅尼"
+    },
+    {
+      "en": "Old Fashioned",
+      "zh-Hans": "古典",
+      "zh-HK": "古典",
+      "zh-TW": "古典"
+    },
+    {
+      "en": "Paradise",
+      "zh-Hans": "天堂",
+      "zh-HK": "天堂",
+      "zh-TW": "天堂"
+    },
+    {
+      "en": "Planter's Punch",
+      "zh-Hans": "殖民者潘趣",
+      "zh-HK": "殖民者潘趣",
+      "zh-TW": "殖民者潘趣"
+    },
+    {
+      "en": "Porto flip",
+      "zh-Hans": "波特菲丽普",
+      "zh-HK": "波特菲麗普",
+      "zh-TW": "波特菲麗普"
+    },
+    {
+      "en": "Ramos Gin Fizz",
+      "zh-Hans": "拉莫斯琴费士",
+      "zh-HK": "拉莫斯琴費士",
+      "zh-TW": "拉莫斯琴費士"
+    },
+    {
+      "en": "Rusty Nail",
+      "zh-Hans": "锈钉",
+      "zh-HK": "鏽釘",
+      "zh-TW": "鏽釘"
+    },
+    {
+      "en": "Sazerac",
+      "zh-Hans": "萨泽拉克",
+      "zh-HK": "薩澤拉克",
+      "zh-TW": "薩澤拉克"
+    },
+    {
+      "en": "Sidecar",
+      "zh-Hans": "边车",
+      "zh-HK": "邊車",
+      "zh-TW": "邊車"
+    },
+    {
+      "en": "Stinger",
+      "zh-Hans": "毒刺",
+      "zh-HK": "毒刺",
+      "zh-TW": "毒刺"
+    },
+    {
+      "en": "Tuxedo",
+      "zh-Hans": "燕尾服",
+      "zh-HK": "燕尾服",
+      "zh-TW": "燕尾服"
+    },
+    {
+      "en": "Vieux Carré",
+      "zh-Hans": "老广场",
+      "zh-HK": "老廣場",
+      "zh-TW": "老廣場"
+    },
+    {
+      "en": "Whiskey Sour",
+      "zh-Hans": "威士忌沙瓦",
+      "zh-HK": "威士忌沙瓦",
+      "zh-TW": "威士忌沙瓦"
+    },
+    {
+      "en": "White lady",
+      "zh-Hans": "白色佳人",
+      "zh-HK": "白色佳人",
+      "zh-TW": "白色佳人"
+    },
+    {
+      "en": "",
+      "zh-Hans": "贝里尼",
+      "zh-HK": "貝里尼",
+      "zh-TW": "貝里尼"
+    },
+    {
+      "en": "Black Russian",
+      "zh-Hans": "黑色俄罗斯",
+      "zh-HK": "黑色俄羅斯",
+      "zh-TW": "黑色俄羅斯"
+    },
+    {
+      "en": "",
+      "zh-Hans": "血腥玛丽",
+      "zh-HK": "血腥瑪麗",
+      "zh-TW": "血腥瑪麗"
+    },
+    {
+      "en": "",
+      "zh-Hans": "卡琵莉亚",
+      "zh-HK": "卡琵莉亞",
+      "zh-TW": "卡琵莉亞"
+    },
+    {
+      "en": "Champagne cocktail",
+      "zh-Hans": "香槟鸡尾酒",
+      "zh-HK": "香檳雞尾酒",
+      "zh-TW": "香檳雞尾酒"
+    },
+    {
+      "en": "Corpse reviver #2",
+      "zh-Hans": "亡者复苏二号",
+      "zh-HK": "亡者復甦二號",
+      "zh-TW": "亡者復甦二號"
+    },
+    {
+      "en": "Cosmopolitan",
+      "zh-Hans": "柯梦波丹",
+      "zh-HK": "柯夢波丹",
+      "zh-TW": "柯夢波丹"
+    },
+    {
+      "en": "",
+      "zh-Hans": "自由古巴",
+      "zh-HK": "自由古巴",
+      "zh-TW": "自由古巴"
+    },
+    {
+      "en": "French Connection",
+      "zh-Hans": "法兰西集团",
+      "zh-HK": "法蘭西集團",
+      "zh-TW": "法蘭西集團"
+    },
+    {
+      "en": "French 75",
+      "zh-Hans": "法式七五",
+      "zh-HK": "法式七五",
+      "zh-TW": "法式七五"
+    },
+    {
+      "en": "Golden dream",
+      "zh-Hans": "金色梦幻",
+      "zh-HK": "金色夢幻",
+      "zh-TW": "金色夢幻"
+    },
+    {
+      "en": "Grasshopper",
+      "zh-Hans": "绿色蚱蜢",
+      "zh-HK": "綠色蚱蜢",
+      "zh-TW": "綠色蚱蜢"
+    },
+    {
+      "en": "Hemingway Special",
+      "zh-Hans": "海明威特调",
+      "zh-HK": "海明威特調",
+      "zh-TW": "海明威特調"
+    },
+    {
+      "en": "",
+      "zh-Hans": "马颈",
+      "zh-HK": "馬頸",
+      "zh-TW": "馬頸"
+    },
+    {
+      "en": "",
+      "zh-Hans": "爱尔兰咖啡",
+      "zh-HK": "愛爾蘭咖啡",
+      "zh-TW": "愛爾蘭咖啡"
+    },
+    {
+      "en": "",
+      "zh-Hans": "基尔",
+      "zh-HK": "基爾",
+      "zh-TW": "基爾"
+    },
+    {
+      "en": "",
+      "zh-Hans": "长岛冰茶",
+      "zh-HK": "長島冰茶",
+      "zh-TW": "長島冰茶"
+    },
+    {
+      "en": "",
+      "zh-Hans": "迈泰",
+      "zh-HK": "邁泰",
+      "zh-TW": "邁泰"
+    },
+    {
+      "en": "",
+      "zh-Hans": "玛格丽特",
+      "zh-HK": "瑪格麗特",
+      "zh-TW": "瑪格麗特"
+    },
+    {
+      "en": "",
+      "zh-Hans": "含羞草",
+      "zh-HK": "含羞草",
+      "zh-TW": "含羞草"
+    },
+    {
+      "en": "Mint Julep",
+      "zh-Hans": "薄荷茱莉普",
+      "zh-HK": "薄荷茱莉普",
+      "zh-TW": "薄荷茱莉普"
+    },
+    {
+      "en": "Mojito",
+      "zh-Hans": "莫希托",
+      "zh-HK": "莫希托",
+      "zh-TW": "莫希托"
+    },
+    {
+      "en": "",
+      "zh-Hans": "莫斯科骡子",
+      "zh-HK": "莫斯科騾子",
+      "zh-TW": "莫斯科騾子"
+    },
+    {
+      "en": "Pina Colada",
+      "zh-Hans": "凤梨可乐达",
+      "zh-HK": "鳳梨可樂達",
+      "zh-TW": "鳳梨可樂達"
+    },
+    {
+      "en": "Pisco Sour",
+      "zh-Hans": "皮斯可沙瓦",
+      "zh-HK": "皮斯可沙瓦",
+      "zh-TW": "皮斯可沙瓦"
+    },
+    {
+      "en": "",
+      "zh-Hans": "海风",
+      "zh-HK": "海風",
+      "zh-TW": "海風"
+    },
+    {
+      "en": "Sex on the Beach",
+      "zh-Hans": "性感海滩",
+      "zh-HK": "性感海灘",
+      "zh-TW": "性感海灘"
+    },
+    {
+      "en": "",
+      "zh-Hans": "新加坡司令",
+      "zh-HK": "新加坡司令",
+      "zh-TW": "新加坡司令"
+    },
+    {
+      "en": "",
+      "zh-Hans": "龙舌兰日出",
+      "zh-HK": "龍舌蘭日出",
+      "zh-TW": "龍舌蘭日出"
+    },
+    {
+      "en": "Vesper",
+      "zh-Hans": "薇丝朋",
+      "zh-HK": "薇絲朋",
+      "zh-TW": "薇絲朋"
+    },
+    {
+      "en": "Zombie",
+      "zh-Hans": "僵尸",
+      "zh-HK": "殭屍",
+      "zh-TW": "殭屍"
+    },
+    {
+      "en": "Barracuda",
+      "zh-Hans": "梭子鱼",
+      "zh-HK": "梭子魚",
+      "zh-TW": "梭子魚"
+    },
+    {
+      "en": "Bee's knee",
+      "zh-Hans": "蜂之膝",
+      "zh-HK": "蜂之膝",
+      "zh-TW": "蜂之膝"
+    },
+    {
+      "en": "Bramble",
+      "zh-Hans": "荆棘",
+      "zh-HK": "荊棘",
+      "zh-TW": "荊棘"
+    },
+    {
+      "en": "Canchanchara",
+      "zh-Hans": "坎昌恰拉",
+      "zh-HK": "坎昌恰拉",
+      "zh-TW": "坎昌恰拉"
+    },
+    {
+      "en": "Dark 'N' Stormy",
+      "zh-Hans": "月黑风高",
+      "zh-HK": "月黑風高",
+      "zh-TW": "月黑風高"
+    },
+    {
+      "en": "Espresso Martini",
+      "zh-Hans": "咖啡马天尼",
+      "zh-HK": "咖啡馬天尼",
+      "zh-TW": "咖啡馬丁尼"
+    },
+    {
+      "en": "Fernandito",
+      "zh-Hans": "斐南迪多",
+      "zh-HK": "斐南迪多",
+      "zh-TW": "斐南迪多"
+    },
+    {
+      "en": "French Martini",
+      "zh-Hans": "法式马丁尼",
+      "zh-HK": "法式馬天尼",
+      "zh-TW": "法式馬丁尼"
+    },
+    {
+      "en": "Barracuda",
+      "zh-Hans": "非法",
+      "zh-HK": "非法",
+      "zh-TW": "非法"
+    },
+    {
+      "en": "Lemon Drop Martini",
+      "zh-Hans": "柠檬糖马丁尼",
+      "zh-HK": "檸檬糖馬天尼",
+      "zh-TW": "檸檬糖馬丁尼"
+    },
+    {
+      "en": "Naked and famous",
+      "zh-Hans": "一脱成名",
+      "zh-HK": "一脫成名",
+      "zh-TW": "一脫成名"
+    },
+    {
+      "en": "New York sour",
+      "zh-Hans": "纽约沙瓦",
+      "zh-HK": "紐約沙瓦",
+      "zh-TW": "紐約沙瓦"
+    },
+    {
+      "en": "Old Cuban",
+      "zh-Hans": "老古巴",
+      "zh-HK": "老古巴",
+      "zh-TW": "老古巴"
+    },
+    {
+      "en": "Paper plane",
+      "zh-Hans": "纸飞机",
+      "zh-HK": "紙飛機",
+      "zh-TW": "紙飛機"
+    },
+    {
+      "en": "Paloma",
+      "zh-Hans": "帕洛玛",
+      "zh-HK": "帕洛瑪",
+      "zh-TW": "帕洛瑪"
+    },
+    {
+      "en": "",
+      "zh-Hans": "盘尼西林",
+      "zh-HK": "盤尼西林",
+      "zh-TW": "盤尼西林"
+    },
+    {
+      "en": "Russian Spring Punch",
+      "zh-Hans": "俄罗斯之春潘趣",
+      "zh-HK": "俄羅斯之春潘趣",
+      "zh-TW": "俄羅斯之春潘趣"
+    },
+    {
+      "en": "Spicy fifty",
+      "zh-Hans": "辛辣五十",
+      "zh-HK": "辛辣五十",
+      "zh-TW": "辛辣五十"
+    },
+    {
+      "en": "Spritz",
+      "zh-Hans": "威尼斯橙光",
+      "zh-HK": "威尼斯橙光",
+      "zh-TW": "威尼斯橙光"
+    },
+    {
+      "en": "Suffering bastard",
+      "zh-Hans": "痛苦混蛋",
+      "zh-HK": "痛苦混蛋",
+      "zh-TW": "痛苦混蛋"
+    },
+    {
+      "en": "Tipperary",
+      "zh-Hans": "蒂珀雷里",
+      "zh-HK": "蒂珀雷里",
+      "zh-TW": "蒂珀雷里"
+    },
+    {
+      "en": "Tommy's Margarita",
+      "zh-Hans": "汤米的玛格丽特",
+      "zh-HK": "湯米的瑪格麗特",
+      "zh-TW": "湯米的瑪格麗特"
+    },
+    {
+      "en": "Trinidad sour",
+      "zh-Hans": "千里达沙瓦",
+      "zh-HK": "千里達沙瓦",
+      "zh-TW": "千里達沙瓦"
+    },
+    {
+      "en": "Yellow Bird",
+      "zh-Hans": "黄鸟",
+      "zh-HK": "黃鳥",
+      "zh-TW": "黃鳥"
+    },
+    {
+      "en": "VE.N.TO",
+      "zh-Hans": "风铎",
+      "zh-HK": "風鐸",
+      "zh-TW": "風鐸"
+    }
+  ]
+}

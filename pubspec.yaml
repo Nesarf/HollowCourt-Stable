@@ -1,0 +1,134 @@
+name: hollow_court
+description: "Hollow Court: a beverage cellar you actually own."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+#
+# **`build-name` stays three-part because pub requires it; the version the OWNER named is four-part**
+# (`1.0.0.514`), so the fourth part lives as the build number here and as an explicit `versionName` in
+# `android/app/build.gradle.kts`, which is what Android displays and what this round is called.
+# The build number also has a job: the copy installed on the handset is versionCode **2001**
+# (a split APK, so Flutter adds 1000 x ABI), and the last Android version number was 1, so an
+# in-place update needs something above 2001. 515 gives an arm64 split 2515.
+version: 1.0.0+1020
+
+environment:
+  sdk: ^3.13.3
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.8
+  path_provider: ^2.1.6
+  flutter_riverpod: ^3.4.3
+  cryptography: ^2.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Domain-layer tests are written against this rather than against
+  # flutter_test, and are run with `dart test test/domain`.
+  #
+  # That is not a matter of taste. Section 3 of the design document forbids the
+  # domain layer from importing Flutter, and a test suite that can only run
+  # inside the Flutter harness cannot prove it. Because these tests run on the
+  # plain Dart VM, a domain file that ever reaches for package:flutter stops
+  # the suite from running at all -- the rule enforces itself instead of
+  # relying on anybody remembering it.
+  test: ^1.25.0
+
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^6.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # The drink library and the names, both **first-party work and both tracked in git**.
+  #
+  # **This comment said the opposite until 2026-09-23, and the tree had already changed under it.**
+  # It described a `assets/seed/seed.json` that was "built rather than committed" from two harvested
+  # sources, kept alive on a fresh clone by a `.gitkeep` and a `tools/build_seed.dart` step. Section
+  # 15 then deleted the harvested material and the artifact built from it, and the shipped library
+  # became `assets/drinks/library.json` -- tracked, first-party, byte-identical to
+  # `data/drinks/library.json`. So the file a reader would trust was naming a directory that does not
+  # exist and a build step that does not exist, which is the kind of wrong that costs a fresh clone an
+  # afternoon.
+  #
+  # The **directory** is still declared rather than the file, and that part was always right:
+  # declaring `assets/drinks/library.json` makes `flutter build` fail on a fresh clone with a
+  # missing-asset error, where declaring the directory lets the build succeed and the application show
+  # an honest "no library yet" state instead. Section 20.6's rule that a missing pack degrades to
+  # nothing rather than to a placeholder applies here as much as to a Pro asset pack.
+  assets:
+    - assets/drinks/
+    # **Our own translations of the names**, the same rule: first-party, tracked, and identical to
+    # `data/names/names.json` (`assets/names/names.json`, checked by sha256).
+    - assets/names/
+    # The window icon, copied from the render by art/render_icons.sh. It is an ASSET rather
+    # than something the runner loads from an installed path, because a Flutter Linux bundle
+    # is relocatable: the AppImage mounts itself somewhere temporary, and a program that
+    # looked in /usr/share/icons would find nothing. data/flutter_assets sits beside the
+    # executable in both a plain build and an AppImage, which is the only location that is
+    # true of both.
+    - assets/icon/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
