@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Hollow Court - System Architecture",
+    "quality_profile": "showcase",
+    "views": [
+      { "id": "main-path", "label": "Main data path", "focus": ["ui", "domain", "data", "store"], "note": "From the screen to the disk, with no network anywhere in the path." },
+      { "id": "lan-sync", "label": "LAN sync", "focus": ["domain", "pairing", "lan", "peer"], "note": "Pair by QR, then exchange missing events. No server and no account." },
+      { "id": "net-adapters", "label": "Network capability (off by default)", "focus": ["domain", "adapters", "external"], "note": "The AI bartender and price comparison are pluggable adapters, each off on its own." }
+    ]
+  },
+  "components": [
+    { "id": "ui", "type": "frontend", "label": "UI layer", "sublabel": "Flutter Widgets", "pos": [40, 280], "size": [150, 70] },
+    { "id": "domain", "type": "backend", "label": "Domain layer", "sublabel": "Pure Dart, no Flutter", "pos": [280, 265], "size": [180, 100], "tag": "units, dosing, matching, CRDT" },
+    { "id": "data", "type": "backend", "label": "Data layer", "sublabel": "Event log repository", "pos": [560, 280], "size": [160, 70] },
+    { "id": "store", "type": "database", "label": "Local storage", "sublabel": "append-only log", "pos": [800, 280], "size": [160, 70] },
+    { "id": "adapters", "type": "backend", "label": "Adapters", "sublabel": "all off by default", "pos": [280, 110], "size": [180, 70] },
+    { "id": "external", "type": "external", "label": "External services", "sublabel": "DeepSeek, prices, barcodes", "pos": [560, 110], "size": [230, 70] },
+    { "id": "pairing", "type": "security", "label": "QR pairing", "sublabel": "token and key exchange", "pos": [40, 450], "size": [180, 70] },
+    { "id": "lan", "type": "backend", "label": "LAN service", "sublabel": "dart:io HttpServer", "pos": [280, 450], "size": [180, 70] },
+    { "id": "peer", "type": "external", "label": "Peer device", "sublabel": "phone or computer", "pos": [560, 450], "size": [170, 70] }
+  ],
+  "connections": [
+    { "id": "ui-to-domain", "from": "ui", "to": "domain" },
+    { "id": "domain-to-data", "from": "domain", "to": "data", "label": "read/write events" },
+    { "id": "data-to-store", "from": "data", "to": "store", "label": "append" },
+    { "id": "domain-to-adapters", "from": "domain", "to": "adapters", "label": "only when enabled", "variant": "dashed" },
+    { "id": "adapters-to-external", "from": "adapters", "to": "external", "label": "HTTPS", "variant": "dashed" },
+    { "id": "domain-to-lan", "from": "domain", "to": "lan", "label": "shared cellar", "labelAt": [370, 407] },
+    { "id": "pairing-to-lan", "from": "pairing", "to": "lan", "label": "pairing handshake", "variant": "security", "labelAt": [245, 534] },
+    { "id": "lan-to-peer", "from": "lan", "to": "peer", "label": "exchange missing events", "variant": "emphasis", "labelAt": [510, 534] }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Layering discipline", "items": ["Domain layer is pure Dart: no Flutter, testable alone", "Unit conversion never touches interface code"] },
+    { "dot": "emerald", "title": "Sync without a cloud", "items": ["dart:io HttpServer, so no plugin", "The event log is storage and sync format both", "HLC clocks sidestep device drift"] },
+    { "dot": "amber", "title": "Network off by default", "items": ["DeepSeek, price comparison, barcode", "Pluggable adapters, enabled one by one", "Keys in secure storage, never in logs"] }
+  ]
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Button, press. Deeper: the notch is what moves, not the colour. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="136" height="56" viewBox="0 0 136 56">
+  <rect x="0" y="0" width="136" height="56" fill="#0A0E14"/>
+  <polygon points="8.00,48.00 8.00,8.00 68.00,34.40 128.00,8.00 128.00,48.00" fill="#3FE0D0" fill-opacity="0.82"/>
+</svg>

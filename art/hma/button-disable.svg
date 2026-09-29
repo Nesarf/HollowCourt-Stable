@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Button, disable. Desaturated and low, and the notch returns to its resting depth so that the shape still reads as the same shape. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="136" height="56" viewBox="0 0 136 56">
+  <rect x="0" y="0" width="136" height="56" fill="#0A0E14"/>
+  <polygon points="8.00,48.00 8.00,8.00 68.00,24.80 128.00,8.00 128.00,48.00" fill="#5A6672" fill-opacity="0.45"/>
+</svg>
