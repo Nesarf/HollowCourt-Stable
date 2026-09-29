@@ -214,7 +214,12 @@ write_one() {
     note="release apk for $abi; DEBUG-SIGNED"
   fi
 
-  bash "$REPO/packaging/write_receipt.sh" "$apk" "$note" lib android pubspec.yaml assets packaging/android
+  # **`art` is in this list because the launcher icon is built from it.** `art/render_icons.sh` writes
+  # `art/render/icon-hc-<size>.png` into the five `mipmap-*` directories, so a change to `art/` changes this
+  # artifact -- and the list below left it out, which showed up as every APK reading `OTHER` the moment the icon
+  # pipeline was repaired. A receipt that omits a source it is built from is not a conservative receipt; it is one
+  # that reports a rebuild as unnecessary. The Linux script has carried `art` for the same reason since 2026-09-21.
+  bash "$REPO/packaging/write_receipt.sh" "$apk" "$note" lib android art pubspec.yaml assets packaging/android
 }
 
 for produced in $PRODUCED; do

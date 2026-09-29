@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 320" width="720" height="320">
+  <defs>
+    <!-- Glass: cool-toned, at very low opacity, held together by its stroke and highlights -->
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#E6E4E1" stop-opacity="0.10"/>
+      <stop offset="42%"  stop-color="#E6E4E1" stop-opacity="0.025"/>
+      <stop offset="100%" stop-color="#E6E4E1" stop-opacity="0.085"/>
+    </linearGradient>
+
+    <!-- Liquid colour: Negroni's orange_dark, carrying the visual weight of opacity 75 -->
+    <linearGradient id="negroni" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#E0703A" stop-opacity="0.78"/>
+      <stop offset="55%"  stop-color="#C1440E" stop-opacity="0.84"/>
+      <stop offset="100%" stop-color="#8E2B0A" stop-opacity="0.92"/>
+    </linearGradient>
+
+    <!-- Surface: a thin sliver of reflection -->
+    <linearGradient id="surface" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#F6D9BE" stop-opacity="0.60"/>
+      <stop offset="100%" stop-color="#F6D9BE" stop-opacity="0.10"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="720" height="320" fill="#0D0E12"/>
+
+  <!-- ═══════════ 1. Cocktail (martini glass) ═══════════ -->
+  <g>
+    <path d="M 60 90 L 180 90 L 124 196 L 116 196 Z"
+          fill="url(#glass)" stroke="#8B8C94" stroke-width="1.4" stroke-linejoin="round"/>
+    <path d="M 78 112 L 162 112 L 122 178 L 118 178 Z" fill="url(#negroni)"/>
+    <path d="M 78 112 L 162 112 L 162 116 L 78 116 Z" fill="url(#surface)"/>
+    <path d="M 120 196 L 120 242" stroke="#8B8C94" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 88 250 L 152 250" stroke="#8B8C94" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M 74 98 L 96 98" stroke="#E6E4E1" stroke-width="1.1" opacity="0.38" stroke-linecap="round"/>
+    <path d="M 118 200 L 118 236" stroke="#E6E4E1" stroke-width="0.9" opacity="0.20"/>
+  </g>
+
+  <!-- ═══════════ 2. Highball (highball glass) ═══════════ -->
+  <g>
+    <path d="M 310 68 L 410 68 L 407 250 L 313 250 Z"
+          fill="url(#glass)" stroke="#8B8C94" stroke-width="1.4" stroke-linejoin="round"/>
+    <path d="M 312 118 L 408 118 L 406 246 L 314 246 Z" fill="url(#negroni)"/>
+    <path d="M 312 118 L 408 118 L 408 122 L 312 122 Z" fill="url(#surface)"/>
+    <path d="M 322 80 L 324 108" stroke="#E6E4E1" stroke-width="1.1" opacity="0.34" stroke-linecap="round"/>
+    <path d="M 396 80 L 394 108" stroke="#E6E4E1" stroke-width="1.0" opacity="0.18" stroke-linecap="round"/>
+    <!-- Ice silhouettes: two of them, floating below the surface -->
+    <path d="M 336 140 L 356 132 L 372 146 L 366 170 L 344 172 L 332 158 Z"
+          fill="#E6E4E1" opacity="0.10"/>
+    <path d="M 374 150 L 392 144 L 400 160 L 392 180 L 374 178 Z"
+          fill="#E6E4E1" opacity="0.07"/>
+  </g>
+
+  <!-- ═══════════ 3. Lowball (old fashioned glass) ═══════════ -->
+  <g>
+    <path d="M 542 148 L 658 148 L 654 250 L 546 250 Z"
+          fill="url(#glass)" stroke="#8B8C94" stroke-width="1.4" stroke-linejoin="round"/>
+    <path d="M 545 186 L 655 186 L 652 246 L 548 246 Z" fill="url(#negroni)"/>
+    <path d="M 545 186 L 655 186 L 655 190 L 545 190 Z" fill="url(#surface)"/>
+    <path d="M 554 158 L 556 182" stroke="#E6E4E1" stroke-width="1.1" opacity="0.34" stroke-linecap="round"/>
+    <!-- One large ice cube, filling the base of the glass -->
+    <path d="M 572 200 L 606 192 L 630 208 L 624 234 L 588 238 L 566 222 Z"
+          fill="#E6E4E1" opacity="0.11"/>
+    <path d="M 572 200 L 606 192 L 630 208" stroke="#E6E4E1" stroke-width="0.9" opacity="0.22" fill="none"/>
+  </g>
+
+  <!-- ═══════════ Baseline ═══════════ -->
+  <path d="M 40 258 L 680 258" stroke="#8B8C94" stroke-width="0.8" opacity="0.16"/>
+</svg>

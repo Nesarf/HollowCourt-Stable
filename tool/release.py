@@ -159,7 +159,10 @@ def newest_assets() -> "list[str]":
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description='cut a release')
     parser.add_argument('--version', required=True, help='the new version, as X.Y.Z+NNN')
-    parser.add_argument('--branch', default='main', help='the mirror branch (default: main)')
+    # **`HC-Stable`, because the owner renamed the product branch on 2026-09-30 and it had been `main`.** This default
+    # is not cosmetic: a release that tagged `main` would fetch a branch that no longer exists, find nothing, and put
+    # the tag nowhere -- and the tag is the artifact that says which snapshot shipped.
+    parser.add_argument('--branch', default='HC-Stable', help='the mirror branch (default: HC-Stable)')
     parser.add_argument('--tag', default='', help='the tag to create (default: the version without its build number)')
     parser.add_argument('--apply', action='store_true', help='actually do it')
     parser.add_argument('--skip-verify', action='store_true', help='do not run the pipeline first')
@@ -287,7 +290,7 @@ def main(argv: list[str]) -> int:
         print('  会做的剩下这些：')
         print('    · 把 pubspec.yaml 的版本写成 %s' % args.version)
         print('    · 提交这一行')
-        print('    · bash tool/publish_public.sh --push   （建快照、净化、强推 %s）' % args.branch)
+        print('    · bash tool/publish_public.sh --push   （建快照、净化、快进推 %s）' % args.branch)
         print('    · git fetch origin %s，然后在**它**那个提交上打标签 %s' % (args.branch, tag))
         print('    · git push origin %s' % tag)
         print('    · 用 gh 建一个 release，说明取自 docs/CHANGELOG.md 里这一节')
@@ -315,7 +318,7 @@ def main(argv: list[str]) -> int:
 
     # ⑦ publish
     print()
-    print('  · 发布（这会强推镜像的 %s）' % args.branch)
+    print('  · 发布（这会在镜像的 %s 上追加一个快照）' % args.branch)
     # **A relative path, because bash is not Windows.** The first version passed `PUBLISH` -- an absolute Windows path
     # with backslashes -- to git-bash, which read it as one long filename and reported that no such file existed. The
     # same failure was hit by hand earlier in this session with `bash -n`, which is the tell: a path is only a path to

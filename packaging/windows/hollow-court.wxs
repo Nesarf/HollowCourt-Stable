@@ -32,9 +32,9 @@
   <Package
       Name="空庭 Hollow Court"
       Manufacturer="S.M.Y.T."
-      Version="1.0.2184"
+      Version="1.0.2221"
       UpgradeCode="7C4E1B62-5A3D-4F18-9E77-2B6D4A0C51E3"
-      ProductCode="07692879-7425-44A9-A6F8-49B4C8442709"
+      ProductCode="D5CAA5D3-32DD-4752-A031-AB4479BAA92B"
       Scope="perUser"
       Compressed="yes">
 
@@ -51,6 +51,14 @@
          it is about Windows Installer answering a same-version same-ProductCode install with a repair. The
          artifacts attached to the 1.0.0 release came from a source 154 commits behind HEAD and are being
          rebuilt; this is the Windows half. -->
+
+    <!-- **2026-09-30, the round that caught the bundle up with the binary.** Version went to 1.0.2221 and
+         ProductCode to D5CAA5D3-32DD-4752-A031-AB4479BAA92B, together again and for the same reason. The
+         occasion: the handset has been running `1.0.0.2221` since 2026-09-29 while the bundle's newest
+         artifact was `1.0.0.2184`, so the version people could install and the version that had been
+         receipted were two different rounds. No source change comes with this bump beyond what 1.0.2184
+         already carried; what is different is that this round now exists as artifacts, with receipts,
+         on all three platforms. -->
 
     <!-- **WHY THE VERSION HAS THREE FIELDS HERE AND FOUR IN THE APP.** The owner names a round
          `1.0.0.514`, and that is what the About screen shows, because the packaging scripts pass it as the

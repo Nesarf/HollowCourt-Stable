@@ -116,9 +116,13 @@ echo "    $ICE_FINDINGS findings: $ICE_CODES"
 echo "    full output: $VALIDATION"
 
 echo "==> receipt"
+# **`art` is in this list because the application icon is built from it.** `art/render_icons.sh` writes
+# `windows/runner/resources/app_icon.ico`, which Flutter embeds in `hollow_court.exe`, so a change to `art/` changes
+# what this installer carries. The list omitted it and the MSI therefore read `OTHER` the moment the icon pipeline
+# was repaired; the Linux script has carried `art` for the same reason since 2026-09-21.
 bash "$REPO/packaging/write_receipt.sh" "$OUT_DIR\hollow-court-$MSI_VERSION.msi" \
   "wix msi validate: $ICE_FINDINGS findings ($ICE_CODES); ICE43/ICE57 are the per-user shortcut's keypath, ICE48 is the fixed install path by design, ICE60 is unversioned files; none is fatal and none is unexamined" \
-  lib windows pubspec.yaml packaging/windows
+  lib windows art pubspec.yaml packaging/windows
 
 # The .wixpdb is WiX's debug-symbol file for the MSI: not shipped, but it is what turns a crash
 # report from a user back into a line of source, so its provenance has to match the MSI's.
@@ -127,7 +131,7 @@ bash "$REPO/packaging/write_receipt.sh" "$OUT_DIR\hollow-court-$MSI_VERSION.msi"
 if [ -f "$OUT_DIR\hollow-court-$MSI_VERSION.wixpdb" ]; then
   bash "$REPO/packaging/write_receipt.sh" "$OUT_DIR\hollow-court-$MSI_VERSION.wixpdb" \
     "companion to hollow-court-$MSI_VERSION.msi; maps a crash back to source, never shipped" \
-    lib windows pubspec.yaml packaging/windows
+    lib windows art pubspec.yaml packaging/windows
 fi
 
 echo "==> done: $OUT_DIR\hollow-court-$MSI_VERSION.msi"

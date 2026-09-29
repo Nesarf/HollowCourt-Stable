@@ -45,6 +45,13 @@ COMMIT_EPOCH="$(git log -1 --format=%ct)"
     case "$f" in
       */MANIFEST.txt|*.commit) continue ;;
     esac
+    # **A directory is not an artifact, and the loop used to treat it as one.** With the bundle holding
+    # per-version folders beside the flat files, every folder came through `stat` (0 bytes) and `sha256sum`
+    # (an error on stderr that landed in the middle of the manifest) and was printed with an empty sha and a
+    # receipt of `unrecorded` -- four rows saying nothing is known about four things that are not artifacts.
+    # A manifest is read to find out whether a file is the file; a row that can never resolve is the fault
+    # this file's own header warns about, so the loop only walks regular files.
+    [ -f "$f" ] || continue
     r="$f.commit"
     if [ -f "$r" ]; then
       rc="$(awk -F': *' '/^src-commit/{print $2; exit}' "$r")"
