@@ -26,6 +26,17 @@
 # want it: handing a single file to a device whose architecture you do not know. That is what the phone
 # round needed, and it is why the flag exists rather than the mode being deleted.
 set -eu
+# **`pipefail`, and the other two platforms' scripts already had it.** This one did not, and the line it
+# mattered on is the build itself:
+#
+#     if ! flutter build apk $BUILD_ARGS $DEFINES 2>&1 | tail -4; then
+#
+# `tail` succeeds whether or not the build did, so without `pipefail` that `if` tested the exit status of
+# `tail` and a failed build fell straight through to the copy below -- under a comment, written after the
+# same fault bit once before, saying the exit status is checked and that this is not a formality. It was.
+# With `pipefail` the pipeline reports the build's own status and the `if` means what it says. The `tail`
+# is a display choice: the last four lines are what a person reads, and they are no longer also the verdict.
+set -o pipefail
 
 REPO="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$REPO"

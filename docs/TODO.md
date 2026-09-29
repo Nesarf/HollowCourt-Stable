@@ -319,6 +319,48 @@ so the screen offers this when the tool is present and **says plainly that it is
 
 **而 ② 有一个附带的好处**：`docs/CHANGELOG-public.md` 是**中英并列**的，而 release 页面既有的那份是中文 —— 换过去之后，页面上第一次有了英文。那正是你当时抱怨的其中一半。
 
+## 十一之三、交付与构建：**三种「看起来成功」，和它们各自的下场**（2026-09-30 ✓）
+
+**owner 这一轮问的是「各种安装程序的构建故障率有没有降低的办法，是否需要新依赖或平台」。量完之后答案是：不需要新依赖，需要三处让失败可见的改动；三处都是我这轮亲手踩到的。**
+
+**① 「退出码要检查」这一句，在 Android 上不是真的。** `packaging/android/build.sh` 当时是 `set -eu`，**没有 `pipefail`**，而决定成败的那一行是 `if ! flutter build apk … 2>&1 | tail -4; then` ✓ —— **`tail` 无论如何都返回 0，所以那个 `if` 检查的是显示命令，不是编译器** ✗✓。它上面还压着一段注释，写着「退出码要检查，这不是形式」 ✓ —— 而它是形式 ✓。**已修** ✓（`e5b783c`：补 `set -o pipefail`，并把「为什么不能少」写在同一处）。**判据**：同一个管道，没有 `pipefail` 时失败读作成功、有了读作失败 ✓✓（两个分支当场都跑过）；另三个构建脚本**一直都有** `pipefail` ✓。
+
+**② 检查排在被检查的工作之后。** `check_comments.sh`（双连字符守卫 ✓）当时在 `flutter build windows` **下面** ✗✓ —— 所以 WiX 拒收的那个 `WIX0104` 是**在那 6.5 分钟编译花完之后**才被发现的 ✗。这就是它第三次咬人的方式：规则早写进了 `packaging/README.md` ✓，脚本也早就有了 ✓，**只是排错了位置** ✗✓。**已修** ✓（`e5b783c`：提到编译之前）。**判据**：故意往 `.wxs` 注释里塞一个 `--`，脚本在 `==> flutter build` **之前**拒绝 ✓✓。
+
+**③ 工具在机器上，但路径是隐式的。** `appimagetool` 装在 `$HOME/alrepo2/repo/appimagetool` ✓ —— 不在 `PATH` 上 ✗，而脚本只试裸名 ✗，于是失败信息是 `no appimagetool at appimagetool` ✓：**既不说去哪儿找，也不说装什么** ✗✓。**已修** ✓（`6cd1694`：先按常见落点找、找到就说明它不在 PATH 但用哪个、真没有就把试过的路径与 `APPIMAGETOOL=` 用法一起打出来）。**判据**：在 Nyarch 里不设 `APPIMAGETOOL`，它自报找到的路径并跑完 ✓✓。
+
+**仍然敞着的一条：`.dart_tool/package_config.json` 是两平台共用的。** 一侧 `pub get` 会把路径改写成另一侧找不到 SDK ✓，而**报错是几百条「`Offset`/`Paint`/`Rect` 未定义」，看起来像源码坏了** ✗✓。**代价是每次跨端构建都要「Windows → Linux → Windows」** ✓。真要根治要么两边各留一份检出、要么把构建搬进容器或 CI ✓；**这一条不需要任何新依赖，需要的是一个结构决定** ✗✓ —— 所以它留在这一节，不假装已经解决。
+
+**而「是否需要新平台」这个问题，问的其实是这一条** ✓✓：本机已有 WiX 5.0.2 ✓、Flutter ✓、Python 3 ✓、JDK 17 ✓、Android SDK（build-tools 36.0.0 ✓）、Unity 2022.3.22f1c1 ✓、WSL/Nyarch（`rsvg-convert` ✓ `magick` ✓ `appimagetool` ✓）—— **一样都不缺**。缺的是**把校验按代价排序**、**把工具路径写成显式的**，以及**在别人的机器上重跑**（后者已经做到了 ✓：`HC-Stable` 与 `HMA` 两个分支的 CI 现在都是 success ✓✓）。
+
+### 而这一轮的交付（owner 要的「同步到 2221」✓）
+
+| | |
+| --- | --- |
+| **2221 六件** | 三个 `.apk` ✓ ＋ `.AppImage` ✓ ＋ `.msi` ✓ ＋ 配套 `.wixpdb` ✓ —— **`MANIFEST.txt` 里全部 `ok`** ✓✓ |
+| **签名** | 三个 APK 都是 release key ✓，指纹 `64cca05a…a16d` ✓ —— **与 2184 同一把，所以能覆盖安装** ✓✓ |
+| **Linux** | **四轮没有产物之后的第一次重新产出** ✓（真因见下面那条）✓；解包后**启动到 Flutter 引擎初始化** ✓（Impeller 起来了、因无窗口系统而退出）—— 比收据上那句「never run on a real Linux desktop」进了一步 ✓ |
+| **镜像** | 已推到 **`HC-Stable`** ✓ —— 这是**分支改名之后的第一次推送** ✓，脚本找到基点是 `bb31988` ✓✓，历史 2 → 3 个提交 ✓ |
+
+**而 Linux 那条真因值得单独记一行** ✓✓：`packaging/linux/build_appimage.sh` 要 `art/render/icon-hc-*.png`，而**整条图标管线在 `ea9a8c9` 被带走了** —— 那次提交讲的是伊丽莎白的人设重做，**一个字都没提 art** ✗✓；取回的三个 SVG **还不是合法 XML**（多出一个 `</g>`）✗，所以 PNG 从来没被渲染出来过 ✗✓。**已修** ✓（`fe41233`：从 `ea9a8c9~1` 取回、补上配对标签、在 WSL 里重渲染、并装回三端）。**而修好之后立刻暴露第二件事** ✓✓：`art/` 是 Android 的 launcher 图标与 Windows 的 `app_icon.ico` 的真源，**而那两个构建脚本的 `src-paths` 里都没有它** ✗✓ —— 于是所有产物当场从 `ok` 变 `OTHER` ✓。Linux 那段**早就带着 `art`** ✓，注释里还记着同样的漏项曾发生在 `linux/` 上 ✓✓ —— **三个平台、同一个遗漏、被发现两次** ✗✓，已补齐（`55440c6`）。
+
+### 一件新交付：**HMA 0.1.0**（独立 tag，不进产品的 releases ✓）
+
+**`docs/HMA.md` 第 12 行那条裁决不能违反** ✓✓（owner 2026-09-26：HMA 不进 Stable 的 releases），所以它有自己的 tag：**`hma-0.1.0`** ✓，资产 `hma-0.1.0.tar.gz`（150 KB）✓，而 **`1.0.0` 仍然是 `Latest`** ✓✓。
+
+**包里**：`tool/`（含 `hma.py` 与它那六条命令）✓ ＋ `docs/HMA-readme.md` ✓ ＋ `docs/HMA-getting-started.md` ✓ ＋ `docs/TODO.md` ✓ ＋ `art/hma/`（7 张 SVG，让美术检查有东西可查）✓ ＋ `README.md` ✓。**不含 `tool/hma-dev/`** ✓ —— 那是 Unity 开发前端，要 Unity 2022.3.22f1c1 才能构建，**而排障的人不需要它** ✓✓（`docs/HMA-readme.md` 原话：一般用户不会为了排障去装游戏引擎）。
+
+**它只依赖 Python 3** ✓✓（`hma.py` 只用标准库，联网那层用 `urllib` 而不是 `requests`）。**而包装本身踩过一次坑** ✓：第一版包里 `hma_tests.py` 是红的，因为 `test_it_passes_on_the_real_art` 要 `art/hma/` 那 7 张 SVG ✓ —— 而**这个包存在的唯一理由就是「解包就能跑」** ✓✓。所以补进去之后，**在空目录里解包实跑**：自测 `OK` ✓、`status` 三项全绿 ✓✓。
+
+**开工方式：**
+```
+tar xzf hma-0.1.0.tar.gz && cd hma-0.1.0
+python tool/hma.py doctor        # 这台机器上有些什么
+python tool/hma.py status        # 平台自己的状态：测试、美术、待决
+python tool/hma_tests.py         # 工具自己的测试
+```
+
+
 ## 十二、声音扩围：**第一批的口气，等你认** （2026-09-29）
 
 **你定的范围**：伊丽莎白（中文、日文两版）与 minister（英文）三套声音，从现有的 63 条 `CopyLine` 扩到「**除原料与计量单位以外的全部文案**」，**明确包含所有错误提示文本**。写作是硬要求：**重新写新文本**，不是在原句上加语气词（「价格得是正数」→「哼，价格得是正数呢」这种不算）。

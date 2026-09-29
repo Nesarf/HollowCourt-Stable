@@ -37,7 +37,28 @@ BUILD_NUMBER="$(grep -m1 '^version:' "$REPO/pubspec.yaml" | tr -d '
 VERSION="$BUILD_NAME.$BUILD_NUMBER"
 APPDIR="$(mktemp -d /tmp/hollow-appdir-XXXXXX)"
 
-[ -x "$TOOL" ] || { echo "no appimagetool at $TOOL" >&2; exit 1; }
+# **The tool is looked for rather than assumed, because on this machine it is not on `PATH`.** It sat at
+# `$HOME/alrepo2/repo/appimagetool` -- installed, working, and invisible to a script that only tried the bare
+# name. The failure said `no appimagetool at appimagetool`, which tells a reader nothing about where to look
+# or what to install, and the honest fix is to search the places a copy actually lands before giving up, and
+# to say what to do when none of them has one. `APPIMAGETOOL=` still overrides everything.
+if [ ! -x "$TOOL" ] && [ "$TOOL" = "appimagetool" ]; then
+  for candidate in "$HOME/alrepo2/repo/appimagetool" "$HOME/.local/bin/appimagetool" \
+                   /usr/local/bin/appimagetool /opt/appimagetool; do
+    if [ -x "$candidate" ]; then
+      TOOL="$candidate"
+      echo "== appimagetool found at $TOOL (not on PATH, which is why it is being looked for) =="
+      break
+    fi
+  done
+fi
+[ -x "$TOOL" ] || {
+  echo "no appimagetool at '$TOOL', and none of the usual places has one:" >&2
+  echo "  $HOME/alrepo2/repo/appimagetool  $HOME/.local/bin/appimagetool  /usr/local/bin/appimagetool  /opt/appimagetool" >&2
+  echo "  install it, or point APPIMAGETOOL at the copy you have:" >&2
+  echo "      APPIMAGETOOL=/path/to/appimagetool bash packaging/linux/build_appimage.sh" >&2
+  exit 1
+}
 [ -d "$BUNDLE" ] || { echo "no Linux bundle at $BUNDLE -- run tool/build_linux.sh first" >&2; exit 1; }
 
 echo "== appdir =="

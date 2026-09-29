@@ -46,15 +46,20 @@ BUILD_NUMBER="$(grep -m1 '^version:' pubspec.yaml | tr -d '
 ' | sed 's/.*+//')"
 DEFINES="--dart-define=APP_VERSION=$VERSION.$BUILD_NUMBER --dart-define=BUILD_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo unknown)"
 
-echo "==> flutter build windows --release (About screen reads $VERSION.$BUILD_NUMBER)"
-PATH="$FLUTTER_BIN:$PATH" flutter build windows --release $DEFINES --project-root "$REPO" 2>/dev/null \
-  || (cd "$REPO" && PATH="$FLUTTER_BIN:$PATH" flutter build windows --release $DEFINES)
-
 # A double hyphen inside an XML comment is a syntax error that WiX reports at a position
 # pointing at the comment rather than at the mistake. It has now cost this project a build twice,
 # and the second time was after the rule was written down in packaging/README.md. A rule in prose
-# is not a check, so the check is a script and it runs here.
+# is not a check, so the check is a script.
+#
+# **And it runs before the compile, not after it.** It sat below the Flutter build, so a mistake in a
+# comment was discovered only once six and a half minutes of compiling had been spent on a source file
+# WiX was never going to accept -- which is how it was found the third time. The cost of a check and the
+# cost of what it protects are different numbers, and the cheap one goes first.
 bash "$REPO/packaging/windows/check_comments.sh" "$REPO/packaging/windows/hollow-court.wxs"
+
+echo "==> flutter build windows --release (About screen reads $VERSION.$BUILD_NUMBER)"
+PATH="$FLUTTER_BIN:$PATH" flutter build windows --release $DEFINES --project-root "$REPO" 2>/dev/null \
+  || (cd "$REPO" && PATH="$FLUTTER_BIN:$PATH" flutter build windows --release $DEFINES)
 
 # PATHS ARE CONVERTED HERE AND NOT LEFT TO THE CALLER'S ENVIRONMENT.
 #
