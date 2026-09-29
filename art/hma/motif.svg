@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- HMA motif. A bar with a notch cut into its top edge: four scales of one shape, the dip a constant
+     fraction so the form stays itself at 16px and at 128px. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="368" height="240" viewBox="0 0 368 240">
+  <rect x="0" y="0" width="368" height="240" fill="#0A0E14"/>
+  <polygon points="24.00,200.00 24.00,184.00 32.00,190.72 40.00,184.00 40.00,200.00" fill="#3FE0D0" fill-opacity="1.00"/>
+  <polygon points="64.00,200.00 64.00,168.00 80.00,181.44 96.00,168.00 96.00,200.00" fill="#3FE0D0" fill-opacity="0.88"/>
+  <polygon points="120.00,200.00 120.00,136.00 152.00,162.88 184.00,136.00 184.00,200.00" fill="#3FE0D0" fill-opacity="0.76"/>
+  <polygon points="208.00,200.00 208.00,72.00 272.00,125.76 336.00,72.00 336.00,200.00" fill="#3FE0D0" fill-opacity="0.64"/>
+</svg>
