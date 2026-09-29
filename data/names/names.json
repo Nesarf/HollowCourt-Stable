@@ -1,0 +1,3973 @@
+{
+  "format": "hollow-court-seed-names",
+  "ingredients": {
+    "absinthe": {
+      "ja": "アブサン",
+      "zh-HK": "苦艾酒",
+      "zh-Hans": "苦艾酒",
+      "zh-TW": "苦艾酒"
+    },
+    "advocaat": {
+      "ja": "アドヴォカート",
+      "zh-HK": "蛋黃利口酒",
+      "zh-Hans": "蛋黄利口酒",
+      "zh-TW": "蛋黃利口酒"
+    },
+    "agaveSyrup": {
+      "ja": "アガベシロップ",
+      "zh-HK": "龍舌蘭糖漿",
+      "zh-Hans": "龙舌兰糖浆",
+      "zh-TW": "龍舌蘭糖漿"
+    },
+    "aguardiente": {
+      "ja": "アグアルディエンテ",
+      "zh-HK": "甘蔗蒸餾酒",
+      "zh-Hans": "甘蔗蒸馏酒",
+      "zh-TW": "甘蔗蒸餾酒"
+    },
+    "allspiceDram": {
+      "ja": "オールスパイス・ドラム",
+      "zh-HK": "多香果利口酒",
+      "zh-Hans": "多香果利口酒",
+      "zh-TW": "多香果利口酒"
+    },
+    "almondSyrup": {
+      "ja": "アーモンドシロップ",
+      "zh-HK": "杏仁糖漿",
+      "zh-Hans": "杏仁糖浆",
+      "zh-TW": "杏仁糖漿"
+    },
+    "amaretto": {
+      "ja": "アマレット",
+      "zh-HK": "阿瑪雷託",
+      "zh-Hans": "阿玛雷托",
+      "zh-TW": "阿瑪雷託"
+    },
+    "amaro": {
+      "ja": "アマーロ",
+      "zh-HK": "阿瑪羅",
+      "zh-Hans": "阿玛罗",
+      "zh-TW": "阿瑪羅"
+    },
+    "amontilladoSherry": {
+      "ja": "アモンティリャード",
+      "zh-HK": "阿蒙提拉多雪莉",
+      "zh-Hans": "阿蒙提拉多雪莉",
+      "zh-TW": "阿蒙提拉多雪莉"
+    },
+    "angosturaBitters": {
+      "ja": "アンゴスチュラ・ビターズ",
+      "zh-HK": "安高天娜苦精",
+      "zh-Hans": "安高天娜苦精",
+      "zh-TW": "安高天娜苦精"
+    },
+    "aperol": {
+      "ja": "アペロール",
+      "zh-HK": "阿佩羅",
+      "zh-Hans": "阿佩罗",
+      "zh-TW": "阿佩羅"
+    },
+    "apple": {
+      "ja": "りんご",
+      "zh-HK": "蘋果",
+      "zh-Hans": "苹果",
+      "zh-TW": "蘋果"
+    },
+    "appleBrandy": {
+      "ja": "アップルブランデー",
+      "zh-HK": "蘋果白蘭地",
+      "zh-Hans": "苹果白兰地",
+      "zh-TW": "蘋果白蘭地"
+    },
+    "appleJuice": {
+      "ja": "りんごジュース",
+      "zh-HK": "蘋果汁",
+      "zh-Hans": "苹果汁",
+      "zh-TW": "蘋果汁"
+    },
+    "apricotLiqueur": {
+      "ja": "アプリコットリキュール",
+      "zh-HK": "杏子利口酒",
+      "zh-Hans": "杏子利口酒",
+      "zh-TW": "杏子利口酒"
+    },
+    "aquafaba": {
+      "ja": "アクアファバ",
+      "zh-HK": "鷹嘴豆水",
+      "zh-Hans": "鹰嘴豆水",
+      "zh-TW": "鷹嘴豆水"
+    },
+    "bananaLiqueur": {
+      "ja": "バナナリキュール",
+      "zh-HK": "香蕉利口酒",
+      "zh-Hans": "香蕉利口酒",
+      "zh-TW": "香蕉利口酒"
+    },
+    "basilLeaf": {
+      "ja": "バジル",
+      "zh-HK": "羅勒",
+      "zh-Hans": "罗勒",
+      "zh-TW": "羅勒"
+    },
+    "bellPepper": {
+      "ja": "パプリカ",
+      "zh-HK": "燈籠椒",
+      "zh-Hans": "菜椒",
+      "zh-TW": "甜椒"
+    },
+    "benedictine": {
+      "ja": "ベネディクティン",
+      "zh-HK": "廊酒",
+      "zh-Hans": "廊酒",
+      "zh-TW": "廊酒"
+    },
+    "blackTea": {
+      "ja": "紅茶",
+      "zh-HK": "紅茶",
+      "zh-Hans": "红茶",
+      "zh-TW": "紅茶"
+    },
+    "blackberry": {
+      "ja": "ブラックベリー",
+      "zh-HK": "黑莓",
+      "zh-Hans": "黑莓",
+      "zh-TW": "黑莓"
+    },
+    "blackberryLiqueur": {
+      "ja": "ブラックベリーリキュール",
+      "zh-HK": "黑莓利口酒",
+      "zh-Hans": "黑莓利口酒",
+      "zh-TW": "黑莓利口酒"
+    },
+    "blackcurrantLiqueur": {
+      "ja": "カシスリキュール",
+      "zh-HK": "黑加侖利口酒",
+      "zh-Hans": "黑加仑利口酒",
+      "zh-TW": "黑加侖利口酒"
+    },
+    "blendedAgedRum": {
+      "ja": "ブレンデッド・エイジドラム",
+      "zh-HK": "調和陳年朗姆",
+      "zh-Hans": "调和陈年朗姆",
+      "zh-TW": "調和陳年朗姆"
+    },
+    "blueCuracao": {
+      "ja": "ブルーキュラソー",
+      "zh-HK": "藍橙力嬌酒",
+      "zh-Hans": "蓝橙力娇酒",
+      "zh-TW": "藍橙力嬌酒"
+    },
+    "bourbonWhiskey": {
+      "ja": "バーボン",
+      "zh-HK": "波本威士忌",
+      "zh-Hans": "波本威士忌",
+      "zh-TW": "波本威士忌"
+    },
+    "brownSugar": {
+      "ja": "ブラウンシュガー",
+      "zh-HK": "紅糖",
+      "zh-Hans": "红糖",
+      "zh-TW": "紅糖"
+    },
+    "cachaca": {
+      "ja": "カシャッサ",
+      "zh-HK": "卡莎薩",
+      "zh-Hans": "卡莎萨",
+      "zh-TW": "卡莎薩"
+    },
+    "calvados": {
+      "ja": "カルヴァドス",
+      "zh-HK": "卡爾瓦多斯",
+      "zh-Hans": "卡尔瓦多斯",
+      "zh-TW": "卡爾瓦多斯"
+    },
+    "campari": {
+      "ja": "カンパリ",
+      "zh-HK": "金巴利",
+      "zh-Hans": "金巴利",
+      "zh-TW": "金巴利"
+    },
+    "chamomileCordial": {
+      "ja": "カモミールコーディアル",
+      "zh-HK": "洋甘菊糖漿",
+      "zh-Hans": "洋甘菊糖浆",
+      "zh-TW": "洋甘菊糖漿"
+    },
+    "cherry": {
+      "ja": "チェリー",
+      "zh-HK": "車厘子",
+      "zh-Hans": "樱桃",
+      "zh-TW": "櫻桃"
+    },
+    "cherryLiqueur": {
+      "ja": "チェリーリキュール",
+      "zh-HK": "櫻桃利口酒",
+      "zh-Hans": "樱桃利口酒",
+      "zh-TW": "櫻桃利口酒"
+    },
+    "chilliPepper": {
+      "ja": "唐辛子",
+      "zh-HK": "辣椒",
+      "zh-Hans": "辣椒",
+      "zh-TW": "辣椒"
+    },
+    "chilliPowder": {
+      "ja": "チリパウダー",
+      "zh-HK": "辣椒粉",
+      "zh-Hans": "辣椒粉",
+      "zh-TW": "辣椒粉"
+    },
+    "chocolate": {
+      "ja": "チョコレート",
+      "zh-HK": "朱古力",
+      "zh-Hans": "巧克力",
+      "zh-TW": "巧克力"
+    },
+    "cinnamon": {
+      "ja": "シナモン",
+      "zh-HK": "肉桂",
+      "zh-Hans": "肉桂",
+      "zh-TW": "肉桂"
+    },
+    "cinnamonSyrup": {
+      "ja": "シナモンシロップ",
+      "zh-HK": "肉桂糖漿",
+      "zh-Hans": "肉桂糖浆",
+      "zh-TW": "肉桂糖漿"
+    },
+    "coconutWater": {
+      "ja": "ココナッツウォーター",
+      "zh-HK": "椰子水",
+      "zh-Hans": "椰子水",
+      "zh-TW": "椰子水"
+    },
+    "coffee": {
+      "ja": "コーヒー",
+      "zh-HK": "咖啡",
+      "zh-Hans": "咖啡",
+      "zh-TW": "咖啡"
+    },
+    "coffeeBeans": {
+      "ja": "コーヒー豆",
+      "zh-HK": "咖啡豆",
+      "zh-Hans": "咖啡豆",
+      "zh-TW": "咖啡豆"
+    },
+    "coffeeLiqueur": {
+      "ja": "コーヒーリキュール",
+      "zh-HK": "咖啡利口酒",
+      "zh-Hans": "咖啡利口酒",
+      "zh-TW": "咖啡利口酒"
+    },
+    "cognac": {
+      "ja": "コニャック",
+      "zh-HK": "干邑",
+      "zh-Hans": "干邑",
+      "zh-TW": "干邑"
+    },
+    "cola": {
+      "ja": "コーラ",
+      "zh-HK": "可樂",
+      "zh-Hans": "可乐",
+      "zh-TW": "可樂"
+    },
+    "condensedMilk": {
+      "ja": "練乳",
+      "zh-HK": "煉乳",
+      "zh-Hans": "炼乳",
+      "zh-TW": "煉乳"
+    },
+    "corianderLeaf": {
+      "ja": "コリアンダー",
+      "zh-HK": "香菜",
+      "zh-Hans": "香菜",
+      "zh-TW": "香菜"
+    },
+    "cranberryJuice": {
+      "ja": "クランベリージュース",
+      "zh-HK": "蔓越莓汁",
+      "zh-Hans": "蔓越莓汁",
+      "zh-TW": "蔓越莓汁"
+    },
+    "cream": {
+      "ja": "生クリーム",
+      "zh-HK": "忌廉",
+      "zh-Hans": "鲜奶油",
+      "zh-TW": "鮮奶油"
+    },
+    "creamOfCoconut": {
+      "ja": "ココナッツクリーム",
+      "zh-HK": "椰漿",
+      "zh-Hans": "椰浆",
+      "zh-TW": "椰漿"
+    },
+    "creamSherry": {
+      "ja": "クリームシェリー",
+      "zh-HK": "奶油雪莉",
+      "zh-Hans": "奶油雪莉",
+      "zh-TW": "奶油雪莉"
+    },
+    "cremeDeCacao": {
+      "ja": "クレーム・ド・カカオ",
+      "zh-HK": "可可利口酒",
+      "zh-Hans": "可可利口酒",
+      "zh-TW": "可可利口酒"
+    },
+    "cremeDeCassis": {
+      "ja": "クレーム・ド・カシス",
+      "zh-HK": "黑加侖利口酒",
+      "zh-Hans": "黑加仑利口酒",
+      "zh-TW": "黑加侖利口酒"
+    },
+    "cremeDeMenthe": {
+      "ja": "クレーム・ド・ミント",
+      "zh-HK": "薄荷利口酒",
+      "zh-Hans": "薄荷利口酒",
+      "zh-TW": "薄荷利口酒"
+    },
+    "cremeDeViolette": {
+      "ja": "クレーム・ド・ヴィオレット",
+      "zh-HK": "紫羅蘭利口酒",
+      "zh-Hans": "紫罗兰利口酒",
+      "zh-TW": "紫羅蘭利口酒"
+    },
+    "cubanRum": {
+      "ja": "キューバンラム",
+      "zh-HK": "古巴朗姆",
+      "zh-Hans": "古巴朗姆",
+      "zh-TW": "古巴朗姆"
+    },
+    "cucumber": {
+      "ja": "きゅうり",
+      "zh-HK": "黃瓜",
+      "zh-Hans": "黄瓜",
+      "zh-TW": "黃瓜"
+    },
+    "cynar": {
+      "ja": "チナール",
+      "zh-HK": "洋薊利口酒",
+      "zh-Hans": "洋蓟利口酒",
+      "zh-TW": "洋薊利口酒"
+    },
+    "darkRum": {
+      "ja": "ダークラム",
+      "zh-HK": "黑朗姆",
+      "zh-Hans": "黑朗姆",
+      "zh-TW": "黑朗姆"
+    },
+    "demeraraRum": {
+      "ja": "デメラララム",
+      "zh-HK": "德梅拉拉朗姆",
+      "zh-Hans": "德梅拉拉朗姆",
+      "zh-TW": "德梅拉拉朗姆"
+    },
+    "drambuie": {
+      "ja": "ドランブイ",
+      "zh-HK": "杜林標",
+      "zh-Hans": "杜林标",
+      "zh-TW": "杜林標"
+    },
+    "drySherry": {
+      "ja": "ドライシェリー",
+      "zh-HK": "乾型雪莉",
+      "zh-Hans": "干型雪莉",
+      "zh-TW": "乾型雪莉"
+    },
+    "dryVermouth": {
+      "ja": "ドライベルモット",
+      "zh-HK": "乾型味美思",
+      "zh-Hans": "干型味美思",
+      "zh-TW": "乾型味美思"
+    },
+    "earlGreyTea": {
+      "ja": "アールグレイ",
+      "zh-HK": "伯爵茶",
+      "zh-Hans": "伯爵茶",
+      "zh-TW": "伯爵茶"
+    },
+    "egg": {
+      "ja": "卵",
+      "zh-HK": "雞蛋",
+      "zh-Hans": "鸡蛋",
+      "zh-TW": "雞蛋"
+    },
+    "eggWhite": {
+      "ja": "卵白",
+      "zh-HK": "蛋白",
+      "zh-Hans": "蛋清",
+      "zh-TW": "蛋白"
+    },
+    "eggYolk": {
+      "ja": "卵黄",
+      "zh-HK": "蛋黃",
+      "zh-Hans": "蛋黄",
+      "zh-TW": "蛋黃"
+    },
+    "elderflowerCordial": {
+      "ja": "エルダーフラワーコーディアル",
+      "zh-HK": "接骨木花糖漿",
+      "zh-Hans": "接骨木花糖浆",
+      "zh-TW": "接骨木花糖漿"
+    },
+    "energyDrink": {
+      "ja": "エナジードリンク",
+      "zh-HK": "能量飲料",
+      "zh-Hans": "能量饮料",
+      "zh-TW": "能量飲料"
+    },
+    "espressoCoffee": {
+      "ja": "エスプレッソ",
+      "zh-HK": "濃縮咖啡",
+      "zh-Hans": "浓缩咖啡",
+      "zh-TW": "濃縮咖啡"
+    },
+    "falernum": {
+      "ja": "ファレルナム",
+      "zh-HK": "法勒南",
+      "zh-Hans": "法勒南",
+      "zh-TW": "法勒南"
+    },
+    "fernet": {
+      "ja": "フェルネット",
+      "zh-HK": "苦味藥草酒",
+      "zh-Hans": "苦味药草酒",
+      "zh-TW": "苦味藥草酒"
+    },
+    "frangelico": {
+      "ja": "フランジュリコ",
+      "zh-HK": "榛子利口酒",
+      "zh-Hans": "榛子利口酒",
+      "zh-TW": "榛子利口酒"
+    },
+    "galliano": {
+      "ja": "ガリアーノ",
+      "zh-HK": "加利安奴",
+      "zh-Hans": "加利安奴",
+      "zh-TW": "加利安奴"
+    },
+    "gin": {
+      "ja": "ジン",
+      "zh-HK": "氈酒",
+      "zh-Hans": "金酒",
+      "zh-TW": "琴酒"
+    },
+    "ginger": {
+      "ja": "生姜",
+      "zh-HK": "生薑",
+      "zh-Hans": "姜",
+      "zh-TW": "生薑"
+    },
+    "gingerAle": {
+      "ja": "ジンジャーエール",
+      "zh-HK": "乾薑水",
+      "zh-Hans": "干姜水",
+      "zh-TW": "乾薑水"
+    },
+    "gingerBeer": {
+      "ja": "ジンジャービア",
+      "zh-HK": "姜啤",
+      "zh-Hans": "姜啤",
+      "zh-TW": "姜啤"
+    },
+    "goldRum": {
+      "ja": "ゴールドラム",
+      "zh-HK": "金朗姆",
+      "zh-Hans": "金朗姆",
+      "zh-TW": "金朗姆"
+    },
+    "grape": {
+      "ja": "白ぶどう",
+      "zh-HK": "白葡萄",
+      "zh-Hans": "白葡萄",
+      "zh-TW": "白葡萄"
+    },
+    "grapefruit": {
+      "ja": "グレープフルーツ",
+      "zh-HK": "西柚",
+      "zh-Hans": "葡萄柚",
+      "zh-TW": "葡萄柚"
+    },
+    "grapefruitJuice": {
+      "ja": "グレープフルーツジュース",
+      "zh-HK": "西柚汁",
+      "zh-Hans": "西柚汁",
+      "zh-TW": "西柚汁"
+    },
+    "grapefruitSoda": {
+      "ja": "グレープフルーツソーダ",
+      "zh-HK": "西柚汽水",
+      "zh-Hans": "西柚汽水",
+      "zh-TW": "西柚汽水"
+    },
+    "grappa": {
+      "ja": "グラッパ",
+      "zh-HK": "格拉帕",
+      "zh-Hans": "格拉帕",
+      "zh-TW": "格拉帕"
+    },
+    "greenChartreuse": {
+      "ja": "グリーンシャルトリューズ",
+      "zh-HK": "綠查特",
+      "zh-Hans": "绿查特",
+      "zh-TW": "綠查特"
+    },
+    "greenCremeDeMenthe": {
+      "ja": "グリーンクレーム・ド・ミント",
+      "zh-HK": "綠薄荷利口酒",
+      "zh-Hans": "绿薄荷利口酒",
+      "zh-TW": "綠薄荷利口酒"
+    },
+    "greenTea": {
+      "ja": "緑茶",
+      "zh-HK": "綠茶",
+      "zh-Hans": "绿茶",
+      "zh-TW": "綠茶"
+    },
+    "grenadine": {
+      "ja": "グレナデンシロップ",
+      "zh-HK": "紅石榴糖漿",
+      "zh-Hans": "红石榴糖浆",
+      "zh-TW": "紅石榴糖漿"
+    },
+    "guavaJuice": {
+      "ja": "グアバジュース",
+      "zh-HK": "芭樂汁",
+      "zh-Hans": "芭乐汁",
+      "zh-TW": "芭樂汁"
+    },
+    "hardCider": {
+      "ja": "ハードサイダー",
+      "zh-HK": "蘋果酒",
+      "zh-Hans": "苹果酒",
+      "zh-TW": "蘋果酒"
+    },
+    "honeySyrup": {
+      "ja": "ハニーシロップ",
+      "zh-HK": "蜂蜜糖漿",
+      "zh-Hans": "蜂蜜糖浆",
+      "zh-TW": "蜂蜜糖漿"
+    },
+    "hotSauce": {
+      "ja": "ホットソース",
+      "zh-HK": "辣醬",
+      "zh-Hans": "辣酱",
+      "zh-TW": "辣醬"
+    },
+    "iceCream": {
+      "ja": "アイスクリーム",
+      "zh-HK": "雪糕",
+      "zh-Hans": "冰淇淋",
+      "zh-TW": "冰淇淋"
+    },
+    "irishCreamLiqueur": {
+      "ja": "アイリッシュクリーム",
+      "zh-HK": "愛爾蘭奶油利口酒",
+      "zh-Hans": "爱尔兰奶油利口酒",
+      "zh-TW": "愛爾蘭奶油利口酒"
+    },
+    "irishWhiskey": {
+      "ja": "アイリッシュウイスキー",
+      "zh-HK": "愛爾蘭威士忌",
+      "zh-Hans": "爱尔兰威士忌",
+      "zh-TW": "愛爾蘭威士忌"
+    },
+    "jagermeister": {
+      "ja": "イェーガーマイスター",
+      "zh-HK": "野格",
+      "zh-Hans": "野格",
+      "zh-TW": "野格"
+    },
+    "kirschEauDeVie": {
+      "ja": "キルシュ",
+      "zh-HK": "櫻桃白蘭地",
+      "zh-Hans": "樱桃白兰地",
+      "zh-TW": "櫻桃白蘭地"
+    },
+    "lager": {
+      "ja": "ラガー",
+      "zh-HK": "拉格啤酒",
+      "zh-Hans": "拉格啤酒",
+      "zh-TW": "拉格啤酒"
+    },
+    "lemon": {
+      "ja": "レモン",
+      "zh-HK": "檸檬",
+      "zh-Hans": "柠檬",
+      "zh-TW": "檸檬"
+    },
+    "lemonJuice": {
+      "ja": "レモンジュース",
+      "zh-HK": "檸檬汁",
+      "zh-Hans": "柠檬汁",
+      "zh-TW": "檸檬汁"
+    },
+    "lemonSorbet": {
+      "ja": "レモンソルベ",
+      "zh-HK": "檸檬雪葩",
+      "zh-Hans": "柠檬雪葩",
+      "zh-TW": "檸檬雪葩"
+    },
+    "lemonade": {
+      "ja": "レモネード",
+      "zh-HK": "檸檬水",
+      "zh-Hans": "柠檬水",
+      "zh-TW": "檸檬水"
+    },
+    "lilletBlanc": {
+      "ja": "リレ・ブラン",
+      "zh-HK": "利萊白",
+      "zh-Hans": "利莱白",
+      "zh-TW": "利萊白"
+    },
+    "lime": {
+      "ja": "ライム",
+      "zh-HK": "青檸",
+      "zh-Hans": "青柠",
+      "zh-TW": "萊姆"
+    },
+    "limeJuice": {
+      "ja": "ライムジュース",
+      "zh-HK": "青檸汁",
+      "zh-Hans": "青柠汁",
+      "zh-TW": "青檸汁"
+    },
+    "lycheeJuice": {
+      "ja": "ライチジュース",
+      "zh-HK": "荔枝汁",
+      "zh-Hans": "荔枝汁",
+      "zh-TW": "荔枝汁"
+    },
+    "mapleSyrup": {
+      "ja": "メープルシロップ",
+      "zh-HK": "楓糖漿",
+      "zh-Hans": "枫糖浆",
+      "zh-TW": "楓糖漿"
+    },
+    "maraschinoLiqueur": {
+      "ja": "マラスキーノ",
+      "zh-HK": "黑櫻桃利口酒",
+      "zh-Hans": "黑樱桃利口酒",
+      "zh-TW": "黑櫻桃利口酒"
+    },
+    "melonLiqueur": {
+      "ja": "メロンリキュール",
+      "zh-HK": "蜜瓜利口酒",
+      "zh-Hans": "蜜瓜利口酒",
+      "zh-TW": "蜜瓜利口酒"
+    },
+    "mezcal": {
+      "ja": "メスカル",
+      "zh-HK": "梅斯卡爾",
+      "zh-Hans": "梅斯卡尔",
+      "zh-TW": "梅斯卡爾"
+    },
+    "milk": {
+      "ja": "牛乳",
+      "zh-HK": "牛奶",
+      "zh-Hans": "牛奶",
+      "zh-TW": "牛奶"
+    },
+    "mintLeaf": {
+      "ja": "ミント",
+      "zh-HK": "薄荷",
+      "zh-Hans": "薄荷",
+      "zh-TW": "薄荷"
+    },
+    "nutmeg": {
+      "ja": "ナツメグ",
+      "zh-HK": "肉豆蔻",
+      "zh-Hans": "肉豆蔻",
+      "zh-TW": "肉豆蔻"
+    },
+    "oldTomGin": {
+      "ja": "オールド・トム・ジン",
+      "zh-HK": "老湯姆金酒",
+      "zh-Hans": "老汤姆金酒",
+      "zh-TW": "老湯姆金酒"
+    },
+    "olive": {
+      "ja": "オリーブ",
+      "zh-HK": "橄欖",
+      "zh-Hans": "橄榄",
+      "zh-TW": "橄欖"
+    },
+    "oliveBrine": {
+      "ja": "オリーブの塩水",
+      "zh-HK": "橄欖鹽水",
+      "zh-Hans": "橄榄盐水",
+      "zh-TW": "橄欖鹽水"
+    },
+    "orange": {
+      "ja": "オレンジ",
+      "zh-HK": "橙子",
+      "zh-Hans": "橙子",
+      "zh-TW": "橙子"
+    },
+    "orangeBitters": {
+      "ja": "オレンジビターズ",
+      "zh-HK": "橙味苦精",
+      "zh-Hans": "橙味苦精",
+      "zh-TW": "橙味苦精"
+    },
+    "orangeCuracao": {
+      "ja": "オレンジキュラソー",
+      "zh-HK": "橙味力嬌酒",
+      "zh-Hans": "橙味力娇酒",
+      "zh-TW": "橙味力嬌酒"
+    },
+    "orangeFlowerWater": {
+      "ja": "オレンジフラワーウォーター",
+      "zh-HK": "橙花水",
+      "zh-Hans": "橙花水",
+      "zh-TW": "橙花水"
+    },
+    "orangeJuice": {
+      "ja": "オレンジジュース",
+      "zh-HK": "橙汁",
+      "zh-Hans": "橙汁",
+      "zh-TW": "柳橙汁"
+    },
+    "orangeLiqueur": {
+      "ja": "オレンジリキュール",
+      "zh-HK": "橙味利口酒",
+      "zh-Hans": "橙味利口酒",
+      "zh-TW": "橙味利口酒"
+    },
+    "orangeMarmalade": {
+      "ja": "オレンジマーマレード",
+      "zh-HK": "橙皮果醬",
+      "zh-Hans": "橙皮果酱",
+      "zh-TW": "橙皮果醬"
+    },
+    "orangeSoda": {
+      "ja": "オレンジソーダ",
+      "zh-HK": "橙汁汽水",
+      "zh-Hans": "橙汁汽水",
+      "zh-TW": "橙汁汽水"
+    },
+    "orgeat": {
+      "ja": "オルジェー",
+      "zh-HK": "杏仁糖漿",
+      "zh-Hans": "杏仁糖浆",
+      "zh-TW": "杏仁糖漿"
+    },
+    "overproofRum": {
+      "ja": "ジャマイカ・オーバープルーフ",
+      "zh-HK": "牙買加高度白朗姆",
+      "zh-Hans": "牙买加高度白朗姆",
+      "zh-TW": "牙買加高度白朗姆"
+    },
+    "paloCortado": {
+      "ja": "パロ・コルタド",
+      "zh-HK": "帕洛科塔多雪莉",
+      "zh-Hans": "帕洛科塔多雪莉",
+      "zh-TW": "帕洛科塔多雪莉"
+    },
+    "passionfruit": {
+      "ja": "パッションフルーツ",
+      "zh-HK": "百香果",
+      "zh-Hans": "百香果",
+      "zh-TW": "百香果"
+    },
+    "passionfruitLiqueur": {
+      "ja": "パッションフルーツリキュール",
+      "zh-HK": "百香果利口酒",
+      "zh-Hans": "百香果利口酒",
+      "zh-TW": "百香果利口酒"
+    },
+    "passionfruitSyrup": {
+      "ja": "パッションフルーツシロップ",
+      "zh-HK": "百香果糖漿",
+      "zh-Hans": "百香果糖浆",
+      "zh-TW": "百香果糖漿"
+    },
+    "peach": {
+      "ja": "ピーチ",
+      "zh-HK": "桃子",
+      "zh-Hans": "桃子",
+      "zh-TW": "桃子"
+    },
+    "peachBitters": {
+      "ja": "ピーチビターズ",
+      "zh-HK": "桃味苦精",
+      "zh-Hans": "桃味苦精",
+      "zh-TW": "桃味苦精"
+    },
+    "peachBrandy": {
+      "ja": "ピーチブランデー",
+      "zh-HK": "桃子白蘭地",
+      "zh-Hans": "桃子白兰地",
+      "zh-TW": "桃子白蘭地"
+    },
+    "peachLiqueur": {
+      "ja": "ピーチリキュール",
+      "zh-HK": "桃子利口酒",
+      "zh-Hans": "桃子利口酒",
+      "zh-TW": "桃子利口酒"
+    },
+    "peachPure": {
+      "ja": "ピーチピューレ",
+      "zh-HK": "桃子果泥",
+      "zh-Hans": "桃子果泥",
+      "zh-TW": "桃子果泥"
+    },
+    "peachSchnapps": {
+      "ja": "ピーチシュナップス",
+      "zh-HK": "桃子蒸餾酒",
+      "zh-Hans": "桃子蒸馏酒",
+      "zh-TW": "桃子蒸餾酒"
+    },
+    "pepper": {
+      "ja": "胡椒",
+      "zh-HK": "胡椒",
+      "zh-Hans": "胡椒",
+      "zh-TW": "胡椒"
+    },
+    "peppermintSchnapps": {
+      "ja": "ペパーミントシュナップス",
+      "zh-HK": "薄荷蒸餾酒",
+      "zh-Hans": "薄荷蒸馏酒",
+      "zh-TW": "薄荷蒸餾酒"
+    },
+    "pernod": {
+      "ja": "ペルノー",
+      "zh-HK": "保樂",
+      "zh-Hans": "保乐",
+      "zh-TW": "保樂"
+    },
+    "peychaudSBitters": {
+      "ja": "ペショー・ビターズ",
+      "zh-HK": "培喬苦精",
+      "zh-Hans": "培乔苦精",
+      "zh-TW": "培喬苦精"
+    },
+    "pickleBrine": {
+      "ja": "ピクルス液",
+      "zh-HK": "醃菜鹽水",
+      "zh-Hans": "腌菜盐水",
+      "zh-TW": "醃菜鹽水"
+    },
+    "pickledOnion": {
+      "ja": "カクテルオニオン",
+      "zh-HK": "雞尾酒洋葱",
+      "zh-Hans": "鸡尾酒洋葱",
+      "zh-TW": "雞尾酒洋蔥"
+    },
+    "pimmS": {
+      "ja": "ピムス",
+      "zh-HK": "皮姆酒",
+      "zh-Hans": "皮姆酒",
+      "zh-TW": "皮姆酒"
+    },
+    "pineapple": {
+      "ja": "パイナップル",
+      "zh-HK": "菠蘿",
+      "zh-Hans": "菠萝",
+      "zh-TW": "鳳梨"
+    },
+    "pineappleJuice": {
+      "ja": "パイナップルジュース",
+      "zh-HK": "菠蘿汁",
+      "zh-Hans": "菠萝汁",
+      "zh-TW": "菠蘿汁"
+    },
+    "pisco": {
+      "ja": "ピスコ",
+      "zh-HK": "皮斯科",
+      "zh-Hans": "皮斯科",
+      "zh-TW": "皮斯科"
+    },
+    "pomegranateJuice": {
+      "ja": "ザクロジュース",
+      "zh-HK": "石榴汁",
+      "zh-Hans": "石榴汁",
+      "zh-TW": "石榴汁"
+    },
+    "raspberryLiqueur": {
+      "ja": "ラズベリーリキュール",
+      "zh-HK": "覆盆子利口酒",
+      "zh-Hans": "覆盆子利口酒",
+      "zh-TW": "覆盆子利口酒"
+    },
+    "raspberrySyrup": {
+      "ja": "ラズベリーシロップ",
+      "zh-HK": "覆盆子糖漿",
+      "zh-Hans": "覆盆子糖浆",
+      "zh-TW": "覆盆子糖漿"
+    },
+    "redWine": {
+      "ja": "赤ワイン",
+      "zh-HK": "紅葡萄酒",
+      "zh-Hans": "红葡萄酒",
+      "zh-TW": "紅葡萄酒"
+    },
+    "rhumAgricole": {
+      "ja": "ラム・アグリコール",
+      "zh-HK": "農業朗姆",
+      "zh-Hans": "农业朗姆",
+      "zh-TW": "農業朗姆"
+    },
+    "rosewater": {
+      "ja": "ローズウォーター",
+      "zh-HK": "玫瑰水",
+      "zh-Hans": "玫瑰水",
+      "zh-TW": "玫瑰水"
+    },
+    "rubyPort": {
+      "ja": "ルビーポート",
+      "zh-HK": "紅寶石波特",
+      "zh-Hans": "红宝石波特",
+      "zh-TW": "紅寶石波特"
+    },
+    "ryeWhiskey": {
+      "ja": "ライウイスキー",
+      "zh-HK": "黑麥威士忌",
+      "zh-Hans": "黑麦威士忌",
+      "zh-TW": "黑麥威士忌"
+    },
+    "sageLeaf": {
+      "ja": "セージ",
+      "zh-HK": "鼠尾草",
+      "zh-Hans": "鼠尾草",
+      "zh-TW": "鼠尾草"
+    },
+    "salt": {
+      "ja": "塩",
+      "zh-HK": "鹽",
+      "zh-Hans": "盐",
+      "zh-TW": "鹽"
+    },
+    "sambuca": {
+      "ja": "サンブーカ",
+      "zh-HK": "珊布卡",
+      "zh-Hans": "珊布卡",
+      "zh-TW": "珊布卡"
+    },
+    "scotchWhisky": {
+      "ja": "スコッチウイスキー",
+      "zh-HK": "蘇格蘭威士忌",
+      "zh-Hans": "苏格兰威士忌",
+      "zh-TW": "蘇格蘭威士忌"
+    },
+    "sesameOil": {
+      "ja": "ごま油",
+      "zh-HK": "芝麻油",
+      "zh-Hans": "芝麻油",
+      "zh-TW": "芝麻油"
+    },
+    "simpleSyrup": {
+      "ja": "シュガーシロップ",
+      "zh-HK": "糖漿",
+      "zh-Hans": "糖浆",
+      "zh-TW": "糖漿"
+    },
+    "sloeGin": {
+      "ja": "スロージン",
+      "zh-HK": "黑刺李金酒",
+      "zh-Hans": "黑刺李金酒",
+      "zh-TW": "黑刺李金酒"
+    },
+    "smokyRum": {
+      "ja": "スモーキーラム",
+      "zh-HK": "煙燻朗姆",
+      "zh-Hans": "烟熏朗姆",
+      "zh-TW": "煙燻朗姆"
+    },
+    "sodaWater": {
+      "ja": "ソーダ水",
+      "zh-HK": "蘇打水",
+      "zh-Hans": "苏打水",
+      "zh-TW": "蘇打水"
+    },
+    "soju": {
+      "ja": "焼酎",
+      "zh-HK": "燒酒",
+      "zh-Hans": "烧酒",
+      "zh-TW": "燒酒"
+    },
+    "sparklingWine": {
+      "ja": "スパークリングワイン",
+      "zh-HK": "起泡酒",
+      "zh-Hans": "汽酒",
+      "zh-TW": "氣泡酒"
+    },
+    "spicedRum": {
+      "ja": "スパイスラム",
+      "zh-HK": "香料朗姆",
+      "zh-Hans": "香料朗姆",
+      "zh-TW": "香料朗姆"
+    },
+    "stout": {
+      "ja": "スタウト",
+      "zh-HK": "世濤",
+      "zh-Hans": "世涛",
+      "zh-TW": "世濤"
+    },
+    "strawberrySyrup": {
+      "ja": "いちごシロップ",
+      "zh-HK": "草莓糖漿",
+      "zh-Hans": "草莓糖浆",
+      "zh-TW": "草莓糖漿"
+    },
+    "sugar": {
+      "ja": "砂糖",
+      "zh-HK": "糖",
+      "zh-Hans": "糖",
+      "zh-TW": "糖"
+    },
+    "sugarCaneJuice": {
+      "ja": "サトウキビジュース",
+      "zh-HK": "甘蔗汁",
+      "zh-Hans": "甘蔗汁",
+      "zh-TW": "甘蔗汁"
+    },
+    "suze": {
+      "ja": "スーズ",
+      "zh-HK": "蘇茲",
+      "zh-Hans": "苏兹",
+      "zh-TW": "蘇茲"
+    },
+    "sweetVermouth": {
+      "ja": "スイートベルモット",
+      "zh-HK": "甜味美思",
+      "zh-Hans": "甜味美思",
+      "zh-TW": "甜味美思"
+    },
+    "tawnyPort": {
+      "ja": "トニーポート",
+      "zh-HK": "茶色波特",
+      "zh-Hans": "茶色波特",
+      "zh-TW": "茶色波特"
+    },
+    "tequila": {
+      "ja": "テキーラ",
+      "zh-HK": "龍舌蘭",
+      "zh-Hans": "龙舌兰",
+      "zh-TW": "龍舌蘭"
+    },
+    "tomatoJuice": {
+      "ja": "トマトジュース",
+      "zh-HK": "番茄汁",
+      "zh-Hans": "番茄汁",
+      "zh-TW": "番茄汁"
+    },
+    "tonicWater": {
+      "ja": "トニックウォーター",
+      "zh-HK": "湯力水",
+      "zh-Hans": "汤力水",
+      "zh-TW": "通寧水"
+    },
+    "vanillaExtract": {
+      "ja": "バニラエッセンス",
+      "zh-HK": "香草精",
+      "zh-Hans": "香草精",
+      "zh-TW": "香草精"
+    },
+    "vanillaSyrup": {
+      "ja": "バニラシロップ",
+      "zh-HK": "香草糖漿",
+      "zh-Hans": "香草糖浆",
+      "zh-TW": "香草糖漿"
+    },
+    "vanillaVodka": {
+      "ja": "バニラウォッカ",
+      "zh-HK": "香草伏特加",
+      "zh-Hans": "香草伏特加",
+      "zh-TW": "香草伏特加"
+    },
+    "vodka": {
+      "ja": "ウォッカ",
+      "zh-HK": "伏特加",
+      "zh-Hans": "伏特加",
+      "zh-TW": "伏特加"
+    },
+    "water": {
+      "ja": "水",
+      "zh-HK": "水",
+      "zh-Hans": "水",
+      "zh-TW": "水"
+    },
+    "whiskey": {
+      "ja": "ウイスキー",
+      "zh-HK": "威士忌",
+      "zh-Hans": "威士忌",
+      "zh-TW": "威士忌"
+    },
+    "whiteCremeDeMenthe": {
+      "ja": "ホワイトクレーム・ド・ミント",
+      "zh-HK": "白薄荷利口酒",
+      "zh-Hans": "白薄荷利口酒",
+      "zh-TW": "白薄荷利口酒"
+    },
+    "whiteRum": {
+      "ja": "ホワイトラム",
+      "zh-HK": "白朗姆",
+      "zh-Hans": "白朗姆",
+      "zh-TW": "白朗姆"
+    },
+    "whiteWine": {
+      "ja": "白ワイン",
+      "zh-HK": "白葡萄酒",
+      "zh-Hans": "白葡萄酒",
+      "zh-TW": "白葡萄酒"
+    },
+    "worcestershireSauce": {
+      "ja": "ウスターソース",
+      "zh-HK": "伍斯特醬",
+      "zh-Hans": "伍斯特酱",
+      "zh-TW": "伍斯特醬"
+    },
+    "yellowChartreuse": {
+      "ja": "イエローシャルトリューズ",
+      "zh-HK": "黃查特",
+      "zh-Hans": "黄查特",
+      "zh-TW": "黃查特"
+    },
+    "tripleSec": {
+      "ja": "トゥリプルセック",
+      "zh-HK": "白橙皮酒",
+      "zh-Hans": "白橙皮酒",
+      "zh-TW": "白橙皮酒"
+    },
+    "brandy": {
+      "ja": "ブランデー",
+      "zh-HK": "白蘭地",
+      "zh-Hans": "白兰地",
+      "zh-TW": "白蘭地"
+    }
+  },
+  "note": "OUR translations of the seed's names, in the languages this build ships -- first-party work, so it is tracked in git even though the seed itself is a build artifact of third-party data (docs/DESIGN.md 15). zh-Hans and ja are authored; zh-HK and zh-TW are generated from zh-Hans with OpenCC -- see tool/generate_chinese_variants.py for the tables and the reason. Names for the library in the languages this build ships. zh-HK and zh-TW are generated from zh-Hans with OpenCC (tool/generate_chinese_variants.py documents the tables); zh-Hans and ja are authored. Recipe names cover the whole first-party drink list. Steps carry the reader’s instructions, sentence by sentence, in the languages somebody wrote; the variants are generated from the simplified line.",
+  "recipes": {
+    "ibaAlexander": {
+      "ja": "アレクサンダー",
+      "zh-HK": "亞歷山大",
+      "zh-Hans": "亚历山大",
+      "zh-TW": "亞歷山大"
+    },
+    "ibaAmericano": {
+      "ja": "アメリカーノ",
+      "zh-HK": "美國佬",
+      "zh-Hans": "美国佬",
+      "zh-TW": "美國佬"
+    },
+    "ibaAngelFace": {
+      "ja": "エンジェル・フェイス",
+      "zh-HK": "天使之顏",
+      "zh-Hans": "天使之颜",
+      "zh-TW": "天使之顏"
+    },
+    "ibaAviation": {
+      "ja": "アビエーション",
+      "zh-HK": "飛行",
+      "zh-Hans": "飞行",
+      "zh-TW": "飛行"
+    },
+    "ibaBeesKnees": {
+      "ja": "ビーズ・ニーズ",
+      "zh-HK": "蜂之膝",
+      "zh-Hans": "蜂之膝",
+      "zh-TW": "蜂之膝"
+    },
+    "ibaBellini": {
+      "ja": "ベリーニ",
+      "zh-HK": "貝里尼",
+      "zh-Hans": "贝里尼",
+      "zh-TW": "貝里尼"
+    },
+    "ibaBetweenTheSheets": {
+      "ja": "ビトウィーン・ザ・シーツ",
+      "zh-HK": "床笫之間",
+      "zh-Hans": "床笫之间",
+      "zh-TW": "床笫之間"
+    },
+    "ibaBlackRussian": {
+      "ja": "ブラック・ルシアン",
+      "zh-HK": "黑俄羅斯",
+      "zh-Hans": "黑俄罗斯",
+      "zh-TW": "黑俄羅斯"
+    },
+    "ibaBloodyMary": {
+      "ja": "ブラッディ・メアリ",
+      "zh-HK": "血腥瑪麗",
+      "zh-Hans": "血腥玛丽",
+      "zh-TW": "血腥瑪麗"
+    },
+    "ibaBoulevardier": {
+      "ja": "ブールヴァルディエ",
+      "zh-HK": "花花公子",
+      "zh-Hans": "花花公子",
+      "zh-TW": "花花公子"
+    },
+    "ibaBramble": {
+      "ja": "ブランブル",
+      "zh-HK": "荊棘",
+      "zh-Hans": "荆棘",
+      "zh-TW": "荊棘"
+    },
+    "ibaBrandyCrusta": {
+      "ja": "ブランデー・クラスタ",
+      "zh-HK": "白蘭地庫斯塔",
+      "zh-Hans": "白兰地库斯塔",
+      "zh-TW": "白蘭地庫斯塔"
+    },
+    "ibaCaipirinha": {
+      "ja": "カイピリーニャ",
+      "zh-HK": "卡琵莉亞",
+      "zh-Hans": "卡琵莉亚",
+      "zh-TW": "卡琵莉亞"
+    },
+    "ibaCanchanchara": {
+      "ja": "カンチャンチャラ",
+      "zh-HK": "坎昌恰拉",
+      "zh-Hans": "坎昌恰拉",
+      "zh-TW": "坎昌恰拉"
+    },
+    "ibaCardinale": {
+      "ja": "カルディナーレ",
+      "zh-HK": "紅衣主教",
+      "zh-Hans": "红衣主教",
+      "zh-TW": "紅衣主教"
+    },
+    "ibaCasino": {
+      "ja": "カジノ",
+      "zh-HK": "賭場",
+      "zh-Hans": "赌场",
+      "zh-TW": "賭場"
+    },
+    "ibaChampagneCocktail": {
+      "ja": "シャンパン・カクテル",
+      "zh-HK": "香檳雞尾酒",
+      "zh-Hans": "香槟鸡尾酒",
+      "zh-TW": "香檳雞尾酒"
+    },
+    "ibaChartreuseSwizzle": {
+      "ja": "シャルトリューズ・スウィズル",
+      "zh-HK": "查特斯威澤",
+      "zh-Hans": "查特斯威泽",
+      "zh-TW": "查特斯威澤"
+    },
+    "ibaCloverClub": {
+      "ja": "クローバー・クラブ",
+      "zh-HK": "三葉草俱樂部",
+      "zh-Hans": "三叶草俱乐部",
+      "zh-TW": "三葉草俱樂部"
+    },
+    "ibaCorpseReviver2": {
+      "ja": "コープス・リバイバー #2",
+      "zh-HK": "亡者復甦二號",
+      "zh-Hans": "亡者复苏二号",
+      "zh-TW": "亡者復甦二號"
+    },
+    "ibaCosmopolitan": {
+      "ja": "コスモポリタン",
+      "zh-HK": "柯夢波丹",
+      "zh-Hans": "大都会",
+      "zh-TW": "柯夢波丹"
+    },
+    "ibaCubaLibre": {
+      "ja": "キューバ・リブレ",
+      "zh-HK": "自由古巴",
+      "zh-Hans": "自由古巴",
+      "zh-TW": "自由古巴"
+    },
+    "ibaDaiquiri": {
+      "ja": "ダイキリ",
+      "zh-HK": "黛綺莉",
+      "zh-Hans": "黛绮丽",
+      "zh-TW": "黛綺莉"
+    },
+    "ibaDarkNStormy": {
+      "ja": "ダーク・アンド・ストーミー",
+      "zh-HK": "月黑風高",
+      "zh-Hans": "月黑风高",
+      "zh-TW": "月黑風高"
+    },
+    "ibaDonsSpecialDaiquiri": {
+      "ja": "ドンズ・スペシャル・ダイキリ",
+      "zh-HK": "唐氏特調黛綺莉",
+      "zh-Hans": "唐氏特调黛绮丽",
+      "zh-TW": "唐氏特調黛綺莉"
+    },
+    "ibaDryMartini": {
+      "ja": "ドライ・マティーニ",
+      "zh-HK": "乾馬天尼",
+      "zh-Hans": "干马天尼",
+      "zh-TW": "乾馬丁尼"
+    },
+    "ibaEspressoMartini": {
+      "ja": "エスプレッソ・マティーニ",
+      "zh-HK": "咖啡馬天尼",
+      "zh-Hans": "咖啡马天尼",
+      "zh-TW": "咖啡馬丁尼"
+    },
+    "ibaFernandito": {
+      "ja": "フェルナンディート",
+      "zh-HK": "斐南迪多",
+      "zh-Hans": "斐南迪多",
+      "zh-TW": "斐南迪多"
+    },
+    "ibaFrench75": {
+      "ja": "フレンチ75",
+      "zh-HK": "法式七五",
+      "zh-Hans": "法式七五",
+      "zh-TW": "法式七五"
+    },
+    "ibaFrenchConnection": {
+      "ja": "フレンチ・コネクション",
+      "zh-HK": "法蘭西集團",
+      "zh-Hans": "法兰西集团",
+      "zh-TW": "法蘭西集團"
+    },
+    "ibaFrenchMartini": {
+      "ja": "フレンチ・マティーニ",
+      "zh-HK": "法式馬天尼",
+      "zh-Hans": "法式马丁尼",
+      "zh-TW": "法式馬丁尼"
+    },
+    "ibaGaribaldi": {
+      "ja": "ガリバルディ",
+      "zh-HK": "加里波第",
+      "zh-Hans": "加里波第",
+      "zh-TW": "加里波第"
+    },
+    "ibaGinBasilSmash": {
+      "ja": "ジン・バジル・スマッシュ",
+      "zh-HK": "金酒羅勒碎冰",
+      "zh-Hans": "金酒罗勒碎冰",
+      "zh-TW": "金酒羅勒碎冰"
+    },
+    "ibaGinFizz": {
+      "ja": "ジン・フィズ",
+      "zh-HK": "琴費士",
+      "zh-Hans": "金菲士",
+      "zh-TW": "琴費士"
+    },
+    "ibaGrandMargarita": {
+      "ja": "グラン・マルガリータ",
+      "zh-HK": "金萬利瑪格麗特",
+      "zh-Hans": "金万利玛格丽特",
+      "zh-TW": "金萬利瑪格麗特"
+    },
+    "ibaGrasshopper": {
+      "ja": "グラスホッパー",
+      "zh-HK": "綠色蚱蜢",
+      "zh-Hans": "绿色蚱蜢",
+      "zh-TW": "綠色蚱蜢"
+    },
+    "ibaHankyPanky": {
+      "ja": "ハンキー・パンキー",
+      "zh-HK": "翻雲覆雨",
+      "zh-Hans": "翻云覆雨",
+      "zh-TW": "翻雲覆雨"
+    },
+    "ibaHemingwaySpecial": {
+      "ja": "ヘミングウェイ・スペシャル",
+      "zh-HK": "海明威特調",
+      "zh-Hans": "海明威特调",
+      "zh-TW": "海明威特調"
+    },
+    "ibaHorsesNeck": {
+      "ja": "ホーセズ・ネック",
+      "zh-HK": "馬頸",
+      "zh-Hans": "马颈",
+      "zh-TW": "馬頸"
+    },
+    "ibaIbaTiki": {
+      "ja": "IBA ティキ",
+      "zh-HK": "IBA 提基",
+      "zh-Hans": "IBA 提基",
+      "zh-TW": "IBA 提基"
+    },
+    "ibaIllegal": {
+      "ja": "イリーガル",
+      "zh-HK": "非法",
+      "zh-Hans": "非法",
+      "zh-TW": "非法"
+    },
+    "ibaIrishCoffee": {
+      "ja": "アイリッシュ・コーヒー",
+      "zh-HK": "愛爾蘭咖啡",
+      "zh-Hans": "爱尔兰咖啡",
+      "zh-TW": "愛爾蘭咖啡"
+    },
+    "ibaJohnCollins": {
+      "ja": "ジョン・コリンズ",
+      "zh-HK": "約翰可林斯",
+      "zh-Hans": "约翰可林斯",
+      "zh-TW": "約翰可林斯"
+    },
+    "ibaJungleBird": {
+      "ja": "ジャングル・バード",
+      "zh-HK": "叢林鳥",
+      "zh-Hans": "丛林鸟",
+      "zh-TW": "叢林鳥"
+    },
+    "ibaKir": {
+      "ja": "キール",
+      "zh-HK": "基爾",
+      "zh-Hans": "基尔",
+      "zh-TW": "基爾"
+    },
+    "ibaLastWord": {
+      "ja": "ラスト・ワード",
+      "zh-HK": "臨別一語",
+      "zh-Hans": "临别一语",
+      "zh-TW": "臨別一語"
+    },
+    "ibaLemonDropMartini": {
+      "ja": "レモン・ドロップ・マティーニ",
+      "zh-HK": "檸檬糖馬天尼",
+      "zh-Hans": "柠檬糖马丁尼",
+      "zh-TW": "檸檬糖馬丁尼"
+    },
+    "ibaLongIslandIcedTea": {
+      "ja": "ロングアイランド・アイスティー",
+      "zh-HK": "長島冰茶",
+      "zh-Hans": "长岛冰茶",
+      "zh-TW": "長島冰茶"
+    },
+    "ibaMaiTai": {
+      "ja": "マイタイ",
+      "zh-HK": "邁泰",
+      "zh-Hans": "迈泰",
+      "zh-TW": "邁泰"
+    },
+    "ibaManhattan": {
+      "ja": "マンハッタン",
+      "zh-HK": "曼哈頓",
+      "zh-Hans": "曼哈顿",
+      "zh-TW": "曼哈頓"
+    },
+    "ibaMargarita": {
+      "ja": "マルガリータ",
+      "zh-HK": "瑪格麗特",
+      "zh-Hans": "玛格丽特",
+      "zh-TW": "瑪格麗特"
+    },
+    "ibaMartinez": {
+      "ja": "マルティネス",
+      "zh-HK": "馬天尼茲",
+      "zh-Hans": "马丁尼兹",
+      "zh-TW": "馬丁尼茲"
+    },
+    "ibaMaryPickford": {
+      "ja": "メアリー・ピックフォード",
+      "zh-HK": "瑪麗·畢克馥",
+      "zh-Hans": "玛丽·毕克馥",
+      "zh-TW": "瑪麗·畢克馥"
+    },
+    "ibaMimosa": {
+      "ja": "ミモザ",
+      "zh-HK": "含羞草",
+      "zh-Hans": "含羞草",
+      "zh-TW": "含羞草"
+    },
+    "ibaMintJulep": {
+      "ja": "ミント・ジュレップ",
+      "zh-HK": "薄荷茱莉普",
+      "zh-Hans": "薄荷朱利普",
+      "zh-TW": "薄荷茱莉普"
+    },
+    "ibaMissionarysDownfall": {
+      "ja": "ミッショナリーズ・ダウンフォール",
+      "zh-HK": "傳教士的墮落",
+      "zh-Hans": "传教士的堕落",
+      "zh-TW": "傳教士的墮落"
+    },
+    "ibaMojito": {
+      "ja": "モヒート",
+      "zh-HK": "莫希托",
+      "zh-Hans": "莫吉托",
+      "zh-TW": "莫希托"
+    },
+    "ibaMonkeyGland": {
+      "ja": "モンキー・グランド",
+      "zh-HK": "猴腺",
+      "zh-Hans": "猴腺",
+      "zh-TW": "猴腺"
+    },
+    "ibaMoscowMule": {
+      "ja": "モスコー・ミュール",
+      "zh-HK": "莫斯科騾子",
+      "zh-Hans": "莫斯科骡子",
+      "zh-TW": "莫斯科騾子"
+    },
+    "ibaNakedAndFamous": {
+      "ja": "ネイキッド・アンド・フェイマス",
+      "zh-HK": "一脫成名",
+      "zh-Hans": "一脱成名",
+      "zh-TW": "一脫成名"
+    },
+    "ibaNegroni": {
+      "ja": "ネグローニ",
+      "zh-HK": "內格羅尼",
+      "zh-Hans": "内格罗尼",
+      "zh-TW": "內格羅尼"
+    },
+    "ibaNewYorkSour": {
+      "ja": "ニューヨーク・サワー",
+      "zh-HK": "紐約沙瓦",
+      "zh-Hans": "纽约沙瓦",
+      "zh-TW": "紐約沙瓦"
+    },
+    "ibaOldCuban": {
+      "ja": "オールド・キューバン",
+      "zh-HK": "老古巴",
+      "zh-Hans": "老古巴",
+      "zh-TW": "老古巴"
+    },
+    "ibaPaloma": {
+      "ja": "パローマ",
+      "zh-HK": "帕洛瑪",
+      "zh-Hans": "帕洛玛",
+      "zh-TW": "帕洛瑪"
+    },
+    "ibaPaperPlane": {
+      "ja": "ペーパー・プレーン",
+      "zh-HK": "紙飛機",
+      "zh-Hans": "纸飞机",
+      "zh-TW": "紙飛機"
+    },
+    "ibaPenicillin": {
+      "ja": "ペニシリン",
+      "zh-HK": "盤尼西林",
+      "zh-Hans": "盘尼西林",
+      "zh-TW": "盤尼西林"
+    },
+    "ibaPinaColada": {
+      "ja": "ピニャ・コラーダ",
+      "zh-HK": "鳳梨可樂達",
+      "zh-Hans": "椰林飘香",
+      "zh-TW": "鳳梨可樂達"
+    },
+    "ibaPiscoPunch": {
+      "ja": "ピスコ・パンチ",
+      "zh-HK": "皮斯科潘趣",
+      "zh-Hans": "皮斯科潘趣",
+      "zh-TW": "皮斯科潘趣"
+    },
+    "ibaPiscoSour": {
+      "ja": "ピスコ・サワー",
+      "zh-HK": "皮斯可沙瓦",
+      "zh-Hans": "皮斯科酸",
+      "zh-TW": "皮斯可沙瓦"
+    },
+    "ibaPornStarMartini": {
+      "ja": "ポルン・スター・マティーニ",
+      "zh-HK": "豔星馬天尼",
+      "zh-Hans": "艳星马天尼",
+      "zh-TW": "豔星馬丁尼"
+    },
+    "ibaRaboDeGalo": {
+      "ja": "ラボ・デ・ガロ",
+      "zh-HK": "公雞尾",
+      "zh-Hans": "公鸡尾",
+      "zh-TW": "公雞尾"
+    },
+    "ibaRussianSpringPunch": {
+      "ja": "ロシアン・スプリング・パンチ",
+      "zh-HK": "俄羅斯之春潘趣",
+      "zh-Hans": "俄罗斯之春潘趣",
+      "zh-TW": "俄羅斯之春潘趣"
+    },
+    "ibaSeaBreeze": {
+      "ja": "シー・ブリーズ",
+      "zh-HK": "海風",
+      "zh-Hans": "海风",
+      "zh-TW": "海風"
+    },
+    "ibaSexOnTheBeach": {
+      "ja": "セックス・オン・ザ・ビーチ",
+      "zh-HK": "性感海灘",
+      "zh-Hans": "性感沙滩",
+      "zh-TW": "性感海灘"
+    },
+    "ibaSherryCobbler": {
+      "ja": "シェリー・コブラー",
+      "zh-HK": "雪莉柯布勒",
+      "zh-Hans": "雪莉柯布勒",
+      "zh-TW": "雪莉柯布勒"
+    },
+    "ibaSingaporeSling": {
+      "ja": "シンガポール・スリング",
+      "zh-HK": "新加坡司令",
+      "zh-Hans": "新加坡司令",
+      "zh-TW": "新加坡司令"
+    },
+    "ibaSouthSide": {
+      "ja": "サウスサイド",
+      "zh-HK": "南邊",
+      "zh-Hans": "南边",
+      "zh-TW": "南邊"
+    },
+    "ibaSpicyFifty": {
+      "ja": "スパイシー・フィフティ",
+      "zh-HK": "辛辣五十",
+      "zh-Hans": "辛辣五十",
+      "zh-TW": "辛辣五十"
+    },
+    "ibaSpritz": {
+      "ja": "スプリッツ",
+      "zh-HK": "阿佩羅氣泡",
+      "zh-Hans": "阿佩罗气泡",
+      "zh-TW": "阿佩羅氣泡"
+    },
+    "ibaSufferingBastard": {
+      "ja": "サファリング・バスタード",
+      "zh-HK": "痛苦混蛋",
+      "zh-Hans": "痛苦混蛋",
+      "zh-TW": "痛苦混蛋"
+    },
+    "ibaTequilaSunrise": {
+      "ja": "テキーラ・サンライズ",
+      "zh-HK": "龍舌蘭日出",
+      "zh-Hans": "龙舌兰日出",
+      "zh-TW": "龍舌蘭日出"
+    },
+    "ibaThreeDotsAndADash": {
+      "ja": "スリー・ドッツ・アンド・ア・ダッシュ",
+      "zh-HK": "三點一劃",
+      "zh-Hans": "三点一划",
+      "zh-TW": "三點一劃"
+    },
+    "ibaTipperary": {
+      "ja": "ティッパラリー",
+      "zh-HK": "蒂珀雷里",
+      "zh-Hans": "蒂珀雷里",
+      "zh-TW": "蒂珀雷里"
+    },
+    "ibaTommysMargarita": {
+      "ja": "トミーズ・マルガリータ",
+      "zh-HK": "湯米的瑪格麗特",
+      "zh-Hans": "汤米的玛格丽特",
+      "zh-TW": "湯米的瑪格麗特"
+    },
+    "ibaTrinidadSour": {
+      "ja": "トリニダード・サワー",
+      "zh-HK": "千里達沙瓦",
+      "zh-Hans": "千里达沙瓦",
+      "zh-TW": "千里達沙瓦"
+    },
+    "ibaVeNTo": {
+      "ja": "ヴェネト",
+      "zh-HK": "威尼斯",
+      "zh-Hans": "威尼斯",
+      "zh-TW": "威尼斯"
+    },
+    "ibaVesper": {
+      "ja": "ヴェスパー",
+      "zh-HK": "薇絲朋",
+      "zh-Hans": "薇丝朋",
+      "zh-TW": "薇絲朋"
+    },
+    "ibaZombie": {
+      "ja": "ゾンビ",
+      "zh-HK": "殭屍",
+      "zh-Hans": "僵尸",
+      "zh-TW": "殭屍"
+    },
+    "ibaOldFashioned": {
+      "ja": "オールド・ファッションド",
+      "zh-HK": "古典",
+      "zh-Hans": "古典",
+      "zh-TW": "古典"
+    },
+    "ibaWhiskeySour": {
+      "ja": "ウイスキー・サワー",
+      "zh-HK": "威士忌沙瓦",
+      "zh-Hans": "威士忌沙瓦",
+      "zh-TW": "威士忌沙瓦"
+    },
+    "ibaSazerac": {
+      "ja": "サゼラック",
+      "zh-HK": "薩澤拉克",
+      "zh-Hans": "萨泽拉克",
+      "zh-TW": "薩澤拉克"
+    },
+    "ibaSidecar": {
+      "ja": "サイドカー",
+      "zh-HK": "邊車",
+      "zh-Hans": "边车",
+      "zh-TW": "邊車"
+    },
+    "ibaWhiteLady": {
+      "ja": "ホワイト・レディ",
+      "zh-HK": "白色佳人",
+      "zh-Hans": "白色佳人",
+      "zh-TW": "白色佳人"
+    },
+    "ibaStinger": {
+      "ja": "スティンガー",
+      "zh-HK": "毒刺",
+      "zh-Hans": "毒刺",
+      "zh-TW": "毒刺"
+    },
+    "ibaTuxedo": {
+      "ja": "タキシード",
+      "zh-HK": "燕尾服",
+      "zh-Hans": "燕尾服",
+      "zh-TW": "燕尾服"
+    },
+    "ibaVieuxCarre": {
+      "ja": "ヴュー・カレ",
+      "zh-HK": "老廣場",
+      "zh-Hans": "老广场",
+      "zh-TW": "老廣場"
+    },
+    "ibaRustyNail": {
+      "ja": "ラスティ・ネイル",
+      "zh-HK": "鏽釘",
+      "zh-Hans": "锈钉",
+      "zh-TW": "鏽釘"
+    },
+    "ibaPlantersPunch": {
+      "ja": "プランターズ・パンチ",
+      "zh-HK": "殖民者潘趣",
+      "zh-Hans": "殖民者潘趣",
+      "zh-TW": "殖民者潘趣"
+    },
+    "ibaPortoFlip": {
+      "ja": "ポート・フリップ",
+      "zh-HK": "波特菲麗普",
+      "zh-Hans": "波特菲丽普",
+      "zh-TW": "波特菲麗普"
+    },
+    "ibaParadise": {
+      "ja": "パラダイス",
+      "zh-HK": "天堂",
+      "zh-Hans": "天堂",
+      "zh-TW": "天堂"
+    },
+    "ibaGoldenDream": {
+      "ja": "ゴールデン・ドリーム",
+      "zh-HK": "金色夢幻",
+      "zh-Hans": "金色梦幻",
+      "zh-TW": "金色夢幻"
+    },
+    "ibaYellowBird": {
+      "ja": "イエロー・バード",
+      "zh-HK": "黃鳥",
+      "zh-Hans": "黄鸟",
+      "zh-TW": "黃鳥"
+    },
+    "ibaRamosGinFizz": {
+      "ja": "ラモス・ジン・フィズ",
+      "zh-HK": "拉莫斯琴費士",
+      "zh-Hans": "拉莫斯琴费士",
+      "zh-TW": "拉莫斯琴費士"
+    }
+  },
+  "steps": {
+    "ibaAlexander": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "表面にナツメグをすりおろす。"
+      ],
+      "zh-HK": [
+        "把三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "在表面刨上肉豆蔻。"
+      ],
+      "zh-Hans": [
+        "把三样加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "在表面刨上肉豆蔻。"
+      ],
+      "zh-TW": [
+        "把三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "在表面刨上肉豆蔻。"
+      ]
+    },
+    "ibaAmericano": {
+      "ja": [
+        "オールドファッションドグラスに氷を入れ、二つを注ぐ。",
+        "ソーダを少し加える。",
+        "一度ステアし、飾る。"
+      ],
+      "zh-HK": [
+        "把兩樣在古典杯裏加冰兑好。",
+        "補一點蘇打水。",
+        "攪一下，然後裝飾。"
+      ],
+      "zh-Hans": [
+        "把两样在古典杯里加冰兑好。",
+        "补一点苏打水。",
+        "搅一下，然后装饰。"
+      ],
+      "zh-TW": [
+        "把兩樣在古典杯裡加冰兌好。",
+        "補一點蘇打水。",
+        "攪一下，然後裝飾。"
+      ]
+    },
+    "ibaAngelFace": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "把三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "把三样加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "把三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaAviation": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "ダブルストレインで冷やしたカクテルグラスへ。",
+        "チェリーを飾る。"
+      ],
+      "zh-HK": [
+        "把所有材料加冰搖勻。",
+        "雙重過濾到冰鎮雞尾酒杯。",
+        "用一顆櫻桃裝飾。"
+      ],
+      "zh-Hans": [
+        "把所有材料加冰摇匀。",
+        "双重过滤到冰镇鸡尾酒杯。",
+        "用一颗樱桃装饰。"
+      ],
+      "zh-TW": [
+        "把所有材料加冰搖勻。",
+        "雙重過濾到冰鎮雞尾酒杯。",
+        "用一顆櫻桃裝飾。"
+      ]
+    },
+    "ibaBeesKnees": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "把三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "把三样加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "把三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaBellini": {
+      "ja": [
+        "ピューレを冷やしたフルートグラスに注ぐ。",
+        "スパークリングワインをゆっくり加え、一度ステアする。"
+      ],
+      "zh-HK": [
+        "把果泥倒進冰鎮的笛形杯。",
+        "慢慢加入起泡酒，攪一下。"
+      ],
+      "zh-Hans": [
+        "把果泥倒进冰镇的笛形杯。",
+        "慢慢加入起泡酒，搅一下。"
+      ],
+      "zh-TW": [
+        "把果泥倒進冰鎮的笛形杯。",
+        "慢慢加入起泡酒，攪一下。"
+      ]
+    },
+    "ibaBetweenTheSheets": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "レモンピールを絞りかける。"
+      ],
+      "zh-HK": [
+        "把所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "在表面擰一片檸檬皮。"
+      ],
+      "zh-Hans": [
+        "把所有材料加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "在表面拧一片柠檬皮。"
+      ],
+      "zh-TW": [
+        "把所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "在表面擰一片檸檬皮。"
+      ]
+    },
+    "ibaBlackRussian": {
+      "ja": [
+        "オールドファッションドグラスに氷を入れ、二つを注ぐ。",
+        "軽くステアする。"
+      ],
+      "zh-HK": [
+        "把兩樣在古典杯裏加冰兑好。",
+        "稍加攪拌。"
+      ],
+      "zh-Hans": [
+        "把两样在古典杯里加冰兑好。",
+        "稍加搅拌。"
+      ],
+      "zh-TW": [
+        "把兩樣在古典杯裡加冰兌好。",
+        "稍加攪拌。"
+      ]
+    },
+    "ibaBloodyMary": {
+      "ja": [
+        "シェイクではなく、二つのティン間でロールする。",
+        "氷を入れたハイボールグラスに濾し入れる。",
+        "セロリを飾る。"
+      ],
+      "zh-HK": [
+        "在兩支錫罐之間來回倒，而不是搖勻。",
+        "濾入加冰的高球杯。",
+        "用西芹裝飾。"
+      ],
+      "zh-Hans": [
+        "在两支锡罐之间来回倒，而不是摇匀。",
+        "滤入加冰的高球杯。",
+        "用西芹装饰。"
+      ],
+      "zh-TW": [
+        "在兩支錫罐之間來回倒，而不是搖勻。",
+        "濾入加冰的高球杯。",
+        "用西芹裝飾。"
+      ]
+    },
+    "ibaBoulevardier": {
+      "ja": [
+        "三つを氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "オレンジのツイストを飾る。"
+      ],
+      "zh-HK": [
+        "把三樣加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ],
+      "zh-Hans": [
+        "把三样加冰搅匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用橙皮卷装饰。"
+      ],
+      "zh-TW": [
+        "把三樣加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ]
+    },
+    "ibaBramble": {
+      "ja": [
+        "ジン、レモン、シロップを氷とともにシェイクする。",
+        "クラッシュアイスを入れたロックグラスに注ぐ。",
+        "黒莓のリキュールを表面に垂らし、氷を通して沈ませる。"
+      ],
+      "zh-HK": [
+        "金酒、檸檬與糖漿加冰搖勻。",
+        "連冰倒進放了碎冰的古典杯。",
+        "把黑莓利口酒淋在表面，讓它穿過碎冰滲下去。"
+      ],
+      "zh-Hans": [
+        "金酒、柠檬与糖浆加冰摇匀。",
+        "连冰倒进放了碎冰的古典杯。",
+        "把黑莓利口酒淋在表面，让它穿过碎冰渗下去。"
+      ],
+      "zh-TW": [
+        "金酒、檸檬與糖漿加冰搖勻。",
+        "連冰倒進放了碎冰的古典杯。",
+        "把黑莓利口酒淋在表面，讓它穿過碎冰滲下去。"
+      ]
+    },
+    "ibaBrandyCrusta": {
+      "ja": [
+        "ワイングラスの縁を砂糖で飾り、内側に幅広のレモンピールを入れる。",
+        "残りを氷とともにシェイクする。",
+        "グラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "把葡萄酒杯的杯口沾上糖，並在杯內放一圈寬檸檬皮。",
+        "其餘材料加冰搖勻。",
+        "濾入杯中。"
+      ],
+      "zh-Hans": [
+        "把葡萄酒杯的杯口沾上糖，并在杯内放一圈宽柠檬皮。",
+        "其余材料加冰摇匀。",
+        "滤入杯中。"
+      ],
+      "zh-TW": [
+        "把葡萄酒杯的杯口沾上糖，並在杯內放一圈寬檸檬皮。",
+        "其餘材料加冰搖勻。",
+        "濾入杯中。"
+      ]
+    },
+    "ibaCaipirinha": {
+      "ja": [
+        "ライムをくし形に切り、砂糖とともにロックグラスに入れる。",
+        "マドルし、氷を満たしてカシャッサを注ぐ。",
+        "ステアする。"
+      ],
+      "zh-HK": [
+        "把青檸切成角，和糖一起放進古典杯。",
+        "搗壓，然後加滿冰並倒入卡莎薩。",
+        "攪勻。"
+      ],
+      "zh-Hans": [
+        "把青柠切成角，和糖一起放进古典杯。",
+        "捣压，然后加满冰并倒入卡莎萨。",
+        "搅匀。"
+      ],
+      "zh-TW": [
+        "把青檸切成角，和糖一起放進古典杯。",
+        "搗壓，然後加滿冰並倒入卡莎薩。",
+        "攪勻。"
+      ]
+    },
+    "ibaCanchanchara": {
+      "ja": [
+        "ロックグラスに氷を入れ、四つを注ぐ。",
+        "一度ステアする。"
+      ],
+      "zh-HK": [
+        "四樣在古典杯裏加冰兑好。",
+        "攪一下。"
+      ],
+      "zh-Hans": [
+        "四样在古典杯里加冰兑好。",
+        "搅一下。"
+      ],
+      "zh-TW": [
+        "四樣在古典杯裡加冰兌好。",
+        "攪一下。"
+      ]
+    },
+    "ibaCardinale": {
+      "ja": [
+        "三つを氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "レモンゼストを飾る。"
+      ],
+      "zh-HK": [
+        "三樣加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用檸檬皮裝飾。"
+      ],
+      "zh-Hans": [
+        "三样加冰搅匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用柠檬皮装饰。"
+      ],
+      "zh-TW": [
+        "三樣加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用檸檬皮裝飾。"
+      ]
+    },
+    "ibaCasino": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "レモンツイストとチェリーを飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用檸檬皮卷和一顆櫻桃裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用柠檬皮卷和一颗樱桃装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用檸檬皮卷和一顆櫻桃裝飾。"
+      ]
+    },
+    "ibaChampagneCocktail": {
+      "ja": [
+        "角砂糖を冷やしたフルートグラスに入れ、ビターズを染み込ませる。",
+        "コニャックを加え、次にシャンパンを注ぐ。",
+        "一度ステアする。"
+      ],
+      "zh-HK": [
+        "把方糖放進冰鎮的笛形杯，滴上苦精浸透。",
+        "加入干邑，再倒入香檳。",
+        "攪一下。"
+      ],
+      "zh-Hans": [
+        "把方糖放进冰镇的笛形杯，滴上苦精浸透。",
+        "加入干邑，再倒入香槟。",
+        "搅一下。"
+      ],
+      "zh-TW": [
+        "把方糖放進冰鎮的笛形杯，滴上苦精浸透。",
+        "加入干邑，再倒入香檳。",
+        "攪一下。"
+      ]
+    },
+    "ibaChartreuseSwizzle": {
+      "ja": [
+        "ハイボールグラスにクラッシュアイスを入れ、四つを注ぐ。",
+        "バースプーンでグラスが霜を帯びるまでスウィズルする。",
+        "ミントとすりおろしたナツメグを飾る。"
+      ],
+      "zh-HK": [
+        "四樣在高球杯里加碎冰兑好。",
+        "用吧勺攪到杯壁結霜。",
+        "用薄荷和現刨肉豆蔻裝飾。"
+      ],
+      "zh-Hans": [
+        "四样在高球杯里加碎冰兑好。",
+        "用吧勺搅到杯壁结霜。",
+        "用薄荷和现刨肉豆蔻装饰。"
+      ],
+      "zh-TW": [
+        "四樣在高球杯里加碎冰兌好。",
+        "用吧勺攪到杯壁結霜。",
+        "用薄荷和現刨肉豆蔻裝飾。"
+      ]
+    },
+    "ibaCloverClub": {
+      "ja": [
+        "まず氷なしでシェイクし、卵白を立てる。",
+        "氷を加えて再度シェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "先不加冰搖一次，把蛋清打起來。",
+        "再加冰搖第二次。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "先不加冰摇一次，把蛋清打起来。",
+        "再加冰摇第二次。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "先不加冰搖一次，把蛋清打起來。",
+        "再加冰搖第二次。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaCorpseReviver2": {
+      "ja": [
+        "冷やしたカクテルグラスをアブサンでリンスし、余りは捨てる。",
+        "残りの四つを氷とともにシェイクする。",
+        "グラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "用苦艾酒涮一遍冰鎮雞尾酒杯，多餘的倒掉。",
+        "其餘四樣加冰搖勻。",
+        "濾入杯中。"
+      ],
+      "zh-Hans": [
+        "用苦艾酒涮一遍冰镇鸡尾酒杯，多余的倒掉。",
+        "其余四样加冰摇匀。",
+        "滤入杯中。"
+      ],
+      "zh-TW": [
+        "用苦艾酒涮一遍冰鎮雞尾酒杯，多餘的倒掉。",
+        "其餘四樣加冰搖勻。",
+        "濾入杯中。"
+      ]
+    },
+    "ibaCosmopolitan": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "オレンジツイストを飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用橙皮卷装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ]
+    },
+    "ibaCubaLibre": {
+      "ja": [
+        "氷を入れたハイボールグラスにライムを絞り、そのまま入れる。",
+        "ラムを加え、次にコーラを注ぐ。",
+        "一度ステアする。"
+      ],
+      "zh-HK": [
+        "把青檸汁擠進加冰的高球杯，並把青檸丟進去。",
+        "加入朗姆，再倒入可樂。",
+        "攪一下。"
+      ],
+      "zh-Hans": [
+        "把青柠汁挤进加冰的高球杯，并把青柠丢进去。",
+        "加入朗姆，再倒入可乐。",
+        "搅一下。"
+      ],
+      "zh-TW": [
+        "把青檸汁擠進加冰的高球杯，並把青檸丟進去。",
+        "加入朗姆，再倒入可樂。",
+        "攪一下。"
+      ]
+    },
+    "ibaDaiquiri": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "三样加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaDarkNStormy": {
+      "ja": [
+        "ハイボールグラスに氷を満たし、ラムを注ぐ。",
+        "ジンジャービアで満たす。",
+        "ライムを絞りかけ、そのまま入れる。"
+      ],
+      "zh-HK": [
+        "高球杯加滿冰，倒入朗姆。",
+        "補滿姜啤。",
+        "把青檸汁擠在上面，連皮丟進去。"
+      ],
+      "zh-Hans": [
+        "高球杯加满冰，倒入朗姆。",
+        "补满姜啤。",
+        "把青柠汁挤在上面，连皮丢进去。"
+      ],
+      "zh-TW": [
+        "高球杯加滿冰，倒入朗姆。",
+        "補滿姜啤。",
+        "把青檸汁擠在上面，連皮丟進去。"
+      ]
+    },
+    "ibaDonsSpecialDaiquiri": {
+      "ja": [
+        "すべてをクラッシュアイスとともに数秒ブレンドする。",
+        "脚付きグラスに注ぎ、クラッシュアイスを足す。",
+        "パッションフルーツ半割を飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加碎冰攪打幾秒。",
+        "倒入帶腳杯，再補一些碎冰。",
+        "用半顆百香果裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加碎冰搅打几秒。",
+        "倒入带脚杯，再补一些碎冰。",
+        "用半颗百香果装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加碎冰攪打幾秒。",
+        "倒入帶腳杯，再補一些碎冰。",
+        "用半顆百香果裝飾。"
+      ]
+    },
+    "ibaDryMartini": {
+      "ja": [
+        "氷とともにしっかり冷えるまでステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "オリーブかレモンツイストを飾る。"
+      ],
+      "zh-HK": [
+        "加冰攪到極冷。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橄欖或檸檬皮卷裝飾。"
+      ],
+      "zh-Hans": [
+        "加冰搅到极冷。",
+        "滤入冰镇鸡尾酒杯。",
+        "用橄榄或柠檬皮卷装饰。"
+      ],
+      "zh-TW": [
+        "加冰攪到極冷。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橄欖或檸檬皮卷裝飾。"
+      ]
+    },
+    "ibaEspressoMartini": {
+      "ja": [
+        "すべてを氷とともに強くシェイクする。泡が立つまで。",
+        "ダブルストレインで冷やしたカクテルグラスへ。",
+        "泡の上にコーヒー豆を三粒。"
+      ],
+      "zh-HK": [
+        "所有材料加冰用力搖——要搖到起出泡沫。",
+        "雙重過濾到冰鎮雞尾酒杯。",
+        "在泡沫上放三顆咖啡豆。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰用力摇——要摇到起出泡沫。",
+        "双重过滤到冰镇鸡尾酒杯。",
+        "在泡沫上放三颗咖啡豆。"
+      ],
+      "zh-TW": [
+        "所有材料加冰用力搖——要搖到起出泡沫。",
+        "雙重過濾到冰鎮雞尾酒杯。",
+        "在泡沫上放三顆咖啡豆。"
+      ]
+    },
+    "ibaFernandito": {
+      "ja": [
+        "ハイボールグラスに氷を満たす。",
+        "フェルネットを注ぎ、次にコーラを注ぐ。",
+        "一度ステアする。"
+      ],
+      "zh-HK": [
+        "高球杯加滿冰。",
+        "倒入 Fernet，再倒可樂。",
+        "攪一下。"
+      ],
+      "zh-Hans": [
+        "高球杯加满冰。",
+        "倒入 Fernet，再倒可乐。",
+        "搅一下。"
+      ],
+      "zh-TW": [
+        "高球杯加滿冰。",
+        "倒入 Fernet，再倒可樂。",
+        "攪一下。"
+      ]
+    },
+    "ibaFrench75": {
+      "ja": [
+        "ジン、レモン、シロップを氷とともにシェイクする。",
+        "冷やしたフルートグラスに濾し入れる。",
+        "シャンパンで満たし、一度ステアする。"
+      ],
+      "zh-HK": [
+        "金酒、檸檬與糖漿加冰搖勻。",
+        "濾入冰鎮的笛形杯。",
+        "補滿香檳，攪一下。"
+      ],
+      "zh-Hans": [
+        "金酒、柠檬与糖浆加冰摇匀。",
+        "滤入冰镇的笛形杯。",
+        "补满香槟，搅一下。"
+      ],
+      "zh-TW": [
+        "金酒、檸檬與糖漿加冰搖勻。",
+        "濾入冰鎮的笛形杯。",
+        "補滿香檳，攪一下。"
+      ]
+    },
+    "ibaFrenchConnection": {
+      "ja": [
+        "ロックグラスに氷を入れ、二つを注ぐ。",
+        "一度ステアする。"
+      ],
+      "zh-HK": [
+        "把兩樣在古典杯裏加冰兑好。",
+        "攪一下。"
+      ],
+      "zh-Hans": [
+        "把两样在古典杯里加冰兑好。",
+        "搅一下。"
+      ],
+      "zh-TW": [
+        "把兩樣在古典杯裡加冰兌好。",
+        "攪一下。"
+      ]
+    },
+    "ibaFrenchMartini": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "三样加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaGaribaldi": {
+      "ja": [
+        "ハイボールグラスに氷を入れ、カンパリを注ぐ。",
+        "オレンジジュースを加える。",
+        "素早く混ぜて果汁を泡立て、ステアする。"
+      ],
+      "zh-HK": [
+        "在高球杯裏把金巴利加冰兑好。",
+        "加入橙汁。",
+        "快速攪打讓橙汁起泡，再攪勻。"
+      ],
+      "zh-Hans": [
+        "在高球杯里把金巴利加冰兑好。",
+        "加入橙汁。",
+        "快速搅打让橙汁起泡，再搅匀。"
+      ],
+      "zh-TW": [
+        "在高球杯裡把金巴利加冰兌好。",
+        "加入橙汁。",
+        "快速攪打讓橙汁起泡，再攪勻。"
+      ]
+    },
+    "ibaGinBasilSmash": {
+      "ja": [
+        "シェーカーでバジルを軽く押す。",
+        "すべてを氷とともにシェイクする。",
+        "ダブルストレインで氷を入れたロックグラスへ。"
+      ],
+      "zh-HK": [
+        "在搖壺裏輕輕壓一壓羅勒。",
+        "所有材料加冰搖勻。",
+        "雙重過濾到加了冰的古典杯。"
+      ],
+      "zh-Hans": [
+        "在摇壶里轻轻压一压罗勒。",
+        "所有材料加冰摇匀。",
+        "双重过滤到加了冰的古典杯。"
+      ],
+      "zh-TW": [
+        "在搖壺裡輕輕壓一壓羅勒。",
+        "所有材料加冰搖勻。",
+        "雙重過濾到加了冰的古典杯。"
+      ]
+    },
+    "ibaGinFizz": {
+      "ja": [
+        "ジン、レモン、シロップを氷とともにシェイクする。",
+        "ハイボールグラスに濾し入れ、ソーダで満たす。",
+        "レモンスライスを飾る。"
+      ],
+      "zh-HK": [
+        "金酒、檸檬與糖漿加冰搖勻。",
+        "濾入高球杯，補滿蘇打水。",
+        "用一片檸檬裝飾。"
+      ],
+      "zh-Hans": [
+        "金酒、柠檬与糖浆加冰摇匀。",
+        "滤入高球杯，补满苏打水。",
+        "用一片柠檬装饰。"
+      ],
+      "zh-TW": [
+        "金酒、檸檬與糖漿加冰搖勻。",
+        "濾入高球杯，補滿蘇打水。",
+        "用一片檸檬裝飾。"
+      ]
+    },
+    "ibaGrandMargarita": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "三样加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaGrasshopper": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "ミントリーフを飾る。"
+      ],
+      "zh-HK": [
+        "三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用一片薄荷葉裝飾。"
+      ],
+      "zh-Hans": [
+        "三样加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用一片薄荷叶装饰。"
+      ],
+      "zh-TW": [
+        "三樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用一片薄荷葉裝飾。"
+      ]
+    },
+    "ibaHankyPanky": {
+      "ja": [
+        "三つを氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "オレンジツイストを飾る。"
+      ],
+      "zh-HK": [
+        "三樣加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ],
+      "zh-Hans": [
+        "三样加冰搅匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用橙皮卷装饰。"
+      ],
+      "zh-TW": [
+        "三樣加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ]
+    },
+    "ibaHemingwaySpecial": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaHorsesNeck": {
+      "ja": [
+        "長いレモンピールを切り、ハイボールグラスの内側に沿わせる。",
+        "氷とコニャックを加える。",
+        "ジンジャーエールで満たし、ビターズを表面に振る。"
+      ],
+      "zh-HK": [
+        "削一條長檸檬皮，掛在高球杯內壁。",
+        "加冰，倒入干邑。",
+        "補滿乾薑水，在表面滴上苦精。"
+      ],
+      "zh-Hans": [
+        "削一条长柠檬皮，挂在高球杯内壁。",
+        "加冰，倒入干邑。",
+        "补满干姜水，在表面滴上苦精。"
+      ],
+      "zh-TW": [
+        "削一條長檸檬皮，掛在高球杯內壁。",
+        "加冰，倒入干邑。",
+        "補滿乾薑水，在表面滴上苦精。"
+      ]
+    },
+    "ibaIbaTiki": {
+      "ja": [
+        "シェーカーで薄切り生姜をマドルする。",
+        "残りを加え、氷とともに強くシェイクする。",
+        "クラッシュアイスを入れた冷たいティキグラスに濾し入れる。",
+        "シトラスとドライパイナップルを飾る。",
+        "二つのラムは深い熟成のものとスモーキーなもの。一つだけでは良い酒になるが、これにはならない。"
+      ],
+      "zh-HK": [
+        "在搖壺裏搗一片薄姜。",
+        "加入其餘材料，加冰用力搖勻。",
+        "濾入加了碎冰的冰鎮 tiki 杯。",
+        "用柑橘與一片幹菠蘿裝飾。",
+        "兩種朗姆分別是深厚陳年與煙燻；只用一種能做出好酒，但做不出這一杯。"
+      ],
+      "zh-Hans": [
+        "在摇壶里捣一片薄姜。",
+        "加入其余材料，加冰用力摇匀。",
+        "滤入加了碎冰的冰镇 tiki 杯。",
+        "用柑橘与一片干菠萝装饰。",
+        "两种朗姆分别是深厚陈年与烟熏；只用一种能做出好酒，但做不出这一杯。"
+      ],
+      "zh-TW": [
+        "在搖壺裡搗一片薄姜。",
+        "加入其餘材料，加冰用力搖勻。",
+        "濾入加了碎冰的冰鎮 tiki 杯。",
+        "用柑橘與一片幹菠蘿裝飾。",
+        "兩種朗姆分別是深厚陳年與煙燻；只用一種能做出好酒，但做不出這一杯。"
+      ]
+    },
+    "ibaIllegal": {
+      "ja": [
+        "すべてを氷とともに力強くシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。オンザロックで陶器のカップにても。",
+        "飾りはなし。"
+      ],
+      "zh-HK": [
+        "所有材料加冰用力搖勻。",
+        "濾入冰鎮雞尾酒杯，或加冰裝在陶土杯裏上桌。",
+        "不用裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰用力摇匀。",
+        "滤入冰镇鸡尾酒杯，或加冰装在陶土杯里上桌。",
+        "不用装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰用力搖勻。",
+        "濾入冰鎮雞尾酒杯，或加冰裝在陶土杯裡上桌。",
+        "不用裝飾。"
+      ]
+    },
+    "ibaIrishCoffee": {
+      "ja": [
+        "脚付きグラスを温め、コーヒーに砂糖を溶かす。",
+        "ウイスキーを加える。",
+        "スプーンの背で軽く泡立てたクリームを浮かべる。"
+      ],
+      "zh-HK": [
+        "温一隻帶腳杯，把糖在咖啡裏化開。",
+        "加入威士忌。",
+        "用勺背輕輕浮上一層打發的奶油。"
+      ],
+      "zh-Hans": [
+        "温一只带脚杯，把糖在咖啡里化开。",
+        "加入威士忌。",
+        "用勺背轻轻浮上一层打发的奶油。"
+      ],
+      "zh-TW": [
+        "溫一隻帶腳杯，把糖在咖啡裡化開。",
+        "加入威士忌。",
+        "用勺背輕輕浮上一層打發的奶油。"
+      ]
+    },
+    "ibaJohnCollins": {
+      "ja": [
+        "ハイボールグラスに氷を入れ、ジン・レモン・シロップを注ぐ。",
+        "ソーダで満たし、一度ステアする。",
+        "レモンスライスとチェリーを飾る。"
+      ],
+      "zh-HK": [
+        "在高球杯裏把金酒、檸檬與糖漿加冰兑好。",
+        "補滿蘇打水，攪一下。",
+        "用一片檸檬和一顆櫻桃裝飾。"
+      ],
+      "zh-Hans": [
+        "在高球杯里把金酒、柠檬与糖浆加冰兑好。",
+        "补满苏打水，搅一下。",
+        "用一片柠檬和一颗樱桃装饰。"
+      ],
+      "zh-TW": [
+        "在高球杯裡把金酒、檸檬與糖漿加冰兌好。",
+        "補滿蘇打水，攪一下。",
+        "用一片檸檬和一顆櫻桃裝飾。"
+      ]
+    },
+    "ibaJungleBird": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "氷を入れたロックグラスに濾し入れる。",
+        "パイナップルウェッジを飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "濾入加了冰的古典杯。",
+        "用一角菠蘿裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "滤入加了冰的古典杯。",
+        "用一角菠萝装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "濾入加了冰的古典杯。",
+        "用一角菠蘿裝飾。"
+      ]
+    },
+    "ibaKir": {
+      "ja": [
+        "冷やしたワイングラスにクレーム・ド・カシスを注ぐ。",
+        "白ワインで満たし、一度ステアする。"
+      ],
+      "zh-HK": [
+        "把黑加侖利口酒倒進冰鎮的葡萄酒杯。",
+        "補滿白葡萄酒，攪一下。"
+      ],
+      "zh-Hans": [
+        "把黑加仑利口酒倒进冰镇的葡萄酒杯。",
+        "补满白葡萄酒，搅一下。"
+      ],
+      "zh-TW": [
+        "把黑加侖利口酒倒進冰鎮的葡萄酒杯。",
+        "補滿白葡萄酒，攪一下。"
+      ]
+    },
+    "ibaLastWord": {
+      "ja": [
+        "四つを等量で氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "四樣等份加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "四样等份加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "四樣等份加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaLemonDropMartini": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "縁を砂糖で飾った冷たいカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "三樣加冰搖勻。",
+        "濾入沾了糖邊的冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "三样加冰摇匀。",
+        "滤入沾了糖边的冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "三樣加冰搖勻。",
+        "濾入沾了糖邊的冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaLongIslandIcedTea": {
+      "ja": [
+        "ハイボールグラスに氷を入れ、五種のスピリッツ・レモン・シロップを注ぐ。",
+        "コーラで満たす。",
+        "一度ステアし、レモンスライスを飾る。"
+      ],
+      "zh-HK": [
+        "在高球杯裏把五種烈酒、檸檬與糖漿加冰兑好。",
+        "補滿可樂。",
+        "攪一下，用一片檸檬裝飾。"
+      ],
+      "zh-Hans": [
+        "在高球杯里把五种烈酒、柠檬与糖浆加冰兑好。",
+        "补满可乐。",
+        "搅一下，用一片柠檬装饰。"
+      ],
+      "zh-TW": [
+        "在高球杯裡把五種烈酒、檸檬與糖漿加冰兌好。",
+        "補滿可樂。",
+        "攪一下，用一片檸檬裝飾。"
+      ]
+    },
+    "ibaMaiTai": {
+      "ja": [
+        "五つを氷とともにシェイクする。",
+        "クラッシュアイスを入れたロックグラスに注ぐ。",
+        "ミントと使い終わりのライムの殻を飾る。"
+      ],
+      "zh-HK": [
+        "五樣加冰搖勻。",
+        "連冰倒進放了碎冰的古典杯。",
+        "用薄荷和一隻榨過的青檸殼裝飾。"
+      ],
+      "zh-Hans": [
+        "五样加冰摇匀。",
+        "连冰倒进放了碎冰的古典杯。",
+        "用薄荷和一只榨过的青柠壳装饰。"
+      ],
+      "zh-TW": [
+        "五樣加冰搖勻。",
+        "連冰倒進放了碎冰的古典杯。",
+        "用薄荷和一隻榨過的青檸殼裝飾。"
+      ]
+    },
+    "ibaManhattan": {
+      "ja": [
+        "氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "チェリーを飾る。"
+      ],
+      "zh-HK": [
+        "加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用一顆櫻桃裝飾。"
+      ],
+      "zh-Hans": [
+        "加冰搅匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用一颗樱桃装饰。"
+      ],
+      "zh-TW": [
+        "加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用一顆櫻桃裝飾。"
+      ]
+    },
+    "ibaMargarita": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "縁を塩で飾った冷たいカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "三樣加冰搖勻。",
+        "濾入沾了鹽邊的冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "三样加冰摇匀。",
+        "滤入沾了盐边的冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "三樣加冰搖勻。",
+        "濾入沾了鹽邊的冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaMartinez": {
+      "ja": [
+        "すべてを氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "オレンジツイストを飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰搅匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用橙皮卷装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ]
+    },
+    "ibaMaryPickford": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "チェリーを飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用一顆櫻桃裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用一颗樱桃装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用一顆櫻桃裝飾。"
+      ]
+    },
+    "ibaMimosa": {
+      "ja": [
+        "冷やしたフルートグラスにオレンジジュースを注ぐ。",
+        "シャンパンをゆっくり満たし、一度ステアする。"
+      ],
+      "zh-HK": [
+        "把橙汁倒進冰鎮的笛形杯。",
+        "慢慢補滿香檳，攪一下。"
+      ],
+      "zh-Hans": [
+        "把橙汁倒进冰镇的笛形杯。",
+        "慢慢补满香槟，搅一下。"
+      ],
+      "zh-TW": [
+        "把橙汁倒進冰鎮的笛形杯。",
+        "慢慢補滿香檳，攪一下。"
+      ]
+    },
+    "ibaMintJulep": {
+      "ja": [
+        "ジュレップカップにミントと砂糖を入れ、軽く押す。",
+        "クラッシュアイスを満たし、バーボンを注ぐ。",
+        "カップが霜を帯びるまでステアし、氷を足す。"
+      ],
+      "zh-HK": [
+        "把薄荷和糖放進朱利杯，輕輕壓一壓。",
+        "加滿碎冰，倒入波本。",
+        "攪到杯壁結霜，再補一些碎冰。"
+      ],
+      "zh-Hans": [
+        "把薄荷和糖放进朱利杯，轻轻压一压。",
+        "加满碎冰，倒入波本。",
+        "搅到杯壁结霜，再补一些碎冰。"
+      ],
+      "zh-TW": [
+        "把薄荷和糖放進朱利杯，輕輕壓一壓。",
+        "加滿碎冰，倒入波本。",
+        "攪到杯壁結霜，再補一些碎冰。"
+      ]
+    },
+    "ibaMissionarysDownfall": {
+      "ja": [
+        "すべてを半カップのクラッシュアイスとともにブレンドする。",
+        "大きな脚付きグラスに注ぐ。",
+        "ミントの枝とパイナップルのスライスを飾る。",
+        "ミント10枚とパイナップル3片は飾りではなく**中に**ブレンドする。サラダの入った酒、それがこのレシピ。"
+      ],
+      "zh-HK": [
+        "所有材料與半杯碎冰一起攪打。",
+        "倒入大號帶腳杯。",
+        "用一枝薄荷和一片菠蘿裝飾。",
+        "十片薄荷葉與三塊菠蘿是**打進去**的，不是擺在上面：這是一杯裏頭有沙拉的酒，而那就是它的配方。"
+      ],
+      "zh-Hans": [
+        "所有材料与半杯碎冰一起搅打。",
+        "倒入大号带脚杯。",
+        "用一枝薄荷和一片菠萝装饰。",
+        "十片薄荷叶与三块菠萝是**打进去**的，不是摆在上面：这是一杯里头有沙拉的酒，而那就是它的配方。"
+      ],
+      "zh-TW": [
+        "所有材料與半杯碎冰一起攪打。",
+        "倒入大號帶腳杯。",
+        "用一枝薄荷和一片菠蘿裝飾。",
+        "十片薄荷葉與三塊菠蘿是**打進去**的，不是擺在上面：這是一杯裡頭有沙拉的酒，而那就是它的配方。"
+      ]
+    },
+    "ibaMojito": {
+      "ja": [
+        "ハイボールグラスでミント・砂糖・ライムを軽く押す。",
+        "ラムとクラッシュアイスを加えてステアする。",
+        "ソーダで満たす。"
+      ],
+      "zh-HK": [
+        "在高球杯裏輕輕壓薄荷、糖與青檸。",
+        "加入朗姆與碎冰，攪勻。",
+        "補滿蘇打水。"
+      ],
+      "zh-Hans": [
+        "在高球杯里轻轻压薄荷、糖与青柠。",
+        "加入朗姆与碎冰，搅匀。",
+        "补满苏打水。"
+      ],
+      "zh-TW": [
+        "在高球杯裡輕輕壓薄荷、糖與青檸。",
+        "加入朗姆與碎冰，攪勻。",
+        "補滿蘇打水。"
+      ]
+    },
+    "ibaMonkeyGland": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "オレンジツイストを飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用橙皮卷装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用橙皮卷裝飾。"
+      ]
+    },
+    "ibaMoscowMule": {
+      "ja": [
+        "銅のマグに氷を満たす。",
+        "ウォッカとライムを加え、ジンジャービアを注ぐ。",
+        "一度ステアし、ライムウェッジを飾る。"
+      ],
+      "zh-HK": [
+        "在銅杯裏裝滿冰。",
+        "加入伏特加與青檸，再倒乾薑水。",
+        "攪一下，用一角青檸裝飾。"
+      ],
+      "zh-Hans": [
+        "在铜杯里装满冰。",
+        "加入伏特加与青柠，再倒干姜水。",
+        "搅一下，用一角青柠装饰。"
+      ],
+      "zh-TW": [
+        "在銅杯裡裝滿冰。",
+        "加入伏特加與青檸，再倒乾薑水。",
+        "攪一下，用一角青檸裝飾。"
+      ]
+    },
+    "ibaNakedAndFamous": {
+      "ja": [
+        "四つを等量で氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "四樣等份加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "四样等份加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "四樣等份加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaNegroni": {
+      "ja": [
+        "ロックグラスに氷を入れ、三つを注ぐ。",
+        "一度ステアする。",
+        "オレンジスライスを飾る。"
+      ],
+      "zh-HK": [
+        "把三樣在古典杯裏加冰兑好。",
+        "攪一下。",
+        "用一片橙子裝飾。"
+      ],
+      "zh-Hans": [
+        "把三样在古典杯里加冰兑好。",
+        "搅一下。",
+        "用一片橙子装饰。"
+      ],
+      "zh-TW": [
+        "把三樣在古典杯裡加冰兌好。",
+        "攪一下。",
+        "用一片橙子裝飾。"
+      ]
+    },
+    "ibaNewYorkSour": {
+      "ja": [
+        "ウイスキー、レモン、シロップ、卵白を氷とともにシェイクする。",
+        "氷を入れたロックグラスに濾し入れる。",
+        "赤ワインを表面に浮かべる。この酒の唯一の見せ場。"
+      ],
+      "zh-HK": [
+        "威士忌、檸檬、糖漿與蛋清加冰搖勻。",
+        "濾入加了冰的古典杯。",
+        "把紅酒浮在表面：這是這杯酒唯一的花樣。"
+      ],
+      "zh-Hans": [
+        "威士忌、柠檬、糖浆与蛋清加冰摇匀。",
+        "滤入加了冰的古典杯。",
+        "把红酒浮在表面：这是这杯酒唯一的花样。"
+      ],
+      "zh-TW": [
+        "威士忌、檸檬、糖漿與蛋清加冰搖勻。",
+        "濾入加了冰的古典杯。",
+        "把紅酒浮在表面：這是這杯酒唯一的花樣。"
+      ]
+    },
+    "ibaOldCuban": {
+      "ja": [
+        "ミントを押し、ラム・ライム・シロップとともに氷を入れてシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "シャンパンで満たし、ビターズを振る。"
+      ],
+      "zh-HK": [
+        "先壓薄荷，再與朗姆、青檸、糖漿加冰一起搖。",
+        "濾入冰鎮雞尾酒杯。",
+        "補滿香檳，滴上苦精。"
+      ],
+      "zh-Hans": [
+        "先压薄荷，再与朗姆、青柠、糖浆加冰一起摇。",
+        "滤入冰镇鸡尾酒杯。",
+        "补满香槟，滴上苦精。"
+      ],
+      "zh-TW": [
+        "先壓薄荷，再與朗姆、青檸、糖漿加冰一起搖。",
+        "濾入冰鎮雞尾酒杯。",
+        "補滿香檳，滴上苦精。"
+      ]
+    },
+    "ibaPaloma": {
+      "ja": [
+        "ハイボールグラスの縁に塩を付け、氷を満たす。",
+        "テキーラとライムを加える。",
+        "グレープフルーツソーダで満たし、一度ステアする。"
+      ],
+      "zh-HK": [
+        "高球杯杯口沾鹽，加滿冰。",
+        "加入龍舌蘭與青檸。",
+        "補滿西柚汽水，攪一下。"
+      ],
+      "zh-Hans": [
+        "高球杯杯口沾盐，加满冰。",
+        "加入龙舌兰与青柠。",
+        "补满西柚汽水，搅一下。"
+      ],
+      "zh-TW": [
+        "高球杯杯口沾鹽，加滿冰。",
+        "加入龍舌蘭與青檸。",
+        "補滿西柚汽水，攪一下。"
+      ]
+    },
+    "ibaPaperPlane": {
+      "ja": [
+        "四つを等量で氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "四樣等份加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "四样等份加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "四樣等份加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaPenicillin": {
+      "ja": [
+        "ウイスキー、レモン、ハチミツ、生姜を氷とともにシェイクする。",
+        "氷を入れたロックグラスに濾し入れる。",
+        "ピートの効いたウイスキーを表面に浮かべる。これがペニシリンたらしめる部分。"
+      ],
+      "zh-HK": [
+        "威士忌、檸檬、蜂蜜與姜加冰搖勻。",
+        "濾入加了冰的古典杯。",
+        "把泥煤威士忌浮在表面——正是這一層讓它成為盤尼西林。"
+      ],
+      "zh-Hans": [
+        "威士忌、柠檬、蜂蜜与姜加冰摇匀。",
+        "滤入加了冰的古典杯。",
+        "把泥煤威士忌浮在表面——正是这一层让它成为盘尼西林。"
+      ],
+      "zh-TW": [
+        "威士忌、檸檬、蜂蜜與姜加冰搖勻。",
+        "濾入加了冰的古典杯。",
+        "把泥煤威士忌浮在表面——正是這一層讓它成為盤尼西林。"
+      ]
+    },
+    "ibaPinaColada": {
+      "ja": [
+        "三つをクラッシュアイスとともに滑らかになるまでブレンドする。",
+        "冷やしたグラスに注ぐ。",
+        "パイナップルウェッジを飾る。"
+      ],
+      "zh-HK": [
+        "三樣加碎冰打到順滑。",
+        "倒進冰鎮的杯子。",
+        "用一角菠蘿裝飾。"
+      ],
+      "zh-Hans": [
+        "三样加碎冰打到顺滑。",
+        "倒进冰镇的杯子。",
+        "用一角菠萝装饰。"
+      ],
+      "zh-TW": [
+        "三樣加碎冰打到順滑。",
+        "倒進冰鎮的杯子。",
+        "用一角菠蘿裝飾。"
+      ]
+    },
+    "ibaPiscoPunch": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "氷を入れたロックグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "濾入加了冰的古典杯。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "滤入加了冰的古典杯。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "濾入加了冰的古典杯。"
+      ]
+    },
+    "ibaPiscoSour": {
+      "ja": [
+        "まず氷なしでシェイクし、卵白を立てる。",
+        "氷を加えて再度シェイクする。",
+        "冷やしたグラスに濾し入れ、泡の上にビターズを垂らす。"
+      ],
+      "zh-HK": [
+        "先不加冰搖一次，把蛋清打起來。",
+        "再加冰搖第二次。",
+        "濾入冰鎮杯子，在泡沫上滴幾滴苦精。"
+      ],
+      "zh-Hans": [
+        "先不加冰摇一次，把蛋清打起来。",
+        "再加冰摇第二次。",
+        "滤入冰镇杯子，在泡沫上滴几滴苦精。"
+      ],
+      "zh-TW": [
+        "先不加冰搖一次，把蛋清打起來。",
+        "再加冰搖第二次。",
+        "濾入冰鎮杯子，在泡沫上滴幾滴苦精。"
+      ]
+    },
+    "ibaPornStarMartini": {
+      "ja": [
+        "ウォッカ、リキュール、パッションフルーツ、バニラを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れ、半割のパッションフルーツを浮かべる。",
+        "スパークリングワインは別のグラスで添える。"
+      ],
+      "zh-HK": [
+        "伏特加、利口酒、百香果與香草加冰搖勻。",
+        "濾入冰鎮雞尾酒杯，在表面浮半顆百香果。",
+        "起泡酒單獨一杯，放在旁邊一起上。"
+      ],
+      "zh-Hans": [
+        "伏特加、利口酒、百香果与香草加冰摇匀。",
+        "滤入冰镇鸡尾酒杯，在表面浮半颗百香果。",
+        "起泡酒单独一杯，放在旁边一起上。"
+      ],
+      "zh-TW": [
+        "伏特加、利口酒、百香果與香草加冰搖勻。",
+        "濾入冰鎮雞尾酒杯，在表面浮半顆百香果。",
+        "起泡酒單獨一杯，放在旁邊一起上。"
+      ]
+    },
+    "ibaRaboDeGalo": {
+      "ja": [
+        "ロックグラスに氷を入れ、三つを注ぐ。",
+        "軽くステアする。",
+        "アンゴスチュラ2滴とオレンジツイストはどちらも任意、そしてどちらも入れる価値がある。"
+      ],
+      "zh-HK": [
+        "三樣在古典杯裏加冰兑好。",
+        "稍加攪拌。",
+        "兩滴安高絲圖拉和一片橙皮卷，都是可選的，也都值得加。"
+      ],
+      "zh-Hans": [
+        "三样在古典杯里加冰兑好。",
+        "稍加搅拌。",
+        "两滴安高丝图拉和一片橙皮卷，都是可选的，也都值得加。"
+      ],
+      "zh-TW": [
+        "三樣在古典杯裡加冰兌好。",
+        "稍加攪拌。",
+        "兩滴安高絲圖拉和一片橙皮卷，都是可選的，也都值得加。"
+      ]
+    },
+    "ibaRussianSpringPunch": {
+      "ja": [
+        "最初の四つを氷とともにシェイクする。",
+        "氷を入れたハイボールグラスに濾し入れる。",
+        "スパークリングワインで満たす。"
+      ],
+      "zh-HK": [
+        "前四樣加冰搖勻。",
+        "濾入加了冰的高球杯。",
+        "補滿起泡酒。"
+      ],
+      "zh-Hans": [
+        "前四样加冰摇匀。",
+        "滤入加了冰的高球杯。",
+        "补满起泡酒。"
+      ],
+      "zh-TW": [
+        "前四樣加冰搖勻。",
+        "濾入加了冰的高球杯。",
+        "補滿起泡酒。"
+      ]
+    },
+    "ibaSeaBreeze": {
+      "ja": [
+        "ハイボールグラスに氷を入れ、三つを注ぐ。",
+        "一度ステアし、ライムウェッジを飾る。"
+      ],
+      "zh-HK": [
+        "三樣在高球杯里加冰兑好。",
+        "攪一下，用一角青檸裝飾。"
+      ],
+      "zh-Hans": [
+        "三样在高球杯里加冰兑好。",
+        "搅一下，用一角青柠装饰。"
+      ],
+      "zh-TW": [
+        "三樣在高球杯里加冰兌好。",
+        "攪一下，用一角青檸裝飾。"
+      ]
+    },
+    "ibaSexOnTheBeach": {
+      "ja": [
+        "ウォッカとピーチシュナップスを氷とともに注ぐ。",
+        "オレンジジュース、次にクランベリージュースを加える。",
+        "一度ステアする。"
+      ],
+      "zh-HK": [
+        "把伏特加與蜜桃蒸餾酒加冰兑好。",
+        "加入橙汁，再倒入蔓越莓汁。",
+        "攪一下。"
+      ],
+      "zh-Hans": [
+        "把伏特加与蜜桃蒸馏酒加冰兑好。",
+        "加入橙汁，再倒入蔓越莓汁。",
+        "搅一下。"
+      ],
+      "zh-TW": [
+        "把伏特加與蜜桃蒸餾酒加冰兌好。",
+        "加入橙汁，再倒入蔓越莓汁。",
+        "攪一下。"
+      ]
+    },
+    "ibaSherryCobbler": {
+      "ja": [
+        "二種のシェリー、砂糖、オレンジとレモンの4分の1カットを各2枚、氷とともにシェイクする。",
+        "クラッシュアイスを詰めたジュレップカップに濾し入れる。",
+        "ベリーとオレンジ・レモンの4分の1カットを飾り、ストローを添える。",
+        "「シェリー」ではなく二種の銘柄、アモンティリャードとパロ・コルタド。この酒はその違いの上に成り立っている。"
+      ],
+      "zh-HK": [
+        "兩款雪莉、糖，以及橙與檸檬各兩片四分之一，加冰搖勻。",
+        "濾入裝滿碎冰的朱利杯。",
+        "用莓果與橙、檸檬各一片四分之一裝飾，配吸管上桌。",
+        "是兩款具名雪莉，而不是「雪莉酒」：阿蒙提拉多與帕洛科塔多，這杯酒正建立在兩者的差別上。"
+      ],
+      "zh-Hans": [
+        "两款雪莉、糖，以及橙与柠檬各两片四分之一，加冰摇匀。",
+        "滤入装满碎冰的朱利杯。",
+        "用莓果与橙、柠檬各一片四分之一装饰，配吸管上桌。",
+        "是两款具名雪莉，而不是「雪莉酒」：阿蒙提拉多与帕洛科塔多，这杯酒正建立在两者的差别上。"
+      ],
+      "zh-TW": [
+        "兩款雪莉、糖，以及橙與檸檬各兩片四分之一，加冰搖勻。",
+        "濾入裝滿碎冰的朱利杯。",
+        "用莓果與橙、檸檬各一片四分之一裝飾，配吸管上桌。",
+        "是兩款具名雪莉，而不是「雪莉酒」：阿蒙提拉多與帕洛科塔多，這杯酒正建立在兩者的差別上。"
+      ]
+    },
+    "ibaSingaporeSling": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "氷を入れたハイボールグラスに濾し入れる。",
+        "パイナップルとチェリーを飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "濾入加了冰的高球杯。",
+        "用菠蘿和一顆櫻桃裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "滤入加了冰的高球杯。",
+        "用菠萝和一颗樱桃装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "濾入加了冰的高球杯。",
+        "用菠蘿和一顆櫻桃裝飾。"
+      ]
+    },
+    "ibaSouthSide": {
+      "ja": [
+        "ミントを押し、すべてを氷とともにシェイクする。",
+        "ダブルストレインで冷やしたカクテルグラスへ。"
+      ],
+      "zh-HK": [
+        "先壓薄荷，再把所有材料加冰搖勻。",
+        "雙重過濾到冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "先压薄荷，再把所有材料加冰摇匀。",
+        "双重过滤到冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "先壓薄荷，再把所有材料加冰搖勻。",
+        "雙重過濾到冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaSpicyFifty": {
+      "ja": [
+        "すべてを氷とともにシェイクする。",
+        "ダブルストレインで冷やしたカクテルグラスへ。この一手が唐辛子をグラスに残さず、辛みだけを酒に残す。",
+        "赤唐辛子を飾る。"
+      ],
+      "zh-HK": [
+        "所有材料加冰搖勻。",
+        "雙重過濾到冰鎮雞尾酒杯——雙重過濾正是把辣椒留在杯外、只把辣味留在酒裏的那一步。",
+        "用一支紅辣椒裝飾。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰摇匀。",
+        "双重过滤到冰镇鸡尾酒杯——双重过滤正是把辣椒留在杯外、只把辣味留在酒里的那一步。",
+        "用一支红辣椒装饰。"
+      ],
+      "zh-TW": [
+        "所有材料加冰搖勻。",
+        "雙重過濾到冰鎮雞尾酒杯——雙重過濾正是把辣椒留在杯外、只把辣味留在酒裡的那一步。",
+        "用一支紅辣椒裝飾。"
+      ]
+    },
+    "ibaSpritz": {
+      "ja": [
+        "ワイングラスに氷を満たす。",
+        "プロセッコを注ぎ、次にアペロールを注ぐ。",
+        "ソーダを少し加え、一度ステアする。"
+      ],
+      "zh-HK": [
+        "葡萄酒杯加滿冰。",
+        "倒入氣泡酒，再倒阿佩羅。",
+        "加一點蘇打水，攪一下。"
+      ],
+      "zh-Hans": [
+        "葡萄酒杯加满冰。",
+        "倒入气泡酒，再倒阿佩罗。",
+        "加一点苏打水，搅一下。"
+      ],
+      "zh-TW": [
+        "葡萄酒杯加滿冰。",
+        "倒入氣泡酒，再倒阿佩羅。",
+        "加一點蘇打水，攪一下。"
+      ]
+    },
+    "ibaSufferingBastard": {
+      "ja": [
+        "ハイボールグラスに氷を入れ、ジン・コニャック・ライムを注ぐ。",
+        "ジンジャービアで満たし、ビターズを振る。",
+        "ミントを飾る。"
+      ],
+      "zh-HK": [
+        "在高球杯裏把金酒、干邑與青檸加冰兑好。",
+        "補滿姜啤，滴上苦精。",
+        "用薄荷裝飾。"
+      ],
+      "zh-Hans": [
+        "在高球杯里把金酒、干邑与青柠加冰兑好。",
+        "补满姜啤，滴上苦精。",
+        "用薄荷装饰。"
+      ],
+      "zh-TW": [
+        "在高球杯裡把金酒、干邑與青檸加冰兌好。",
+        "補滿姜啤，滴上苦精。",
+        "用薄荷裝飾。"
+      ]
+    },
+    "ibaTequilaSunrise": {
+      "ja": [
+        "テキーラとオレンジジュースを氷とともに注ぐ。",
+        "グレナデンをグラスの内側を伝わせてゆっくり沈める。",
+        "ステアしない。その色がこの酒だから。"
+      ],
+      "zh-HK": [
+        "把龍舌蘭與橙汁加冰兑好。",
+        "讓紅石榴糖漿沿杯壁慢慢沉下去。",
+        "不要攪：那個顏色就是這杯酒。"
+      ],
+      "zh-Hans": [
+        "把龙舌兰与橙汁加冰兑好。",
+        "让红石榴糖浆沿杯壁慢慢沉下去。",
+        "不要搅：那个颜色就是这杯酒。"
+      ],
+      "zh-TW": [
+        "把龍舌蘭與橙汁加冰兌好。",
+        "讓紅石榴糖漿沿杯壁慢慢沉下去。",
+        "不要攪：那個顏色就是這杯酒。"
+      ]
+    },
+    "ibaThreeDotsAndADash": {
+      "ja": [
+        "すべてを約12オンスのクラッシュアイスとともにフラッシュブレンドする。",
+        "脚付きグラスに注ぎ、クラッシュアイスを足す。",
+        "チェリー三粒と長方形のパイナップルを飾る。",
+        "飾りがそのまま名前になっている。チェリー三粒とパイナップル一つはモールス信号の V、Victory の V。"
+      ],
+      "zh-HK": [
+        "所有材料與約 12 盎司碎冰快速攪打。",
+        "倒入帶腳杯，再補滿碎冰。",
+        "用三顆櫻桃與一塊長方形菠蘿裝飾。",
+        "裝飾就是名字：三顆櫻桃加一塊菠蘿，是摩斯電碼的 V，代表 Victory。"
+      ],
+      "zh-Hans": [
+        "所有材料与约 12 盎司碎冰快速搅打。",
+        "倒入带脚杯，再补满碎冰。",
+        "用三颗樱桃与一块长方形菠萝装饰。",
+        "装饰就是名字：三颗樱桃加一块菠萝，是摩斯电码的 V，代表 Victory。"
+      ],
+      "zh-TW": [
+        "所有材料與約 12 盎司碎冰快速攪打。",
+        "倒入帶腳杯，再補滿碎冰。",
+        "用三顆櫻桃與一塊長方形菠蘿裝飾。",
+        "裝飾就是名字：三顆櫻桃加一塊菠蘿，是摩斯電碼的 V，代表 Victory。"
+      ]
+    },
+    "ibaTipperary": {
+      "ja": [
+        "三つを氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。"
+      ],
+      "zh-HK": [
+        "三樣加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ],
+      "zh-Hans": [
+        "三样加冰搅匀。",
+        "滤入冰镇鸡尾酒杯。"
+      ],
+      "zh-TW": [
+        "三樣加冰攪勻。",
+        "濾入冰鎮雞尾酒杯。"
+      ]
+    },
+    "ibaTommysMargarita": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "氷を入れたロックグラスに濾し入れる。",
+        "オレンジリキュールも塩も使わない。甘みはアガベシロップから。"
+      ],
+      "zh-HK": [
+        "三樣加冰搖勻。",
+        "濾入加了冰的古典杯。",
+        "不要橙味利口酒，也不要鹽：甜味來自龍舌蘭糖漿。"
+      ],
+      "zh-Hans": [
+        "三样加冰摇匀。",
+        "滤入加了冰的古典杯。",
+        "不要橙味利口酒，也不要盐：甜味来自龙舌兰糖浆。"
+      ],
+      "zh-TW": [
+        "三樣加冰搖勻。",
+        "濾入加了冰的古典杯。",
+        "不要橙味利口酒，也不要鹽：甜味來自龍舌蘭糖漿。"
+      ]
+    },
+    "ibaTrinidadSour": {
+      "ja": [
+        "四つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "そう、ビターズがベースです。"
+      ],
+      "zh-HK": [
+        "四樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "是的：苦精就是基酒。"
+      ],
+      "zh-Hans": [
+        "四样加冰摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "是的：苦精就是基酒。"
+      ],
+      "zh-TW": [
+        "四樣加冰搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "是的：苦精就是基酒。"
+      ]
+    },
+    "ibaVeNTo": {
+      "ja": [
+        "すべてを氷とともに力強くシェイクする。",
+        "氷を入れた小さなタンブラーに濾し入れる。",
+        "レモンゼストと白ぶどうを飾る。",
+        "ハニーミックスは水ではなくカモミールの浸出液で作り、コーディアルもカモミール。この花がこの酒のすべて。"
+      ],
+      "zh-HK": [
+        "所有材料加冰用力搖勻。",
+        "濾入加了冰的小平底杯。",
+        "用檸檬皮與白葡萄裝飾。",
+        "蜂蜜用的是洋甘菊浸液而不是水，糖漿也是洋甘菊：這朵花就是這杯酒。"
+      ],
+      "zh-Hans": [
+        "所有材料加冰用力摇匀。",
+        "滤入加了冰的小平底杯。",
+        "用柠檬皮与白葡萄装饰。",
+        "蜂蜜用的是洋甘菊浸液而不是水，糖浆也是洋甘菊：这朵花就是这杯酒。"
+      ],
+      "zh-TW": [
+        "所有材料加冰用力搖勻。",
+        "濾入加了冰的小平底杯。",
+        "用檸檬皮與白葡萄裝飾。",
+        "蜂蜜用的是洋甘菊浸液而不是水，糖漿也是洋甘菊：這朵花就是這杯酒。"
+      ]
+    },
+    "ibaVesper": {
+      "ja": [
+        "三つを氷とともに強くシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "レモンツイストを飾る。"
+      ],
+      "zh-HK": [
+        "三樣加冰用力搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用檸檬皮卷裝飾。"
+      ],
+      "zh-Hans": [
+        "三样加冰用力摇匀。",
+        "滤入冰镇鸡尾酒杯。",
+        "用柠檬皮卷装饰。"
+      ],
+      "zh-TW": [
+        "三樣加冰用力搖勻。",
+        "濾入冰鎮雞尾酒杯。",
+        "用檸檬皮卷裝飾。"
+      ]
+    },
+    "ibaZombie": {
+      "ja": [
+        "すべてを約170gのクラッシュアイスとともに、短いパルスでブレンドする。",
+        "背の高いグラスに注ぐ。",
+        "ミントを飾る。",
+        "グレープフルーツとシナモンシロップを合わせたものがドンズ・ミックス。黄グレープフルーツ2に対しシナモンシロップ1。"
+      ],
+      "zh-HK": [
+        "所有材料與約 170 克碎冰一起，短促脈衝攪打。",
+        "倒入高身杯。",
+        "用薄荷裝飾。",
+        "西柚與肉桂糖漿合起來就是 Donn's Mix：西柚兩份配肉桂糖漿一份。"
+      ],
+      "zh-Hans": [
+        "所有材料与约 170 克碎冰一起，短促脉冲搅打。",
+        "倒入高身杯。",
+        "用薄荷装饰。",
+        "西柚与肉桂糖浆合起来就是 Donn's Mix：西柚两份配肉桂糖浆一份。"
+      ],
+      "zh-TW": [
+        "所有材料與約 170 克碎冰一起，短促脈衝攪打。",
+        "倒入高身杯。",
+        "用薄荷裝飾。",
+        "西柚與肉桂糖漿合起來就是 Donn's Mix：西柚兩份配肉桂糖漿一份。"
+      ]
+    },
+    "ibaOldFashioned": {
+      "ja": [
+        "グラスに砂糖とビターズ、少量の水を入れる。",
+        "潰して溶かし、ウイスキーを注いで氷を満たす。",
+        "ステアし、オレンジピールとチェリーを添える。"
+      ],
+      "zh-HK": [
+        "把糖放進杯裡，加苦精和一點水。",
+        "碾到化開，倒入威士忌，再加滿冰塊。",
+        "攪勻，以橙皮與車厘子裝飾。"
+      ],
+      "zh-Hans": [
+        "把糖放进杯里，加苦精和一点水。",
+        "碾到化开，倒入威士忌，再加满冰块。",
+        "搅匀，以橙皮与樱桃装饰。"
+      ],
+      "zh-TW": [
+        "把糖放進杯裡，加苦精和一點水。",
+        "碾到化開，倒入威士忌，再加滿冰塊。",
+        "攪勻，以橙皮與櫻桃裝飾。"
+      ]
+    },
+    "ibaWhiskeySour": {
+      "ja": [
+        "ウイスキー、レモンジュース、シロップを氷とともにシェイクする。",
+        "冷やしたグラスに氷を入れ、濾し入れる。",
+        "チェリーとオレンジのハーフスライスを添える。"
+      ],
+      "zh-HK": [
+        "把威士忌、檸檬汁和糖漿加冰搖勻。",
+        "濾進冰鎮過的杯子，補上新冰塊。",
+        "以車厘子和半片橙子裝飾。"
+      ],
+      "zh-Hans": [
+        "把威士忌、柠檬汁和糖浆加冰摇匀。",
+        "滤进冰镇过的杯子，补上新冰块。",
+        "以樱桃和半片橙子装饰。"
+      ],
+      "zh-TW": [
+        "把威士忌、檸檬汁和糖漿加冰搖勻。",
+        "濾進冰鎮過的杯子，補上新冰塊。",
+        "以櫻桃和半片橙子裝飾。"
+      ]
+    },
+    "ibaSazerac": {
+      "ja": [
+        "冷やしたグラスをアブサンでリンスし、内側に馴染ませる。",
+        "別のグラスでコニャック、砂糖、ビターズを氷とともにステアする。",
+        "リンスしたグラスに濾し入れ、レモンピールを絞る。"
+      ],
+      "zh-HK": [
+        "用苦艾酒涮過冰鎮杯，讓杯壁掛上一層。",
+        "另取一杯，把干邑、糖和苦精加冰攪勻。",
+        "濾進涮過的杯裡，擠一片檸檬皮油在表面。"
+      ],
+      "zh-Hans": [
+        "用苦艾酒涮过冰镇杯，让杯壁挂上一层。",
+        "另取一杯，把干邑、糖和苦精加冰搅匀。",
+        "滤进涮过的杯里，挤一片柠檬皮油在表面。"
+      ],
+      "zh-TW": [
+        "用苦艾酒涮過冰鎮杯，讓杯壁掛上一層。",
+        "另取一杯，把干邑、糖和苦精加冰攪勻。",
+        "濾進涮過的杯裡，擠一片檸檬皮油在表面。"
+      ]
+    },
+    "ibaSidecar": {
+      "ja": [
+        "三つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "飾りは付けず、すぐに供する。"
+      ],
+      "zh-HK": [
+        "把三樣加冰搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "不加裝飾，立即上桌。"
+      ],
+      "zh-Hans": [
+        "把三样加冰摇匀。",
+        "滤进冰镇过的鸡尾酒杯。",
+        "不加装饰，立即上桌。"
+      ],
+      "zh-TW": [
+        "把三樣加冰搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "不加裝飾，立即上桌。"
+      ]
+    },
+    "ibaWhiteLady": {
+      "ja": [
+        "ジン、トゥリプルセック、レモンジュースを氷とともにシェイクする。",
+        "大きめの冷やしたカクテルグラスに濾し入れる。",
+        "飾りは付けずに供する。"
+      ],
+      "zh-HK": [
+        "把氈酒、白橙皮酒和檸檬汁加冰搖勻。",
+        "濾進冰鎮過的大號雞尾酒杯。",
+        "不加裝飾，直接上桌。"
+      ],
+      "zh-Hans": [
+        "把金酒、白橙皮酒和柠檬汁加冰摇匀。",
+        "滤进冰镇过的大号鸡尾酒杯。",
+        "不加装饰，直接上桌。"
+      ],
+      "zh-TW": [
+        "把琴酒、白橙皮酒和檸檬汁加冰搖勻。",
+        "濾進冰鎮過的大號雞尾酒杯。",
+        "不加裝飾，直接上桌。"
+      ]
+    },
+    "ibaStinger": {
+      "ja": [
+        "コニャックとホワイト・クレーム・ド・ミントを氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "ミントリーフを添えてもよい。"
+      ],
+      "zh-HK": [
+        "把干邑和白薄荷酒加冰塊攪勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "頂端放一片薄荷葉（可選）。"
+      ],
+      "zh-Hans": [
+        "把干邑和白薄荷酒加冰块搅匀。",
+        "滤进冰镇过的鸡尾酒杯。",
+        "顶端放一片薄荷叶（可选）。"
+      ],
+      "zh-TW": [
+        "把干邑和白薄荷酒加冰塊攪勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "頂端放一片薄荷葉（可選）。"
+      ]
+    },
+    "ibaTuxedo": {
+      "ja": [
+        "オールドトム・ジン、ドライベルモット、マラスキーノ、アブサン、オレンジビターズを氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "チェリーとレモンピールのツイストを添える。"
+      ],
+      "zh-HK": [
+        "把老湯姆氈酒、乾型味美思、黑櫻桃酒、苦艾酒和橙味苦精加冰攪勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "以櫻桃和一片檸檬皮捲裝飾。"
+      ],
+      "zh-Hans": [
+        "把老汤姆金酒、干型味美思、黑樱桃酒、苦艾酒和橙味苦精加冰搅匀。",
+        "滤进冰镇过的鸡尾酒杯。",
+        "以樱桃和一片柠檬皮卷装饰。"
+      ],
+      "zh-TW": [
+        "把老湯姆琴酒、乾型味美思、黑櫻桃酒、苦艾酒和橙味苦精加冰攪勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "以櫻桃和一片檸檬皮捲裝飾。"
+      ]
+    },
+    "ibaVieuxCarre": {
+      "ja": [
+        "ライウイスキー、コニャック、スイートベルモット、ベネディクティン、ビターズを氷とともにステアする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "オレンジピールとマラスキノチェリーを添える。"
+      ],
+      "zh-HK": [
+        "把黑麥威士忌、干邑、甜味美思、廊酒和苦精加冰攪勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "以橙皮和黑櫻桃裝飾。"
+      ],
+      "zh-Hans": [
+        "把黑麦威士忌、干邑、甜味美思、廊酒和苦精加冰搅匀。",
+        "滤进冰镇过的鸡尾酒杯。",
+        "以橙皮和黑樱桃装饰。"
+      ],
+      "zh-TW": [
+        "把黑麥威士忌、干邑、甜味美思、廊酒和苦精加冰攪勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "以橙皮和黑櫻桃裝飾。"
+      ]
+    },
+    "ibaRustyNail": {
+      "ja": [
+        "グラスに氷を入れ、スコッチとドランブイを注ぐ。",
+        "軽くステアする。",
+        "レモンピールを絞りかける。"
+      ],
+      "zh-HK": [
+        "把蘇格蘭威士忌和杜林標倒進加了冰的杯裡。",
+        "輕輕攪一下。",
+        "擠一片檸檬皮油在表面。"
+      ],
+      "zh-Hans": [
+        "把苏格兰威士忌和杜林标倒进加了冰的杯里。",
+        "轻轻搅一下。",
+        "挤一片柠檬皮油在表面。"
+      ],
+      "zh-TW": [
+        "把蘇格蘭威士忌和杜林標倒進加了冰的杯裡。",
+        "輕輕攪一下。",
+        "擠一片檸檬皮油在表面。"
+      ]
+    },
+    "ibaPlantersPunch": {
+      "ja": [
+        "材料をそのままグラスに注ぐ。",
+        "氷を満たして一度ステアする。",
+        "オレンジピールを添える。"
+      ],
+      "zh-HK": [
+        "把材料直接倒進杯裡。",
+        "加滿冰塊，攪一下。",
+        "以橙皮裝飾。"
+      ],
+      "zh-Hans": [
+        "把材料直接倒进杯里。",
+        "加满冰块，搅一下。",
+        "以橙皮装饰。"
+      ],
+      "zh-TW": [
+        "把材料直接倒進杯裡。",
+        "加滿冰塊，攪一下。",
+        "以橙皮裝飾。"
+      ]
+    },
+    "ibaPortoFlip": {
+      "ja": [
+        "ブランデー、ポート、卵黄を氷とともに強くシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "ナツメグを摺りおろしかける。"
+      ],
+      "zh-HK": [
+        "把白蘭地、波特酒和蛋黃加冰用力搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "在表面刨一點肉豆蔻。"
+      ],
+      "zh-Hans": [
+        "把白兰地、波特酒和蛋黄加冰用力摇匀。",
+        "滤进冰镇过的鸡尾酒杯。",
+        "在表面刨一点肉豆蔻。"
+      ],
+      "zh-TW": [
+        "把白蘭地、波特酒和蛋黃加冰用力搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "在表面刨一點肉豆蔻。"
+      ]
+    },
+    "ibaParadise": {
+      "ja": [
+        "ジン、アプリコットリキュール、オレンジジュースを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "飾りは付けずに供する。"
+      ],
+      "zh-HK": [
+        "把氈酒、杏子利口酒和橙汁加冰搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "不加裝飾，直接上桌。"
+      ],
+      "zh-Hans": [
+        "把金酒、杏子利口酒和橙汁加冰摇匀。",
+        "滤进冰镇过的鸡尾酒杯。",
+        "不加装饰，直接上桌。"
+      ],
+      "zh-TW": [
+        "把琴酒、杏子利口酒和橙汁加冰搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "不加裝飾，直接上桌。"
+      ]
+    },
+    "ibaGoldenDream": {
+      "ja": [
+        "四つをクラッシュドアイスとともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "飾りは付けずに供する。"
+      ],
+      "zh-HK": [
+        "把四樣加碎冰搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "不加裝飾，直接上桌。"
+      ],
+      "zh-Hans": [
+        "把四样加碎冰摇匀。",
+        "滤进冰镇过的鸡尾酒杯。",
+        "不加装饰，直接上桌。"
+      ],
+      "zh-TW": [
+        "把四樣加碎冰搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "不加裝飾，直接上桌。"
+      ]
+    },
+    "ibaYellowBird": {
+      "ja": [
+        "四つを氷とともにシェイクする。",
+        "冷やしたカクテルグラスに濾し入れる。",
+        "飾りは付けずに供する。"
+      ],
+      "zh-HK": [
+        "把四樣加冰搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "不加裝飾，直接上桌。"
+      ],
+      "zh-Hans": [
+        "把四样加冰摇匀。",
+        "滤进冰镇过的鸡尾酒杯。",
+        "不加装饰，直接上桌。"
+      ],
+      "zh-TW": [
+        "把四樣加冰搖勻。",
+        "濾進冰鎮過的雞尾酒杯。",
+        "不加裝飾，直接上桌。"
+      ]
+    },
+    "ibaRamosGinFizz": {
+      "ja": [
+        "ソーダ水以外を氷とともに長く強くシェイクする。",
+        "背の高い冷やしたグラスに濾し入れ、泡を落ち着かせる。",
+        "ソーダ水で満たし、泡を縁より上に立てる。"
+      ],
+      "zh-HK": [
+        "除蘇打水外全部材料加冰，用力搖久一點。",
+        "濾進冰鎮過的高杯，讓泡沫穩定下來。",
+        "補上蘇打水，讓泡沫高出杯口。"
+      ],
+      "zh-Hans": [
+        "除苏打水外全部材料加冰，用力摇久一点。",
+        "滤进冰镇过的高杯，让泡沫稳定下来。",
+        "补上苏打水，让泡沫高出杯口。"
+      ],
+      "zh-TW": [
+        "除蘇打水外全部材料加冰，用力搖久一點。",
+        "濾進冰鎮過的高杯，讓泡沫穩定下來。",
+        "補上蘇打水，讓泡沫高出杯口。"
+      ]
+    }
+  },
+  "version": 1
+}

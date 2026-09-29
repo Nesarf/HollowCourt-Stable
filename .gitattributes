@@ -1,0 +1,56 @@
+# Line endings.
+#
+# This project is built on Windows and on Linux, and without a rule the two
+# disagree about every text file they both touch: a file committed from one
+# shows up as a whole-file change on the other. Normalising to LF in the
+# repository and leaving the working tree native is the arrangement that
+# surprises nobody.
+* text=auto
+
+# Formats that must never be line-ending converted, whatever a rule above says.
+# A converted PNG or a rewritten WAV is a corrupt file, not a formatting nit.
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.webp     binary
+*.ico      binary
+*.wav      binary
+*.mp3      binary
+*.ogg      binary
+*.flac     binary
+*.so       binary
+*.dll      binary
+*.dylib    binary
+*.exe      binary
+*.apk      binary
+*.aab      binary
+*.keystore binary
+*.jks      binary
+*.ttf      binary
+*.otf      binary
+*.woff     binary
+*.woff2    binary
+*.blend    binary
+*.vhdx     binary
+
+# Generated files that happen to be text. Diffing them tells nobody anything,
+# and treating them as text is how merge conflicts get committed.
+*.g.dart   linguist-generated=true
+pubspec.lock linguist-generated=true
+
+# **Shell scripts are LF in the working tree as well, and this is not a preference.**
+#
+# `* text=auto` above normalises the repository to LF but leaves the working tree native -- CRLF on Windows.
+# That is right for Dart, JSON and Markdown and it is wrong for a script: on 2026-09-23 the Linux build could
+# not run from this checkout at all, because bash inside WSL read line 17 as `set -o pipefail` and answered
+#
+#     tool/build_linux.sh: line 17: set: pipefail: invalid option name
+#
+# Every one of the fifteen shell scripts in the repository was CRLF. `eol=lf` pins the working tree copy too,
+# so the file that git records and the file Linux executes are the same bytes.
+*.sh text eol=lf
+*.cmd text eol=crlf
+
+# A Linux build reads this file to learn the version, and a stray CR becomes part of it.
+# `packaging/*/build.sh` also strips one defensively; this keeps the file itself clean.
+pubspec.yaml text eol=lf

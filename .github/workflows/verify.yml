@@ -1,0 +1,297 @@
+name: verify
+
+# **One pipeline, not two.** The steps live in `tool/hma_verify.py` and this file calls it, because a pipeline written
+# twice -- once in YAML for the server and once in a shell history for the developer -- is two pipelines, and the one that
+# runs is whichever was written last.
+#
+# **It did not run for thirteen pushes.** A job-level `if` on the product job -- evaluated before that job exists -- took
+# the workflow's other jobs with it rather than skipping one. A one-job probe settled that the repository was fine.
+#
+# **And a GitHub Actions log for a public repository cannot be read without a token, while a step name can.** That is why
+# the HMA side is split by stage and the product side by test directory: a red step has to say what broke by itself.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  hma:
+    name: HMA tools
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: install what the renderer needs
+        run: python -m pip install --quiet pillow
+
+      # One step per stage, so a failure names the stage rather than the whole pipeline.
+      - name: stage / syntax
+        run: python tool/hma_verify.py --stage syntax
+      - name: stage / tests
+        run: python tool/hma_verify.py --stage tests
+      - name: stage / art
+        run: python tool/hma_verify.py --stage art
+      - name: stage / render
+        run: python tool/hma_verify.py --stage render
+        env:
+          # The renderer writes beside the sources by default and Unity is not here, so it is pointed at a temporary
+          # directory -- the same variable a developer would set.
+          HMA_TMP: ${{ runner.temp }}
+
+  product:
+    name: the product
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # **Only where the product exists.** `main` has it; the HMA branch deliberately carries the platform instead. The
+      # condition is on each step rather than on the job, and that is the fix rather than a preference.
+      - if: ${{ hashFiles('pubspec.yaml') != '' }}
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - name: flutter pub get
+        if: ${{ hashFiles('pubspec.yaml') != '' }}
+        run: flutter pub get
+      - name: flutter analyze
+        if: ${{ hashFiles('pubspec.yaml') != '' }}
+        run: flutter analyze
+
+      # **One step per test file under `data`, one per directory elsewhere, and every step runs even if an earlier
+      # one failed.** Both halves are about the same thing: a failure here cannot be read from outside, so one failure
+      # must not cost the information from the steps after it, and the failing step has to name the file.
+      #
+      # `data` is split by file because it is where the suite first went red, and because seven of its seventeen files
+      # touch a socket, a proxy or a firewall -- the parts of a test suite most likely to be about the machine it runs on.
+      - name: flutter test / barcode_registry_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/barcode_registry_test.dart
+      - name: flutter test / event_log_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/event_log_test.dart
+      - name: flutter test / event_store_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/event_store_test.dart
+      - name: flutter test / folder_styles_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/folder_styles_test.dart
+      - name: flutter test / overlay_persistence_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/overlay_persistence_test.dart
+      # **Split by test name, because the file has two and only one of them fails.** `--plain-name` selects a
+      # single test, so the next run says which of the two it was instead of saying "principles_test".
+      - name: flutter test / principles / 中立性
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/principles_test.dart --plain-name '中立性'
+      - name: flutter test / principles / 自主化
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/principles_test.dart --plain-name '自主化'
+      - name: flutter test / recipe_prices_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/recipe_prices_test.dart
+      - name: flutter test / seed\seed_codec_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/seed/seed_codec_test.dart
+      - name: flutter test / seed\seed_translation_coverage_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/seed/seed_translation_coverage_test.dart
+      - name: flutter test / seed\shipped_assets_match_the_data_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/seed/shipped_assets_match_the_data_test.dart
+      - name: flutter test / sync\adb_carrier_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/sync/adb_carrier_test.dart
+      - name: flutter test / sync\courtpack_service_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/sync/courtpack_service_test.dart
+      - name: flutter test / sync\discovery_socket_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/sync/discovery_socket_test.dart
+      - name: flutter test / sync\firewall_probe_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/sync/firewall_probe_test.dart
+      - name: flutter test / sync\no_proxy_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/sync/no_proxy_test.dart
+      - name: flutter test / sync\socket_transport_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/sync/socket_transport_test.dart
+      - name: flutter test / sync\sync_verbs_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/data/sync/sync_verbs_test.dart
+      - name: flutter test / domain
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/domain
+      - name: flutter test / tooling
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/tooling
+      # **ui and the root, one step per file**, for the same reason `data` is: a red step has to name the file it
+      # was that failed. Generated from the listing with forward slashes -- the first generator used
+      # `os.path.join` on Windows and produced fourteen steps naming files Linux has never heard of.
+      - name: flutter test / ui/adapters_section_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/adapters_section_test.dart
+      - name: flutter test / ui/app_name_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/app_name_test.dart
+      - name: flutter test / ui/bar_page_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/bar_page_test.dart
+      - name: flutter test / ui/barcode_resolution_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/barcode_resolution_test.dart
+      - name: flutter test / ui/bottle_edit_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/bottle_edit_test.dart
+      - name: flutter test / ui/button_states_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/button_states_test.dart
+      - name: flutter test / ui/cellar_page_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/cellar_page_test.dart
+      - name: flutter test / ui/cellar_placement_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/cellar_placement_test.dart
+      - name: flutter test / ui/choice_set_editor_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/choice_set_editor_test.dart
+      - name: flutter test / ui/compare_mode_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/compare_mode_test.dart
+      - name: flutter test / ui/consumption_chart_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/consumption_chart_test.dart
+      - name: flutter test / ui/discovery_section_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/discovery_section_test.dart
+      - name: flutter test / ui/dual_copy_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/dual_copy_test.dart
+      - name: flutter test / ui/firewall_row_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/firewall_row_test.dart
+      - name: flutter test / ui/japanese_review_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/japanese_review_test.dart
+      - name: flutter test / ui/link_row_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/link_row_test.dart
+      - name: flutter test / ui/locale_defaults_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/locale_defaults_test.dart
+      - name: flutter test / ui/locale_settings_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/locale_settings_test.dart
+      - name: flutter test / ui/materials_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/materials_test.dart
+      - name: flutter test / ui/measure_field_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/measure_field_test.dart
+      - name: flutter test / ui/measure_text_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/measure_text_test.dart
+      - name: flutter test / ui/money_text_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/money_text_test.dart
+      - name: flutter test / ui/names_section_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/names_section_test.dart
+      - name: flutter test / ui/price_chart_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/price_chart_test.dart
+      - name: flutter test / ui/price_field_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/price_field_test.dart
+      - name: flutter test / ui/price_history_sheet_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/price_history_sheet_test.dart
+      - name: flutter test / ui/price_period_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/price_period_test.dart
+      - name: flutter test / ui/prism_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/prism_test.dart
+      - name: flutter test / ui/private_name_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/private_name_test.dart
+      - name: flutter test / ui/seed_names_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/seed_names_test.dart
+      - name: flutter test / ui/settings_page_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/settings_page_test.dart
+      - name: flutter test / ui/settings_section_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/settings_section_test.dart
+      - name: flutter test / ui/sync_section_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/sync_section_test.dart
+      - name: flutter test / ui/synonym_section_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/synonym_section_test.dart
+      - name: flutter test / ui/theme_and_swatch_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/theme_and_swatch_test.dart
+      - name: flutter test / ui/theme_palette_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/theme_palette_test.dart
+      - name: flutter test / ui/translated_names_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/translated_names_test.dart
+      - name: flutter test / ui/translation_coverage_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/translation_coverage_test.dart
+      - name: flutter test / ui/unit_labels_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/unit_labels_test.dart
+      - name: flutter test / ui/verdict_badge_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/verdict_badge_test.dart
+      - name: flutter test / ui/voice_facts_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/voice_facts_test.dart
+      - name: flutter test / ui/voice_register_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/voice_register_test.dart
+      - name: flutter test / ui/voice_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/voice_test.dart
+      - name: flutter test / ui/world_art_fidelity_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/ui/world_art_fidelity_test.dart
+      - name: flutter test / p1_acceptance_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/p1_acceptance_test.dart
+      - name: flutter test / p3_acceptance_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/p3_acceptance_test.dart
+      - name: flutter test / widget_test.dart
+        if: ${{ !cancelled() && hashFiles('pubspec.yaml') != '' }}
+        run: flutter test test/widget_test.dart
+
+      # **And a guard, so that a directory added later is not quietly unchecked.** Splitting a suite into steps trades one
+      # problem for another: the steps have to keep covering everything. This says so out loud.
+      - name: every test file is run by one of the steps above
+        if: ${{ hashFiles('pubspec.yaml') != '' }}
+        run: |
+          missed=0
+          for file in $(find test -name '*_test.dart' | sort); do
+            case "$file" in
+              test/adapters/*|test/data/*|test/domain/*|test/tooling/*|test/ui/*|test/*_test.dart) ;;
+              *) echo "没有步骤跑它：$file"; missed=1 ;;
+            esac
+          done
+          if [ "$missed" = "1" ]; then
+            echo "above is every test file that no step runs -- add a step for it."
+            exit 1
+          fi
+          echo "全部 %s 个测试文件都有步骤在跑" "$(find test -name '*_test.dart' | wc -l)"
+
+      # And it says so, rather than passing quietly on a branch where it did nothing at all.
+      - name: nothing to verify here
+        if: ${{ hashFiles('pubspec.yaml') == '' }}
+        run: echo "this branch carries the platform, not the product -- the HMA job above is the one that matters"

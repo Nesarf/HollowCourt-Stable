@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The motif repeated along a rule, brightening toward the middle. Same shape, same notch fraction. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="296" height="48" viewBox="0 0 296 48">
+  <rect x="0" y="0" width="296" height="48" fill="#0A0E14"/>
+  <polygon points="8.00,32.00 8.00,16.00 16.00,22.72 24.00,16.00 24.00,32.00" fill="#3FE0D0" fill-opacity="0.24"/>
+  <polygon points="32.00,32.00 32.00,16.00 40.00,22.72 48.00,16.00 48.00,32.00" fill="#3FE0D0" fill-opacity="0.35"/>
+  <polygon points="56.00,32.00 56.00,16.00 64.00,22.72 72.00,16.00 72.00,32.00" fill="#3FE0D0" fill-opacity="0.46"/>
+  <polygon points="80.00,32.00 80.00,16.00 88.00,22.72 96.00,16.00 96.00,32.00" fill="#3FE0D0" fill-opacity="0.57"/>
+  <polygon points="104.00,32.00 104.00,16.00 112.00,22.72 120.00,16.00 120.00,32.00" fill="#3FE0D0" fill-opacity="0.68"/>
+  <polygon points="128.00,32.00 128.00,16.00 136.00,22.72 144.00,16.00 144.00,32.00" fill="#3FE0D0" fill-opacity="0.79"/>
+  <polygon points="152.00,32.00 152.00,16.00 160.00,22.72 168.00,16.00 168.00,32.00" fill="#3FE0D0" fill-opacity="0.90"/>
+  <polygon points="176.00,32.00 176.00,16.00 184.00,22.72 192.00,16.00 192.00,32.00" fill="#3FE0D0" fill-opacity="0.79"/>
+  <polygon points="200.00,32.00 200.00,16.00 208.00,22.72 216.00,16.00 216.00,32.00" fill="#3FE0D0" fill-opacity="0.68"/>
+  <polygon points="224.00,32.00 224.00,16.00 232.00,22.72 240.00,16.00 240.00,32.00" fill="#3FE0D0" fill-opacity="0.57"/>
+  <polygon points="248.00,32.00 248.00,16.00 256.00,22.72 264.00,16.00 264.00,32.00" fill="#3FE0D0" fill-opacity="0.46"/>
+  <polygon points="272.00,32.00 272.00,16.00 280.00,22.72 288.00,16.00 288.00,32.00" fill="#3FE0D0" fill-opacity="0.35"/>
+</svg>

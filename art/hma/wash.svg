@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tileable 256x256. Alpha 0.05: the study measured a reference ceiling of 0.36 for a faint overlay, and this
+     sits far below it, because a background behind white text has less room than one behind an illustration. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <!-- **It draws its own ground.** Without one the page background shows through, and the page is not
+       part of the asset. Every file here does this, which is why the renderer no longer needs a flag. -->
+  <rect x="0" y="0" width="256" height="256" fill="#0A0E14"/>
+  <polygon points="0.00,20.00 0.00,0.00 10.00,8.40 20.00,0.00 20.00,20.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="64.00,20.00 64.00,0.00 74.00,8.40 84.00,0.00 84.00,20.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="128.00,20.00 128.00,0.00 138.00,8.40 148.00,0.00 148.00,20.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="192.00,20.00 192.00,0.00 202.00,8.40 212.00,0.00 212.00,20.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="32.00,84.00 32.00,64.00 42.00,72.40 52.00,64.00 52.00,84.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="96.00,84.00 96.00,64.00 106.00,72.40 116.00,64.00 116.00,84.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="160.00,84.00 160.00,64.00 170.00,72.40 180.00,64.00 180.00,84.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="224.00,84.00 224.00,64.00 234.00,72.40 244.00,64.00 244.00,84.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="0.00,148.00 0.00,128.00 10.00,136.40 20.00,128.00 20.00,148.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="64.00,148.00 64.00,128.00 74.00,136.40 84.00,128.00 84.00,148.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="128.00,148.00 128.00,128.00 138.00,136.40 148.00,128.00 148.00,148.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="192.00,148.00 192.00,128.00 202.00,136.40 212.00,128.00 212.00,148.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="32.00,212.00 32.00,192.00 42.00,200.40 52.00,192.00 52.00,212.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="96.00,212.00 96.00,192.00 106.00,200.40 116.00,192.00 116.00,212.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="160.00,212.00 160.00,192.00 170.00,200.40 180.00,192.00 180.00,212.00" fill="#3FE0D0" fill-opacity="0.05"/>
+  <polygon points="224.00,212.00 224.00,192.00 234.00,200.40 244.00,192.00 244.00,212.00" fill="#3FE0D0" fill-opacity="0.05"/>
+</svg>

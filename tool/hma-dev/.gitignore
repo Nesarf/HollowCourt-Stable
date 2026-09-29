@@ -1,0 +1,15 @@
+# Unity writes these, and they are large. The rule is the same one the repository already follows for Flutter's
+# build directory: generated state is not material.
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+*.csproj
+*.sln
+*.user
+*.pidb
+*.booproj
+.vs/

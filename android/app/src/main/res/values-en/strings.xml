@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The launcher label, which is the name in the platform's own language. Android picks the file by the
+         device's locale: 虚ろな庭 on a Japanese phone, Hollow Court on a Chinese one, Hollow Court in English. -->
+    <string name="app_name">Hollow Court</string>
+</resources>

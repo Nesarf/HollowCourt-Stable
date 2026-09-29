@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A nine-slice panel. The middle 32x32 is the only part Unity stretches; the 16px border holds the corners. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect x="0" y="0" width="64" height="64" fill="#0A0E14" fill-opacity="0.92"/>
+  <rect x="1" y="1" width="62" height="62" fill="none" stroke="#3FE0D0" stroke-opacity="0.35" stroke-width="1"/>
+</svg>
