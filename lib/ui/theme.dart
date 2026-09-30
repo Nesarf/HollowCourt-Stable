@@ -3087,7 +3087,7 @@ abstract final class Copy {
   /// word is the whole of what changed when the owner replaced that address on 2026-09-30.
   ///
   /// **Why the word matters and not only the spirit.** PCL covers the two pieces in `art/`, and its
-  /// 第3条第2項第1号 forbids collecting compensation of any kind under any name, *even where the use is not for
+  /// Article 3.2(1) forbids collecting compensation of any kind under any name, *even where the use is not for
   /// profit* -- 「非営利目的であっても、あらゆる名目の対価を徴収しまたは報酬を受けてはならない」. A row labelled
   /// 支持 beside a work containing that artwork is a request for exactly that; 作者 is not, because nothing
   /// flows from the work to its author.
@@ -3204,7 +3204,7 @@ abstract final class Copy {
   /// word.**
   ///
   /// `art/miku-wide.svg` and `art/miku-tall.svg` depict 初音ミク, a character of Crypton Future Media, INC., used
-  /// under the Piapro Character Licence. 第3条第3項 asks for the credit below to be shown alongside the work --
+  /// under the Piapro Character Licence. Article 3.3 asks for the credit below to be shown alongside the work --
   /// 「表示するよう努めるものとします」, an obligation to endeavour rather than a condition, honoured anyway -- and
   /// the guideline gives the sentence verbatim:
   ///
@@ -3213,19 +3213,28 @@ abstract final class Copy {
   ///
   /// **So the Japanese is quoted and not translated into this project's voice, and the other languages paraphrase
   /// it.** A credit is not copy: it exists to name a rights holder, and rewording it to sound like the rest of the
-  /// interface would weaken the one thing it does. The character's name stays 初音ミク in every language for the
-  /// same reason -- it is the name the rights holder uses.
+  /// interface would weaken the one thing it does. The character's name is 初音ミク in every language for the same
+  /// reason -- it is the name the rights holder uses.
   ///
-  /// **The link is the summary page rather than the 正文**, because the summary is what a reader should land on;
+  /// **The Latin reading is added beside it in the two lines that are not the licensed wording**, on the owner's
+  /// instruction of 2026-09-30: *「可以用 Hatsune Miku 进行注释」*. A reader who cannot read katakana was
+  /// otherwise being given no way to know who the credit is about, and a credit nobody can resolve is decoration
+  /// rather than a credit. **The Japanese line does not gain it**, because that line is the sentence the licence
+  /// provides verbatim (Article 3.3) and the character's name in it is 「初音ミク」 and nothing else. The Latin
+  /// reading is not a translation of the name; it is how the same name is written in Latin letters, which is why
+  /// it is a parenthetical rather than a replacement.
+  ///
+  /// **The link is the summary page rather than the licence itself**, because the summary is what a reader should land on;
   /// `docs/licensing.md` is where the clauses themselves are quoted for anyone checking.
   static const aboutCharacterCredit = '''
 この作品はピアプロ・キャラクター・ライセンスに基づいて
 クリプトン・フューチャー・メディア株式会社のキャラクター「初音ミク」を描いたものです。
 
-This work depicts 初音ミク, a character of Crypton Future Media, INC., under the Piapro Character Licence.
+This work depicts 初音ミク (Hatsune Miku), a character of Crypton Future Media, INC., under the Piapro
+Character Licence.
 https://piapro.jp/license/pcl/summary
 
-本作品描绘的是 Crypton Future Media, INC. 的角色「初音ミク」，依ピアプロ・キャラクター・ライセンス使用。''';
+本作品描绘的是 Crypton Future Media, INC. 的角色「初音ミク」（Hatsune Miku），依ピアプロ・キャラクター・ライセンス使用。''';
 
 
   // ---------------------------------------------------------------- display

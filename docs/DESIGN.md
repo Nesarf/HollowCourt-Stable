@@ -2232,10 +2232,32 @@ Stated plainly because it is a priority rather than a technical fact: **the gami
 | | Stable release | Opt-in second download |
 | --- | --- | --- |
 | The character | her voice in the copy, her name in the typography, the palette | the rig, the expressions, the animation |
-| Feedback | layout, colour, text, static art | springs, particles, sound design |
+| Feedback | layout, colour, text, static art, **motion that carries a change** (12.8, point 2) | springs, particles, sound design |
 | 3D | none | the shaker, the shelf simulation |
 | Locales | the shipped set, one bundle each (section 12.4) | further locales if ever needed |
 | Target size | **tens of megabytes** | hundreds of megabytes, by choice |
+
+**The rows are not the same size of decision, and the owner's own correction is why the distinction is here.**
+2026-09-30: *「由于成本控制需要确实不适合再 stable 版做过于华丽的动效和 3d 模型交互，但是基础的美学维持还是需要的」*,
+and *「简单的动效应该也不会导致 stable 版的包体变得很大」*. Both are true, and measuring one 3939 APK says by how much:
+
+| What is in the package | Compressed | Share |
+| --- | --- | --- |
+| `lib/` — the native libraries | **17.77 MB** | **94.1%** |
+| `assets/art/` — the fourth world's picture | 0.56 MB | 3.0% |
+| Dart AOT code — **every line of interface logic, including any animation** | 0.10 MB | 0.6% |
+| `assets/` (the library and its translations) | 0.05 MB | 0.2% |
+| **Total** | **18.89 MB** | |
+
+**So "motion" and "3D" are two different budgets wearing one word.** An animation is code, and code is a
+rounding error next to the engine it runs on — which is why the theme fade in 12.8 point 2 costs nothing worth
+measuring, and why the rule there is about taste rather than about size. A 3D model brings asset data *and*
+usually more native library, and 94.1% is where that lands. **The constraint the owner is protecting is real; it
+is simply not the thing that forbids a 300 ms fade.** What forbade that was the older, stricter rule, since
+reworded.
+
+**And the picture is worth its 3.0%.** It is the only asset in the package that came from outside, it belongs to
+one world out of four, and it is a quarter of the *art* budget rather than a quarter of the application.
 
 **The aesthetic core stays in the stable release**, and that is why the table's first row is first. Section 20.3's soft register, the palette, the voice and the restraint are not garnish on a boring app -- they are what makes it this app rather than a spreadsheet, and none of them costs an asset pack.
 

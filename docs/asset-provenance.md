@@ -32,7 +32,7 @@ which is the honest number for the question that census asks.
 
 **Whether a depicted character may ship is a different question and this document does not model it.** The two
 pieces are cast in a constructivist register -- the owner's own words, 「跑的时候用的构成主义风格」 -- rather than
-drawn from a character sheet, and the world they belong to is named 永遠の歌姫, a title rather than a name, which
+drawn from a character sheet, and the world they belong to is named 永遠の歌姫 (Eternal Diva), a title rather than a name, which
 is the same restraint the rest of this project keeps. **None of that is a licence analysis**, and the distinction
 matters because a provenance system that quietly absorbed it would turn a legal question into a green number. It
 is the owner's to decide, and it is written here so that deciding it is a decision rather than an oversight.

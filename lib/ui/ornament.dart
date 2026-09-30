@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/widgets.dart';
@@ -309,5 +310,57 @@ class OrnamentBackdrop extends ConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+/// Decodes a world's picture before it is asked for, so that choosing the world does not show a delay.
+///
+/// **This is the fix for the only real cost of adding artwork, and it is deliberately not an animation.**
+/// Section 12.8 of the design record says motion is not in this edition at all -- not "not yet", none -- and
+/// gives the argument: a pressed state is *another drawing*, which needs no transition to be right. A theme is
+/// the same shape of thing. Four worlds are four palettes, four materials, four ornaments and one picture, and
+/// cross-fading between them would be describing them as one drawing with different numbers.
+///
+/// **What is wrong without this is not the abruptness.** It is that a 1920x960 PNG has to be decoded, and a
+/// decode that finishes after the frame it was needed in looks like the picture arriving late rather than like
+/// the world changing. On this handset the gap would be short and visible; on a slower one it would be a wait
+/// with a changed background colour and nothing else. **So the answer to "should the switch be animated?" is
+/// the answer this repository already gives -- no -- and the answer to "is anything wrong with the switch?" is
+/// yes, and it is a decode that happens too late.**
+///
+/// **Both shapes are warmed, not the one the window wants.** Which is drawn depends on the window's
+/// proportions, so a rotated device or a resized desktop window would otherwise pay for the second decode at
+/// exactly the moment somebody is looking. Both together are under a megabyte of bitmap.
+class WorldArtworkWarmer extends StatefulWidget {
+  const WorldArtworkWarmer({super.key, required this.child});
+
+  /// What this widget exists to keep ready. Passed through rather than wrapped in anything.
+  final Widget child;
+
+  @override
+  State<WorldArtworkWarmer> createState() => _WorldArtworkWarmerState();
+}
+
+class _WorldArtworkWarmerState extends State<WorldArtworkWarmer> {
+  /// What has already been handed to the image cache, so a rebuild does not re-request a decode that has
+  /// happened -- `precacheImage` on a cached image is nearly free, and "nearly" every frame is not.
+  final Set<String> _warmed = <String>{};
+
+  @override
+  Widget build(BuildContext context) {
+    // **Warmed during build rather than on a lifecycle callback**, because it has to happen on the frame the
+    // world changed and a rebuild is the only event that is guaranteed to coincide with that. Reading the world
+    // from `HollowPalette` rather than from the provider is what lets this be a plain widget: it sits inside
+    // `MaterialApp` below the root that applies the palette, so the world on the context is the world in force.
+    final artwork = HollowPalette.current.artwork;
+    if (artwork != null) {
+      for (final asset in <String>[artwork.tall, artwork.wide]) {
+        if (!_warmed.add(asset)) continue;
+        // Not awaited: this is a head start, and the frame that needs the picture waits for the decode anyway.
+        // Awaiting would make this frame wait instead, which is the cost it exists to remove.
+        unawaited(precacheImage(AssetImage(asset), context));
+      }
+    }
+    return widget.child;
   }
 }

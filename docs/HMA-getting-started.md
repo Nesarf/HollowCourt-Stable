@@ -1,41 +1,46 @@
-# HMA —— 从 clone 到跑通
+# HMA — from a clone to a working run
 
-> **这一页的每一步都在这台机器上实跑过，输出是真的** ✓✓（2026-09-27 ✓）。
-> **为什么这件事本身就是质量手段** ✓：**今天所有真正被发现的错误，都是因为有人真的去跑了一遍** ✗✓✓ ——
-> **看图才发现母题画成了房子** ✓、**跑了构建才知道它启动得起来** ✓、**量了像素才发现五张渲染是空白** ✓、
-> **读了推送输出才发现推错了分支** ✓。**所以「别人能照着跑通」不是礼貌，是手段** ✓✓。
+> **Every step on this page was run on this machine, and the output shown is real** (2026-09-27).
+> **Why that is itself a quality method**: every fault actually found today was found by somebody running the
+> thing once — looking at a picture is what showed the motif had become a house, running a build is what showed
+> it starts, measuring pixels is what showed five renders were blank, and reading the push output is what showed
+> the wrong branch had been pushed. **So "somebody else can follow this and it works" is not politeness. It is
+> the method.**
 
-## 你需要什么
+## What you need
 
-| | 必需吗 | 说明 |
+| | Required? | What for |
 | --- | --- | --- |
-| **Python 3.11＋** ✓✓ | **必需** ✓ | 六件工具全是标准库写的 ✓ —— **唯一的例外见下一行** ✓ |
-| **Pillow** ✓ | **只有渲染美术需要** ✓ | `hma_art_render.py` 用它数像素、裁图 ✓（**`hma_art_check.py` 不需要 ✓**） |
-| **Unity 2022.3** ✗ | **只有构建开发前端需要** ✓✓ | **六件工具一条都不需要它** ✓ —— 这就是为什么排障那一侧能保持轻 ✓ |
-| **一个 API key** ✗ | **只有 `ask` 与 `agent` 需要** ✓ | **没有也能跑通前面所有步骤** ✓✓ |
+| **Python 3.11+** | **required** | all six tools are standard library — the one exception is the row below |
+| **Pillow** | **only for rendering the artwork** | `hma_art_render.py` uses it to count pixels and crop (`hma_art_check.py` does not need it) |
+| **Unity 2022.3** | **only for building the development front end** | **none of the six tools needs it**, which is why the diagnostic side stays light |
+| **An API key** | **only for `ask` and `agent`** | every step above them runs without one |
 
-**实测环境** ✓：`Python 3.14.7` ✓ ＋ `Pillow 12.3.0` ✓。
+Measured on: `Python 3.14.7` with `Pillow 12.3.0`.
 
-## 第 0 步：拿到它
+## Step 0: get it
 
     git clone -b HMA https://github.com/Nesarf/HollowCourt-Stable.git hma
     cd hma
 
-**要 `-b HMA`** ✓ —— **`main` 是空庭本体** ✓（**产品** ✓），**`HMA` 才是这个平台** ✓✓。
-**两边共享同一段历史 ✓，但文件不同** ✓：**产品本体在 `HMA` 上被排掉了** ✓（**`lib` ✓ `test` ✓ `android` ✓ `windows` ✓ `linux` ✓ `assets` ✓ `audio` ✓ `packaging` ✓**）。
+**The `-b HMA` matters.** `main` is the product — the cellar itself — and `HMA` is this platform. The two share
+one history but not one file set: the product is excluded on `HMA` (`lib`, `test`, `android`, `windows`, `linux`,
+`assets`, `audio`, `packaging`).
 
-## 第 1 步：先看它自己什么状态
+## Step 1: ask it what state it is in
 
     python tool/hma.py status
 
-**这是最该先跑的一条** ✓ —— 它会把这六条命令 ✓、它自己的测试结论 ✓、美术那三条规矩 ✓、渲染了几张 ✓
-**以及待办还剩几条**，一次列出来 ✓✓。**而它也会明说自己**没跑**什么、为什么** ✓（**产品的 Flutter 套件不在其中 ✓ —— 那要几分钟 ✓，不属于这条命令要回答的问题 ✓**）。
+**Run this one first.** It lists the six commands, its own test result, the three artwork rules, how many pieces
+were rendered, and how many items remain outstanding — in one answer. **And it says plainly what it has *not*
+run and why**: the product's Flutter suite is not among them, because it takes minutes and is not the question
+this command exists to answer.
 
-## 第 2 步：看看这台机器上有什么
+## Step 2: see what is on this machine
 
     python tool/hma.py doctor
 
-**期望**（**这是真跑出来的** ✓）：
+Expected — and this output is from a real run:
 
 ```
 你这家伙，果然没有人家不行呢~
@@ -49,13 +54,18 @@
   ✓ 事件日志（cellar.ndjson）    …
 ```
 
-**这台机器上没有空庭的话，它会如实说「没有」** ✓ —— **那是对的，不是坏了** ✓✓（**它报的是它看见的 ✓**）。
+**If the cellar is not installed on this machine, it says so** — and that is correct rather than broken. It
+reports what it can see.
 
-## 第 3 步：跑它自己的测试
+*(The block above is a transcript rather than prose, so it is left exactly as the program prints it: those lines
+are the tool's own wording, in the register `tool/hma_models.py` gives it, and rewriting them here would make the
+page disagree with the terminal.)*
+
+## Step 3: run its own tests
 
     python tool/hma_tests.py
 
-**期望** ✓：
+Expected:
 
 ```
 Ran 29 tests in 0.541s
@@ -63,14 +73,15 @@ Ran 29 tests in 0.541s
 OK
 ```
 
-**29 条，只用标准库** ✓✓ —— **而其中几条测的是「危险的那部分」** ✓：**`hma fix` 不加 `--apply` 一个字都不写** ✓、
-**agent 拒绝离开仓库** ✓（**含 `docs/../..`** ✓）、**工具表恰好是那四件只读** ✓✓。
+**29 tests, standard library only** — and several of them test the dangerous part: that `hma fix` writes nothing
+at all without `--apply`, that the agent refuses to leave the repository (including through `docs/../..`), and
+that the tool table is exactly those four read-only entries.
 
-## 第 4 步：看模型那几家配好了
+## Step 4: see which models are configured
 
     python tool/hma.py models
 
-**期望**（**没有配过任何东西也一样能跑** ✓）：
+Expected — this runs whether or not anything has ever been configured:
 
 ```
   提供方        状态                        模型
@@ -80,37 +91,38 @@ OK
   local        留的缝（未填）                    —
 ```
 
-**key 从来不打印** ✓✓ —— **它只说「找到了」** ✓。**key 有三个来处，都不在这个仓库里** ✓：
-**环境变量** ✓ ／ **一个共享表** ✓ ／ **各家自己的文件** ✓✓。
+**A key is never printed**; it reports only that one was found. There are three places a key may come from, and
+none of them is this repository: an environment variable, a shared file, or each provider's own file.
 
-**这个共享表在哪** ✗✓：**默认是 `E:\DaShaoHuo\auth\hma-keys.json`** ✓ —— **那是这台机器的路径** ✗✓✓，
-**别人要换就设 `HMA_AUTH_DIR`** ✓✓：
+**The shared file defaults to `E:\DaShaoHuo\auth\hma-keys.json`**, which is *this* machine's path. Somewhere else,
+point `HMA_AUTH_DIR` at your own:
 
-    export HMA_AUTH_DIR=~/.config/hma      # 或者任何不在仓库里的地方
+    export HMA_AUTH_DIR=~/.config/hma      # or anywhere else outside the repository
 
-**而 `local` 显示「留的缝（未填）」是正确的状态** ✓✓ —— **不是缺陷** ✓：
-**默认那一级是 API key** ✓（**零显存 ✓ 谁都能用** ✓），**本地模型是留给能自己跑大模型的人的缝** ✓✓。
+**And `local` reading 留的缝（未填） is a correct state rather than a defect.** The default tier is an API key —
+no VRAM, usable by anybody — and the local model is the seam left open for somebody who can run one themselves.
 
-## 第 5 步：美术那三条规矩
+## Step 5: the three artwork rules
 
     python tool/hma_art_check.py
 
-**期望** ✓：
+Expected:
 
 ```
   检查了 7 个 SVG，问题 0 个
 ```
 
-**它验三件事** ✓✓：**文件良构** ✓、**凡出现多边形必为五点** ✓（**母题是一个形状的参数化 ✓**）、
-**只用调色板内的颜色** ✓（**一个强调色压在一个底色上** ✓）。
+It checks three things: that each file is well-formed, that every polygon has five points (the motif is one
+parameterised shape), and that only palette colours are used (one accent on one ground).
 
-**它已经逮到过两件真事** ✗✓：**一个非法的 XML 注释** ✓，**以及它自己那条规矩下得太宽** ✓（**面板按设计没有多边形 ✓**）。
+**It has already caught two real faults**: an illegal XML comment, and one of its own rules being drawn too
+widely — a panel has no polygon by design.
 
-## 第 6 步：把美术渲染出来
+## Step 6: render the artwork
 
     python tool/hma_art_render.py
 
-**期望** ✓：
+Expected:
 
 ```
   ✓ button-disable.png     136x56  806 字节，56 行有内容
@@ -118,37 +130,41 @@ OK
   渲了 7 个，失败 0 个
 ```
 
-**它渲完会自己验产物** ✓✓ —— **而这一条是血的教训** ✗✓：**它原先报「失败 0 个」而其中五张是空白** ✓，
-**因为它数的是「alpha > 0」，而白底页面处处不透明** ✗✓✓。
-**现在它问的是「有没有既非透明、又非白色的像素」** ✓ —— **因为白色像素不是画** ✓。
+**It verifies its own output when it finishes, and that was learned the hard way.** It used to report "0 failed"
+while five of the seven were blank, because it was counting pixels with `alpha > 0` and a white page is opaque
+everywhere. **It now asks whether there is any pixel that is neither transparent nor white** — because a white
+pixel is not a drawing.
 
-**这一步需要 Pillow** ✓。**渲染产物落进 `tool/hma-dev/Assets/Resources/Art/`** ✓（**Unity 只看得见 `Assets/` 下的东西** ✓）。
+This step needs Pillow. Renders land in `tool/hma-dev/Assets/Resources/Art/`, because Unity only sees files under
+`Assets/`.
 
-## 第 7 步（可选）：构建开发前端
+## Step 7 (optional): build the development front end
 
     python tool/hma_dev_build.py
 
-**需要 Unity 2022.3.22f1c1** ✓ —— **脚本里的路径是这台机器的** ✓（`E:\Unity\Hub\Editor\…` ✓），**别处要改一行** ✓。
-**实测产出 67 MB，落在 `E:\DaShaoHuo\downloads\hma-dev\`** ✓✓ —— **产物去 downloads 是这个仓库的磁盘纪律** ✓。
+This needs Unity 2022.3.22f1c1. **The path in the script is this machine's** (`E:\Unity\Hub\Editor\…`), so
+somewhere else it is one line to change. Measured output is 67 MB, landing in `E:\DaShaoHuo\downloads\hma-dev\`
+— builds going to `downloads` is this repository's disk rule.
 
-**而且它是启动试跑过的** ✓✓ —— **`Player.log` 里能看到程序集加载与输入初始化** ✓：
-**「编得过、产出文件」与「能打开」不是一回事** ✓ —— **这一点今天也验过** ✓。
+**And it has been trial-run rather than merely compiled**: `Player.log` shows the assemblies loading and input
+initialising. **"It compiles and produced a file" and "it opens" are not the same claim**, which was confirmed
+here too.
 
-## 想改东西的时候
+## When you want to change something
 
-| 想做什么 | 从哪开始 |
+| To do this | Start here |
 | --- | --- |
-| **加一条命令** ✗ | `tool/hma.py` 的分发表 ✓（**注意：它现在是硬编码的 ✓，见 `docs/TODO.md` 第 19 条** ✓） |
-| **改 agent 能做的事** ✓ | `tool/hma_agent.py` 的 `TOOLS` 与 `HANDLERS` ✓ —— **而且必须同时改 `tool/hma_tests.py` 里那条断言** ✓✓ |
-| **改人格或提示词** ✓ | `tool/hma_models.py` 的 `CONTEXT` 与 `PERSONAS` ✓ |
-| **改美术** ✓ | `art/hma/*.svg` ✓（**源** ✓）→ **`hma_art_render.py`** ✓ → **Unity 工程** ✓ |
-| **改美术的规矩** ✓ | `tool/hma_art_check.py` 的三条断言 ✓✓ |
-| **看还没做什么** ✓ | `docs/TODO.md` ✓ 与 `docs/HMA.md` §四 ✓ |
+| Add a command | **a module in `tool/hma_commands/` that declares `COMMAND`** — it is found rather than registered, so nothing has to be edited to add one. The seven built-ins stay in `tool/hma.py`'s own table, because they are this platform's furniture rather than extensions to it. A module that will not import is reported and skipped, not fatal |
+| Change what the agent may do | `TOOLS` and `HANDLERS` in `tool/hma_agent.py`, **and the assertion in `tool/hma_tests.py` at the same time** |
+| Change a persona or a prompt | `CONTEXT` and `PERSONAS` in `tool/hma_models.py` |
+| Change the artwork | `art/hma/*.svg` (the source) → `hma_art_render.py` → the Unity project |
+| Change the artwork rules | the three assertions in `tool/hma_art_check.py` |
+| See what is not done | `docs/TODO.md` and `docs/HMA.md` §四 |
 
-## 一条给改代码的人的规矩 ✓✓
+## One rule for anybody changing code
 
-**改了 `tool/` 下的任何东西，就跑 `python tool/hma_tests.py`** ✓ ——
-**它 0.5 秒跑完 29 条** ✓，**而它今天第一次跑就逮到一个真 bug** ✗✓：
-**`load_keys` 对每个值做 `str(v)` ✓，摧毁了对象形式的配置 ✓，还会把一个字典的 repr 当成 API key 发出去** ✓✓。
+**If you changed anything under `tool/`, run `python tool/hma_tests.py`.** It takes half a second for its 29
+tests, and on its first run it caught a real bug: `load_keys` applied `str(v)` to every value, which destroyed
+object-shaped configuration and would have sent a dictionary's `repr` as an API key.
 
-> **一条只会通过的检查，价值不如下先失败过的那条** ✓✓。
+> **A check that can only pass is worth less than one that has failed first.**

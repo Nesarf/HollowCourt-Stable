@@ -7,6 +7,7 @@ import 'library.dart';
 import 'recipes_page.dart';
 import 'display_providers.dart';
 import 'ornament.dart';
+import 'theme_crossfade.dart';
 import 'settings_page.dart';
 import 'stock_page.dart';
 import 'l10n/locale_providers.dart';
@@ -76,7 +77,13 @@ class HollowCourtApp extends ConsumerWidget {
           data: MediaQuery.of(context).copyWith(
             textScaler: ScaledTextScaler(platform, display.textSize.scale),
           ),
-          child: child!,
+          // **Here rather than in `home`, for the reason the text scale is here**: this is inside `MaterialApp`,
+          // so the world in force is on the context and `precacheImage` has the `MediaQuery` it wants. It draws
+          // nothing -- it exists so that a world with a picture does not show its colour change before the
+          // picture arrives. See `WorldArtworkWarmer`.
+          // **The fade wraps the warmer, so the veil covers the picture too.** The other order would fade the
+          // interface and leave the artwork changing underneath it, which is the seam this exists to hide.
+          child: ThemeCrossfade(child: WorldArtworkWarmer(child: child!)),
         );
       },
       home: const _Shell(),
