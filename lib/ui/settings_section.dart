@@ -6,6 +6,7 @@ import '../domain/units/measure_set.dart';
 import '../domain/units/unit.dart';
 import '../domain/units/unit_system.dart';
 import 'choice_set_editor.dart';
+import 'l10n/locale_catalogue.dart';
 import 'l10n/locale_choices.dart';
 import 'l10n/voice.dart';
 import 'l10n/copy_resolution.dart';
@@ -75,10 +76,25 @@ class SettingsSection extends ConsumerWidget {
         const SizedBox(height: 6),
         _LocalePicker(
           key: const ValueKey('secondary-locale-picker'),
-          value: localeChoices().firstWhere(
-            (choice) => choice.tag == settings.secondaryTag && choice.voice == settings.voice,
-            orElse: () => LocaleChoice(settings.secondaryTag, settings.secondaryTag, Voice.plain),
-          ),
+          // **Matched on the tag alone, and this is a fix rather than a simplification.** It used to
+          // require `choice.voice == settings.voice` as well, and `voice` is the register the PRIMARY line
+          // is written in -- so with 伊丽莎白 as the primary and English as the second language nothing
+          // could match: the language entries all carry `Voice.plain`, and the voice entries carry their
+          // own. The lookup fell through to the fallback and drew `en` as a language this build does not
+          // know, for a tag this build ships. The register has nothing to do with the second line, so it is
+          // not consulted.
+          //
+          // It reads the shipped LANGUAGES rather than the joined list for the same reason: the joined one
+          // contains the voices too, whose language belongs to the register.
+          value: () {
+            final known = byTag(settings.secondaryTag);
+            if (known != null) {
+              return LocaleChoice(known.tag, known.nativeName, Voice.plain);
+            }
+            // A tag an older build shipped. Handed over unchanged so the screen stays up and shows what is
+            // actually stored, which is what `settingsUnknown` is for.
+            return LocaleChoice(settings.secondaryTag, settings.secondaryTag, Voice.plain);
+          }(),
           onChanged: (choice) => notifier.setSecondary(choice.tag),
         ),
         const SizedBox(height: 6),

@@ -78,6 +78,12 @@ fi
 echo "== package config for this platform =="
 flutter pub get
 
+# **And then ask whether that config is OURS.** `pub get` writes absolute paths into `.dart_tool/`, and the
+# Windows side of this project shares that directory, so the one that ran last owns it. Building with the other
+# side's config fails as hundreds of undefined `Offset`, `Paint` and `Rect` -- a path problem that reads as a
+# broken source tree. `tool/check_pub_config.py` says which it is, in one sentence and with the fix.
+python3 "$REPO/tool/check_pub_config.py"
+
 # **The bundle's copy of the library is refreshed here, not by hand.** `data/` is what the tests check and
 # `assets/` is what the app loads; keeping them in step was manual until 2026-09-23, when a Windows build
 # shipped 88 drinks while the library held 103. The guard for the same thing lives in
@@ -89,8 +95,10 @@ echo
 echo "== build =="
 # The About screen reads these, and NOTHING passed them until 2026-09-23 -- so the screen showed a
 # hardcoded default on every platform while its own comment claimed the scripts supplied the values.
-VERSION="$(grep -m1 '^version:' pubspec.yaml | tr -d '' | sed 's/version: *//; s/+.*//')"
-BUILD_NUMBER="$(grep -m1 '^version:' pubspec.yaml | tr -d '' | sed 's/.*+//')"
+VERSION="$(grep -m1 '^version:' pubspec.yaml | tr -d '
+' | sed 's/version: *//; s/+.*//')"
+BUILD_NUMBER="$(grep -m1 '^version:' pubspec.yaml | tr -d '
+' | sed 's/.*+//')"
 # **One line, and it used to be two.** The first version passed the second define on a continuation whose
 # backslash was lost on the way in, so that line became a command of its own:
 #

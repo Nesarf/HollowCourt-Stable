@@ -62,6 +62,23 @@ class HollowCourtApp extends ConsumerWidget {
           : Copy.appName.textFor(locale.primaryTag),
       debugShowCheckedModeBanner: false,
       theme: HollowTheme.build(),
+      // **The text size is applied here, in `builder`, and the placement is the point.** Wrapping `home`
+      // would cover the pages and leave everything drawn in an overlay -- dialogs, dropdown menus,
+      // tooltips -- at the platform's size, so a reader who asked for the larger step would get a page at
+      // one size and a menu at another. `builder` wraps the navigator, so one scale reaches all of it.
+      //
+      // The platform's own scaler is read OUTSIDE the builder, from the context above `MaterialApp`, and
+      // multiplied inside: `MaterialApp` installs a `MediaQuery` of its own, so reading it inside would be
+      // reading back what this line had just written.
+      builder: (context, child) {
+        final platform = MediaQuery.of(context).textScaler;
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: ScaledTextScaler(platform, display.textSize.scale),
+          ),
+          child: child!,
+        );
+      },
       home: const _Shell(),
     );
   }

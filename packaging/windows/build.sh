@@ -40,6 +40,12 @@ bash "$REPO/packaging/sync_assets.sh"
 # code that is fine.
 PATH="$FLUTTER_BIN:$PATH" flutter pub get >/dev/null
 
+# **And then ask whether that config is OURS.** `pub get` writes absolute paths into `.dart_tool/`, and the
+# Linux side of this project shares that directory, so the one that ran last owns it. Building with the other
+# side's config fails as hundreds of undefined `Offset`, `Paint` and `Rect` -- a path problem that reads as a
+# broken source tree. `tool/check_pub_config.py` says which it is, in one sentence and with the fix.
+python3 "$REPO/tool/check_pub_config.py"
+
 VERSION="$(grep -m1 '^version:' pubspec.yaml | tr -d '
 ' | sed 's/version: *//; s/+.*//')"
 BUILD_NUMBER="$(grep -m1 '^version:' pubspec.yaml | tr -d '

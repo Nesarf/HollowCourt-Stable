@@ -7,12 +7,30 @@ import 'l10n/dual_copy_text.dart';
 import 'library.dart';
 import 'theme.dart';
 
+/// **Whether the shelf is drawn, and one constant is the whole of it.**
+///
+/// The owner's instruction on 2026-09-30 was 吧台先卸掉 -- take the bar off first -- and the reading
+/// confirmed with them was: hide it from the interface, keep the code, and correct the record. So this
+/// is `false`, `CellarPage` consults it at the one place it used to draw `BarShelfSection`, and nothing
+/// else about the feature changed. **Setting it back to `true` is the whole of bringing it back**, which
+/// is the property that makes hiding different from deleting.
+///
+/// It is a constant rather than a setting on purpose. A setting would put the choice in the reader's
+/// hands for something that is not a preference but a decision about what this build ships, and it would
+/// need a line of copy, a stored value and a migration -- a screen's worth of machinery for a feature
+/// being paused.
+const bool shelfPlacementIsShown = false;
+
 /// One shelf of section 12.2: the bottles, standing where they were put.
 ///
 /// **A section of the Cellar page rather than a tab of its own**, by the owner's decision of 2026-09-27:
 /// 把「吧台」并进「酒窖」. The reason is in `DESIGN.md` 14.0.3 -- a shelf answers *where is the vermouth*, and it can
 /// only answer that if a reader can tell the bottles apart; the page that carries the names, the values and the
 /// curves was one tab away, so the two belong on one screen.
+///
+/// **And it is not drawn at the moment**: see [shelfPlacementIsShown]. Everything below still holds, and
+/// the tests below still exercise it -- they build this widget directly rather than reaching it through
+/// the cellar, which is why hiding it leaves them honest rather than stale.
 ///
 /// **What this page replaces, and what it does not.** Until now the Bar tab was a
 /// placeholder that said the shelves were still on paper, which was true while no

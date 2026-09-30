@@ -145,4 +145,61 @@ void main() {
     // And the collision is explained on screen rather than resolved in silence.
     expect(find.text(Copy.settingsSameTagNote.primary.text), findsOneWidget);
   });
+
+  testWidgets('**the second language is read by tag, whatever register the first line is in**',
+      (tester) async {
+    // 2026-09-30, found on the handset: with 伊丽莎白 as the primary language the secondary picker drew
+    // `en (这个构建不认识)` -- a language this build ships, shown as one it does not know.
+    //
+    // The cause was that the lookup also required `choice.voice == settings.voice`, and `voice` is the
+    // register the PRIMARY line is written in. The language entries all carry `Voice.plain` and the voice
+    // entries carry their own, so with a non-plain primary and a plain second language nothing could match
+    // and the fallback drew the raw tag.
+    //
+    // **Every other test in this file runs with the default voice**, which is `plain`, and that is exactly
+    // why none of them caught it: with `plain` on both sides the wrong lookup happens to answer correctly.
+    // So this one sets a register deliberately.
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          localeSettingsProvider.overrideWith(() {
+            _notifier = _RecordingSettings(
+              const LocaleSettings(
+                primaryTag: 'zh-Hans',
+                secondaryTag: 'en',
+                dualCopy: true,
+                voice: Voice.heiress,
+              ),
+            );
+            return _notifier;
+          }),
+        ],
+        child: const MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(child: SettingsSection()),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    final dropdown = tester.widget<DropdownButton<LocaleChoice>>(
+      find.descendant(
+        of: find.byKey(const ValueKey('secondary-locale-picker')),
+        matching: find.byType(DropdownButton<LocaleChoice>),
+      ),
+    );
+    final shown = dropdown.value!;
+    expect(shown.tag, 'en');
+    expect(
+      shown.label,
+      'English',
+      reason: 'the second language is one this build ships, and must be named as a language',
+    );
+    expect(
+      shown.toString(),
+      isNot(contains(Copy.settingsUnknown.primary.text)),
+      reason: 'the unknown wording belongs to a tag this build does not carry',
+    );
+  });
 }

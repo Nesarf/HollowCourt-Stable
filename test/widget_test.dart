@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hollow_court/ui/app.dart';
+import 'package:hollow_court/ui/display_providers.dart';
 import 'package:hollow_court/ui/hollow_glyphs.dart';
 import 'package:hollow_court/ui/hollow_nav_bar.dart';
 import 'package:hollow_court/ui/l10n/locale_providers.dart';
@@ -99,6 +100,56 @@ void main() {
     expect(theme.scaffoldBackgroundColor, HollowPalette.ground);
     expect(theme.colorScheme.primary, HollowPalette.rose);
   });
+
+  testWidgets('**the text size setting reaches the screen, not just the file**',
+      (tester) async {
+    // 2026-09-30: the four steps were stored, drawn in the settings page, and read by nothing -- so
+    // choosing one changed `display.json` and left every string the size it already was. The control had
+    // existed long enough to look finished.
+    //
+    // **Asserted on the resolved scaler rather than on the stored value.** A test that read the provider
+    // back would have passed the whole time the feature did nothing, which is the failure this is here to
+    // catch: the setting and its effect are different facts, and only the second one is a feature.
+    //
+    // The platform's own scale is 1.0 under `flutter_test`, so the resolved factor is the application's
+    // step exactly. That the platform's is multiplied rather than replaced is asserted separately in
+    // `display_providers_test.dart`, where a scaler of a known shape can be handed in.
+    // **Two sizes that differ, in two tests rather than a loop.** `pumpWidget` reuses the provider
+    // container across calls within one test -- the second call kept the first call's state and reported
+    // `small`'s factor under `extraLarge`'s name, twice. A test is the cheaper thing to give up than the
+    // framework's widget-reuse rules are to reason about, and two tests get two containers.
+    await _expectTextScale(tester, TextSize.small, 0.9);
+  });
+
+  testWidgets('**the largest step is larger, so a screen stuck on one setting fails**',
+      (tester) async {
+    await _expectTextScale(tester, TextSize.extraLarge, 1.3);
+  });
+}
+
+/// Pumps the application at one text size and asserts what the screen is actually drawn at.
+Future<void> _expectTextScale(WidgetTester tester, TextSize size, double expected) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [displaySettingsProvider.overrideWith(() => _FixedDisplay(size))],
+      child: const HollowCourtApp(),
+    ),
+  );
+  await tester.pump();
+
+  // **Asserted on the resolved scaler rather than on the stored value.** A test that read the provider
+  // back would have passed the whole time the feature did nothing, which is the failure this is here to
+  // catch: the setting and its effect are different facts, and only the second one is a feature.
+  //
+  // The platform's scale is 1.0 under `flutter_test`, so what comes back is the application's step
+  // exactly. That the platform's is multiplied rather than replaced is a separate claim; it is argued in
+  // `ScaledTextScaler`, whose `scale` multiplies rather than substitutes.
+  final resolved = MediaQuery.of(tester.element(find.byType(HollowNavBar))).textScaler;
+  expect(
+    resolved.scale(100),
+    closeTo(100 * expected, 0.001),
+    reason: 'choosing ${size.name} must change what the screen is drawn at',
+  );
 }
 
 /// The application with its language pinned to 简中.
@@ -129,4 +180,14 @@ class _FixedLocale extends LocaleSettingsNotifier {
 
   @override
   LocaleSettings build() => _initial;
+}
+
+/// A display setting fixed at one text size, so the scaling can be asserted without a file.
+class _FixedDisplay extends DisplaySettingsNotifier {
+  _FixedDisplay(this._size);
+
+  final TextSize _size;
+
+  @override
+  DisplaySettings build() => DisplaySettings(textSize: _size);
 }

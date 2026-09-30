@@ -266,9 +266,16 @@ class CellarPage extends ConsumerWidget {
               // off the first screen on a page whose headline facts are exactly those. It belongs **after the numbers
               // and before the tools** -- the value, the curve and the shopping list come first, then the spatial view
               // of the same stock, then the devices. See `DESIGN.md` 14.0.3 and the owner's decision of 2026-09-27.
-              const SizedBox(height: 28),
-              const BarShelfSection(),
-              const SizedBox(height: 28),
+              //
+              // **It is not drawn at the moment.** `shelfPlacementIsShown` is the whole of that: the owner's
+              // instruction on 2026-09-30 was 吧台先卸掉, read as hiding rather than deleting. The section keeps
+              // its place in this order, so bringing it back restores the layout too rather than only the widget --
+              // including the spacing either side of it, which is part of why it sits here.
+              if (shelfPlacementIsShown) ...[
+                const SizedBox(height: 28),
+                const BarShelfSection(),
+                const SizedBox(height: 28),
+              ],
               DualCopyText(Copy.cellarShopping, style: HollowType.heading),
               const SizedBox(height: 8),
               if (shopping == null)

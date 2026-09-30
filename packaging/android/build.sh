@@ -68,6 +68,12 @@ echo "== package config for this platform =="
 # exactly that way, 19:37 having been the moment the Linux side rewrote the file.
 flutter pub get >/dev/null
 
+# **And then ask whether that config is OURS.** `pub get` writes absolute paths into `.dart_tool/`, and the
+# Linux side of this project shares that directory, so the one that ran last owns it. Building with the other
+# side's config fails as hundreds of undefined `Offset`, `Paint` and `Rect` -- a path problem that reads as a
+# broken source tree. `tool/check_pub_config.py` says which it is, in one sentence and with the fix.
+python3 "$REPO/tool/check_pub_config.py"
+
 # **The bundle's copy of the library is refreshed here, and not by hand.** `data/` is what the tests check;
 # `assets/` is what the app loads; keeping the two in step was a manual step until 2026-09-23, when a Windows
 # build shipped 88 drinks while the library held 103. `test/data/seed/shipped_assets_match_the_data_test.dart`

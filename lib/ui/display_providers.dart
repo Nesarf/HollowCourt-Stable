@@ -1,7 +1,16 @@
+// **One deprecation is suppressed for this file, and only one.** `TextScaler` declares
+// `textScaleFactor` and deprecates it in the same breath, so `ScaledTextScaler` has to implement it and
+// the analyzer reports it on every build. There is no third option -- leaving it out does not compile --
+// and the deprecation is aimed at CALLERS who read a linear assumption out of a scaler that may be
+// curved, which is not what this file does: `scale()` is the method that matters and it consults the
+// platform's scaler through `scale()` too.
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/painting.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -35,6 +44,51 @@ enum TextSize {
     (size) => size.name == name,
     orElse: () => TextSize.standard,
   );
+}
+
+/// The application's own text size, **multiplied onto whatever the platform already applies**.
+///
+/// This is the thing the setting above was always meant to be, and until 2026-09-30 it did not exist:
+/// the four steps were stored, drawn, and read by nothing, so choosing one changed the file and not the
+/// screen. The `MediaQuery` the whole tree is built under is the one place a text scale can be applied
+/// without half of the interface disagreeing with the other half, which is what the comment above says
+/// and what this now does.
+///
+/// **A subclass rather than `TextScaler.linear(platform * mine)`.** Reading the platform's factor back
+/// out is only correct while the platform is linear, and a platform is free not to be: the API exists to
+/// express a curve. Multiplying through `scale()` is right for any scaler, including a curved one, and
+/// costs one multiplication per string.
+///
+/// **The reader's own system setting is not overridden, and cannot be.** A reader who has already turned
+/// the system font up gets that baseline, and this steps up or down from it -- so `standard` is exactly
+/// what the platform asked for rather than a reset of it, which is what someone opening a size control
+/// inside an application expects.
+final class ScaledTextScaler extends TextScaler {
+  const ScaledTextScaler(this.base, this.multiplier);
+
+  /// What the platform handed over, untouched.
+  final TextScaler base;
+
+  /// The application's own step, from [TextSize.scale].
+  final double multiplier;
+
+  @override
+  double scale(double fontSize) => base.scale(fontSize) * multiplier;
+
+  @override
+  double get textScaleFactor => base.textScaleFactor * multiplier;
+
+  // Equality by value, for the reason `DisplaySettings` compares by value: a rebuild that changes
+  // nothing must not look like a change, or every frame would invalidate the whole tree.
+  @override
+  bool operator ==(Object other) =>
+      other is ScaledTextScaler && other.base == base && other.multiplier == multiplier;
+
+  @override
+  int get hashCode => Object.hash(base, multiplier);
+
+  @override
+  String toString() => 'ScaledTextScaler($base x$multiplier)';
 }
 
 /// What the reader has changed about how this application looks.
