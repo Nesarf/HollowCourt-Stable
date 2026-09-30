@@ -86,12 +86,37 @@ sync_working_tree() {
     fi
   fi
   rm -f "$path/.sync.patch"
-  # **Untracked files too**, because a new source file is a real thing to build and `git diff` does not mention it.
+  # **Untracked files too**, because a new source file is a real thing to build and `git diff` does not mention
+  # it.
   git -C "$REPO" ls-files --others --exclude-standard -z |
     while IFS= read -r -d '' f; do
       mkdir -p "$path/$(dirname "$f")"
       cp "$REPO/$f" "$path/$f"
     done
+
+  # **And the signing material, which is ignored by git and therefore in neither of the two steps above.**
+  #
+  # This is the fault that produced a debug-signed "release" on 2026-10-01, and it is worth describing because
+  # every guard in the chain behaved correctly. `android/key.properties` and `android/release.jks` are both in
+  # `.gitignore` -- correctly, since neither belongs in a repository -- so a fresh worktree has neither. Gradle
+  # then takes its documented fallback and signs with the debug key, and `packaging/android/build.sh` has a
+  # post-condition that refuses exactly this: *"android/key.properties EXISTS but ... is DEBUG-SIGNED."*
+  #
+  # **The check passed because the file did not exist.** Its intent was read from the tree, and in this tree the
+  # answer to "was a release key intended?" was no. So the build reported success, the APKs were renamed and
+  # hashed and receipted like any other, and the only symptom was `INSTALL_FAILED_UPDATE_INCOMPATIBLE` on a
+  # handset that already had a properly signed copy. **A guard whose question is "does the intent file exist"
+  # answers "no intent" for a tree that was simply built somewhere else.**
+  #
+  # So the material is carried across here rather than left to be discovered. Both files are copied because the
+  # guard's question is about `key.properties` while Gradle needs the keystore it names; copying only the first
+  # would satisfy the check and still sign with the debug key.
+  for f in android/key.properties android/release.jks; do
+    if [ -f "$REPO/$f" ]; then
+      mkdir -p "$path/$(dirname "$f")"
+      cp "$REPO/$f" "$path/$f"
+    fi
+  done
 }
 
 ensure_worktree android > /dev/null
