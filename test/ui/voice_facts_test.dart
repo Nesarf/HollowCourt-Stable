@@ -192,6 +192,40 @@ void main() {
         reason: 'the parser found ${withHer.length} voiced lines, which is too few to be a coincidence');
   });
 
+  test('**no voice is blank, and this is the gap the facts rule cannot cover**', () {
+    // 2026-09-30, found by reading all ninety-five entries rather than by a test. Two of them -- `packNote` and
+    // `synonymNote` -- carried `Voice.heiressJa: ' '` with the real sentence on the following line, which Dart
+    // concatenates into a value that STARTS WITH A SPACE. The space is what reached the screen.
+    //
+    // **Why the two rules above could not catch it, stated so nobody assumes they did.** They compare the facts a
+    // voice's sentence carries against the facts the authored one carries, and `' '` contains no number and no
+    // ASCII name -- so a blank value is trivially consistent with every fact and passes. A rule about what must be
+    // preserved says nothing about whether anything was written at all.
+    //
+    // Written against the same captured value the other rules use, so it fails for exactly the mistake that
+    // happened: a value that is present but says nothing, or that begins with whitespace nobody intended.
+    final failures = <String>[];
+    for (final definition in definitions()) {
+      for (final voice in const ['heiress', 'heiressJa', 'minister']) {
+        final value = capture(definition.body, "Voice\\.$voice:\\s*$stringLiteral");
+        if (value == null) continue;
+        if (value.trim().isEmpty) {
+          failures.add('${definition.name} ($voice): the sentence is blank');
+        } else if (value != value.trimLeft()) {
+          failures.add('${definition.name} ($voice): begins with whitespace');
+        }
+      }
+    }
+
+    expect(
+      failures,
+      isEmpty,
+      reason: 'a voice is written or it is absent, and neither is a blank string:\n${failures.join('\n')}\n\n'
+          'An absent entry falls back to the plain line, which is honest; a blank one draws an empty box where a '
+          'sentence should be, and a reader has no way to tell that from a bug.',
+    );
+  });
+
   test('the check has something to check, or it is a test that cannot fail', () {
     // A guard over an empty set passes for the worst possible reason. If the parser above stops finding voiced lines
     // -- because the file was reorganised, or a pattern changed -- the two tests above would keep reporting success

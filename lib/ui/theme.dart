@@ -1139,7 +1139,6 @@ abstract final class Copy {
     voices: {
       Voice.heiress: '导出一个文件，拷到另一台再导进去——没有网也行，这也是客户端隔离的网里唯一走得通的路。但它不是备份，也不必信它：导入永远是并进你自己的日志，导两次也不会多出东西。',
       Voice.heiressJa:
-          ' '
           'ファイルに書き出して、もう一台にコピーして取り込むの——網がなくても使える。クライアント分離の網では、それが唯一通る道よ。でもバックアップではないし、信じる必要もないの。取り込みはいつも自分のログに併合されるだけだから、二度やっても増えないわ。',
       Voice.minister:
           'Written to a single file and carried to the other machine. It functions without a '
@@ -1893,8 +1892,7 @@ abstract final class Copy {
     voices: {
       Voice.heiress: '同一个东西有几种叫法，写在这里，应用就当它们是一件事——利口酒＝力娇＝力娇酒，安高天娜＝安哥斯图拉，马天尼＝马提尼，菲士＝菲兹，金酒＝琴酒，蓝柑＝蓝橙。',
       Voice.heiressJa:
-          ' '
-          '同じものがいくつもの名前で呼ばれるでしょう。ここに書けば、アプリは同じ一つのこととして扱うの——リキュール、アンゴスチュラ、マティーニ、フィズ、ジン、ブルーキュラソー、どれも同じ一つのものよ。',
+          '同じものがいくつもの名前で呼ばれるでしょう。ここに書けば、アプリは同じ一つのこととして扱うの——利口酒＝力娇＝力娇酒、安高天娜＝安哥斯图拉、马天尼＝马提尼、菲士＝菲兹、金酒＝琴酒、蓝柑＝蓝橙。この名前たちは、あなたが実際に見る綴りそのものよ。',
       Voice.minister:
           'Several names for one thing, set down here, are thereafter treated as one thing: 利口酒 '
           '= 力娇 = 力娇酒, and the rest of them. The application does not adjudicate which name is '
@@ -2601,6 +2599,54 @@ abstract final class Copy {
   static const cellarShoppingNeededBy = '计划中的';
   static const cellarShoppingOrphaned = '计划里已经不存在的配方';
 
+  // What the shopping list costs, priced from the reader's own receipts rather than from a price source.
+  //
+  // **This is where section 7's open question ended, and it ended by measurement.** No open price database covers
+  // China, so "which sources may we query" had no answer; "what did this cost me last time" does, and the reader
+  // has already told the application. See `shopping_spend.dart`.
+  static const shoppingSpendTotal = CopyLine.withLanguages(
+    Translated.authored('按你上次付的价，这些大约'),
+    Translated.authored('At the prices you last paid, about'),
+    also: {
+      'ja': '前回払った値段で見ると、およそ',
+      'zh-HK': '按你上次付的價，這些大約',
+      'zh-TW': '按你上次付的價，這些大約'},
+      voices: {
+        Voice.heiress: '照你上次付的价算，这一批大概要',
+        Voice.heiressJa: '前回払った値段で数えれば、この分はおよそ',
+        Voice.minister: 'At the prices last paid, the requirement is of the order of',
+      },);
+
+  /// **The qualifier, and the reason it is on the screen rather than in a comment.** Two of the list's
+  /// ingredients may have no price at all, and the figure is a sum over the last known price of each -- not over
+  /// the quantities the recipes call for, which the shopping list does not carry.
+  static const shoppingSpendPartial = CopyLine.withLanguages(
+    Translated.authored('有配料还没记过价，所以这不是全部。'),
+    Translated.authored('Some ingredients have no price recorded, so this is not the whole of it.'),
+    also: {
+      'ja': '値段を記録していない材料があるので、これが全部ではありません。',
+      'zh-HK': '有配料還沒記過價，所以這不是全部。',
+      'zh-TW': '有配料還沒記過價，所以這不是全部。'},
+      voices: {
+        Voice.heiress: '有几样你还没告诉过我价钱，所以这数目不全。',
+        Voice.heiressJa: 'いくつか値段を聞いていないものがあるから、これで全部ではないわ。',
+        Voice.minister: 'Certain ingredients have no recorded figure, and the sum is consequently incomplete.',
+      },);
+
+  /// Printed in place of a total when the list's prices are in more than one currency.
+  static const shoppingSpendMixed = CopyLine.withLanguages(
+    Translated.authored('清单里的价不止一种货币，所以这里不合计。'),
+    Translated.authored('These prices are in more than one currency, so no total is given.'),
+    also: {
+      'ja': 'この一覧の値段は通貨が一つではないので、合計は出しません。',
+      'zh-HK': '清單裡的價不止一種貨幣，所以這裡不合計。',
+      'zh-TW': '清單裡的價不止一種貨幣，所以這裡不合計。'},
+      voices: {
+        Voice.heiress: '两种钱混在一块儿，合起来就是个没意义的数——我不给你算。',
+        Voice.heiressJa: '通貨が混ざっているの。足したところで意味のない数字になるから、合計は出さないわ。',
+        Voice.minister: 'The figures are denominated in more than one currency, and no total is therefore offered.',
+      },);
+
   // Section 12.3's statistics, on the Cellar tab.
   static const cellarStats = CopyLine.withLanguages(
     Translated.authored('统计'),
@@ -2622,6 +2668,144 @@ abstract final class Copy {
   static const cellarStatsDiscarded = '倒掉';
   static const cellarStatsMostPoured = '倒得最多';
   static const cellarStatsOverdrawn = '记录超支';
+
+  // The takings over the bar's four windows, on the 记录 tab above the statistics.
+  //
+  // **The domain for this has existed since 2026-09-21 and no screen read it.** `cashflow.dart` carries the four
+  // windows, the arithmetic, the unattributed list and the deposit comparison with ten tests behind them, and
+  // `docs/TODO.md` section 十 recorded why: the feature's problem was never its behaviour but where it belonged.
+  // The assistant placed it on 2026-09-30 by the screen's own logic -- 记录 is the page whose headline facts are
+  // already the reader's money, and the shelf that used to occupy this slot is off the interface.
+  static const cellarCashflow = CopyLine.withLanguages(
+    Translated.authored('收支'),
+    Translated.authored('Takings'), also: {'ja': '収支', 'zh-HK': '收支', 'zh-TW': '收支'});
+
+  /// The label on each of the four windows, written out rather than derived from the enum's name.
+  ///
+  /// **`CashflowWindow` carries its own `name` for storage and this is not that.** A name that is also a wire
+  /// format cannot be reworded without breaking stored data, so the two are kept apart on purpose: the enum's
+  /// name goes in files, and this goes on the screen.
+  static const cashflowToday = '当日';
+  static const cashflowWeek = '7 日';
+  static const cashflowMonth = '30 日';
+  static const cashflowQuarter = '90 日';
+
+  static const cashflowSpent = CopyLine.withLanguages(
+    Translated.authored('支出'),
+    Translated.authored('Spent'), also: {'ja': '支出', 'zh-HK': '支出', 'zh-TW': '支出'},
+      voices: {
+        Voice.heiress: '花掉的部分。',
+        Voice.heiressJa: '使った分よ。',
+        Voice.minister: 'Expenditure, as recorded.',
+      },);
+
+  static const cashflowNet = CopyLine.withLanguages(
+    Translated.authored('净额'),
+    Translated.authored('Net'), also: {'ja': '純額', 'zh-HK': '淨額', 'zh-TW': '淨額'},
+      voices: {
+        Voice.heiress: '进的和出的抵完还剩多少。',
+        Voice.heiressJa: '入って出て、残った分ね。',
+        Voice.minister: 'The difference between what came in and what went out.',
+      },);
+
+  /// **Why there is no income figure, said on the screen rather than left as a zero.**
+  ///
+  /// Nothing in the event log says a drink was sold: `BottleConsumed` records that a bottle is lighter, which is
+  /// a fact about stock rather than about money, and no event records taking payment. `cashflowOf` takes income
+  /// as a parameter for exactly this reason, and its own comment gives the rule -- a takings screen that quietly
+  /// counts nothing as income would show a bar that only ever loses money. A zero would be read as an answer, so
+  /// the gap is named instead.
+  static const cashflowNoIncome = CopyLine.withLanguages(
+    Translated.authored('收入还记不了：现在没有任何事件记录「卖出」这件事，所以上面只有支出。'),
+    Translated.authored('Takings cannot be recorded yet: no event says a drink was sold, so only the spending '
+        'side is counted above.'), also: {
+      'ja': '売り上げはまだ記録できません。何かを売ったという出来事が無いため、上は支出だけです。',
+      'zh-HK': '收入還記不了：現在沒有任何事件記錄「賣出」這件事，所以上面只有支出。',
+      'zh-TW': '收入還記不了：現在沒有任何事件記錄「賣出」這件事，所以上面只有支出。'},
+      voices: {
+        Voice.heiress: '卖了多少？这个本小姐记不了——账本里根本没有「卖出」这一笔，只有你买了什么。',
+        Voice.heiressJa: 'いくら売れたか？それは記録できないのよ。帳面には「売った」なんて一行も無いんだから。',
+        Voice.minister: 'I am unable to account for receipts. No entry in the record states that anything was '
+            'sold; only that something was bought.',
+      },);
+
+  static const cashflowEmpty = CopyLine.withLanguages(
+    Translated.authored('这段时间里没有花过钱。'),
+    Translated.authored('Nothing was spent in this period.'), also: {
+      'ja': 'この期間に使ったお金はありません。',
+      'zh-HK': '這段時間裡沒有花過錢。',
+      'zh-TW': '這段時間裡沒有花過錢。'},
+      voices: {
+        Voice.heiress: '这段时间你什么都没买呢。',
+        Voice.heiressJa: 'この期間は何も買っていないわね。',
+        Voice.minister: 'No expenditure has been recorded in this period.',
+      },);
+
+  /// The amounts a window could not count: another currency, or a line with no price to attribute.
+  ///
+  /// Named rather than folded in, following the rule the recipe costing already states -- a figure that silently
+  /// absorbs a line it did not understand is worse than no figure, because somebody will decide on it.
+  static const cashflowUnattributed = CopyLine.withLanguages(
+    Translated.authored('没有计入'),
+    Translated.authored('Not counted'), also: {'ja': '計上せず', 'zh-HK': '沒有計入', 'zh-TW': '沒有計入'});
+
+  static const cashflowDeposit = CopyLine.withLanguages(
+    Translated.authored('开局本钱'),
+    Translated.authored('Starting float'), also: {'ja': '元手', 'zh-HK': '開局本錢', 'zh-TW': '開局本錢'},
+      voices: {
+        Voice.heiress: '一开始抽屉里有多少？',
+        Voice.heiressJa: '最初に引き出しにいくら入っていたの？',
+        Voice.minister: 'The sum with which the bar began.',
+      },);
+
+  static const cashflowCounted = CopyLine.withLanguages(
+    Translated.authored('现在数的钱'),
+    Translated.authored('Counted now'), also: {'ja': '数えた現金', 'zh-HK': '現在數的錢', 'zh-TW': '現在數的錢'},
+      voices: {
+        Voice.heiress: '你刚数出来的是多少？',
+        Voice.heiressJa: 'いま数えた分はいくら？',
+        Voice.minister: 'The amount you have just counted.',
+      },);
+
+  static const cashflowImplied = CopyLine.withLanguages(
+    Translated.authored('账上应有'),
+    Translated.authored('The log implies'), also: {'ja': '帳簿上の残高', 'zh-HK': '帳上應有', 'zh-TW': '帳上應有'});
+
+  static const cashflowDifference = CopyLine.withLanguages(
+    Translated.authored('差额'),
+    Translated.authored('Difference'), also: {'ja': '差額', 'zh-HK': '差額', 'zh-TW': '差額'});
+
+  static const cashflowBalances = CopyLine.withLanguages(
+    Translated.authored('对得上。'),
+    Translated.authored('The till agrees with the log.'), also: {
+      'ja': '帳簿と一致しています。',
+      'zh-HK': '對得上。',
+      'zh-TW': '對得上。'},
+      voices: {
+        Voice.heiress: '分毫不差呢。',
+        Voice.heiressJa: 'ぴったり一致よ。',
+        Voice.minister: 'The count and the record are in agreement.',
+      },);
+
+  /// The difference explained without deciding which cause it is, which is the rule `CashReconciliation` sets.
+  static const cashflowDifferenceNote = CopyLine.withLanguages(
+    Translated.authored('比账上多，通常是有一笔收入没记；比账上少，通常是有一笔支出没记。'),
+    Translated.authored('More than the log implies is usually a sale nobody recorded; less is usually a purchase '
+        'nobody entered.'), also: {
+      'ja': '帳簿より多いのは売上の記録漏れ、少ないのは仕入れの記録漏れが普通です。',
+      'zh-HK': '比帳上多，通常是有筆收入沒記；比帳上少，通常是有筆支出沒記。',
+      'zh-TW': '比帳上多，通常是有筆收入沒記；比帳上少，通常是有筆支出沒記。'},
+      // **Written when this line was added, because it arrived after the prose pool had emptied.** The three
+      // batches of 2026-09-29 covered every piece of prose the application had; this sentence came with the
+      // takings view and is the only ≥18-character line without a voice. `voice_facts_test` is the constraint
+      // they were written to: a register may change the phrasing, the subject or the tone, and may not drop a
+      // fact. Both directions and both causes are therefore still in all three.
+      voices: {
+        Voice.heiress: '抽屉里比账上多，那就是有一笔卖出你忘了记；少了，就是有一笔买进你忘了写。',
+        Voice.heiressJa: '引き出しが帳簿より多ければ、売ったのに書き忘れたの。少なければ、買ったのに書き忘れたのよ。',
+        Voice.minister: 'A sum greater than the record implies is, as a rule, a sale that went unentered; a sum '
+            'less than it implies is a purchase that did.',
+      },);
 
   // Section 12.4's settings, on the Cellar tab beside the device section: both are
   // facts about this device rather than about the cellar.

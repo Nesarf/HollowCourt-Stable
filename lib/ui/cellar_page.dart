@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'bar_page.dart';
+import 'cashflow_section.dart';
 import '../domain/consumption/consumption.dart';
 import '../domain/pricing/cellar_value.dart';
+import '../domain/pricing/shopping_spend.dart';
 import '../domain/stats/cellar_stats.dart';
 import '../domain/stats/shopping_list.dart';
 import '../domain/units/measure_set.dart';
@@ -40,7 +42,7 @@ import 'theme.dart';
 /// when somebody enters one -- which reads as the cellar becoming more valuable rather
 /// than as the estimate becoming less wrong.
 /// What to buy, one line per ingredient with how many planned drinks want it.
-class _ShoppingRows extends StatelessWidget {
+class _ShoppingRows extends ConsumerWidget {
   const _ShoppingRows({required this.list, required this.nameOf});
 
   final ShoppingList list;
@@ -54,26 +56,77 @@ class _ShoppingRows extends StatelessWidget {
   final String Function(String ingredientId) nameOf;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      for (final entry in list.entries)
-        Padding(
-          padding: const EdgeInsets.only(bottom: 4),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(nameOf(entry.ingredientId), style: HollowType.body),
-              ),
-              Text(
-                '${Copy.cellarShoppingNeededBy} ${entry.neededBy}',
-                style: HollowType.caption.copyWith(color: HollowPalette.inkFaint),
-              ),
-            ],
+  Widget build(BuildContext context, WidgetRef ref) {
+    // **Priced from the reader's own receipts, which is the point of every line below.** Every price this
+    // application knows was paid by the person reading the screen, so section 7's question -- which sources may
+    // this project query -- is answered by not needing one. The LAST observation is the answer because it is the
+    // most recent thing they actually paid; an average would answer a question nobody asked.
+    final spend = ShoppingSpend.of(
+      list,
+      lastPaid: (ingredientId) => ref.watch(priceSeriesForProvider(ingredientId)).current,
+    );
+    final unit =
+        ref.watch(preferencesProvider).measuresFor(MatterState.liquid)?.primary ?? UnitSystem.millilitre;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final entry in list.entries)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(nameOf(entry.ingredientId), style: HollowType.body),
+                ),
+                // **The price and its volume, or the recipe count and nothing else.** `¥128` says nothing about
+                // gin; `¥128 / 700 ml` is what a person holds against the bottle in front of them. Where there is
+                // no price the row falls back to what it always showed, so an unrecorded ingredient reads as
+                // unrecorded rather than as free.
+                if (_lineFor(spend, entry.ingredientId) case final line?)
+                  Text(
+                    '${moneyText(line.point.paid)} / ${volumeText(line.point.volume, unit)}',
+                    style: HollowType.caption.copyWith(color: HollowPalette.inkSoft),
+                  )
+                else
+                  Text(
+                    '${Copy.cellarShoppingNeededBy} ${entry.neededBy}',
+                    style: HollowType.caption.copyWith(color: HollowPalette.inkFaint),
+                  ),
+              ],
+            ),
           ),
-        ),
-    ],
-  );
+        if (!spend.isEmpty) ...[
+          const SizedBox(height: 8),
+          if (spend.currency == null)
+            // Two currencies, so no total -- the rule the chart's own fold states: figures in two denominations
+            // add up as numbers and mean nothing by it.
+            DualCopyText(Copy.shoppingSpendMixed, style: HollowType.caption)
+          else ...[
+            Row(
+              children: [
+                Expanded(child: DualCopyText(Copy.shoppingSpendTotal, style: HollowType.body)),
+                Text(moneyText(spend.total), style: HollowType.body),
+              ],
+            ),
+            if (spend.unpriced > 0) ...[
+              const SizedBox(height: 4),
+              // **Said rather than left implied.** The figure is a sum over what has a price; an ingredient with
+              // none is missing from it, and a total that did not admit that would read as the whole cost.
+              DualCopyText(Copy.shoppingSpendPartial, style: HollowType.caption),
+            ],
+          ],
+        ],
+      ],
+    );
+  }
+
+  static ShoppingSpendLine? _lineFor(ShoppingSpend spend, String ingredientId) {
+    for (final line in spend.lines) {
+      if (line.ingredientId == ingredientId) return line;
+    }
+    return null;
+  }
 }
 
 /// A summary as rows of numbers, not as a chart.
@@ -269,13 +322,17 @@ class CellarPage extends ConsumerWidget {
               //
               // **It is not drawn at the moment.** `shelfPlacementIsShown` is the whole of that: the owner's
               // instruction on 2026-09-30 was 吧台先卸掉, read as hiding rather than deleting. The section keeps
-              // its place in this order, so bringing it back restores the layout too rather than only the widget --
-              // including the spacing either side of it, which is part of why it sits here.
-              if (shelfPlacementIsShown) ...[
-                const SizedBox(height: 28),
-                const BarShelfSection(),
-                const SizedBox(height: 28),
-              ],
+              // its place in this order, so bringing it back restores the layout too rather than only the widget.
+              //
+              // **The takings took the slot it vacated**, and that is why the spacing moved out of the `if`: what
+              // is drawn here is no longer conditional on the shelf, and leaving the gaps inside would have put
+              // fifty-six empty pixels in the middle of the page. The position is the same argument as the shelf's
+              // -- after the numbers, before the tools -- because that is where a reader looking at their money
+              // already is.
+              const SizedBox(height: 28),
+              if (shelfPlacementIsShown) const BarShelfSection(),
+              const CashflowSection(),
+              const SizedBox(height: 28),
               DualCopyText(Copy.cellarShopping, style: HollowType.heading),
               const SizedBox(height: 8),
               if (shopping == null)

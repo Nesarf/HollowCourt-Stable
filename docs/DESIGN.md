@@ -1070,10 +1070,32 @@ exist. So the declarations stay in the code and the **cards do not appear**, and
 
 | Held back | Waiting for | Where it lives meanwhile |
 | --- | --- | --- |
-| Price comparison adapter | price sources this project may query -- the same question §7 has left open from the start | `UnimplementedAdapter(AdapterKind.priceComparison)`, disclosure not yet written because there is nothing to state |
+| Price comparison adapter | **measured on 2026-09-30 and it is not waiting for anything: there is no source to wait for.** See the note below the table | `UnimplementedAdapter(AdapterKind.priceComparison)`, kept as a declaration of a seam; what replaced the need for it is `shopping_spend.dart` |
 | Barcode **scanning** | a camera plugin, the Android `CAMERA` permission and its runtime request; `mobile_scanner` has no Windows or Linux support, so the handset is the scanner | `BarcodeAdapter`, fully declared -- host, payload key, `needsCamera`, `needsNetwork`, and 11.1.1's seven remaining items |
 | Bluetooth scale / IMU / gamepad | device protocols, and the calibration work each needs | `InstrumentAdapter` |
 | Anything coffee-specific | the owner's own decision to do it later | nowhere yet, by design |
+
+**§7's price-source question is answered, and the answer is that the question was the wrong one.** It sat open for
+months as a decision waiting on the owner; on 2026-09-30 it was measured instead, and the measurement is the
+finding:
+
+- The only open, anonymously-readable price database of any size is **Open Prices** (Open Food Facts), 318,953
+  records under ODbL, no API key for reads.
+- **Of its eight hundred most recent prices, not one is from China and not one is in CNY** — 44.5% are French,
+  24.9% Norwegian, 9.5% German. CNY is what this application offers a 简中 reader by default.
+- Everything else a search turns up is retail **scraping** — the Apify actors for BWS, Liquorland, Onehopewine —
+  which is not a source but a way of taking somebody else's.
+
+**So there is no source to name, and the feature was re-pointed rather than left waiting.** Every price this
+application knows was paid by the person reading the screen, at a shop they go to, for a bottle they own, which is a
+better answer to *what will this cost me* than a crowdsourced figure from another country — and it needs no
+network, no account, and sends nothing anywhere, so the comparison does not cost the promise the application is
+built on. `ShoppingSpend` prices the shopping list from the reader's own receipts and the 要买什么 list prints what
+each ingredient last cost, per volume.
+
+**The adapter declaration stays and the implementation does not**, which is the honest shape: the seam is real
+(somebody may one day have a source worth querying) and the disclosure remains unwritten for the reason it always
+was — there is nothing to state about where a request would go, because none is made.
 
 **Not held back, and the distinction matters.** The barcode's **manual entry** is implemented, tested and usable --
 type the digits, the check digit is verified, an unknown code is named and remembered -- so it stays visible while
