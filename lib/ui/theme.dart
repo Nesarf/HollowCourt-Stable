@@ -139,6 +139,10 @@ enum Ornament {
 
   /// **A snow crystal** built out of the motif: six arms of nested rhombi. Winter Court.
   snowCrystal,
+
+  /// **Sounding rings**: concentric rings with a radial burst across them, the ripple a note leaves.
+  /// 永遠の歌姫, and the first ornament that is an event rather than an object.
+  songRings,
 }
 
 /// The texture a world draws its ground with.
@@ -161,6 +165,29 @@ enum GroundTexture {
   /// **Frost**: rhombi at two scales, sparse and uneven, the way ice grows on glass rather than the way a
   /// pattern is printed. Winter Court.
   frost,
+
+  /// **A staff**: five fine horizontal lines with the motif scattered across them as notes. 永遠の歌姫.
+  ///
+  /// **Five lines and not a grid**, because a grid is what the lattice already is: the point of the four grounds
+  /// is that they are four *materials*, and this one is ruled paper for music rather than ruled paper for prose --
+  /// which is why the lines are close together and the marks on them are sparse.
+  score,
+}
+
+/// The two shapes of one world's picture.
+///
+/// **Both live here and neither is chosen here.** Which one is drawn is a question about the screen -- a phone
+/// held upright against a desktop window -- and the answer belongs to whoever is drawing, not to the theme that
+/// owns the files. Putting a `Platform` check in this class would make a palette depend on the operating system,
+/// which is the kind of coupling that turns a colour table into a device table.
+final class WorldArtwork {
+  const WorldArtwork({required this.tall, required this.wide});
+
+  /// For a window taller than it is wide. `assets/art/diva-tall.png`, 1080x2160.
+  final String tall;
+
+  /// For a window wider than it is tall. `assets/art/diva-wide.png`, 1920x960.
+  final String wide;
 }
 
 final class HollowPaletteValue {
@@ -181,7 +208,21 @@ final class HollowPaletteValue {
     this.texture = GroundTexture.lattice,
     this.ornament = Ornament.halo,
     this.brightness = Brightness.dark,
+    this.artwork,
   });
+
+  /// **A picture this world draws behind everything, or null.**
+  ///
+  /// Only 永遠の歌姫 has one, and it is deliberately a field rather than a branch on the theme's name: a world
+  /// that carries art says so where the world is defined, and nothing elsewhere has to know which world that is.
+  /// The owner's instruction on 2026-09-30 was that the two pieces 「只限定于 miku 主题里出现」 -- which is also
+  /// what keeps the other three worlds honest: a full-colour illustration behind a page is the one thing the
+  /// `hairline` rule exists to prevent, and a world without this field simply has none.
+  ///
+  /// **Two files, because the shape follows the screen.** The owner's split: 「竖版用于安卓，横版用于 windows 和
+  /// linux」. `assets/art/diva-tall.png` is 1080x2160 for a phone held upright, `diva-wide.png` is 1920x960 for a
+  /// desktop window -- one picture cropped two ways would be the wrong drawing on both.
+  final WorldArtwork? artwork;
 
   /// The stored name: `honeyed`, `whiteCourt`, `winter`. A wire format by identity, like a unit's id, so
   /// renaming one breaks a stored setting rather than a test -- which is why `byName` falls back instead of
@@ -231,7 +272,10 @@ final class HollowPaletteValue {
     ink: Color(0xFFF4E8CE),
     inkSoft: Color(0xFFC7B392),
     inkFaint: Color(0xFF9D8C6A),
-    rose: Color(0xFFC4626A),
+    // **Raised by ten percent of the way to white on 2026-09-30 to clear the text floor.** It sat at 3.98:1 on
+    // `surfaceRaised`, where it is drawn as caption text in warnings and totals across the interface -- just under
+    // the 4.5:1 that `theme_palette_test.dart` now asserts for an accent used as text. The hue is unchanged.
+    rose: Color(0xFFCA7279),
     gold: Color(0xFFE2A63E),
     absent: Color(0xFF988D7B),
     onAccent: Color(0xFF1A1208),
@@ -278,14 +322,63 @@ final class HollowPaletteValue {
     ink: Color(0xFFE6F1F5),
     inkSoft: Color(0xFFA9C0C9),
     inkFaint: Color(0xFF80959E),
-    rose: Color(0xFFBE6B82),
+    // **Raised on the same day and for the same reason as the honeyed court's**: 4.02:1 on `surfaceRaised` is
+    // under the floor for caption text, and this is the rose that clears it without leaving its hue.
+    rose: Color(0xFFC47A8E),
     gold: Color(0xFF8FBAC6),
     absent: Color(0xFF84959C),
     onAccent: Color(0xFF0A1014),
     hairline: Color(0xFF24333A),
   );
 
-  static const List<HollowPaletteValue> all = [honeyed, whiteCourt, winter];
+  /// **永遠の歌姫: the fourth world, and the first one that is homage rather than a place.**
+  ///
+  /// **The colour is `#39C5BB` and the build is `3939`, and the two are one statement.** `39` reads ミク -- three
+  /// is ミ, nine is ク -- so the number written twice is the reading written twice, and the hex carries `39` in its
+  /// first two digits. The owner set the colour and the build number, and neither is a coincidence.
+  ///
+  /// **The first version of this comment got it wrong, and the mistake is worth keeping.** Reading the colour
+  /// alone, I took it for copper patina, invented a plausible etymology, and wrote a paragraph about bronze and
+  /// the Statue of Liberty. None of that was asked for and none of it was true to the request; the owner's
+  /// question -- 「你应该知道 #39C5BB 的特殊含义吧?」 -- is the correction. The design record already held the clue
+  /// that this is a reference: `J1407b` is a real designation and 宇宙拿鉄 is a real colour. What was invented was
+  /// *which* reference, and a value somebody chose is not a value to interpret alone.
+  ///
+  /// **The name is the owner's, and it is a title rather than a name.** 永遠の歌姫 -- the eternal diva -- so the
+  /// world is homage without borrowing anybody's mark, which is the line the rest of this project draws.
+  ///
+  /// **The storage name is permanent** (`A wire format by identity`, like a unit's id), so it is fixed now and
+  /// cannot follow the display name if that is ever reworded.
+  static const HollowPaletteValue eternalDiva = HollowPaletteValue(
+    name: 'eternalDiva',
+    ornament: Ornament.songRings,
+    texture: GroundTexture.score,
+    ground: Color(0xFF0A1414),
+    surface: Color(0xFF101B1B),
+    surfaceRaised: Color(0xFF182626),
+    line: Color(0xFF5E7A78),
+    ink: Color(0xFFEAF6F4),
+    inkSoft: Color(0xFFB6CFCC),
+    inkFaint: Color(0xFF8AA3A0),
+    // **Not `#39C5BB` itself, and the reason is a rule rather than a preference.** That colour is the accent
+    // below; `rose` is drawn as caption text on `surfaceRaised` across the interface, so it is held to the 4.5:1
+    // text floor rather than the 3:1 a fill needs. This rose clears it with room.
+    rose: Color(0xFFE0707F),
+    gold: Color(0xFF39C5BB),
+    absent: Color(0xFF8AA09E),
+    onAccent: Color(0xFF06201E),
+    hairline: Color(0xFF1F3130),
+    // **The two pieces the owner traced, and this is the only world that draws them.** Traced from GPT
+    // pictures into one ink (`#39C5BB`, the accent above) by `art/make_flat_svg.py`; the rasters here are
+    // rendered from those SVGs because Flutter reads a bitmap and not a vector, and the shapes stay exact
+    // because the SVG is the source rather than a snapshot of one.
+    artwork: WorldArtwork(
+      tall: 'assets/art/diva-tall.png',
+      wide: 'assets/art/diva-wide.png',
+    ),
+  );
+
+  static const List<HollowPaletteValue> all = [honeyed, whiteCourt, winter, eternalDiva];
 
   /// The theme with [name], or the world the application was designed around when the name is one this build does not carry.
   ///
@@ -2974,6 +3067,72 @@ abstract final class Copy {
     Translated.authored('Opens the repository in your browser'),
     also: {'ja': 'ブラウザでリポジトリを開きます', 'zh-HK': '在瀏覽器裡打開倉庫', 'zh-TW': '在瀏覽器裡開啟倉庫'});
 
+  /// The support link, and **the first line in this application that is not the same sentence in every
+  /// language.**
+  ///
+  /// **Why it has to be per-language rather than translated.** Afdian is a Chinese platform, and that decides what
+  /// the sentence is *for*. A Chinese reader is being told *you may support this if you want to*; a reader in
+  /// another language is being told *this is where support goes, and it is a Chinese site, so your card may not
+  /// work there*. Those are two different sentences, and translating either one into the other language would
+  /// produce a sentence about the wrong reader. `CopyLine.localised` exists for exactly this and had no caller
+  /// until now.
+  ///
+  /// **It is the label tonight, and it was a sentence first.** Written as prose it overflowed the settings row by
+  /// 242 pixels -- that row is a label and an icon on one line, and a paragraph in the label slot is a paragraph
+  /// that cannot fit. So the label is the word 支持 and the sentence goes below it in the hint slot, which is what
+  /// the source row above does and what section 12.9.1's row convention asks for.
+  /// **Where the author is, and every one of these is a fact rather than a request.**
+  ///
+  /// The first of them was 支持 / Support, written when the row pointed at a donation page, and the change of
+  /// word is the whole of what changed when the owner replaced that address on 2026-09-30.
+  ///
+  /// **Why the word matters and not only the spirit.** PCL covers the two pieces in `art/`, and its
+  /// 第3条第2項第1号 forbids collecting compensation of any kind under any name, *even where the use is not for
+  /// profit* -- 「非営利目的であっても、あらゆる名目の対価を徴収しまたは報酬を受けてはならない」. A row labelled
+  /// 支持 beside a work containing that artwork is a request for exactly that; 作者 is not, because nothing
+  /// flows from the work to its author.
+  ///
+  /// **None of the three carries a voice, and that is the rule rather than an oversight.** Section 十二 says a
+  /// voice belongs to a sentence and not to a label: these are the names of things, like 琥珀庭 or a unit's id.
+  /// The hint that used to sit under the first one is gone too -- bilibili, 网易云音乐 and SoundCloud each name
+  /// themselves, and prose explaining what a music profile is would be the interface telling a reader something
+  /// they already know.
+  static const aboutAuthor = CopyLine.localised({
+    'zh-Hans': '作者',
+    'zh-HK': '作者',
+    'zh-TW': '作者',
+    'en': 'The author',
+    'ja': '作者',
+  });
+
+  /// The two music sites, **spelled the way each site spells itself.** 网易云音乐 is the name its own readers
+  /// use and an English transliteration would be a name nobody calls it; SoundCloud is one word with two capitals
+  /// in the middle, which is its own spelling and not a styling choice made here.
+  static const aboutNetease = CopyLine.localised({
+    'zh-Hans': '网易云音乐',
+    'zh-HK': '網易雲音樂',
+    'zh-TW': '網易雲音樂',
+    'en': 'NetEase Cloud Music',
+    'ja': 'NetEase Cloud Music',
+  });
+
+  static const aboutSoundcloud = CopyLine.localised({
+    'zh-Hans': 'SoundCloud',
+    'zh-HK': 'SoundCloud',
+    'zh-TW': 'SoundCloud',
+    'en': 'SoundCloud',
+    'ja': 'SoundCloud',
+  });
+
+  /// The address itself, shown when the browser cannot be reached -- the same treatment the source link gets.
+  static const aboutSupportFailed = CopyLine.withLanguages(
+    Translated.authored('这台设备上没有能打开浏览器的程序。地址是：'),
+    Translated.authored('This device has nothing capable of opening a browser. The address is:'),
+    also: {
+      'ja': 'この端末にはブラウザを開けるものがないの。宛先はこちら：',
+      'zh-HK': '這台裝置上沒有能打開瀏覽器的程式。地址是：',
+      'zh-TW': '這台裝置上沒有能開啟瀏覽器的程式。地址是：'});
+
   /// Shown when there is nothing that can open a browser, with the address beside it so the reader can still
   /// get there. A link that silently does nothing is the same failure as a switch that moves and leads nowhere.
   static const aboutRepositoryFailed = CopyLine.withLanguages(
@@ -3041,6 +3200,33 @@ abstract final class Copy {
       'zh-TW': '圖示由本專案自行繪製，不借用任何字體',
     });
 
+  /// **The credit PCL asks for, in PCL's own words, and the one string in this application that is not ours to
+  /// word.**
+  ///
+  /// `art/miku-wide.svg` and `art/miku-tall.svg` depict 初音ミク, a character of Crypton Future Media, INC., used
+  /// under the Piapro Character Licence. 第3条第3項 asks for the credit below to be shown alongside the work --
+  /// 「表示するよう努めるものとします」, an obligation to endeavour rather than a condition, honoured anyway -- and
+  /// the guideline gives the sentence verbatim:
+  ///
+  /// > この作品はピアプロ・キャラクター・ライセンスに基づいてクリプトン・フューチャー・メディア株式会社の
+  /// > キャラクター「初音ミク」を描いたものです。
+  ///
+  /// **So the Japanese is quoted and not translated into this project's voice, and the other languages paraphrase
+  /// it.** A credit is not copy: it exists to name a rights holder, and rewording it to sound like the rest of the
+  /// interface would weaken the one thing it does. The character's name stays 初音ミク in every language for the
+  /// same reason -- it is the name the rights holder uses.
+  ///
+  /// **The link is the summary page rather than the 正文**, because the summary is what a reader should land on;
+  /// `docs/licensing.md` is where the clauses themselves are quoted for anyone checking.
+  static const aboutCharacterCredit = '''
+この作品はピアプロ・キャラクター・ライセンスに基づいて
+クリプトン・フューチャー・メディア株式会社のキャラクター「初音ミク」を描いたものです。
+
+This work depicts 初音ミク, a character of Crypton Future Media, INC., under the Piapro Character Licence.
+https://piapro.jp/license/pcl/summary
+
+本作品描绘的是 Crypton Future Media, INC. 的角色「初音ミク」，依ピアプロ・キャラクター・ライセンス使用。''';
+
 
   // ---------------------------------------------------------------- display
 
@@ -3081,6 +3267,17 @@ abstract final class Copy {
     Translated.authored('冬庭'),
     Translated.authored('Winter Court'),
     also: {'ja': '冬の庭', 'zh-HK': '冬庭', 'zh-TW': '冬庭'});
+
+  /// The fourth world's name, and **the one name in this table that is a title rather than a place.**
+  ///
+  /// The owner gave it: 永遠の歌姫. The other three are courts -- 琥珀庭, 白庭, 冬庭 -- and this one is a person's
+  /// epithet, which is the right shape for a world that is homage. **No voice is written for it**, and that is not
+  /// an omission: a name is a label rather than a sentence, and section 十二's own rule is that a voice belongs to
+  /// a sentence and not to a label. The three courts have no voices here either.
+  static const themeEternalDiva = CopyLine.withLanguages(
+    Translated.authored('永遠の歌姫'),
+    Translated.authored('The Eternal Diva'),
+    also: {'ja': '永遠の歌姫', 'zh-HK': '永遠の歌姫', 'zh-TW': '永遠の歌姫'});
 
 
   static const displayTextSizeNote = CopyLine.withLanguages(

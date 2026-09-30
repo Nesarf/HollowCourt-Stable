@@ -74,6 +74,8 @@ class HollowOrnamentPainter extends CustomPainter {
         _guilloche(canvas, centre, span, hairline);
       case Ornament.snowCrystal:
         _snowCrystal(canvas, centre, span, hairline);
+      case Ornament.songRings:
+        _songRings(canvas, centre, span, hairline);
     }
   }
 
@@ -198,6 +200,36 @@ class HollowOrnamentPainter extends CustomPainter {
     canvas.drawCircle(centre, span * 0.038, hairline);
   }
 
+  /// **Sounding rings, for 永遠の歌姫.**
+  ///
+  /// Concentric rings with a radial burst across them, drawn as the ripple a note leaves rather than as an
+  /// instrument's dial -- the distinction that keeps it from being the halo again. The halo is marked, graduated
+  /// and turned fifteen degrees because it is *worn*; this is even and ungraduated because it is *heard*.
+  ///
+  /// **Nothing here quotes anything.** The world is homage and borrows no mark: the shape says sound, and the name
+  /// the owner gave says the rest. A theme that drew somebody's logo would be the one thing this project does not
+  /// do with other people's work.
+  void _songRings(Canvas canvas, Offset centre, double span, Paint hairline) {
+    // Six rings, evenly spaced and thinning outward, the way a ripple loses amplitude rather than the way a dial
+    // is ruled. The innermost is left out so the centre stays quiet.
+    for (var i = 1; i <= 6; i++) {
+      canvas.drawCircle(centre, span * (0.075 + i * 0.055), hairline);
+    }
+
+    // The burst: strokes crossing the rings, which is what makes the field read as something travelling outward
+    // instead of as a target. Every third one runs the whole width so the burst has grain rather than a comb.
+    final inner = span * 0.13;
+    final outer = span * 0.40;
+    for (var i = 0; i < 108; i++) {
+      final angle = i * math.pi / 54;
+      final direction = Offset(math.cos(angle), math.sin(angle));
+      final whole = i % 3 == 0;
+      final from = inner + (whole ? 0.0 : span * 0.10);
+      final to = outer - (whole ? 0.0 : span * 0.06);
+      canvas.drawLine(centre + direction * from, centre + direction * to, hairline);
+    }
+  }
+
   @override
   bool shouldRepaint(HollowOrnamentPainter old) =>
       old.ornament != ornament || old.strength != strength || old.color != color;
@@ -232,6 +264,39 @@ class OrnamentBackdrop extends ConsumerWidget {
       children: [
         // The wash resolves the world itself, for the same reason this widget does.
         Positioned.fill(child: PrismWash(texture: world.texture)),
+        // **The world's own picture, if it has one, and only one of the four does.** Under the ornament and over
+        // the wash, because it is a material rather than a subject: it belongs to the same layer as the ground's
+        // texture, and anything drawn on top of it is still the interface.
+        //
+        // **Held to the wash's ceiling.** The picture is one ink at full strength, which is 7.35:1 against its own
+        // ground -- the highest-contrast thing on the screen, which is precisely what `prismWashCeiling` exists to
+        // prevent. So it is drawn at the same cap: a reader should find it after the text, not instead of it.
+        if (world.artwork case final artwork?)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: RepaintBoundary(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // **Which shape is a question about the window, not about the platform.** The owner's split --
+                    // 竖版用于安卓, 横版用于 windows 和 linux -- is what the two files are for, and this is the
+                    // rule that produces it without asking the operating system: a window taller than it is wide
+                    // gets the upright drawing, and every desktop window is wider than it is tall.
+                    final upright = constraints.maxHeight > constraints.maxWidth;
+                    return Opacity(
+                      opacity: prismWashDefaultAlpha,
+                      child: Image.asset(
+                        upright ? artwork.tall : artwork.wide,
+                        fit: BoxFit.cover,
+                        // Nearest rather than the default filter: the source is a two-colour vector render, and
+                        // a smoothing filter on flat ink at low opacity produces a grey mush at the edges.
+                        filterQuality: FilterQuality.medium,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
         Positioned.fill(
           child: IgnorePointer(
             child: RepaintBoundary(

@@ -77,13 +77,23 @@ class DisplaySection extends ConsumerWidget {
     );
   }
 
-  /// **Three worlds, and the switch used to name the four that were deleted this morning** -- so every chip read
-  /// 琥珀庭, including the two it was not describing. Found while adding the voice row above it, which is the
-  /// pattern this whole day has followed: the thing next to the thing you are changing is where the staleness is.
+  /// **Four worlds now, and the switch is written so a fifth cannot lie about itself.**
+  ///
+  /// The note above records the fault this shape causes: while the four deleted themes were still listed, every
+  /// chip read 琥珀庭 including the ones it was not describing. Adding a fifth theme repeated it in the other
+  /// direction -- the new world fell through to the default and called itself 琥珀庭 -- so the fallback is now the
+  /// theme's own stored name rather than another world's label. A reader seeing `eternalDiva` on a chip knows
+  /// something is wrong with the build; a reader seeing 琥珀庭 on a teal world knows nothing and trusts it.
   static CopyLine _themeLabel(HollowPaletteValue value) => switch (value.name) {
     'whiteCourt' => Copy.themeWhiteCourt,
     'winter' => Copy.themeWinter,
-    _ => Copy.themeAmber,
+    'eternalDiva' => Copy.themeEternalDiva,
+    'honeyed' => Copy.themeAmber,
+    _ => CopyLine.withLanguages(
+        Translated.authored(value.name),
+        Translated.authored(value.name),
+        also: const {},
+      ),
   };
 
   static CopyLine _label(TextSize size) => switch (size) {

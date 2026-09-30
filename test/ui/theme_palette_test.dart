@@ -144,19 +144,62 @@ void main() {
       }
     });
 
-    test('three worlds, three distinct names, one of them light', () {
-      // **Four themes became three worlds on 2026-09-25.** The owner scrapped the old set and asked for new ones
-      // designed from scratch, each with its own interface and its own art rather than a recolour; the count
-      // followed the decision.
-      expect(HollowPaletteValue.all, hasLength(3));
+    test('**an accent used AS TEXT clears the text floor, on every surface**', () {
+      // 2026-09-30, the owner's report: 「文字和各个背景/UI颜色对比不明显」. Measuring found it, and found why the
+      // test above could not: **that one asserts the 3:1 non-text floor against `ground` only, while the accents
+      // are used as TEXT twenty-eight times across the interface, on `surface` and `surfaceRaised` as well.**
+      //
+      // The two dark worlds were failing it. `rose` sat at **3.98:1** on the honeyed court's raised surface and
+      // **4.02:1** on the winter court's -- captions and warnings, the lines that most need reading, drawn just
+      // under the floor. Both were raised by ten percent of the way to white, which is the smallest move that
+      // clears it while keeping the hue: `#C4626A` → `#CA7279` and `#BE6B82` → `#C47A8E`.
+      //
+      // **A `Text` widget does not know whether it is large**, which is why this is the text floor and not the
+      // non-text one: `HollowType.caption` is what actually draws an accent, and a caption is the smallest text on
+      // the screen. The accent colours are also fills -- a chip, a badge -- and for those 3:1 above is right; a
+      // colour has to satisfy the strictest thing it is used for.
+      for (final value in HollowPaletteValue.all) {
+        for (final (name, surface) in [
+          ('ground', value.ground),
+          ('surface', value.surface),
+          ('surfaceRaised', value.surfaceRaised),
+        ]) {
+          expect(
+            contrast(value.rose, surface),
+            greaterThanOrEqualTo(4.5),
+            reason: '${value.name}: rose as text on $name',
+          );
+          expect(
+            contrast(value.gold, surface),
+            greaterThanOrEqualTo(4.5),
+            reason: '${value.name}: gold as text on $name',
+          );
+        }
+      }
+    });
+
+    test('four worlds, four distinct names, one of them light', () {
+      // **Four themes became three worlds on 2026-09-25**, when the owner scrapped the old set and asked for new
+      // ones designed from scratch rather than a recolour; the count followed that decision.
+      //
+      // **And three became four on 2026-09-30**, when the owner put a theme on build `1.0.0+3939` -- the world
+      // named 永遠の歌姫, whose accent is `#39C5BB`. The number moved for the same kind of reason both times: it
+      // follows what the owner asked for, and nothing else in this test moved with it. That is why the count is
+      // asserted separately from the properties -- the two failures worth catching are a theme added without its
+      // own material (the test below) and a theme removed without anybody noticing.
+      expect(HollowPaletteValue.all, hasLength(4));
       expect(
         HollowPaletteValue.all.map((v) => v.name).toSet(),
-        hasLength(3),
+        hasLength(4),
         reason: 'a name is the wire format, so two themes sharing one is a stored setting that opens '
             'the wrong theme',
       );
       expect(HollowPaletteValue.whiteCourt.brightness, Brightness.light);
       expect(HollowPaletteValue.honeyed.brightness, Brightness.dark);
+      // **The fourth is dark, like two of the three before it, and that is allowed.** What separates worlds here is
+      // the ground's material and the ornament rather than lightness; the test below is the one that would catch a
+      // world which is only a recolour.
+      expect(HollowPaletteValue.eternalDiva.brightness, Brightness.dark);
     });
 
     test('each world draws its ground out of a different material', () {

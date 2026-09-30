@@ -1,0 +1,37 @@
+MIT License
+
+Copyright (c) 2026 S.M.Y.T. and the Hollow Court contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+This licence covers the source code and everything written for it, with one
+deliberate exception, stated here because a file that carries two licences and
+does not say so is worse than one that carries none:
+
+    art/ is NOT covered by the MIT licence above.
+
+The artwork under `art/` is licensed under the Piapro Character Licence (PCL)
+where it depicts a Piapro character, and `art/LICENSE` states which files and
+under what terms. PCL cannot be sublicensed (第3条第4項), so it cannot be folded
+into an MIT grant; PCL 第4条第2項 is what makes the split possible, because it
+applies only to the embedded element and not to the work containing it.
+
+See `docs/licensing.md` for the whole situation, with every clause quoted.

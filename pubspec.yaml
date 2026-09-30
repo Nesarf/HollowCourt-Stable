@@ -23,7 +23,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # The build number also has a job: the copy installed on the handset is versionCode **2001**
 # (a split APK, so Flutter adds 1000 x ABI), and the last Android version number was 1, so an
 # in-place update needs something above 2001. 515 gives an arm64 split 2515.
-version: 1.0.0+3028
+version: 1.0.0+3939
 
 environment:
   sdk: ^3.13.3
@@ -106,6 +106,17 @@ flutter:
     # executable in both a plain build and an AppImage, which is the only location that is
     # true of both.
     - assets/icon/
+    # **The fourth world's picture, and the only asset here that is not this project's own work.**
+    #
+    # `art/miku-wide.svg` and `art/miku-tall.svg` were traced from pictures the owner supplied, and they depict
+    # 初音ミク under the Piapro Character Licence. The rasters beside them are rendered from those SVGs by
+    # `rsvg-convert` because Flutter reads a bitmap and not a vector -- the SVG is the source rather than a
+    # snapshot of one, so the drawn shape stays exact and only the rasterisation is repeated here.
+    #
+    # **Their licence is not this repository's.** `LICENSE` at the root is MIT and says so in a note at the end;
+    # `art/LICENSE` states the terms for these files, and `关于空庭` carries the credit the licence asks for.
+    # See `docs/licensing.md`.
+    - assets/art/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -258,6 +258,53 @@ class PrismWashPainter extends CustomPainter {
         _laid(canvas, size, paint);
       case GroundTexture.frost:
         _frost(canvas, size, paint);
+      case GroundTexture.score:
+        _score(canvas, size, paint);
+    }
+  }
+
+  /// **A staff, with the motif scattered on it as notes.**
+  ///
+  /// Five lines to a stave, the way music is ruled, and the staves repeat down the page. The marks are the same
+  /// rhombus the lattice and the frost use -- so the four grounds are one motif in four materials rather than four
+  /// unrelated patterns -- placed on the lines and between them, sparse enough to read as notation.
+  ///
+  /// **Which lines carry a note is decided by the cell's own coordinates**, the rule `_frost` records: a repaint
+  /// from a resize or a theme switch puts every note back exactly where it was, and nothing here needs a seed
+  /// because there is nothing random about it.
+  void _score(Canvas canvas, Size size, Paint paint) {
+    final stave = cell * 2.4;
+    final gap = stave / 4;
+    // The staves themselves, fine and even.
+    for (var top = stave * 0.6; top < size.height + stave; top += stave) {
+      for (var line = 0; line < 5; line++) {
+        final y = top + line * gap;
+        canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+      }
+    }
+
+    // Notes: on a line or in a space, never on the same beat twice in a row.
+    var row = 0;
+    for (var top = stave * 0.6; top < size.height + stave; top += stave) {
+      row++;
+      var column = 0;
+      for (var x = cell; x < size.width + cell; x += cell) {
+        column++;
+        final pick = (row * 5 + column * 3) % 4;
+        if (pick == 0) continue;
+        final step = pick - 1; // 0..2, so a note sits on one of the first three lines or just above one
+        final y = top + step * gap + (pick == 3 ? gap / 2 : 0);
+        final radius = gap * 0.55;
+        canvas.drawPath(
+          Path()
+            ..moveTo(x, y - radius)
+            ..lineTo(x + radius * 0.7, y)
+            ..lineTo(x, y + radius)
+            ..lineTo(x - radius * 0.7, y)
+            ..close(),
+          paint,
+        );
+      }
     }
   }
 

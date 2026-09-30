@@ -184,6 +184,16 @@ final class SyncScope {
       };
     }
 
+    // **5. Recipe collections are deliberately NOT here, and this comment is the decision rather than its
+    // absence.** A collection is the reader's own filing -- what they call a group of drinks, and what is in it --
+    // while a share scoped to a shelf carries what is *on that shelf*: placements, the stock of those bottles, the
+    // prices of their ingredients, and names about them. A collection belongs to no shelf and cannot be reached
+    // through one.
+    //
+    // The whitelist exists so that a type added later is not shared until somebody decides it belongs, and the
+    // failure it produces is that nothing leaks -- which is the right way round. So this is the decision:
+    // collections travel in a whole-cellar sync, where the reader is handing over the cellar itself, and not in a
+    // shelf-scoped share. If that is ever wrong, the fix is a line here and a paragraph saying why.
     return false;
   }
 }

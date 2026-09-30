@@ -28,6 +28,26 @@ const String buildCommit = String.fromEnvironment('BUILD_COMMIT');
 /// address a reader can actually open, and the one the About screen is for.
 const String repositoryUrl = 'https://github.com/Nesarf/HollowCourt-Stable';
 
+/// **Where the author is, in one place, for the same reason the source address is.**
+///
+/// Given by the owner on 2026-09-30, and the first of them replaced a donation link within the hour. **That
+/// replacement was not cosmetic.** PCL -- the licence covering the two pieces in `art/` -- forbids collecting
+/// compensation of any kind, under any name, even where the use is not for profit (第3条第2項第1号: 「非営利目的で
+/// あっても、あらゆる名目の対価を徴収しまたは報酬を受けてはならない」). A donation link attached to a work that
+/// contains that artwork asks for exactly that; a profile link on any of these three sites does not, because
+/// nothing flows from the work to the author. **So the heading says 作者 and not 支持**, and that is the whole
+/// point of the change.
+///
+/// **Three sites and not one, because the author is on all three and none of them is a substitute for another.**
+/// bilibili published the work, 网易云音乐 distributes the music, SoundCloud holds the same music in the place
+/// that reaches outside China. A row that showed only one would be answering a question the reader did not ask.
+///
+/// They are constants rather than literals in the widget so each address appears once in the codebase -- the
+/// argument the source address above makes, and the one that put the version and the commit behind a `--dart-define`.
+const String bilibiliUrl = 'https://space.bilibili.com/11247581';
+const String neteaseUrl = 'https://music.163.com/#/artist?id=37459218';
+const String soundcloudUrl = 'https://soundcloud.com/nesarfmollor';
+
 /// The name, the version, where it came from, and where to find it.
 ///
 /// **What this screen is for.** A person who has installed something is entitled to know what it
@@ -77,30 +97,93 @@ class AboutSection extends StatelessWidget {
         DualCopyText(Copy.aboutNaming, style: HollowType.caption),
         const SizedBox(height: 6),
         DualCopyText(Copy.aboutTypeface, style: HollowType.caption),
+        const SizedBox(height: 14),
+        // **The PCL credit, and it is selectable rather than plain text.** A credit exists to name a rights
+        // holder, so a reader who wants to check or reuse it has to be able to copy it -- the same reason the
+        // address under a failed link is selectable. It sits above the source link so that "what this is" finishes
+        // before "where to find it" begins.
+        SelectableText(
+          Copy.aboutCharacterCredit,
+          style: HollowType.caption.copyWith(color: HollowPalette.inkFaint, height: 1.5),
+        ),
         const SizedBox(height: 20),
-        const _RepositoryLink(),
+        const _ExternalLink(
+          label: Copy.aboutRepository,
+          hint: Copy.aboutRepositoryHint,
+          failed: Copy.aboutRepositoryFailed,
+          url: repositoryUrl,
+        ),
+        const SizedBox(height: 16),
+        // **Three rows under one heading, and the heading carries the meaning.** 作者 is a fact about the person
+        // rather than a request to the reader, which is the constraint PCL's 第3条第2項第1号 imposes on any work
+        // carrying the artwork in `art/` -- see the constants above. The first row carries the heading and the two
+        // below it are the same kind of thing, so only the first has a line above it.
+        //
+        // No sentence under them: bilibili, 网易云音乐 and SoundCloud each name themselves, and a line explaining
+        // what a music profile is would be the interface telling a reader something they already know.
+        const _ExternalLink(
+          label: Copy.aboutAuthor,
+          hint: null,
+          failed: Copy.aboutSupportFailed,
+          url: bilibiliUrl,
+        ),
+        const SizedBox(height: 10),
+        const _ExternalLink(
+          label: Copy.aboutNetease,
+          hint: null,
+          failed: Copy.aboutSupportFailed,
+          url: neteaseUrl,
+        ),
+        const SizedBox(height: 10),
+        const _ExternalLink(
+          label: Copy.aboutSoundcloud,
+          hint: null,
+          failed: Copy.aboutSupportFailed,
+          url: soundcloudUrl,
+        ),
       ],
     );
   }
 }
 
-/// The repository, at the bottom of the bottom section, and what happens when it cannot be opened.
+/// A row that opens an address, and what happens when it cannot be opened.
 ///
-/// **Stateful for one reason: the failure has to be visible.** Tapping either opens the reader's own browser or
-/// replaces the hint with the address and the reason, because a link that does nothing when tapped is worse than
-/// no link -- the reader cannot tell whether the tap missed, the application is broken, or the address is wrong.
-class _RepositoryLink extends StatefulWidget {
-  const _RepositoryLink();
+/// **Stateful for one reason: the failure has to be visible.** Tapping opens the reader's own browser, or replaces
+/// the hint with the address and the reason -- because a link that does nothing when tapped is worse than no link:
+/// the reader cannot tell whether the tap missed, the application is broken, or the address is wrong.
+///
+/// **Two callers, one widget.** The source row and the support row are the same thing with different words, and the
+/// alternative -- a second copy of this state machine -- is how the two would drift apart in behaviour, which is the
+/// one thing a reader would never notice until one of them broke.
+class _ExternalLink extends StatefulWidget {
+  const _ExternalLink({
+    required this.label,
+    required this.hint,
+    required this.failed,
+    required this.url,
+  });
+
+  /// The link's own name, in the reader's language.
+  final CopyLine label;
+
+  /// What opening it does, or null when the name is enough -- the support row has no hint, because the sentence
+  /// above it already says what it is for.
+  final CopyLine? hint;
+
+  /// Shown when no browser could be reached, followed by the address so it can be carried elsewhere.
+  final CopyLine failed;
+
+  final String url;
 
   @override
-  State<_RepositoryLink> createState() => _RepositoryLinkState();
+  State<_ExternalLink> createState() => _ExternalLinkState();
 }
 
-class _RepositoryLinkState extends State<_RepositoryLink> {
+class _ExternalLinkState extends State<_ExternalLink> {
   bool _failed = false;
 
   Future<void> _open() async {
-    final opened = await openInBrowser(repositoryUrl);
+    final opened = await openInBrowser(widget.url);
     if (!mounted) return;
     setState(() => _failed = !opened);
   }
@@ -116,26 +199,37 @@ class _RepositoryLinkState extends State<_RepositoryLink> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  DualCopyText(Copy.aboutRepository, style: HollowType.body),
+                  // **Flexible, and this is the same fault the shopping list had.** A `Text` in a `Row` with no
+                  // flex takes its full intrinsic width, so a label longer than the screen overflows instead of
+                  // wrapping -- and `_ShoppingRows` records the identical fix for the identical reason. Measured:
+                  // at 200 px the row overflowed by 115 px before this, and 240 px was the narrowest that fitted
+                  // by luck rather than by design.
+                  //
+                  // `crossAxisAlignment.start` on both the Row and the text keeps the icon against the first line
+                  // rather than centred on a two-line label, which is where an eye looks for it.
+                  Flexible(child: DualCopyText(widget.label, style: HollowType.body)),
                   const SizedBox(width: 6),
                   Icon(Icons.open_in_new, size: 14, color: HollowPalette.gold),
                 ],
               ),
-              const SizedBox(height: 2),
-              DualCopyText(Copy.aboutRepositoryHint, style: HollowType.caption),
+              if (widget.hint case final hint?) ...[
+                const SizedBox(height: 2),
+                DualCopyText(hint, style: HollowType.caption),
+              ],
             ],
           ),
         ),
         if (_failed) ...[
           const SizedBox(height: 8),
           DualCopyText(
-            Copy.aboutRepositoryFailed,
+            widget.failed,
             style: HollowType.caption.copyWith(color: HollowPalette.rose),
           ),
           const SizedBox(height: 4),
           // Selectable, because the point of showing it is that the reader can carry it somewhere else.
-          SelectableText(repositoryUrl, style: HollowType.numeric),
+          SelectableText(widget.url, style: HollowType.numeric),
         ],
       ],
     );

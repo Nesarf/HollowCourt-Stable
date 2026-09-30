@@ -5,6 +5,61 @@ went wrong last time — lives in `docs/CHANGELOG.md`, which is an internal docu
 
 ---
 
+## 1.0.0.3939 — A fourth world, and a screen that reads
+
+**2026-09-30**
+
+### The text and the interface now have contrast
+
+**If captions and warnings were hard to read before, that was a real fault and it is fixed.** The colours used for
+warnings were measured against the surfaces they are actually drawn on and two of them were **just under** the
+readability floor — 3.98:1 and 4.02:1 where 4.5:1 is the minimum. Both were raised, and the check that should have
+caught them now covers them.
+
+### A fourth theme: 永遠の歌姫
+
+**Its accent is `#39C5BB` and its build number is `3939`, and the two say the same thing.** `39` reads ミク — three
+is ミ, nine is ク — so the number written twice is the reading written twice, and the colour carries `39` in its
+first two digits. The world is named for what the number says.
+
+**It is the first theme with its own artwork.** Two pieces drawn from an original picture and redrawn as flat
+vector, in one ink and no other, appear behind every screen while this theme is chosen: a tall one on a phone and
+a wide one on a desktop, because a single picture cropped two ways would be the wrong drawing on one of them.
+
+**And that artwork is not covered by this project's software licence.** It depicts 初音ミク, a character of Crypton
+Future Media, INC., and is used under the Piapro Character Licence; 关于空庭 credits it, and `art/LICENSE` states
+the terms. The source code is MIT and always was.
+
+### Two settings that used to do nothing now work
+
+**The text size** had been stored, drawn, and read by nothing since it was written — choosing a step changed a file
+and left every letter the size it already was. It now multiplies your own system setting rather than replacing it,
+so a reader who has already made their system fonts larger keeps that baseline.
+
+**The second language** was being looked up by the *primary* line's register, so with 伊丽莎白 chosen as the
+primary writing, English showed as `en (this build does not know it)` — for a language the build ships.
+
+### Smaller, and worth knowing about
+
+- **The shelf placement view is off the cellar page.** It is still in the application and one word brings it back.
+- **Windows now has a `setup.exe`** as well as the `.msi`, for people who expect to double-click an installer.
+- **The shopping list knows what you paid.** Each line shows the last price you recorded for that ingredient, with
+  the volume it was for, and the list totals what it can.
+- **Takings**, on the 记录 screen: what was spent over a day, a week, a month and a quarter, and how that compares
+  with what you have counted in the till. It says plainly that the income side cannot be recorded yet — nothing in
+  the record states that a drink was sold.
+- **A note about the voice writing**: 伊丽莎白 and the minister now have their own wording in more of the
+  interface, including the error messages.
+
+### How to check which build you have
+
+**Open About.** The binary prints the version it was built as and the commit it was built from.
+
+**Its version is `1.0.0.3939`.** Android names the version twice: that is the displayed one, and the installer
+compares an integer that differs per ABI so each can be upgraded on its own — Android's rule, not this project's.
+
+---
+
 ## 1.0.0.3028 — Two settings that did nothing
 
 **2026-09-30**
