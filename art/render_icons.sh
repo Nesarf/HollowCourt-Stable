@@ -18,8 +18,37 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/.." && pwd)"
-SVG="$HERE/icon-hc.svg"
 RENDER="$HERE/render"
+
+# **Which mark family this run draws, and the default is the medallion.**
+#
+#     art/render_icons.sh                 # the medallion: the mark tied to the character sheet
+#     MARK=construct art/render_icons.sh  # the constructivist alternative
+#
+# The two are separate generators rather than one with a style switch, because they are separate
+# identities: the medallion keeps the halo's three elements and its fifteen degrees of tilt from the
+# character's setting, and the constructivist mark is a diagonal, a circle and a square that owe the
+# character nothing. Which one ships is therefore a decision and not a preference, so it is named here
+# in one line and both stay in the repository. Nothing is deleted when the other is drawn.
+MARK="${MARK:-medallion}"
+case "$MARK" in
+  medallion)
+    GENERATOR="$HERE/make_icon.py"
+    SVG="$HERE/icon-hc.svg"
+    MID="$HERE/icon-hc-mid.svg"
+    SMALL="$HERE/icon-hc-small.svg"
+    ;;
+  construct)
+    GENERATOR="$HERE/make_construct_icon.py"
+    SVG="$HERE/icon-hc-construct.svg"
+    MID="$HERE/icon-hc-construct-mid.svg"
+    SMALL="$HERE/icon-hc-construct-small.svg"
+    ;;
+  *)
+    echo "render_icons.sh: unknown MARK '$MARK' (expected medallion or construct)" >&2
+    exit 2
+    ;;
+esac
 
 command -v python3 >/dev/null || { echo "python3 is needed to draw the mark" >&2; exit 1; }
 command -v rsvg-convert >/dev/null || { echo "rsvg-convert is needed to render it" >&2; exit 1; }
@@ -33,13 +62,13 @@ echo "== clearing the previous render =="
 rm -f "$RENDER"/icon-hc-*.png
 echo "  cleared"
 
-echo "== drawing =="
-python3 "$HERE/make_icon.py"
+echo "== drawing ($MARK) =="
+python3 "$GENERATOR"
 
 echo "== checking the XML =="
 bash "$REPO/packaging/windows/check_comments.sh" "$SVG"
-bash "$REPO/packaging/windows/check_comments.sh" "$HERE/icon-hc-mid.svg"
-bash "$REPO/packaging/windows/check_comments.sh" "$HERE/icon-hc-small.svg"
+bash "$REPO/packaging/windows/check_comments.sh" "$MID"
+bash "$REPO/packaging/windows/check_comments.sh" "$SMALL"
 
 echo "== rendering =="
 # **Each size is rendered from the drawing made for it.** The mark ships at fifteen sizes and was one
@@ -59,8 +88,8 @@ echo "== rendering =="
 mkdir -p "$RENDER"
 for size in 1024 512 432 384 256 192 144 128 96 72 64 48 32 24 16; do
   if [ "$size" -ge 128 ]; then source="$SVG"
-  elif [ "$size" -ge 48 ]; then source="$HERE/icon-hc-mid.svg"
-  else source="$HERE/icon-hc-small.svg"
+  elif [ "$size" -ge 48 ]; then source="$MID"
+  else source="$SMALL"
   fi
   rsvg-convert -w "$size" -h "$size" "$source" -o "$RENDER/icon-hc-$size.png"
   printf '  %-4s %-8s %s\n' "$size" "$(basename "$source")" "$(du -h "$RENDER/icon-hc-$size.png" | cut -f1)"

@@ -1547,6 +1547,45 @@ four-colour ring competing with the monogram it surrounds. Two inks fixed it, wh
 rule rather than a coincidence. The comparison sheets were working material and have been deleted; what they
 showed is written here and in the study note.
 
+### 12.7.2 The mark is now the constructivist one, and the medallion is kept (2026-09-30)
+
+**Two corrections to 12.7 first, because it describes a mark that no longer exists.** The letters are gone:
+the centre of the medallion is the halo's crystal, drawn from four nested offset diamonds, and
+`art/blackletter_glyphs.py` and `art/extract_glyphs.py` went with them, so nothing in this project outlines a
+typeface any more. What 12.7 says about **why** the letters were geometry rather than `<text>` still holds and
+still governs the drawing; what it says about where they come from is history.
+
+**The owner asked for a second mark, in the manner of a constructivist composition.** The occasion was a picture
+he brought: a flat, shadowless collage of bar equipment. It cannot be used as a mark, and the reason is worth
+writing down rather than the verdict -- **it carried some fourteen thousand distinct colours and it separated its
+elements with black outlines**, which is the opposite of the property measured in 12.7.1 above and taken from that
+crafting game: detail cut out of flat shapes, two inks, a stamp that survives being small. So the method was drawn
+again rather than the picture rescaled.
+
+**The composition is three shapes: a diagonal axis, a circle band, and the square turned on its corner.** The
+diagonal is the movement's own device; the circle crossing it is the second; the diamond is not borrowed at all --
+it is the mark the navigation bar already draws for the cellar. There is **not one `stroke` in the file**: every
+dividing line is the edge of a fill or of a cut, so the shapes separate by value and by negative space, which is
+both what the owner asked for and the property that keeps working when the mark is small.
+
+**Declared in whole rather than assembled out of switches.** Each tier names its inks, and the counts are 5, 4 and
+2. The smallest tier is the document's `two inks`, with the ground serving as a third value rather than a third
+ink. That phrasing is a fix and not a flourish: the first cut described each tier by what it turned on, and the
+inks it ended up using were whatever those switches produced -- the ring rendered black, because a path with no
+fill takes the ink default, and the diagonal all but vanished under its own overlay.
+
+**Both families live in the repository, and which one ships is one word.**
+
+| | |
+| --- | --- |
+| `bash art/render_icons.sh` | the medallion -- **the default**, and the one tied to the character sheet |
+| `MARK=construct bash art/render_icons.sh` | the constructivist mark -- what ships today |
+
+They are separate generators rather than one with a style switch, because they are separate **identities**: the
+medallion keeps the halo's three elements and its fifteen degrees of clockwise tilt from the character's setting,
+and the constructivist mark owes her nothing. Nothing is deleted when the other is drawn, so going back is one
+command rather than a recovery.
+
 ---
 
 ### 12.9.1 从 a rhythm game 研究借来的三条，落到空庭的三处（2026-09-22）
