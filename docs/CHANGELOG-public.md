@@ -5,6 +5,47 @@ went wrong last time — lives in `docs/CHANGELOG.md`, which is an internal docu
 
 ---
 
+## 1.0.0.3028 — Two settings that did nothing
+
+**2026-09-30**
+
+### The text size setting works now
+
+**It had never done anything.** The four steps were stored and drawn in the settings page, and nothing read
+them: choosing one wrote a file and left every string the size it already was. If you turned the text size up
+in an earlier version and saw no difference, that was not you — it was the setting.
+
+**It now multiplies your own system setting rather than replacing it.** If you have already made your
+system's fonts larger, that stays your baseline and this steps up or down from it, so the middle option is
+exactly what your platform asked for rather than a reset of it.
+
+### A language this build ships no longer reads as one it does not
+
+With the heiress register chosen as the primary writing, the second-language control drew `en (this build does not
+know it)` — for English, which is in the build. The second language was being looked up by the *primary line's*
+register, which it has nothing to do with.
+
+### The shelf is off the cellar page
+
+**The placement view — dragging bottles onto a shelf — is not drawn any more.** A shelf answers "where is the
+vermouth", and it can only answer that if you can tell one bottle from another at a glance; every ingredient
+still looks the same, so it could not. The code is still here and one word brings it back, but this build does
+not show it. Everything else on the cellar page is where it was.
+
+### And what this version does not claim
+
+- The two marks are still two marks: a picture at 256 pixels and the letter at 16.
+- The network layer, the tunnels and the peripherals are as they were.
+
+### How to check which build you have
+
+**Open About.** The binary prints the version it was built as and the commit it was built from.
+
+**Its version is `1.0.0.3028`.** Android names the version twice: that is the displayed one, and the installer
+compares an integer that differs per ABI so each can be upgraded on its own — Android's rule, not this project's.
+
+---
+
 ## 1.0.0.2880 — The mark changes
 
 **2026-09-30**
@@ -30,6 +71,10 @@ drawing gave half-pixel cells and visible seams. There is now one drawing per si
   arrangement, not a limitation to be removed later.
 - Everything else in the list below about the first release still holds: the network layer is partial, tunnels are
   not usable, and the peripherals are waiting on their protocols.
+
+### How to check which build you have
+
+**Open About**, where the binary prints the version it was built as and the commit it was built from. 
 
 ---
 
@@ -87,8 +132,5 @@ found seven defects in a row, every one of them the kind that only a second mach
 Android, one per ABI. **Every artifact carries a record beside it** naming the commit it was built from, when it was built,
 and its sha256 — so "is this file the one that was published" is a question you can answer yourself.
 
-**And the difference between this release and the previous set is visible in the application itself**: open About, where the
-binary prints the commit it was built from. **Its version is `1.0.0.2880`.**
-
-**Android names the version twice**: the displayed one is `1.0.0.2880`, and the installer compares an integer that differs
-per ABI so each can be upgraded on its own. That is Android's rule, not this project's.
+**This section no longer states a version for you to check**, because it described the 1.0.0.2184 release and the version
+facts now live in the section of the release they belong to — every release below this one states its own.

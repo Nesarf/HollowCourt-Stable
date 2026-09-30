@@ -145,4 +145,49 @@ if [ -f "$OUT_DIR\hollow-court-$MSI_VERSION.wixpdb" ]; then
     lib windows art pubspec.yaml packaging/windows
 fi
 
+echo "==> burn bundle (the .exe installer)"
+
+# **The `.exe` is built FROM the `.msi`, and that order is the design rather than an accident.** The MSI owns
+# the files, the shortcuts and the uninstall entry; the bundle carries it, with a bootstrapper in front. So
+# there is one description of what "installed" means and the `.exe` is a delivery method for it, which is why
+# this runs after the MSI has been built and validated rather than beside it.
+#
+# **`-ext` takes the extension's NAME, not a path.** That cost four failed builds: a path is accepted by the
+# option, ignored silently, and the failure surfaces later as `WIX0200: unhandled extension element`, which
+# reads like a mistake in the source rather than a missing extension. The extension lives in this machine's WiX
+# cache, added once with `wix extension add -g WixToolset.BootstrapperApplications.wixext`, and this checks for
+# it so a fresh machine gets a sentence instead of that error.
+if ! "$WIX" extension list -g 2>/dev/null | grep -q 'BootstrapperApplications'; then
+  echo "build.sh: the Burn extension is not in this machine's WiX cache." >&2
+  echo "  The .exe installer needs it, and it is one command:" >&2
+  echo "      wix extension add -g WixToolset.BootstrapperApplications.wixext" >&2
+  echo "  (5.0.2 is what this was built against, matching this machine's wix.exe)" >&2
+  exit 2
+fi
+
+SETUP_WIN="$(cygpath -w "$OUT_DIR/hollow-court-$MSI_VERSION-setup.exe")"
+"$WIX" build -ext WixToolset.BootstrapperApplications.wixext \
+  -arch x64 \
+  -d "BundleVersion=$MSI_VERSION" \
+  -d "MsiPath=$MSI_WIN" \
+  -d "BundleIcon=$(cygpath -w "$REPO/windows/runner/resources/app_icon.ico")" \
+  -o "$SETUP_WIN" \
+  "$(cygpath -w "$REPO/packaging/windows/hollow-court-bundle.wxs")"
+
+echo "==> receipt (bundle)"
+bash "$REPO/packaging/write_receipt.sh" "$SETUP_WIN" \
+  "burn bundle carrying hollow-court-$MSI_VERSION.msi; the MSI is the install and this is the double-clickable delivery of it" \
+  lib windows art pubspec.yaml packaging/windows
+
+# **The bundle has a `.wixpdb` too, and the first round forgot it.** A manifest row that reads
+# 'unrecorded' never resolves on its own, so the file would have sat there as a permanent unknown in a
+# document that is only worth reading while every line means something. Same reason the MSI's companion is
+# receipted above, and the same list of sources.
+if [ -f "$OUT_DIR\hollow-court-$MSI_VERSION-setup.wixpdb" ]; then
+  bash "$REPO/packaging/write_receipt.sh" "$OUT_DIR\hollow-court-$MSI_VERSION-setup.wixpdb" \
+    "companion to hollow-court-$MSI_VERSION-setup.exe; maps a crash back to source, never shipped" \
+    lib windows art pubspec.yaml packaging/windows
+fi
+
 echo "==> done: $OUT_DIR\hollow-court-$MSI_VERSION.msi"
+echo "==> done: $OUT_DIR\hollow-court-$MSI_VERSION-setup.exe"

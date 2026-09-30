@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The Windows installer people actually double-click.
+
+  **Why there is a second Windows artifact.** The `.msi` is the install and has been since the first
+  release, but a `.msi` is a Windows Installer database: double-clicking one is fine on a machine whose
+  shell knows what to do with it, and it is the file people recognise as "the download". The `.exe` this
+  file builds is a Burn bundle, a small native executable with the `.msi` inside it and a bootstrapper
+  in front, which is what the rest of the world ships and what a reader opens without a second
+  thought. The owner's instruction on 2026-09-30 was 需要一个单独的exe文件——也就是安装程序.
+
+  **It is not a repackaging of the application.** The bundle carries the MSI and installs it; the MSI
+  is still the thing that owns the files, the shortcuts and the uninstall entry. So there is exactly
+  one description of what "installed" means, and the `.exe` is a delivery method rather than a second
+  truth about the product.
+
+  **Both are attached to the release, and neither replaces the other.** A reader who wants the MSI can
+  still have it, which matters for the people who deploy software rather than run it.
+
+  **The bundle's own version is the MSI's**, taken from the same expression the MSI's `Version` uses, so
+  the two cannot disagree. WiX reads these comments as XML, where a doubled hyphen is not valid and
+  is rejected as WIX0104 rather than repaired; write a comma or an em dash instead. Do not try to quote
+  the forbidden character sequence here to warn about it, which is what this paragraph did first and
+  why it failed its own check. `packaging/windows/check_comments.sh` enforces that for
+  every file in this folder, and it caught exactly this mistake three times in one day.
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+
+  <Bundle
+      Name="空庭 Hollow Court"
+      Version="$(BundleVersion)"
+      Manufacturer="S.M.Y.T."
+      UpgradeCode="7F3A9C21-4E68-4B0D-9A52-1D8E6C4B7A33"
+      IconSourceFile="$(BundleIcon)"
+      AboutUrl="https://github.com/Nesarf/HollowCourt-Stable">
+
+    <!--
+      **The application's own icon, so the download looks like the application.** `BundleIcon` is the
+      `.ico` Flutter already embeds, which is written by `art/render_icons.sh`, so the mark on the
+      installer tracks the mark in the product rather than being a second drawing to keep in step.
+    -->
+    <!--
+        **`hyperlinkLicense` with no license URL, and that is deliberate rather than an omission.** The
+        stock bootstrapper's other themes show a "I accept the terms" checkbox, and there are no terms to
+        accept: this is a per-user install of a cellar that lives in the reader's own documents folder,
+        it asks for no elevation, and the project is public. A licence page with nothing on it is a
+        click a reader has to make for no reason. `LicenseUrl=""` is what suppresses the link.
+      -->
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication Theme="hyperlinkLicense" LicenseUrl="" />
+    </BootstrapperApplication>
+
+    <Chain>
+      <!--
+        **`Vital`, because there is nothing else in the chain to continue to.** A failed install has to
+        be reported rather than skipped past.
+      -->
+      <MsiPackage SourceFile="$(MsiPath)" Vital="true" />
+    </Chain>
+  </Bundle>
+</Wix>
