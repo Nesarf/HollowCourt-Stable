@@ -20,9 +20,22 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # **`build-name` stays three-part because pub requires it; the version the OWNER named is four-part**
 # (`1.0.0.514`), so the fourth part lives as the build number here and as an explicit `versionName` in
 # `android/app/build.gradle.kts`, which is what Android displays and what this round is called.
-# The build number also has a job: the copy installed on the handset is versionCode **2001**
-# (a split APK, so Flutter adds 1000 x ABI), and the last Android version number was 1, so an
-# in-place update needs something above 2001. 515 gives an arm64 split 2515.
+# The build number also has a job: it is the base that Flutter's `split-per-abi` multiplies, so an in-place
+# update of the handset works without the reader uninstalling anything.
+#
+# **It is not `1000 x ABI`, which is what this comment said until 2026-09-30.** The multiplier is Flutter's
+# own `ABI_VERSION` table, and it has three different values rather than one — from the SDK, at
+# `packages/flutter_tools/gradle/src/main/kotlin/FlutterPluginConstants.kt`:
+#
+#     ARCH_ARM32  (armeabi-v7a) to 1   ->  +1000
+#     ARCH_ARM64  (arm64-v8a)   to 2   ->  +2000
+#     ARCH_X86_64 (x86_64)      to 4   ->  +4000
+#
+# (3 was reserved for x86, whose support Flutter removed.) Measured on this round rather than reasoned about:
+# 3939 gives **4939, 5939 and 7939**, three values that differ so each ABI can be upgraded on its own — which
+# is the whole point of the table, and quiet on `1000 x ABI` for the one that matters most on a phone.
+#
+# `docs/TODO.md` section 八之一 had already caught this; the comment here had not been changed with it.
 version: 1.0.0+3939
 
 environment:
