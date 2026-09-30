@@ -23,7 +23,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # The build number also has a job: the copy installed on the handset is versionCode **2001**
 # (a split APK, so Flutter adds 1000 x ABI), and the last Android version number was 1, so an
 # in-place update needs something above 2001. 515 gives an arm64 split 2515.
-version: 1.0.0+2221
+version: 1.0.0+2880
 
 environment:
   sdk: ^3.13.3

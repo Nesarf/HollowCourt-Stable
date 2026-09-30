@@ -22,14 +22,25 @@ RENDER="$HERE/render"
 
 # **Which mark family this run draws, and the default is the medallion.**
 #
-#     art/render_icons.sh                 # the medallion: the mark tied to the character sheet
-#     MARK=construct art/render_icons.sh  # the constructivist alternative
+#     art/render_icons.sh                    # the medallion: the mark tied to the character sheet
+#     MARK=construct art/render_icons.sh     # the constructivist alternative
+#     MARK=image art/render_icons.sh         # drawn from a picture the owner brought
+#     MARK=a art/render_icons.sh             # the publisher's A, at every size
+#     MARK=picture-and-a art/render_icons.sh # the picture, with the A where the picture fails
 #
-# The two are separate generators rather than one with a style switch, because they are separate
-# identities: the medallion keeps the halo's three elements and its fifteen degrees of tilt from the
-# character's setting, and the constructivist mark is a diagonal, a circle and a square that owe the
-# character nothing. Which one ships is therefore a decision and not a preference, so it is named here
-# in one line and both stay in the repository. Nothing is deleted when the other is drawn.
+# They are separate generators rather than one with a style switch, because they are separate identities:
+# the medallion keeps the halo's three elements and its fifteen degrees of tilt from the character's
+# setting, and the others owe the character nothing. Which one ships is therefore a decision and not a
+# preference, so it is named here in one line and all of them stay in the repository. Nothing is deleted
+# when another is drawn.
+#
+# **`picture-and-a` is the owner's instruction stated as a rule, and the rule is a measurement.** The
+# picture is the mark; the A stands in only where the picture's information is gone. Measured, size by
+# size: at 256 and 128 the still life reads; at 96 and 64 it is a pattern but the picture as a whole still
+# holds; at 48 it is a dense field of brown blocks from which nobody could name an object; at 32 and below
+# it is mottled colour. So the picture takes 64 and up, and the A takes 48 and below. The one number that
+# decides is here rather than scattered through the loop.
+FIDELITY_FLOOR=64
 MARK="${MARK:-medallion}"
 case "$MARK" in
   medallion)
@@ -44,8 +55,76 @@ case "$MARK" in
     MID="$HERE/icon-hc-construct-mid.svg"
     SMALL="$HERE/icon-hc-construct-small.svg"
     ;;
+  image)
+    # **The source travels with the generator, and this checks it is there before drawing.** The
+    # drawing is a function of the picture, so a missing input is a pipeline that cannot run; it should
+    # say so in those words rather than fail inside Python with a traceback nobody can act on.
+    SOURCE="$HERE/mark-source.png"
+    [ -f "$SOURCE" ] || {
+      echo "render_icons.sh: $SOURCE is missing; the image mark is drawn from it" >&2
+      echo "  put the picture there, then: python3 art/make_icon_from_image.py $SOURCE" >&2
+      exit 2
+    }
+    GENERATOR="$HERE/make_icon_from_image.py"
+    # One drawing per size that needs one, and `drawing_for` picks by exact divisibility: a drawing's cells
+    # have to land on whole pixels, which is why there are nine rather than three.
+    P48="$HERE/icon-hc-image-48.svg"
+    P64="$HERE/icon-hc-image-64.svg"
+    P72="$HERE/icon-hc-image-72.svg"
+    P96="$HERE/icon-hc-image-96.svg"
+    P128="$HERE/icon-hc-image-128.svg"
+    P192="$HERE/icon-hc-image-192.svg"
+    P256="$HERE/icon-hc-image-256.svg"
+    P384="$HERE/icon-hc-image-384.svg"
+    PFULL="$HERE/icon-hc-image.svg"
+    ;;
+  picture-and-a)
+    # **Both families, and the split happens at render time.** This is the owner's rule of 2026-09-30: the
+    # picture is the mark and the A stands in only where the picture's information is gone. Both generators
+    # run, so both sets of drawings exist and either can be rendered alone afterwards; the choice between
+    # them for a given size is `FIDELITY_FLOOR` in the loop below and nowhere else.
+    SOURCE="$HERE/mark-source.png"
+    [ -f "$SOURCE" ] || {
+      echo "render_icons.sh: $SOURCE is missing; half of this mark is drawn from it" >&2
+      echo "  put the picture there, then: python3 art/make_icon_from_image.py $SOURCE" >&2
+      exit 2
+    }
+    GENERATOR="$HERE/make_icon_from_image.py"
+    ALSO_GENERATE="$HERE/make_pixel_mark.py"
+    # The picture's nine drawings, so that a size above the floor renders from whole cells.
+    P48="$HERE/icon-hc-image-48.svg"
+    P64="$HERE/icon-hc-image-64.svg"
+    P72="$HERE/icon-hc-image-72.svg"
+    P96="$HERE/icon-hc-image-96.svg"
+    P128="$HERE/icon-hc-image-128.svg"
+    P192="$HERE/icon-hc-image-192.svg"
+    P256="$HERE/icon-hc-image-256.svg"
+    P384="$HERE/icon-hc-image-384.svg"
+    PFULL="$HERE/icon-hc-image.svg"
+    # The stand-ins, one per size below the floor: a letter drawn for 24 rendered at 16 is bolder than the
+    # drawing made for 16, which is the same fault as enlarging a small drawing, one step down.
+    A16="$HERE/icon-hc-a16.svg"
+    A24="$HERE/icon-hc-a24.svg"
+    A32="$HERE/icon-hc-a32.svg"
+    A48="$HERE/icon-hc-a48.svg"
+    ;;
+  a)
+    # **The publisher's A, for the sizes where the picture mark cannot be read.** This family exists
+    # because the still life of a dozen objects is mottled colour at sixteen pixels: the drawing is
+    # replaced rather than shrunk, which is the same answer the medallion's smaller tiers took in
+    # `docs/DESIGN.md` 12.7.1. Three drawings, one A each, all ink on the application's own ground.
+    GENERATOR="$HERE/make_pixel_mark.py"
+    # Six drawings, one per size the letter ships at, because a letter has to thin as the mark grows: a
+    # drawing made for 32 pixels rendered at 256 gives a chunky A, which is what the first attempt produced.
+    A16="$HERE/icon-hc-a16.svg"
+    A24="$HERE/icon-hc-a24.svg"
+    A32="$HERE/icon-hc-a32.svg"
+    A48="$HERE/icon-hc-a48.svg"
+    A64="$HERE/icon-hc-a64.svg"
+    A128="$HERE/icon-hc-a128.svg"
+    ;;
   *)
-    echo "render_icons.sh: unknown MARK '$MARK' (expected medallion or construct)" >&2
+    echo "render_icons.sh: unknown MARK '$MARK' (expected medallion, construct, image or a)" >&2
     exit 2
     ;;
 esac
@@ -64,11 +143,32 @@ echo "  cleared"
 
 echo "== drawing ($MARK) =="
 python3 "$GENERATOR"
+if [ -n "${ALSO_GENERATE:-}" ]; then
+  # The stand-in is drawn as well, so both sets of drawings exist on disk and either can be rendered alone.
+  echo "== drawing the stand-in (the A) =="
+  python3 "$ALSO_GENERATE"
+fi
 
 echo "== checking the XML =="
-bash "$REPO/packaging/windows/check_comments.sh" "$SVG"
-bash "$REPO/packaging/windows/check_comments.sh" "$MID"
-bash "$REPO/packaging/windows/check_comments.sh" "$SMALL"
+# **Every drawing the family named, gathered from the variables rather than from a second list.** A family
+# now names up to ten drawings, and a list here would be a second place to keep in step -- which is how the
+# check came to be looking at unset variables and failing the run instead of checking anything. This walks
+# the same names the mapping above reads, checks only those that exist, and refuses if none does.
+checked=0
+for candidate in "${SVG:-}" "${MID:-}" "${SMALL:-}" "${TINY:-}" "${A16:-}" "${A24:-}" "${A32:-}" \
+                 "${A48:-}" "${A64:-}" "${A128:-}" "${P48:-}" "${P64:-}" "${P72:-}" "${P96:-}" \
+                 "${P128:-}" "${P192:-}" "${P256:-}" "${P384:-}" "${PFULL:-}"; do
+  # **An `if`, not `[ ... ] && [ ... ] || continue`.** That idiom looks the same and is not: with
+  # `set -e`, a failing test on the left of `&&` can end the script before the `||` is reached, which is
+  # what happened here -- the run stopped at this line every time, with no message, before checking one
+  # drawing. An `if` has no such trap.
+  if [ -n "$candidate" ] && [ -f "$candidate" ]; then
+    bash "$REPO/packaging/windows/check_comments.sh" "$candidate"
+    checked=$((checked + 1))
+  fi
+done
+[ "$checked" -gt 0 ] || { echo "render_icons.sh: no drawing was checked for family $MARK" >&2; exit 2; }
+echo "  $checked drawing(s) checked"
 
 echo "== rendering =="
 # **Each size is rendered from the drawing made for it.** The mark ships at fifteen sizes and was one
@@ -86,13 +186,84 @@ echo "== rendering =="
 # The reference is a crafting game's mark: one flat silhouette, detail as negative space rather than thin lines,
 # two inks on paper.
 mkdir -p "$RENDER"
+
+# ---- which drawing a size is rendered from, one line per case ----
+#
+# **The rule is that a drawing's cells land on whole pixels, and that is measured rather than assumed.** An
+# Android icon is 48 pixels at mdpi and 192 at xxxhdpi, and 192 is not a multiple of 128: rendering the
+# 128-cell drawing at 192 gave 1.5 pixels per cell, and against a native 192-cell drawing a quarter of the
+# pixels differed and the edges showed seams. So each size is served by the finest drawing that divides it
+# exactly. Two sizes fall back to a coarser one because nothing divides them more finely: 144 to the 48-cell
+# drawing, and 432 to the 72-cell one. 1024 uses the 512-cell drawing on purpose -- a 1024-cell drawing is a
+# two-megabyte file for detail nobody reads at masthead size.
+#
+# Each family names its own drawings below and this reads them; a family that names none of them falls back
+# to the three-tier defaults, which is how the medallion and the constructivist mark are still rendered.
+drawing_for() {
+  case "$1" in
+    16)
+      if   [ -n "${A16:-}" ]; then echo "$A16"
+      elif [ -n "${TINY:-}" ]; then echo "$TINY"
+      else echo "${SMALL:-}"; fi ;;
+    24)
+      if   [ -n "${A24:-}" ]; then echo "$A24"
+      elif [ -n "${TINY:-}" ]; then echo "$TINY"
+      else echo "${SMALL:-}"; fi ;;
+    32)
+      if   [ -n "${A32:-}" ]; then echo "$A32"
+      elif [ -n "${TINY:-}" ]; then echo "$TINY"
+      else echo "${SMALL:-}"; fi ;;
+    48)
+      if   [ -n "${A48:-}" ] && [ -n "${FIDELITY_FLOOR:-}" ] && [ 48 -lt "$FIDELITY_FLOOR" ]; then echo "$A48"
+      elif [ -n "${P48:-}" ]; then echo "$P48"
+      else echo "${MID:-}"; fi ;;
+    64)   echo "${A64:-${P64:-${MID:-}}}" ;;
+    72)   echo "${A64:-${P72:-${MID:-}}}" ;;
+    96)   echo "${A128:-${P96:-${MID:-}}}" ;;
+    128)  echo "${A128:-${P128:-${SVG:-}}}" ;;
+    144)  echo "${A128:-${P48:-${SVG:-}}}" ;;   # 144 = 3 x 48; nothing in the set divides it more finely
+    192)  echo "${A128:-${P192:-${SVG:-}}}" ;;
+    256)  echo "${A128:-${P256:-${SVG:-}}}" ;;
+    384)  echo "${A128:-${P384:-${SVG:-}}}" ;;
+    432)  echo "${A128:-${P72:-${SVG:-}}}" ;;   # 432 = 6 x 72
+    512)  echo "${A128:-${PFULL:-${SVG:-}}}" ;;
+    1024) echo "${A128:-${PFULL:-${SVG:-}}}" ;;
+    *)    echo "" ;;
+  esac
+}
+
 for size in 1024 512 432 384 256 192 144 128 96 72 64 48 32 24 16; do
-  if [ "$size" -ge 128 ]; then source="$SVG"
-  elif [ "$size" -ge 48 ]; then source="$MID"
-  else source="$SMALL"
+  source="$(drawing_for "$size")"
+  if [ -z "$source" ] || [ ! -f "$source" ]; then
+    echo "render_icons.sh: no drawing for $size pixels (family $MARK)" >&2
+    exit 2
   fi
-  rsvg-convert -w "$size" -h "$size" "$source" -o "$RENDER/icon-hc-$size.png"
-  printf '  %-4s %-8s %s\n' "$size" "$(basename "$source")" "$(du -h "$RENDER/icon-hc-$size.png" | cut -f1)"
+
+  # **144 is drawn at twice its size and halved.** Of the sizes that ship, 144 is the one whose own size has
+  # no fine divisor: it divides by 48 and nothing else above it, and a 48-cell drawing enlarged three times
+  # is a field of blocks -- rendered beside the same mark drawn at 96 cells and halved from 288, the finer
+  # one keeps the objects legible and the coarse one loses them, which is a measurement and not a preference.
+  # A power-of-two reduction is exact at the pixel level, so nothing is lost by it.
+  #
+  # It is written as one explicit case rather than derived from the drawing's name, because an earlier
+  # attempt tried to derive it and asked `drawing_for` for sizes the table has no entry for -- 288 and 1024 --
+  # which returned nothing and silently left the coarse drawing in place. The table above is the truth about
+  # which drawings exist; anything else that needs one has to say so itself.
+  render_at="$size"
+  shrink=1
+  if [ "$size" = 144 ]; then
+    source="${P96:-$source}"
+    render_at=288
+    shrink=2
+  fi
+  rsvg-convert -w "$render_at" -h "$render_at" "$source" -o "$RENDER/icon-hc-$size.png"
+  if [ "$shrink" -gt 1 ]; then
+    # Halved by ImageMagick rather than rendered small, so the reduction is one exact step: every source
+    # pixel becomes a whole block of two.
+    magick "$RENDER/icon-hc-$size.png" -resize "$((100 / shrink))%" "$RENDER/icon-hc-$size.png"
+  fi
+  printf '  %-4s %-14s %-4s %s\n' "$size" "$(basename "$source")" \
+    "$([ "$shrink" -gt 1 ] && echo "${shrink}x" || echo '')" "$(du -h "$RENDER/icon-hc-$size.png" | cut -f1)"
 done
 
 echo "== installing =="

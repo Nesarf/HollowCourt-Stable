@@ -138,22 +138,47 @@ def notes_for(version: str) -> "str | None":
     return sanitise_public.INTERNAL_BLOCK.sub('', section).strip()
 
 
-def newest_assets() -> "list[str]":
-    """The newest version folder in the bundle, whose files are this release's artifacts."""
+def newest_assets(version: str = '') -> "list[str]":
+    """This version's artifacts, from the bundle.
+
+    **It used to pick the newest `1.0.*` FOLDER and take everything in it, which would have attached the
+    wrong files to a release.** The folders in the bundle are the rounds that predate the flat layout --
+    `1.0.0+2184` is still sitting there -- while the packaging scripts now write into the bundle root, so
+    "the newest folder" was a round from days earlier and this round's files were beside it, unread. A
+    release whose page names one version and whose downloads are another is precisely the fault the
+    receipt check below exists to catch, arriving through the front door instead.
+
+    So it matches on the version being released rather than on timestamps. `version` is the pubspec pair,
+    `1.0.0+2880`, and the artifacts name themselves two ways: the application's files use the four-part
+    form (`1.0.0.2880`) and the installer the three-part one (`1.0.2880`), because Windows Installer
+    compares only three fields. Both are accepted, and both layouts -- the root and a per-version folder --
+    are searched, so the older rounds keep working and a future change of mind does too.
+    """
     if not os.path.isdir(BUNDLE):
         return []
-    folders = [name for name in os.listdir(BUNDLE)
-               if os.path.isdir(os.path.join(BUNDLE, name)) and name.startswith('1.0.')]
-    if not folders:
-        return []
-    def newest(name: str) -> float:
-        folder = os.path.join(BUNDLE, name)
-        times = [os.path.getmtime(os.path.join(folder, n)) for n in os.listdir(folder)]
-        return max(times) if times else 0.0
-    folder = os.path.join(BUNDLE, max(folders, key=newest))
-    return [os.path.join(folder, name) for name in sorted(os.listdir(folder))
-            if not name.endswith('.commit')]
-
+    build = version.split('+')[-1] if version else ''
+    marks = ['1.0.0.%s' % build, '1.0.%s' % build] if build else []
+    found = []
+    for name in sorted(os.listdir(BUNDLE)):
+        path = os.path.join(BUNDLE, name)
+        if os.path.isdir(path):
+            if marks and not any(mark in name for mark in marks):
+                continue
+            found += [os.path.join(path, n) for n in sorted(os.listdir(path))
+                      if not n.endswith(('.commit', '.wixpdb'))]
+            continue
+        # **`.wixpdb` is a companion, not an artifact.** It is WiX's debug-symbol file for the installer
+        # and its own receipt says "never shipped": it maps a crash report back to source, and a reader
+        # downloading an application has no use for it. Left in, it would appear on the release page as a
+        # fifth download whose name looks like the installer's.
+        if name.endswith(('.commit', '.wixpdb')) or name == 'MANIFEST.txt':
+            continue
+        if not name.startswith('hollow-court-'):
+            continue
+        if marks and not any(mark in name for mark in marks):
+            continue
+        found.append(path)
+    return found
 
 
 def main(argv: list[str]) -> int:
@@ -206,15 +231,23 @@ def main(argv: list[str]) -> int:
 
     # **The artifacts and the version have to agree.** A release whose name says one build and whose files say another is
     # a mismatch nobody notices until somebody downloads it.
-    assets = newest_assets()
+    #
+    # The version is read out of the artifact's own FILE NAME rather than out of its folder, which is what
+    # this used to do: with the per-version folders gone the folder is the bundle root, whose name is the
+    # same for every round, so the check would have compared "Hollow Court Bundle" against "1.0.0+2880" and
+    # refused every release. An artifact's name is the thing that goes on the download page, so it is also
+    # the honest thing to check.
+    assets = newest_assets(args.version)
     if assets:
-        artifact_version = os.path.basename(os.path.dirname(assets[0]))
-        wanted = '1.0.0+%s' % args.version.split('+')[-1]
-        if artifact_version != wanted:
-            print('  ! 产物是 %s，而这次要发的是 %s —— 两者对不上。' % (artifact_version, wanted))
+        names = [os.path.basename(path) for path in assets]
+        build = args.version.split('+')[-1]
+        agreeing = [n for n in names if build in n]
+        if len(agreeing) != len(names):
+            odd = [n for n in names if n not in agreeing]
+            print('  ! 这些产物文件名里没有 %s：%s' % (build, ', '.join(odd)))
             print('    要么先把这一版的产物构建出来，要么把版本号写成产物那一版。')
             return 1
-        print('  ✓ 产物与版本一致（%s）' % artifact_version)
+        print('  ✓ %d 个产物与版本一致（%s）' % (len(names), '1.0.0.%s' % build))
 
     # ②b **the receipts, which say which source each artifact was built from.**
     #

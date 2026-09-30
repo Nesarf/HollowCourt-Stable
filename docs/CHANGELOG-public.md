@@ -5,7 +5,35 @@ went wrong last time — lives in `docs/CHANGELOG.md`, which is an internal docu
 
 ---
 
-## 1.0.0 — First public release
+## 1.0.0.2880 — The mark changes
+
+**2026-09-30**
+
+### The application has a new icon
+
+**It is no longer the medallion.** The mark is now drawn from a picture of bar equipment — a pour-over, a cup, a
+shaker, a moka pot, a bottle, a glass — flattened to solid colour blocks with the separators kept, and rendered at
+fifteen sizes.
+
+**Below 48 pixels the letter A takes its place**, and that is a measurement rather than a preference: at 48 the
+picture is a field of blocks from which no object can be named, and at 32 and below it is mottled colour. The A is
+the publisher's mark, drawn at each size it ships at rather than enlarged from one drawing, so it stays legible at
+16 pixels — which the picture is not.
+
+**Every size is drawn from a drawing whose blocks land on whole pixels.** Android asks for 48, 72, 96, 144 and 192
+pixels, and three of those are not multiples of the size the picture was worked out at, so rendering them from one
+drawing gave half-pixel cells and visible seams. There is now one drawing per size that needs one.
+
+### What this version does not claim
+
+- **The mark is a picture at 256 pixels and a letter at 16, and those are two different marks.** That is the
+  arrangement, not a limitation to be removed later.
+- Everything else in the list below about the first release still holds: the network layer is partial, tunnels are
+  not usable, and the peripherals are waiting on their protocols.
+
+---
+
+## 1.0.0.2184 — First public release
 
 **2026-09-28**
 
@@ -60,7 +88,7 @@ Android, one per ABI. **Every artifact carries a record beside it** naming the c
 and its sha256 — so "is this file the one that was published" is a question you can answer yourself.
 
 **And the difference between this release and the previous set is visible in the application itself**: open About, where the
-binary prints the commit it was built from. **Its version is `1.0.0.2184`.**
+binary prints the commit it was built from. **Its version is `1.0.0.2880`.**
 
-**Android names the version twice**: the displayed one is `1.0.0.2184`, and the installer compares an integer that differs
+**Android names the version twice**: the displayed one is `1.0.0.2880`, and the installer compares an integer that differs
 per ABI so each can be upgraded on its own. That is Android's rule, not this project's.

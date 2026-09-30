@@ -32,9 +32,9 @@
   <Package
       Name="空庭 Hollow Court"
       Manufacturer="S.M.Y.T."
-      Version="1.0.2221"
+      Version="1.0.2880"
       UpgradeCode="7C4E1B62-5A3D-4F18-9E77-2B6D4A0C51E3"
-      ProductCode="D5CAA5D3-32DD-4752-A031-AB4479BAA92B"
+      ProductCode="00B3C0D2-DD59-4A93-98D5-5FF685015792"
       Scope="perUser"
       Compressed="yes">
 
@@ -52,13 +52,12 @@
          artifacts attached to the 1.0.0 release came from a source 154 commits behind HEAD and are being
          rebuilt; this is the Windows half. -->
 
-    <!-- **2026-09-30, the round that caught the bundle up with the binary.** Version went to 1.0.2221 and
-         ProductCode to D5CAA5D3-32DD-4752-A031-AB4479BAA92B, together again and for the same reason. The
-         occasion: the handset has been running `1.0.0.2221` since 2026-09-29 while the bundle's newest
-         artifact was `1.0.0.2184`, so the version people could install and the version that had been
-         receipted were two different rounds. No source change comes with this bump beyond what 1.0.2184
-         already carried; what is different is that this round now exists as artifacts, with receipts,
-         on all three platforms. -->
+    <!-- **2026-09-30, the round the mark changed.** Version went to 1.0.2880 and ProductCode to
+         00B3C0D2-DD59-4A93-98D5-5FF685015792, together and for the reason the first of these notes gives.
+         This is the first round with a change a reader can see: the icon is no longer the medallion but a
+         mark drawn from the owner's picture, with the publisher's A standing in at the sizes where the
+         picture cannot be read. `1.0.2221` was built and installed on the handset but never released, so
+         this round is also the first artifact set since 1.0.2184 that anyone can download. -->
 
     <!-- **WHY THE VERSION HAS THREE FIELDS HERE AND FOUR IN THE APP.** The owner names a round
          `1.0.0.514`, and that is what the About screen shows, because the packaging scripts pass it as the
