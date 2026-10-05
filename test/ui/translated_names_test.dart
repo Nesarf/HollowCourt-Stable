@@ -53,7 +53,7 @@ void main() {
   ''';
 
   Ingredient ingredient(String id, String name) =>
-      Ingredient(id: id, name: name, category: IngredientCategory.gin);
+      Ingredient(id: id, name: name, category: IngredientCategory.itemsYouCanMake);
 
   Recipe negroni() => Recipe(
     id: 'ibaNegroni',

@@ -4,6 +4,9 @@ import 'dart:io';
 import '../domain/events/event.dart';
 import '../domain/events/hlc.dart';
 import '../domain/events/shelf.dart';
+import '../domain/model/ingredient_book.dart';
+import '../domain/model/recipe_book.dart';
+import '../domain/model/recipe_collections.dart';
 import '../domain/events/stock.dart';
 import '../domain/overlay/overlay.dart';
 import '../domain/sync/exchange.dart';
@@ -167,6 +170,29 @@ final class EventLog implements SyncSource {
   /// Recomputed per call rather than cached, for the same reason [stock] is: a
   /// cached copy is a second source of truth that can disagree with the first.
   Overlay get overlay => Overlay.of(_events);
+
+  /// The recipes the reader wrote, folded from the same events.
+  ///
+  /// **A fourth fold of one log**, beside the stock, the overlay and the arrangement -- and it belongs here for the
+  /// same reason the others do: a recipe written by this reader is an event like any other, so it merges, it
+  /// replays and it survives a restart without a store of its own. `RecipeBook.of` argues the shape.
+  RecipeBook get authoredRecipes => RecipeBook.of(_events);
+
+  /// The ingredients the reader added, folded from the same events.
+  ///
+  /// **A fifth fold of one log**, beside the stock, the overlay, the arrangement and the recipes -- and here for the
+  /// same reason: an ingredient somebody typed is an event like any other, so it merges, it replays and it survives a
+  /// restart without a store of its own. **Kept out of the catalogue on purpose**: `SeedRepository` is an asset that
+  /// is identical on every install, and a reader's own additions must not be shipped to anybody else.
+  IngredientBook get authoredIngredients => IngredientBook.of(_events);
+
+  /// The collections the reader made, folded from the same events.
+  ///
+  /// **A sixth fold of one log**, and the one that turns a shelf into a library somebody arranged: the folders the
+  /// recipes page shows are *derived* from the drinks themselves, and a collection is the reader saying "these
+  /// belong together" in a way no derivation can guess. The hidden-derived-folder set rides here too, because a
+  /// reader hiding a folder and a reader making one are the same kind of statement about the same screen.
+  RecipeCollections get collections => RecipeCollections.of(_events);
 
   /// Where the bottles stand, folded from the same events.
   ///

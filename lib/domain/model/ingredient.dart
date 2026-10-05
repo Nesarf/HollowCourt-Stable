@@ -21,6 +21,8 @@ final class Ingredient {
     required this.id,
     required this.name,
     this.category,
+    this.kind,
+    this.family,
     this.aliases = const [],
     this.abvPercent,
     this.sugarGPerL,
@@ -53,6 +55,24 @@ final class Ingredient {
   /// silent guess the reverse-engineering record forbids, so the field stays
   /// empty and a report counts how many are empty.
   final IngredientCategory? category;
+
+  /// **What this ingredient is, in the two-level shape the proposal asks for.**
+  ///
+  /// `kind` is required of everything the library ships -- a spirit, a liqueur, a syrup, a garnish -- and `family`
+  /// refines it where the refinement is useful: a whiskey is a `spirit/whiskey`, a lime juice is a `juice/citrus`.
+  /// `docs/proposal-recipes-and-packs.md` §3 gives the vocabulary and argues for it; `docs/ingredient-gap.md`
+  /// records the measurement that made it urgent, which is that **142 of 189 ingredients had no classification at
+  /// all**.
+  ///
+  /// **Strings rather than an enum**, for the reason the proposal gives: the kinds are *data*, so a reader can add
+  /// 茶 or 酊剂 the same way they add a collection. A closed enum would have meant a build to add a shape.
+  ///
+  /// Both are nullable **because a reader's own ingredient is described by them too**, and a person adding one is
+  /// not obliged to classify it -- see `AuthoredIngredient`, which carries the same pair as strings.
+  final String? kind;
+
+  /// What narrows [kind], or null when the kind is as specific as it gets.
+  final String? family;
 
   /// Other names this ingredient answers to.
   final List<String> aliases;

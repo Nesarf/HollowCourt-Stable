@@ -111,6 +111,33 @@ void main() {
       expect(problems.whereType<RecipeUnknownIngredient>().single.ingredientId, 'nobodyKnowsThis');
     });
 
+    test('**a line with an amount but no ingredient is refused**', () {
+      // **Found by a UI test on 2026-10-01, and it is the kind of gap a form hides.** The composer dropped a line
+      // that was entirely blank, and blank meant "no ingredient *and* no amount" -- so typing `30` without choosing
+      // what it was thirty *of* survived the form and folded into a recipe whose ingredient id was the empty
+      // string. Nothing downstream could make such a recipe or price it, and no screen could say which line was
+      // wrong.
+      final recipe = AuthoredRecipe(
+        id: 'own.x-1-0',
+        name: 'half filled in',
+        items: const [AuthoredItem(ingredientId: '', amount: '30', unit: 'ml')],
+      );
+      final problems = validateAuthored(recipe, known: _known);
+      final missing = problems.whereType<RecipeLineWithoutIngredient>().single;
+      expect(missing.index, 1, reason: 'the form has to be able to point at the line');
+    });
+
+    test('a blank ingredient is not also reported as unknown', () {
+      // Two complaints about one line would be two things a reader has to fix for one mistake.
+      final recipe = AuthoredRecipe(
+        id: 'own.x-1-0',
+        name: 'x',
+        items: const [AuthoredItem(ingredientId: '', amount: '30')],
+      );
+      final problems = validateAuthored(recipe, known: _known);
+      expect(problems.whereType<RecipeUnknownIngredient>(), isEmpty);
+    });
+
     test('**every problem is reported, not just the first**', () {
       // So a screen can say all of it at once rather than making somebody submit four times to learn four things.
       final recipe = AuthoredRecipe(

@@ -1,8 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:hollow_court/domain/model/glass.dart';
 import 'package:hollow_court/domain/model/ice.dart';
 import 'package:hollow_court/domain/model/ingredient_category.dart';
 import 'package:hollow_court/domain/model/liquid_visual.dart';
 import 'package:test/test.dart';
+
+const artifactPath = 'data/drinks/library.json';
 
 void main() {
   group('glass', () {
@@ -189,58 +194,90 @@ void main() {
   });
 
   group('ingredient categories', () {
-    test('every name section 4.2 writes resolves', () {
-      // Verbatim from the design document, both layers.
-      const alcoholic = [
-        'Whisk(e)y', 'Gin', 'R(h)um', 'Tequila & Mezcal', 'Vodka & Similar',
-        'Brandy', 'Beer & Cider', 'Wine', 'Common Liqueurs', 'Vermouth',
-        'Port & Sherry', 'Aperitifs', 'Common Amaro', 'Common Bitters',
-      ];
-      const nonAlcoholic = [
-        'Citrus', 'Juices', 'Fruit & Veg', 'Syrups', 'Jams & Preserves',
-        'Herbs & Spices', 'Sodas', 'Pantry Items', 'Grocery Items',
-        'Mock Spirits', 'Items You Can Make', 'The Modern Bar',
-        'Top 25 Most Used',
-      ];
-
-      for (final name in alcoholic) {
-        final category = IngredientCategory.fromSource(name);
-        expect(category, isNotNull, reason: name);
-        expect(category!.isAlcoholic, isTrue, reason: name);
-      }
-      for (final name in nonAlcoholic) {
-        expect(IngredientCategory.fromSource(name), isNotNull, reason: name);
-      }
-    });
-
-    test('the three browse groupings are not substances', () {
-      // The section annotates them as "makeable at home", "preset
-      // configurations" and "frequency" -- none of which says what an
-      // ingredient is made of.
-      for (final grouping in [
-        IngredientCategory.itemsYouCanMake,
-        IngredientCategory.theModernBar,
-        IngredientCategory.top25MostUsed,
-      ]) {
+    // **The split, asserted.** Until 2026-10-01 this enum carried thirty-three members: twenty-seven *substances*
+    // (whiskey, gin, citrus, syrups...) and three *browse groupings*. The substances were retired to
+    // `Ingredient.kind`/`family` -- `docs/ingredient-gap.md` measured why, and `docs/proposal-recipes-and-packs.md`
+    // §3 asked for the shape -- and what is left is the three groupings, whose names are not a spelling of any
+    // substance.
+    test('**the enum is the three groupings and nothing else**', () {
+      expect(IngredientCategory.values, hasLength(3));
+      expect(
+        IngredientCategory.values.map((c) => c.name).toSet(),
+        {'itemsYouCanMake', 'theModernBar', 'top25MostUsed'},
+      );
+      // Every remaining member is a way of finding an ingredient, so the question "is this a substance" has one
+      // answer and a caller no longer has to remember to filter.
+      for (final grouping in IngredientCategory.values) {
         expect(grouping.isBrowseGrouping, isTrue, reason: grouping.name);
-        expect(grouping.isSubstance, isFalse, reason: grouping.name);
-        expect(grouping.level, Level.grouping);
+      }
+    });
+
+    test('**every name section 4.2 writes is either held or on the list of what is not**', () {
+      // **The honest version of this test, and the first one was not.** It asserted that every shape section 4.2
+      // names had at least one ingredient classified as it -- and `Mock Spirits` does not, and never did: no
+      // ingredient in the library is one, and the older test had quietly left that name out of its list rather
+      // than admitting it. **A test that drops the name it cannot satisfy reports coverage it does not have.**
+      //
+      // So both sets are written down: what the library holds, and what the section names that it does not. The
+      // second is not a failure -- it is step 3 of `docs/ingredient-gap.md`, and recording it here means the next
+      // person is handed the list rather than rediscovering it.
+      const held = {
+        'Whisk(e)y': 'whiskey', 'Gin': 'gin', 'R(h)um': 'rum', 'Tequila & Mezcal': 'agave',
+        'Vodka & Similar': 'vodka', 'Brandy': 'brandy', 'Vermouth': 'vermouth',
+        'Port & Sherry': 'fortified', 'Aperitifs': 'aperitif', 'Common Amaro': 'amaro',
+        'Citrus': 'citrus', 'Jams & Preserves': 'preserve', 'Herbs & Spices': 'herb',
+      };
+
+      // Named, with the reason -- and **the eleven are the shape of step 3**.
+      const notYetHeld = {
+        'Beer & Cider': 'held as the kind `beer`; the family is not used',
+        'Wine': 'held as the kind `wine`',
+        'Common Liqueurs': 'held as the kind `liqueur`',
+        'Common Bitters': 'held as the kind `bitter`',
+        'Juices': 'held as the kind `juice`',
+        'Fruit & Veg': 'held as the kind `fruit`',
+        'Syrups': 'held as the kind `syrup`',
+        'Sodas': 'held as the kind `mixer`',
+        'Pantry Items': 'held as the kind `pantry`',
+        'Grocery Items': 'held as the kind `pantry`',
+        'Mock Spirits': '**no ingredient in the library is one, and never was**',
+      };
+
+      final file = File(artifactPath);
+      if (!file.existsSync()) {
+        markTestSkipped('$artifactPath is absent; it is tracked, so this means the checkout is partial');
+        return;
+      }
+      final decoded = jsonDecode(file.readAsStringSync()) as Map<String, Object?>;
+      final rows = [
+        for (final raw in decoded['ingredients']! as List<Object?>) (raw! as Map<String, Object?>),
+      ];
+      final families = {for (final r in rows) r['family'] as String?};
+      final kinds = {for (final r in rows) r['kind'] as String?};
+
+      for (final entry in held.entries) {
+        final needle = entry.value;
+        expect(
+          kinds.contains(needle) || families.contains(needle),
+          isTrue,
+          reason: 'section 4.2 names "${entry.key}" and nothing in the library is classified `$needle`',
+        );
       }
 
-      expect(IngredientCategory.gin.isSubstance, isTrue);
-      expect(IngredientCategory.gin.isBrowseGrouping, isFalse);
+      // The ones answered by a kind directly rather than a family.
+      for (final kind in ['beer', 'wine', 'liqueur', 'bitter', 'juice', 'spice', 'mixer', 'pantry', 'syrup']) {
+        expect(kinds, contains(kind), reason: 'nothing in the library has kind `$kind`');
+      }
+
+      // **The two sets together are the whole section**, so a name cannot be moved out of `held` without being put
+      // into `notYetHeld` -- which is the discipline the older test did not have.
+      expect(
+        {...held.keys, ...notYetHeld.keys},
+        hasLength(24),
+        reason: 'section 4.2 names 24 shapes; every one is either held or explicitly not',
+      );
     });
 
-    test('an unknown name is refused', () {
-      expect(IngredientCategory.fromSource('Vibes'), isNull);
-      expect(IngredientCategory.fromSource(''), isNull);
-    });
-
-    test('the ampersand expands rather than disappearing', () {
-      // "Fruit & Veg" must not become "fruitveg".
-      expect(IngredientCategory.fromSource('Fruit & Veg'), IngredientCategory.fruitAndVeg);
-      expect(IngredientCategory.fromSource('fruit and veg'), IngredientCategory.fruitAndVeg);
-    });
   });
 
   group('source buckets', () {
@@ -261,12 +298,22 @@ void main() {
       expect(SourceBucket.staples.level, Level.nonAlcoholic);
     });
 
-    test('is provenance, not a category', () {
-      // one source files vermouth under Beers & Wines and Angostura under Mixers &
-      // Soft Drinks. Both are defensible and neither is section 4.2, which is
-      // why the bucket is kept beside the category rather than mapped onto it.
+    test('**is provenance, and cannot be a browse grouping**', () {
+      // one source files vermouth under `Beers & Wines` and Angostura under `Mixers & Soft Drinks`. Both are
+      // defensible and neither is section 4.2 -- which is why the bucket is kept as provenance rather than mapped
+      // onto anything.
+      //
+      // **The second assertion used to read `IngredientCategory.fromSource('Beers & Wines')` is null**, which it
+      // was: the old enum had a `beersAndWines` member that `fromSource` declined to match, and the test was
+      // really saying "a bucket name is not one of the section's names". That claim outlived the enum, so it is
+      // restated against what is there now -- **the three browse groupings are the only members, and no bucket is
+      // one of them.**
       expect(SourceBucket.fromSource('Beers & Wines'), SourceBucket.beersAndWines);
-      expect(IngredientCategory.fromSource('Beers & Wines'), isNull);
+      expect(
+        IngredientCategory.values.map((c) => c.name),
+        isNot(contains('beersAndWines')),
+        reason: 'a source bucket is not a way of finding an ingredient',
+      );
     });
   });
 }

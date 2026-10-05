@@ -14,7 +14,10 @@ import '../ui/liquid_swatch.dart';
 import 'prism.dart';
 import 'seed_names.dart';
 import '../ui/theme.dart';
+import 'l10n/copy_resolution.dart';
 import 'l10n/dual_copy_text.dart';
+import 'collection_editor.dart';
+import 'recipe_composer.dart';
 
 /// Section 12.3's Recipes tab, at P1's scope.
 ///
@@ -111,8 +114,12 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
     final openFolder = _openFolder == null
         ? null
         : folders.where((f) => f.key == _openFolder).firstOrNull;
+    // **The reader's own collections come first**, above the derived folders, for the reason a notes application
+    // puts your folders above its smart ones: what you made is what you came for, and what the data derived is
+    // there for when you have not decided. A collection whose id cannot be resolved is still listed -- see below.
+    final collections = state.collections.roots;
     final rows = openFolder == null
-        ? folders.length + 1
+        ? collections.length + folders.length + 1
         : openFolder.recipes.length + 1;
 
     return SafeArea(
@@ -129,6 +136,40 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
                   Text(
                     Copy.withCount(Copy.recipesCount, visible.length),
                     style: HollowType.caption,
+                  ),
+                  const SizedBox(height: 12),
+                  // **The way in to writing one, and it sits above the filters rather than in a menu.** The
+                  // application had exactly two write paths before this -- a bottle and a journal entry -- and the
+                  // proposal states the gap in its own words: *"Can a user create one? No."* A reader who came here
+                  // looking for their own recipe should find the door without hunting for it.
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      FilledButton.tonalIcon(
+                        key: const ValueKey('recipe-new'),
+                        onPressed: () => showRecipeComposer(
+                          context,
+                          ingredients: repository.ingredients,
+                        ),
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        label: Text(ref.copy(Copy.recipeNew)),
+                      ),
+                      // **Beside it rather than behind a menu.** Writing a drink and gathering drinks are the two
+                      // things a reader comes to this page to do that the library cannot do for them, and the
+                      // second was unreachable until now.
+                      OutlinedButton.icon(
+                        key: const ValueKey('collection-new'),
+                        onPressed: () => showCollectionEditor(
+                          context,
+                          recipes: [for (final e in visible) e.recipe],
+                          nameOf: shown,
+                          existing: state.collections,
+                        ),
+                        icon: const Icon(Icons.create_new_folder_outlined, size: 18),
+                        label: Text(ref.copy(Copy.collectionNew)),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 14),
                   Wrap(
@@ -157,8 +198,41 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
               // the filter chips above keep meaning the same thing either way -- a filter applied to a folder
               // is a filter applied to its contents.
               if (_openFolder == null) {
-                if (index < folders.length) {
-                  final folder = folders[index];
+                if (index < collections.length) {
+                  final collection = collections[index];
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (index > 0)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 4),
+                          child: PrismDivider(size: 8),
+                        ),
+                      ListTile(
+                        key: ValueKey('collection-${collection.id}'),
+                        leading: HollowGlyphMark(HollowGlyph.folder, color: HollowPalette.rose),
+                        title: Text(collection.name, style: HollowType.title),
+                        // **The count is of drinks, not of members**, which `countIn` argues: a collection holding
+                        // two folders and one drink says "1" if it counts what it holds rather than what is
+                        // reachable, and the reader wants to know how many drinks are in there.
+                        subtitle: Text(
+                          '${collection.countIn(state.collections)}',
+                          style: HollowType.caption,
+                        ),
+                        onTap: () => showCollectionEditor(
+                          context,
+                          recipes: [for (final e in visible) e.recipe],
+                          nameOf: shown,
+                          existing: state.collections,
+                          editing: collection,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                final folderIndex = index - collections.length;
+                if (folderIndex < folders.length) {
+                  final folder = folders[folderIndex];
                   final style = styles[folder.key];
                   // **The motif between rows**, at the smallest size it survives (10 px -- the size the study
                   // measured in a rhythm game's own dividers). It is here rather than in a special place because this is
@@ -193,7 +267,7 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
                     ],
                   );
                 }
-                if (index == folders.length) {
+                if (folderIndex >= folders.length) {
                   return const SizedBox(height: 8);
                 }
                 return const SizedBox.shrink();

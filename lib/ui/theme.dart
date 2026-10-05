@@ -2582,6 +2582,206 @@ abstract final class Copy {
     Translated.authored('配方'),
     Translated.authored('Recipes'), also: {'ja': 'レシピ', 'zh-HK': '配方', 'zh-TW': '配方'});
 
+  /// The button that starts a collection.
+  ///
+  /// **A noun with a verb under it** would be two controls; this is one, and the sheet that opens is where the name
+  /// and the membership are chosen. The word is 集合 rather than 文件夹 because the application already has folders
+  /// -- derived ones, made from the drinks themselves -- and a reader who is offered "folder" for both would have no
+  /// way to tell which kind they were making.
+  static const collectionNew = CopyLine.withLanguages(
+    Translated.authored('编一个集合'),
+    Translated.authored('Make a collection'),
+    voices: {
+      Voice.heiress: '想把几杯收在一起？说吧，本小姐给你编。',
+      Voice.heiressJa: 'いくつかまとめたいの？言いなさい、編んであげる。',
+      Voice.minister: 'A collection of one\'s own devising. Name it, and I shall keep it.',
+    },
+    also: {'ja': 'コレクションを作る', 'zh-HK': '編一個集合', 'zh-TW': '編一個集合'},
+  );
+
+  /// The sheet's title, and it says whose collection this is.
+  static const collectionOwnTitle = CopyLine.withLanguages(
+    Translated.authored('自己的一个集合'),
+    Translated.authored('A collection of your own'),
+    voices: {
+      Voice.heiress: '你自己的集合。里头放什么，你说了算。',
+      Voice.heiressJa: 'あなた自身のコレクション。中身はあなたが決めるの。',
+      Voice.minister: 'A collection of one\'s own. Its contents are one\'s to decide.',
+    },
+    also: {'ja': 'あなた自身のコレクション', 'zh-HK': '自己嘅一個集合', 'zh-TW': '自己的一個集合'},
+  );
+
+  static const collectionFieldName = CopyLine.withLanguages(
+    Translated.authored('名字'),
+    Translated.authored('Name'),
+    also: {'ja': '名前', 'zh-HK': '名字', 'zh-TW': '名字'},
+  );
+
+  static const collectionFieldMembers = CopyLine.withLanguages(
+    Translated.authored('里头放什么'),
+    Translated.authored('What goes in it'),
+    also: {'ja': '中に入れるもの', 'zh-HK': '裏頭放咩', 'zh-TW': '裡頭放什麼'},
+  );
+
+  /// What the member list says when the reader has picked nothing.
+  static const collectionMembersHint = CopyLine.withLanguages(
+    Translated.authored('空着也行，回头再放。'),
+    Translated.authored('Empty is fine — it will keep until you fill it.'),
+    also: {
+      'ja': '空でもいい、あとで入れなさい。',
+      'zh-HK': '空住都冇問題，遲啲再放。',
+      'zh-TW': '空著也行，回頭再放。',
+    },
+  );
+
+  static const collectionSave = CopyLine.withLanguages(
+    Translated.authored('收下'),
+    Translated.authored('Keep it'),
+    also: {'ja': '收める', 'zh-HK': '收下', 'zh-TW': '收下'},
+  );
+
+  /// Shown when the reader presses save with no name.
+  static const collectionNeedsName = CopyLine.withLanguages(
+    Translated.authored('得有个名字。'),
+    Translated.authored('It needs a name.'),
+    also: {'ja': '名前が要ります。', 'zh-HK': '要有個名。', 'zh-TW': '要有個名字。'},
+  );
+
+  /// Shown when a collection is about to contain itself, which `checkMembership` refuses before writing.
+  ///
+  /// **The sentence a reader gets instead of a stack overflow.** Without it the loop would be in the log and in
+  /// every synced copy of it before anybody noticed.
+  static const collectionWouldContainItself = CopyLine.withLanguages(
+    Translated.authored('这样它就装进自己里面了——绕不出来。把那一项去掉。'),
+    Translated.authored('That would put it inside itself, and it could never come back out. Take that one off.'),
+    also: {
+      'ja': 'それだと自分自身の中に入ってしまいます。外せません。その項目を外してください。',
+      'zh-HK': '咁樣佢就裝入自己裏面——走唔返出嚟。攞走嗰項。',
+      'zh-TW': '這樣它就裝進自己裡面了——繞不出來。把那一項去掉。',
+    },
+  );
+
+  /// The button that starts writing a recipe.
+  ///
+  /// **A verb rather than a noun**, which is the rule the rest of this file follows for buttons: 记一瓶 on the
+  /// stock page, 开始检查 on the integrity screen. What the reader is doing is writing something down, and the
+  /// sheet that opens is where they do it.
+  static const recipeNew = CopyLine.withLanguages(
+    Translated.authored('写一条配方'),
+    Translated.authored('Write a recipe'),
+    voices: {
+      Voice.heiress: '想自己写一条？那就写吧，本小姐看着。',
+      Voice.heiressJa: '自分で書きたいの？なら書きなさい、あたしが見ててあげる。',
+      Voice.minister: 'One may compose one\'s own, should one wish. I shall look on.',
+    },
+    also: {'ja': 'レシピを書く', 'zh-HK': '寫一條配方', 'zh-TW': '寫一條配方'},
+  );
+
+  /// The sheet's own title, and it says whose recipe this is.
+  ///
+  /// **「自己的」 and not 「新建」**, because the distinction this whole screen is about is *whose* recipe it is: the
+  /// library's are shipped and identical on every install, and these are the reader's. A title that only said "new"
+  /// would leave the difference to be inferred from a delete button appearing later.
+  static const recipeOwnTitle = CopyLine.withLanguages(
+    Translated.authored('自己的一条配方'),
+    Translated.authored('A recipe of your own'),
+    voices: {
+      Voice.heiress: '你自己的配方。写吧，本小姐不催你。',
+      Voice.heiressJa: 'あなた自身のレシピ。書きなさい、急かさないわ。',
+      Voice.minister: 'A recipe of one\'s own. Take the time it needs.',
+    },
+    also: {'ja': 'あなた自身のレシピ', 'zh-HK': '自己的一條配方', 'zh-TW': '自己的一條配方'},
+  );
+
+  static const recipeFieldName = CopyLine.withLanguages(
+    Translated.authored('名字'),
+    Translated.authored('Name'),
+    also: {'ja': '名前', 'zh-HK': '名字', 'zh-TW': '名字'},
+  );
+
+  static const recipeFieldMethod = CopyLine.withLanguages(
+    Translated.authored('做法'),
+    Translated.authored('Method'),
+    also: {'ja': '作り方', 'zh-HK': '做法', 'zh-TW': '做法'},
+  );
+
+  /// What the method field says under itself.
+  ///
+  /// **It says the field is free text, because that is the decision the proposal records.** A closed list of
+  /// 摇/搅/直调 would eventually demand that somebody shake a pour-over, so the vocabulary is offered rather than
+  /// required -- and a reader who cannot tell whether a suggestion is a suggestion will write what they mean.
+  static const recipeMethodHint = CopyLine.withLanguages(
+    Translated.authored('随便写——搅、摇、直调都行，写别的也行。'),
+    Translated.authored('Anything — stirred, shaken, built, or your own words.'),
+    also: {
+      'ja': '自由に——ステア、シェイク、ビルド、それ以外でも。',
+      'zh-HK': '隨便寫——攪、搖、直調都行，寫別的也行。',
+      'zh-TW': '隨便寫——攪、搖、直調都行，寫別的也行。',
+    },
+  );
+
+  static const recipeFieldIngredients = CopyLine.withLanguages(
+    Translated.authored('原料'),
+    Translated.authored('Ingredients'),
+    also: {'ja': '材料', 'zh-HK': '原料', 'zh-TW': '原料'},
+  );
+
+  static const recipeAddLine = CopyLine.withLanguages(
+    Translated.authored('加一行'),
+    Translated.authored('Add a line'),
+    also: {'ja': '一行足す', 'zh-HK': '加一行', 'zh-TW': '加一行'},
+  );
+
+  static const recipeSave = CopyLine.withLanguages(
+    Translated.authored('收下'),
+    Translated.authored('Keep it'),
+    voices: {
+      Voice.heiress: '写好了就收下吧，本小姐给你留着。',
+      Voice.heiressJa: '書き終わったなら預かりなさい、あたしが取っておくわ。',
+      Voice.minister: 'It shall be kept, once one is satisfied with it.',
+    },
+    also: {'ja': '收める', 'zh-HK': '收下', 'zh-TW': '收下'},
+  );
+
+  /// Shown when the reader presses save with nothing written.
+  ///
+  /// **Says which two things are missing rather than "invalid"**, because a form that refuses without saying why is
+  /// a form somebody fills in twice.
+  static const recipeNeedsNameAndLine = CopyLine.withLanguages(
+    Translated.authored('至少要有名字和一行原料。'),
+    Translated.authored('It needs a name and at least one ingredient line.'),
+    also: {
+      'ja': '名前と材料が一行は要ります。',
+      'zh-HK': '至少要有名字同一行原料。',
+      'zh-TW': '至少要有名字和一行原料。',
+    },
+  );
+
+  /// Shown when a line gives an amount but names no ingredient.
+  ///
+  /// **Found by a UI test on 2026-10-01**: typing `30` and never choosing what it was thirty *of* used to save a
+  /// recipe whose ingredient id was the empty string, and nothing afterwards could say which line was wrong.
+  static const recipeLineNeedsIngredient = CopyLine.withLanguages(
+    Translated.authored('有一行写了份量，但没选是什么。'),
+    Translated.authored('A line gives an amount but does not say what it is an amount of.'),
+    also: {
+      'ja': '分量だけ書いてあって、何の分量か選んでいません。',
+      'zh-HK': '有一行寫了份量，但冇揀係咩。',
+      'zh-TW': '有一行寫了份量，但沒選是什麼。',
+    },
+  );
+
+  /// Shown when a line names an ingredient this build cannot resolve.
+  static const recipeUnknownIngredient = CopyLine.withLanguages(
+    Translated.authored('这一行点到的原料，这个构建不认识。'),
+    Translated.authored('A line names an ingredient this build does not know.'),
+    also: {
+      'ja': 'この行の材料は、このビルドには分かりません。',
+      'zh-HK': '這一行指到的原料，這個版本唔識。',
+      'zh-TW': '這一行指到的原料，這個版本不認識。',
+    },
+  );
+
   static const recipesEmpty = CopyLine.withLanguages(
     Translated.authored('酒库还没有建好。'),
     Translated.authored('The library is not built yet.'), also: {'ja': 'ライブラリがまだありません。', 'zh-HK': '酒庫還沒有建好。', 'zh-TW': '酒庫還沒有建好。'});

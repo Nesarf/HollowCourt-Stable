@@ -66,6 +66,22 @@ final class RecipeUnknownIngredient extends RecipeProblem {
   String toString() => 'unknown ingredient $ingredientId';
 }
 
+/// A line gives an amount but names no ingredient.
+///
+/// **Found by a UI test on 2026-10-01, and it is the kind of gap a form hides.** The composer drops a line that is
+/// entirely blank, and blank meant "no ingredient *and* no amount" -- so a line where somebody typed `30` and never
+/// chose what it was thirty *of* survived, and folded into a recipe whose ingredient id is the empty string. Nothing
+/// downstream could make such a recipe or price it, and the reader would have had no idea which line was wrong.
+final class RecipeLineWithoutIngredient extends RecipeProblem {
+  const RecipeLineWithoutIngredient(this.index);
+
+  /// Which line, counting from one, so a form can point at it.
+  final int index;
+
+  @override
+  String toString() => 'line $index has an amount but no ingredient';
+}
+
 /// The id of a recipe the reader wrote, or of one they are about to.
 abstract final class AuthoredRecipeId {
   /// **Prefixed, so that a reader's own recipe can never collide with a shipped id.** The library's ids are its
@@ -214,7 +230,12 @@ List<RecipeProblem> validateAuthored(AuthoredRecipe recipe, {required Set<String
   final problems = <RecipeProblem>[];
   if (recipe.name.trim().isEmpty) problems.add(const RecipeUnnamed());
   if (recipe.items.isEmpty) problems.add(const RecipeEmpty());
-  for (final item in recipe.items) {
+  for (var i = 0; i < recipe.items.length; i++) {
+    final item = recipe.items[i];
+    if (item.ingredientId.trim().isEmpty) {
+      problems.add(RecipeLineWithoutIngredient(i + 1));
+      continue;
+    }
     if (!known.contains(item.ingredientId)) {
       problems.add(RecipeUnknownIngredient(item.ingredientId));
     }

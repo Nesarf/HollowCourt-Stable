@@ -124,7 +124,14 @@ abstract final class SeedCodec {
   static Map<String, Object?> _ingredientToJson(Ingredient ingredient) => {
     'id': ingredient.id,
     'name': ingredient.name,
+    // **A browse grouping, and the only thing this field can hold now.** The twenty-seven substance categories
+    // were retired to `kind`/`family` on 2026-10-01; what remains is a way of finding an ingredient, so the name
+    // still round-trips and the artifact carries none today -- every shipped ingredient is found by its kind.
     if (ingredient.category != null) 'category': ingredient.category!.name,
+    // **Written as plain strings**, because that is what they are: the kinds are data rather than an enum, so a
+    // reader's own ingredient and a shipped one cross the same format the same way.
+    if (ingredient.kind != null) 'kind': ingredient.kind,
+    if (ingredient.family != null) 'family': ingredient.family,
     if (ingredient.aliases.isNotEmpty) 'aliases': ingredient.aliases,
     if (ingredient.abvPercent != null)
       'abvPercent': _rationalToJson(ingredient.abvPercent!),
@@ -146,6 +153,8 @@ abstract final class SeedCodec {
     id: _string(json['id'], 'ingredient id'),
     name: _string(json['name'], 'ingredient name'),
     category: _enumByName(IngredientCategory.values, json['category']),
+    kind: json['kind'] as String?,
+    family: json['family'] as String?,
     aliases: _strings(json['aliases']),
     abvPercent: _rationalOrNull(json['abvPercent']),
     sugarGPerL: _rationalOrNull(json['sugarGPerL']),

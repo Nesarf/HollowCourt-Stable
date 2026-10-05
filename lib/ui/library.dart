@@ -14,10 +14,16 @@ import '../domain/events/event.dart';
 import '../domain/events/hlc.dart';
 import '../domain/events/overlay.dart';
 import '../domain/events/price.dart';
+import '../domain/events/ingredient_authoring.dart';
+import '../domain/events/recipe_authoring.dart';
+import '../domain/events/recipe_collection.dart';
 import '../domain/events/shelf.dart';
 import '../domain/events/stock.dart';
 import '../domain/matching/match_score.dart';
 import '../domain/model/recipe.dart';
+import '../domain/model/ingredient_book.dart';
+import '../domain/model/recipe_book.dart';
+import '../domain/model/recipe_collections.dart';
 import '../domain/overlay/overlay.dart';
 import '../domain/overlay/overlay_key.dart';
 import '../domain/pricing/price.dart';
@@ -76,6 +82,9 @@ final class Cellar {
     required this.stock,
     required this.overlay,
     required this.shelf,
+    required this.authoredRecipes,
+    required this.authoredIngredients,
+    required this.collections,
   });
 
   /// Both folds of one log, taken together.
@@ -84,8 +93,15 @@ final class Cellar {
   /// have to be of the *same* log: a caller that folded one of them from a stale
   /// list would produce a screen where the shelf and the notes disagree about
   /// what has happened, and the disagreement would be invisible.
-  factory Cellar.of(EventLog log) =>
-      Cellar(log: log, stock: log.stock, overlay: log.overlay, shelf: log.shelf);
+  factory Cellar.of(EventLog log) => Cellar(
+    log: log,
+    stock: log.stock,
+    overlay: log.overlay,
+    shelf: log.shelf,
+    authoredRecipes: log.authoredRecipes,
+    authoredIngredients: log.authoredIngredients,
+    collections: log.collections,
+  );
 
   final EventLog log;
   final StockLedger stock;
@@ -99,6 +115,29 @@ final class Cellar {
   /// quantities have to be of the *same* log: a Bar tab drawing stale positions
   /// over a fresh shelf would show a bottle that has been poured away.
   final ShelfLayout shelf;
+
+  /// The recipes the reader wrote, folded from the same log.
+  ///
+  /// **Here rather than fetched by the page, for the reason the shelf is here**: the recipes a reader has written
+  /// and the bottles they hold have to be of *the same* log, or a recipe would read as unmakable against a shelf
+  /// that has since changed. A reader's own recipe and a shipped one are the same record shape -- see `RecipeBook` --
+  /// so a screen holds both in one list and only has to ask `isMine` when it decides whether to offer a delete.
+  final RecipeBook authoredRecipes;
+
+  /// The ingredients the reader added, folded from the same log.
+  ///
+  /// **Beside the recipes rather than inside the catalogue**, because the two are different kinds of thing: the
+  /// catalogue is what ships, and this is what somebody typed. `IngredientBook` argues the split; what matters here
+  /// is that a screen holding both can ask one question -- is this id the reader's? -- and get an answer that
+  /// decides whether a delete button belongs on the row.
+  final IngredientBook authoredIngredients;
+
+  /// The collections the reader made, and the derived folders they hid.
+  ///
+  /// **Here for the reason every other fold is here**: a collection names recipes and members, and a screen joining
+  /// it against a stale recipe list would show a collection containing drinks that no longer exist -- or, worse,
+  /// hide drinks that do. Folded from the same log, that cannot happen.
+  final RecipeCollections collections;
 
   /// A bottle is on the shelf when its sku has remaining volume.
   ///
@@ -467,6 +506,179 @@ class CellarNotifier extends AsyncNotifier<Cellar> {
     if (current == null) return;
     await current.log.record(
       (hlc) => OverlayEvents.fieldSet(hlc: hlc, key: key, value: value),
+    );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Writes a recipe the reader composed, and re-folds.
+  ///
+  /// **The write path `docs/proposal-recipes-and-packs.md` §2 was missing**, and it is deliberately the same shape as
+  /// [setOverlay] and [addBottle]: an operation is appended and the state is whatever the operations add up to.
+  ///
+  /// **The record is stored whole, including an id the caller supplied.** A recipe being edited keeps its id, which
+  /// is what makes an edit an edit rather than a second recipe -- and [RecipeAuthoredId.from] derives a new one for
+  /// a recipe being written for the first time. Handing the id in rather than minting it here is what lets a screen
+  /// hold a draft, and it is safe because [RecipeAuthoredId.isMine] is the only thing that decides whether one of
+  /// these may later be removed.
+  ///
+  /// **Nothing is validated here.** `validateAuthored` exists and belongs to the form, which can say *which* line
+  /// names an ingredient this build does not know; a store that refused a record could only say that it refused it.
+  /// [recipe] may carry an id minted by its composer, which is what an edit does; when [id] is absent a new one is
+  /// derived from [AuthoredRecipe.name] and a reading off **this log's own clock**. The clock is here rather than in
+  /// the form because taking a reading is a thing the log does, not a thing a widget does -- and a form that reached
+  /// for one would be consuming the identity of an event it is not creating.
+  Future<void> authorRecipe(AuthoredRecipe recipe, {String? id}) async {
+    final current = state.value;
+    if (current == null) return;
+    final withId = id == null
+        ? AuthoredRecipe(
+            id: AuthoredRecipeId.from(recipe.name, current.log.clock.next()),
+            name: recipe.name,
+            items: recipe.items,
+            subtitle: recipe.subtitle,
+            folder: recipe.folder,
+            description: recipe.description,
+            method: recipe.method,
+            glass: recipe.glass,
+            ice: recipe.ice,
+            garnish: recipe.garnish,
+          )
+        : recipe;
+    await current.log.record(
+      (hlc) => RecipeAuthoredEvents.set(hlc: hlc, recipe: withId),
+    );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Adds or replaces an ingredient the reader described, and re-folds.
+  ///
+  /// **The write path ③ needs**, and it is deliberately the same shape as [authorRecipe]: an operation is appended
+  /// and the state is whatever the operations add up to. The id is minted here from the log's own clock when the
+  /// caller has none, because taking a reading is the log's business rather than a widget's -- and a form that
+  /// reached for one would be consuming the identity of an event it is not creating.
+  ///
+  /// **Nothing is validated here.** `validateAuthoredIngredient` exists and belongs to the form, which can say
+  /// *which* thing is wrong; a store that refused a record could only report that it refused it.
+  Future<void> authorIngredient(AuthoredIngredient ingredient, {String? id}) async {
+    final current = state.value;
+    if (current == null) return;
+    final withId = id == null
+        ? AuthoredIngredient(
+            id: AuthoredIngredientId.from(ingredient.name, current.log.clock.next()),
+            name: ingredient.name,
+            category: ingredient.category,
+            aliases: ingredient.aliases,
+            note: ingredient.note,
+          )
+        : ingredient;
+    await current.log.record(
+      (hlc) => IngredientAuthoredEvents.set(hlc: hlc, ingredient: withId),
+    );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Removes an ingredient the reader added.
+  ///
+  /// Recorded rather than forgotten, like [removeAuthoredRecipe] and for the same reason: a removal that left no
+  /// event would be undone by the next sync. `IngredientAuthoredEvents.removed` refuses an id that is not the
+  /// reader's own, so the catalogue cannot be edited by calling this -- the refusal is in the domain layer so no
+  /// caller can get it wrong.
+  Future<void> removeAuthoredIngredient(String id) async {
+    final current = state.value;
+    if (current == null) return;
+    await current.log.record(
+      (hlc) => IngredientAuthoredEvents.removed(hlc: hlc, id: id),
+    );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Creates or replaces a collection, and re-folds.
+  ///
+  /// **The cycle check happens here, before the event is written**, which is what `checkMembership` argues for at
+  /// length: a collection that contains itself is not a rendering problem a screen can dodge, because the fold
+  /// listing its contents would recurse until the stack ran out -- and by then the bad event is in the log and in
+  /// every synced copy of it. Refusing at the door costs a message; refusing later costs a migration.
+  ///
+  /// **The whole membership is written rather than a change to it**, so a device folding the log arrives at a state
+  /// instead of at a state that depends on whether it saw every earlier event.
+  ///
+  /// Returns the problem when the membership is refused, and null when the collection was written -- so a screen can
+  /// say which thing was wrong rather than only that something was.
+  Future<CollectionProblem?> setCollection({
+    required String id,
+    required String name,
+    required Iterable<CollectionMember> members,
+  }) async {
+    final current = state.value;
+    if (current == null) return null;
+    final memberList = members.toList(growable: false);
+    final problem = checkMembership(
+      id: id,
+      members: memberList,
+      existing: current.collections,
+    );
+    if (problem != null) return problem;
+    await current.log.record(
+      (hlc) => RecipeCollectionEvents.set(
+        hlc: hlc,
+        id: id,
+        name: name,
+        members: memberList,
+      ),
+    );
+    state = AsyncData(Cellar.of(current.log));
+    return null;
+  }
+
+  /// Deletes a collection.
+  ///
+  /// **Cleared rather than emptied, because "deleted" and "empty" are different things to a reader** -- the fold
+  /// argues it and the screen depends on it: an emptied collection still exists to be filled again, and a cleared
+  /// one is gone from the list.
+  Future<void> clearCollection(String id) async {
+    final current = state.value;
+    if (current == null) return;
+    await current.log.record(
+      (hlc) => RecipeCollectionEvents.cleared(hlc: hlc, id: id),
+    );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Hides a folder the application derives from the drinks themselves.
+  ///
+  /// A derived folder cannot be deleted -- it is a fact about the recipes, not a record -- so the most a reader can
+  /// say about one is "not on my screen", which is what this records.
+  Future<void> hideDerivedFolder(String folderKey) async {
+    final current = state.value;
+    if (current == null) return;
+    await current.log.record(
+      (hlc) => RecipeCollectionEvents.folderHidden(hlc: hlc, folderKey: folderKey),
+    );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Shows a hidden derived folder again.
+  Future<void> showDerivedFolder(String folderKey) async {
+    final current = state.value;
+    if (current == null) return;
+    await current.log.record(
+      (hlc) => RecipeCollectionEvents.folderShown(hlc: hlc, folderKey: folderKey),
+    );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Removes a recipe the reader wrote.
+  ///
+  /// **Recorded rather than forgotten**, like [clearOverlay] and for the same reason: a removal that left no event
+  /// would be undone by the next sync, because a peer still holding the older write would hand it straight back.
+  ///
+  /// `RecipeAuthoredEvents.removed` refuses an id that is not the reader's own, so a shipped recipe cannot be
+  /// deleted by calling this -- the refusal is in the domain layer rather than here, so no caller can get it wrong.
+  Future<void> removeAuthoredRecipe(String id) async {
+    final current = state.value;
+    if (current == null) return;
+    await current.log.record(
+      (hlc) => RecipeAuthoredEvents.removed(hlc: hlc, id: id),
     );
     state = AsyncData(Cellar.of(current.log));
   }

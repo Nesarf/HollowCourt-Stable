@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:hollow_court/data/seed/seed_codec.dart';
@@ -461,6 +462,68 @@ void main() {
       // formulas** -- which is why it could not be deduplicated and why it could not ship. Our list is one
       // canonical drink per name by construction, and this is that assertion.
       expect(repository.nameCollisions(), isEmpty);
+    });
+  });
+
+  group('**every shipped ingredient says what it is**', () {
+    // **The guard `docs/proposal-recipes-and-packs.md` §3 asks for, and the number that made it urgent.** On
+    // 2026-10-01 the library was 189 ingredients of which **47 carried a classification and 142 carried none**,
+    // against an enum declaring 33 categories of which 17 were used. `tool/classify_ingredients.py` is the pass
+    // that filled it in, and this is what stops the 142 from coming back the next time somebody adds a drink.
+    //
+    // **Read from the shipped artifact rather than from a fixture**, because the failure it guards against is a
+    // recipe arriving with an ingredient nobody classified -- and that shows up in the asset, not in a test's own
+    // copy of it.
+    late final List<Map<String, Object?>> ingredients;
+    setUpAll(() {
+      final file = File(artifactPath);
+      if (!file.existsSync()) {
+        throw StateError('$artifactPath is absent; it is tracked, so this means the checkout is partial');
+      }
+      final decoded = jsonDecode(file.readAsStringSync()) as Map<String, Object?>;
+      ingredients = [
+        for (final raw in decoded['ingredients']! as List<Object?>) (raw! as Map<String, Object?>),
+      ];
+    });
+
+    test('the artifact loads at all', () {
+      expect(ingredients, isNotEmpty);
+    });
+
+    test('**none is missing a kind**', () {
+      final unclassified = [
+        for (final i in ingredients)
+          if ((i['kind'] as String?)?.trim().isEmpty ?? true) i['id'],
+      ];
+      expect(
+        unclassified,
+        isEmpty,
+        reason: 'these ingredients have no kind, so nothing can group or filter them: $unclassified. Add them to '
+            'tool/classify_ingredients.py rather than to the artifact by hand -- the pass is the record of what was '
+            'decided.',
+      );
+    });
+
+    test('a kind is one of the shapes the proposal names', () {
+      // Not an enum in the model, on purpose -- but the *shipped* library should stay inside a vocabulary a
+      // reader's picker can render, and a typo like `spirts` would otherwise pass the test above.
+      const allowed = {
+        'spirit', 'liqueur', 'wine', 'beer', 'juice', 'syrup', 'bitter', 'dairy', 'spice', 'garnish', 'pantry',
+        'mixer', 'tea', 'fruit',
+      };
+      final stray = [
+        for (final i in ingredients)
+          if (i['kind'] != null && !allowed.contains(i['kind'])) '${i['id']}: ${i['kind']}',
+      ];
+      expect(stray, isEmpty, reason: 'these kinds are outside the vocabulary: $stray');
+    });
+
+    test('a family, where there is one, is a string and not empty', () {
+      final bad = [
+        for (final i in ingredients)
+          if (i.containsKey('family') && ((i['family'] as String?)?.trim().isEmpty ?? true)) i['id'],
+      ];
+      expect(bad, isEmpty, reason: 'a family that says nothing is worse than no family: $bad');
     });
   });
 }

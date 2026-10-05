@@ -105,7 +105,7 @@ void main() {
       final gin = Ingredient(
         id: 'ginPlymouth',
         name: 'Plymouth Gin',
-        category: IngredientCategory.gin,
+        category: IngredientCategory.itemsYouCanMake,
         abvPercent: Rational.of(415, 10),
         densityGPerMl: Rational.of(94, 100),
         defaultUnit: UnitSystem.millilitre,

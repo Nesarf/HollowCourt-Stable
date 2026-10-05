@@ -9,853 +9,1126 @@
   "ingredients": [
     {
       "id": "absinthe",
-      "name": "Absinthe"
+      "name": "Absinthe",
+      "kind": "spirit",
+      "family": "anise"
     },
     {
       "id": "advocaat",
-      "name": "Advocaat"
+      "name": "Advocaat",
+      "kind": "liqueur",
+      "family": "egg"
     },
     {
       "id": "agaveSyrup",
-      "name": "Agave syrup"
+      "name": "Agave syrup",
+      "kind": "syrup"
     },
     {
       "id": "aguardiente",
-      "name": "Aguardiente"
+      "name": "Aguardiente",
+      "kind": "spirit",
+      "family": "cane"
     },
     {
       "id": "allspiceDram",
       "name": "Allspice dram (St. Elizabeth)",
-      "category": "commonLiqueurs",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "liqueur",
+      "family": "herbal"
     },
     {
       "id": "almondSyrup",
-      "name": "Almond syrup"
+      "name": "Almond syrup",
+      "kind": "syrup",
+      "family": "nut"
     },
     {
       "id": "amaretto",
-      "name": "Amaretto"
+      "name": "Amaretto",
+      "kind": "liqueur",
+      "family": "nut"
     },
     {
       "id": "amaro",
-      "name": "Amaro"
+      "name": "Amaro",
+      "kind": "liqueur",
+      "family": "amaro"
     },
     {
       "id": "amontilladoSherry",
       "name": "Amontillado sherry",
-      "category": "portAndSherry",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "wine",
+      "family": "fortified"
     },
     {
       "id": "angosturaBitters",
-      "name": "Angostura bitters"
+      "name": "Angostura bitters",
+      "kind": "bitter"
     },
     {
       "id": "aperol",
-      "name": "Aperol"
+      "name": "Aperol",
+      "kind": "liqueur",
+      "family": "aperitif"
     },
     {
       "id": "apple",
-      "name": "Apple"
+      "name": "Apple",
+      "kind": "fruit"
     },
     {
       "id": "appleBrandy",
-      "name": "Apple brandy"
+      "name": "Apple brandy",
+      "kind": "spirit",
+      "family": "brandy"
     },
     {
       "id": "appleJuice",
-      "name": "Apple juice"
+      "name": "Apple juice",
+      "kind": "juice"
     },
     {
       "id": "apricotLiqueur",
-      "name": "Apricot liqueur"
+      "name": "Apricot liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "aquafaba",
-      "name": "Aquafaba"
+      "name": "Aquafaba",
+      "kind": "dairy",
+      "family": "egg"
     },
     {
       "id": "bananaLiqueur",
-      "name": "Banana liqueur"
+      "name": "Banana liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "basilLeaf",
-      "name": "Basil"
+      "name": "Basil",
+      "kind": "spice",
+      "family": "herb"
     },
     {
       "id": "bellPepper",
-      "name": "Bell pepper"
+      "name": "Bell pepper",
+      "kind": "fruit",
+      "family": "vegetable"
     },
     {
       "id": "benedictine",
-      "name": "Bénédictine"
+      "name": "Bénédictine",
+      "kind": "liqueur",
+      "family": "herbal"
     },
     {
       "id": "blackTea",
-      "name": "Tea (Black)"
+      "name": "Tea (Black)",
+      "kind": "tea"
     },
     {
       "id": "blackberry",
-      "name": "Blackberry"
+      "name": "Blackberry",
+      "kind": "fruit",
+      "family": "berry"
     },
     {
       "id": "blackberryLiqueur",
-      "name": "Blackberry liqueur"
+      "name": "Blackberry liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "blackcurrantLiqueur",
-      "name": "Blackcurrant liqueur"
+      "name": "Blackcurrant liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "blendedAgedRum",
       "name": "Blended aged rum",
-      "category": "rum",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "blueCuracao",
-      "name": "Blue curaçao"
+      "name": "Blue curaçao",
+      "kind": "liqueur",
+      "family": "orange"
     },
     {
       "id": "bourbonWhiskey",
       "name": "Bourbon",
-      "category": "whiskey",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "whiskey"
     },
     {
       "id": "brownSugar",
-      "name": "Brown sugar"
+      "name": "Brown sugar",
+      "kind": "pantry"
     },
     {
       "id": "cachaca",
-      "name": "Cachaça"
+      "name": "Cachaça",
+      "kind": "spirit",
+      "family": "cane"
     },
     {
       "id": "calvados",
       "name": "Calvados",
-      "category": "brandy",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "brandy"
     },
     {
       "id": "campari",
       "name": "Campari",
-      "category": "aperitifs",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "liqueur",
+      "family": "aperitif"
     },
     {
       "id": "chamomileCordial",
       "name": "Chamomile cordial",
-      "category": "syrups",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "syrup",
+      "family": "floral"
     },
     {
       "id": "cherry",
       "name": "Cherry",
-      "category": "fruitAndVeg",
-      "defaultUnit": "each"
+      "defaultUnit": "each",
+      "kind": "garnish"
     },
     {
       "id": "cherryLiqueur",
-      "name": "Cherry liqueur"
+      "name": "Cherry liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "chilliPepper",
-      "name": "Chilli pepper"
+      "name": "Chilli pepper",
+      "kind": "spice",
+      "family": "spice"
     },
     {
       "id": "chilliPowder",
-      "name": "Chilli powder"
+      "name": "Chilli powder",
+      "kind": "spice",
+      "family": "spice"
     },
     {
       "id": "chocolate",
-      "name": "Chocolate"
+      "name": "Chocolate",
+      "kind": "pantry"
     },
     {
       "id": "cinnamon",
-      "name": "Cinnamon"
+      "name": "Cinnamon",
+      "kind": "spice",
+      "family": "spice"
     },
     {
       "id": "cinnamonSyrup",
-      "name": "Cinnamon syrup"
+      "name": "Cinnamon syrup",
+      "kind": "syrup",
+      "family": "spice"
     },
     {
       "id": "coconutWater",
-      "name": "Coconut water"
+      "name": "Coconut water",
+      "kind": "juice"
     },
     {
       "id": "coffee",
-      "name": "Coffee"
+      "name": "Coffee",
+      "kind": "pantry",
+      "family": "coffee"
     },
     {
       "id": "coffeeBeans",
-      "name": "Coffee beans"
+      "name": "Coffee beans",
+      "kind": "spice",
+      "family": "coffee"
     },
     {
       "id": "coffeeLiqueur",
       "name": "Coffee liqueur",
-      "category": "commonLiqueurs",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "liqueur",
+      "family": "coffee"
     },
     {
       "id": "cognac",
       "name": "Cognac",
-      "category": "brandy",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "brandy"
     },
     {
       "id": "cola",
-      "name": "Cola"
+      "name": "Cola",
+      "kind": "mixer"
     },
     {
       "id": "condensedMilk",
-      "name": "Condensed milk"
+      "name": "Condensed milk",
+      "kind": "dairy"
     },
     {
       "id": "corianderLeaf",
-      "name": "Coriander leaf"
+      "name": "Coriander leaf",
+      "kind": "spice",
+      "family": "herb"
     },
     {
       "id": "cranberryJuice",
-      "name": "Cranberry juice"
+      "name": "Cranberry juice",
+      "kind": "juice"
     },
     {
       "id": "cream",
       "name": "Cream",
-      "category": "pantryItems",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "dairy"
     },
     {
       "id": "creamOfCoconut",
-      "name": "Cream of coconut"
+      "name": "Cream of coconut",
+      "kind": "dairy"
     },
     {
       "id": "creamSherry",
-      "name": "Sherry (Cream)"
+      "name": "Sherry (Cream)",
+      "kind": "wine",
+      "family": "fortified"
     },
     {
       "id": "cremeDeCacao",
       "name": "Crème de cacao",
-      "category": "commonLiqueurs",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "liqueur",
+      "family": "cacao"
     },
     {
       "id": "cremeDeCassis",
       "name": "Crème de cassis",
-      "category": "commonLiqueurs",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "cremeDeMenthe",
-      "name": "Crème de menthe"
+      "name": "Crème de menthe",
+      "kind": "liqueur",
+      "family": "mint"
     },
     {
       "id": "cremeDeViolette",
       "name": "Crème de Violette",
-      "category": "commonLiqueurs",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "liqueur",
+      "family": "floral"
     },
     {
       "id": "cubanRum",
       "name": "Cuban rum",
-      "category": "rum",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "cucumber",
-      "name": "Cucumber"
+      "name": "Cucumber",
+      "kind": "fruit",
+      "family": "vegetable"
     },
     {
       "id": "cynar",
-      "name": "Cynar"
+      "name": "Cynar",
+      "kind": "liqueur",
+      "family": "amaro"
     },
     {
       "id": "darkRum",
-      "name": "Dark rum"
+      "name": "Dark rum",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "demeraraRum",
       "name": "Demerara rum",
-      "category": "rum",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "drambuie",
-      "name": "Drambuie"
+      "name": "Drambuie",
+      "kind": "liqueur",
+      "family": "herbal"
     },
     {
       "id": "drySherry",
-      "name": "Sherry (Dry)"
+      "name": "Sherry (Dry)",
+      "kind": "wine",
+      "family": "fortified"
     },
     {
       "id": "dryVermouth",
-      "name": "Vermouth (Dry)"
+      "name": "Vermouth (Dry)",
+      "kind": "wine",
+      "family": "vermouth"
     },
     {
       "id": "earlGreyTea",
-      "name": "Tea (Earl grey)"
+      "name": "Tea (Earl grey)",
+      "kind": "tea"
     },
     {
       "id": "egg",
-      "name": "Egg"
+      "name": "Egg",
+      "kind": "dairy",
+      "family": "egg"
     },
     {
       "id": "eggWhite",
-      "name": "Egg white"
+      "name": "Egg white",
+      "kind": "dairy",
+      "family": "egg"
     },
     {
       "id": "eggYolk",
-      "name": "Egg yolk"
+      "name": "Egg yolk",
+      "kind": "dairy",
+      "family": "egg"
     },
     {
       "id": "elderflowerCordial",
-      "name": "Elderflower cordial"
+      "name": "Elderflower cordial",
+      "kind": "syrup",
+      "family": "floral"
     },
     {
       "id": "energyDrink",
-      "name": "Energy drink"
+      "name": "Energy drink",
+      "kind": "mixer"
     },
     {
       "id": "espressoCoffee",
-      "name": "Espresso"
+      "name": "Espresso",
+      "kind": "pantry",
+      "family": "coffee"
     },
     {
       "id": "falernum",
-      "name": "Falernum"
+      "name": "Falernum",
+      "kind": "syrup",
+      "family": "spice"
     },
     {
       "id": "fernet",
-      "name": "Fernet"
+      "name": "Fernet",
+      "kind": "liqueur",
+      "family": "amaro"
     },
     {
       "id": "frangelico",
       "name": "Frangelico (hazelnut liqueur)",
-      "category": "commonLiqueurs",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "liqueur",
+      "family": "nut"
     },
     {
       "id": "galliano",
-      "name": "Galliano"
+      "name": "Galliano",
+      "kind": "liqueur",
+      "family": "herbal"
     },
     {
       "id": "gin",
       "name": "Gin",
-      "category": "gin",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "gin"
     },
     {
       "id": "ginger",
       "name": "Ginger",
-      "category": "herbsAndSpices",
-      "defaultUnit": "each"
+      "defaultUnit": "each",
+      "kind": "spice",
+      "family": "spice"
     },
     {
       "id": "gingerAle",
-      "name": "Ginger ale"
+      "name": "Ginger ale",
+      "kind": "mixer"
     },
     {
       "id": "gingerBeer",
-      "name": "Ginger beer"
+      "name": "Ginger beer",
+      "kind": "mixer"
     },
     {
       "id": "goldRum",
-      "name": "Rum (Gold)"
+      "name": "Rum (Gold)",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "grape",
       "name": "White grape",
-      "category": "fruitAndVeg",
-      "defaultUnit": "each"
+      "defaultUnit": "each",
+      "kind": "fruit"
     },
     {
       "id": "grapefruit",
-      "name": "Grapefruit"
+      "name": "Grapefruit",
+      "kind": "fruit",
+      "family": "citrus"
     },
     {
       "id": "grapefruitJuice",
-      "name": "Grapefruit juice"
+      "name": "Grapefruit juice",
+      "kind": "juice"
     },
     {
       "id": "grapefruitSoda",
       "name": "Grapefruit soda",
-      "category": "sodas",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "mixer"
     },
     {
       "id": "grappa",
       "name": "Grappa",
-      "category": "brandy",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "brandy"
     },
     {
       "id": "greenChartreuse",
-      "name": "Green Chartreuse"
+      "name": "Green Chartreuse",
+      "kind": "liqueur",
+      "family": "herbal"
     },
     {
       "id": "greenCremeDeMenthe",
-      "name": "Green crème de menthe"
+      "name": "Green crème de menthe",
+      "kind": "liqueur",
+      "family": "mint"
     },
     {
       "id": "greenTea",
-      "name": "Tea (Green)"
+      "name": "Tea (Green)",
+      "kind": "tea"
     },
     {
       "id": "grenadine",
-      "name": "Grenadine"
+      "name": "Grenadine",
+      "kind": "syrup",
+      "family": "pomegranate"
     },
     {
       "id": "guavaJuice",
-      "name": "Guava juice"
+      "name": "Guava juice",
+      "kind": "juice"
     },
     {
       "id": "hardCider",
-      "name": "Hard cider"
+      "name": "Hard cider",
+      "kind": "beer"
     },
     {
       "id": "honeySyrup",
       "name": "Honey syrup",
-      "category": "syrups",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "syrup"
     },
     {
       "id": "hotSauce",
       "name": "Hot sauce",
-      "category": "pantryItems",
-      "defaultUnit": "dash"
+      "defaultUnit": "dash",
+      "kind": "pantry"
     },
     {
       "id": "iceCream",
-      "name": "Ice cream"
+      "name": "Ice cream",
+      "kind": "dairy"
     },
     {
       "id": "irishCreamLiqueur",
-      "name": "Irish cream"
+      "name": "Irish cream",
+      "kind": "liqueur",
+      "family": "cream"
     },
     {
       "id": "irishWhiskey",
-      "name": "Irish whiskey"
+      "name": "Irish whiskey",
+      "kind": "spirit",
+      "family": "whiskey"
     },
     {
       "id": "jagermeister",
-      "name": "Jägermeister"
+      "name": "Jägermeister",
+      "kind": "liqueur",
+      "family": "amaro"
     },
     {
       "id": "kirschEauDeVie",
-      "name": "Kirsch"
+      "name": "Kirsch",
+      "kind": "spirit",
+      "family": "brandy"
     },
     {
       "id": "lager",
-      "name": "Lager"
+      "name": "Lager",
+      "kind": "beer"
     },
     {
       "id": "lemon",
-      "name": "Lemon"
+      "name": "Lemon",
+      "kind": "fruit",
+      "family": "citrus"
     },
     {
       "id": "lemonJuice",
       "name": "Lemon juice",
-      "category": "juices",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "juice",
+      "family": "citrus"
     },
     {
       "id": "lemonSorbet",
-      "name": "Lemon sorbet"
+      "name": "Lemon sorbet",
+      "kind": "dairy"
     },
     {
       "id": "lemonade",
-      "name": "Lemonade"
+      "name": "Lemonade",
+      "kind": "mixer"
     },
     {
       "id": "lilletBlanc",
-      "name": "Lillet Blanc"
+      "name": "Lillet Blanc",
+      "kind": "wine",
+      "family": "aperitif"
     },
     {
       "id": "lime",
-      "name": "Lime"
+      "name": "Lime",
+      "kind": "fruit",
+      "family": "citrus"
     },
     {
       "id": "limeJuice",
-      "name": "Lime juice"
+      "name": "Lime juice",
+      "kind": "juice",
+      "family": "citrus"
     },
     {
       "id": "lycheeJuice",
-      "name": "Lychee juice"
+      "name": "Lychee juice",
+      "kind": "juice"
     },
     {
       "id": "mapleSyrup",
-      "name": "Maple syrup"
+      "name": "Maple syrup",
+      "kind": "syrup"
     },
     {
       "id": "maraschinoLiqueur",
       "name": "Maraschino liqueur",
-      "category": "commonLiqueurs",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "melonLiqueur",
-      "name": "Melon liqueur"
+      "name": "Melon liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "mezcal",
-      "name": "Mezcal"
+      "name": "Mezcal",
+      "kind": "spirit",
+      "family": "agave"
     },
     {
       "id": "milk",
-      "name": "Milk"
+      "name": "Milk",
+      "kind": "dairy"
     },
     {
       "id": "mintLeaf",
-      "name": "Mint"
+      "name": "Mint",
+      "kind": "spice",
+      "family": "herb"
     },
     {
       "id": "nutmeg",
       "name": "Nutmeg",
-      "category": "herbsAndSpices",
-      "defaultUnit": "pinch"
+      "defaultUnit": "pinch",
+      "kind": "spice",
+      "family": "spice"
     },
     {
       "id": "oldTomGin",
       "name": "Old Tom gin",
-      "category": "gin",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "gin"
     },
     {
       "id": "olive",
-      "name": "Olive"
+      "name": "Olive",
+      "kind": "garnish"
     },
     {
       "id": "oliveBrine",
-      "name": "Olive brine"
+      "name": "Olive brine",
+      "kind": "pantry",
+      "family": "brine"
     },
     {
       "id": "orange",
       "name": "Orange",
-      "category": "citrus",
-      "defaultUnit": "slice"
+      "defaultUnit": "slice",
+      "kind": "fruit",
+      "family": "citrus"
     },
     {
       "id": "orangeBitters",
-      "name": "Orange bitters"
+      "name": "Orange bitters",
+      "kind": "bitter"
     },
     {
       "id": "orangeCuracao",
-      "name": "Orange curaçao"
+      "name": "Orange curaçao",
+      "kind": "liqueur",
+      "family": "orange"
     },
     {
       "id": "orangeFlowerWater",
-      "name": "Orange flower water"
+      "name": "Orange flower water",
+      "kind": "pantry",
+      "family": "floral"
     },
     {
       "id": "orangeJuice",
-      "name": "Orange juice"
+      "name": "Orange juice",
+      "kind": "juice",
+      "family": "citrus"
     },
     {
       "id": "orangeLiqueur",
-      "name": "Orange liqueur"
+      "name": "Orange liqueur",
+      "kind": "liqueur",
+      "family": "orange"
     },
     {
       "id": "orangeMarmalade",
-      "name": "Orange marmalade"
+      "name": "Orange marmalade",
+      "kind": "pantry",
+      "family": "preserve"
     },
     {
       "id": "orangeSoda",
-      "name": "Orange soda"
+      "name": "Orange soda",
+      "kind": "mixer"
     },
     {
       "id": "orgeat",
       "name": "Orgeat",
-      "category": "syrups",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "syrup",
+      "family": "nut"
     },
     {
       "id": "overproofRum",
       "name": "Jamaican overproof white rum",
-      "category": "rum",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "paloCortado",
       "name": "Palo Cortado sherry",
-      "category": "portAndSherry",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "wine",
+      "family": "fortified"
     },
     {
       "id": "passionfruit",
-      "name": "Passionfruit"
+      "name": "Passionfruit",
+      "kind": "fruit"
     },
     {
       "id": "passionfruitLiqueur",
-      "name": "Passionfruit liqueur"
+      "name": "Passionfruit liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "passionfruitSyrup",
       "name": "Passion fruit syrup",
-      "category": "syrups",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "syrup"
     },
     {
       "id": "peach",
-      "name": "Peach"
+      "name": "Peach",
+      "kind": "fruit",
+      "family": "stone"
     },
     {
       "id": "peachBitters",
-      "name": "Peach bitters"
+      "name": "Peach bitters",
+      "kind": "bitter"
     },
     {
       "id": "peachBrandy",
       "name": "Peach brandy",
-      "category": "brandy",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "brandy"
     },
     {
       "id": "peachLiqueur",
-      "name": "Peach liqueur"
+      "name": "Peach liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "peachPure",
       "name": "Peach purée",
-      "category": "fruitAndVeg",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "fruit",
+      "family": "stone"
     },
     {
       "id": "peachSchnapps",
-      "name": "Peach schnapps"
+      "name": "Peach schnapps",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "pepper",
       "name": "Pepper",
-      "category": "herbsAndSpices",
-      "defaultUnit": "pinch"
+      "defaultUnit": "pinch",
+      "kind": "pantry",
+      "family": "spice"
     },
     {
       "id": "peppermintSchnapps",
-      "name": "Peppermint schnapps"
+      "name": "Peppermint schnapps",
+      "kind": "liqueur",
+      "family": "mint"
     },
     {
       "id": "pernod",
-      "name": "Pernod"
+      "name": "Pernod",
+      "kind": "spirit",
+      "family": "anise"
     },
     {
       "id": "peychaudSBitters",
-      "name": "Peychaud's bitters"
+      "name": "Peychaud's bitters",
+      "kind": "bitter"
     },
     {
       "id": "pickleBrine",
-      "name": "Pickle brine"
+      "name": "Pickle brine",
+      "kind": "pantry",
+      "family": "brine"
     },
     {
       "id": "pickledOnion",
-      "name": "Cocktail onion"
+      "name": "Cocktail onion",
+      "kind": "garnish"
     },
     {
       "id": "pimmS",
-      "name": "Pimm's"
+      "name": "Pimm's",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "pineapple",
-      "name": "Pineapple"
+      "name": "Pineapple",
+      "kind": "fruit"
     },
     {
       "id": "pineappleJuice",
-      "name": "Pineapple juice"
+      "name": "Pineapple juice",
+      "kind": "juice"
     },
     {
       "id": "pisco",
-      "name": "Pisco"
+      "name": "Pisco",
+      "kind": "spirit",
+      "family": "brandy"
     },
     {
       "id": "pomegranateJuice",
-      "name": "Pomegranate juice"
+      "name": "Pomegranate juice",
+      "kind": "juice"
     },
     {
       "id": "raspberryLiqueur",
-      "name": "Raspberry liqueur"
+      "name": "Raspberry liqueur",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "raspberrySyrup",
-      "name": "Raspberry syrup"
+      "name": "Raspberry syrup",
+      "kind": "syrup",
+      "family": "berry"
     },
     {
       "id": "redWine",
-      "name": "Red wine"
+      "name": "Red wine",
+      "kind": "wine"
     },
     {
       "id": "rhumAgricole",
       "name": "Rhum agricole (Martinique)",
-      "category": "rum",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "rosewater",
-      "name": "Rosewater"
+      "name": "Rosewater",
+      "kind": "pantry",
+      "family": "floral"
     },
     {
       "id": "rubyPort",
-      "name": "Port (Ruby)"
+      "name": "Port (Ruby)",
+      "kind": "wine",
+      "family": "fortified"
     },
     {
       "id": "ryeWhiskey",
-      "name": "Rye whiskey"
+      "name": "Rye whiskey",
+      "kind": "spirit",
+      "family": "whiskey"
     },
     {
       "id": "sageLeaf",
-      "name": "Sage"
+      "name": "Sage",
+      "kind": "spice",
+      "family": "herb"
     },
     {
       "id": "salt",
       "name": "Salt",
-      "category": "herbsAndSpices",
-      "defaultUnit": "pinch"
+      "defaultUnit": "pinch",
+      "kind": "pantry"
     },
     {
       "id": "sambuca",
-      "name": "Sambuca"
+      "name": "Sambuca",
+      "kind": "liqueur",
+      "family": "anise"
     },
     {
       "id": "scotchWhisky",
-      "name": "Scotch"
+      "name": "Scotch",
+      "kind": "spirit",
+      "family": "whiskey"
     },
     {
       "id": "sesameOil",
-      "name": "Sesame oil"
+      "name": "Sesame oil",
+      "kind": "pantry"
     },
     {
       "id": "simpleSyrup",
-      "name": "Simple syrup"
+      "name": "Simple syrup",
+      "kind": "syrup"
     },
     {
       "id": "sloeGin",
-      "name": "Sloe gin"
+      "name": "Sloe gin",
+      "kind": "liqueur",
+      "family": "fruit"
     },
     {
       "id": "smokyRum",
       "name": "Smoky rum",
-      "category": "rum",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "sodaWater",
       "name": "Soda water",
-      "category": "sodas",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "mixer"
     },
     {
       "id": "soju",
-      "name": "Soju"
+      "name": "Soju",
+      "kind": "spirit",
+      "family": "grain"
     },
     {
       "id": "sparklingWine",
       "name": "Sparkling wine",
-      "category": "wine",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "wine",
+      "family": "sparkling"
     },
     {
       "id": "spicedRum",
-      "name": "Spiced rum"
+      "name": "Spiced rum",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "stout",
-      "name": "Stout"
+      "name": "Stout",
+      "kind": "beer"
     },
     {
       "id": "strawberrySyrup",
-      "name": "Strawberry syrup"
+      "name": "Strawberry syrup",
+      "kind": "syrup",
+      "family": "berry"
     },
     {
       "id": "sugar",
-      "name": "Sugar"
+      "name": "Sugar",
+      "kind": "pantry"
     },
     {
       "id": "sugarCaneJuice",
-      "name": "Sugar cane juice"
+      "name": "Sugar cane juice",
+      "kind": "juice"
     },
     {
       "id": "suze",
-      "name": "Suze"
+      "name": "Suze",
+      "kind": "liqueur",
+      "family": "aperitif"
     },
     {
       "id": "sweetVermouth",
       "name": "Vermouth (Sweet)",
-      "category": "vermouth",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "wine",
+      "family": "vermouth"
     },
     {
       "id": "tawnyPort",
-      "name": "Port (Tawny)"
+      "name": "Port (Tawny)",
+      "kind": "wine",
+      "family": "fortified"
     },
     {
       "id": "tequila",
-      "name": "Tequila"
+      "name": "Tequila",
+      "kind": "spirit",
+      "family": "agave"
     },
     {
       "id": "tomatoJuice",
       "name": "Tomato juice",
-      "category": "juices",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "juice",
+      "family": "vegetable"
     },
     {
       "id": "tonicWater",
-      "name": "Tonic water"
+      "name": "Tonic water",
+      "kind": "mixer"
     },
     {
       "id": "vanillaExtract",
-      "name": "Vanilla extract"
+      "name": "Vanilla extract",
+      "kind": "pantry"
     },
     {
       "id": "vanillaSyrup",
       "name": "Vanilla syrup",
-      "category": "syrups",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "syrup"
     },
     {
       "id": "vanillaVodka",
       "name": "Vanilla vodka",
-      "category": "vodkaAndSimilar",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "vodka"
     },
     {
       "id": "vodka",
       "name": "Vodka",
-      "category": "vodkaAndSimilar",
-      "defaultUnit": "ml"
+      "defaultUnit": "ml",
+      "kind": "spirit",
+      "family": "vodka"
     },
     {
       "id": "water",
-      "name": "Water"
+      "name": "Water",
+      "kind": "mixer"
     },
     {
       "id": "whiskey",
-      "name": "Whiskey"
+      "name": "Whiskey",
+      "kind": "spirit",
+      "family": "whiskey"
     },
     {
       "id": "whiteCremeDeMenthe",
-      "name": "White crème de menthe"
+      "name": "White crème de menthe",
+      "kind": "liqueur",
+      "family": "mint"
     },
     {
       "id": "whiteRum",
-      "name": "White rum"
+      "name": "White rum",
+      "kind": "spirit",
+      "family": "rum"
     },
     {
       "id": "whiteWine",
-      "name": "White wine"
+      "name": "White wine",
+      "kind": "wine"
     },
     {
       "id": "worcestershireSauce",
       "name": "Worcestershire sauce",
-      "category": "pantryItems",
-      "defaultUnit": "dash"
+      "defaultUnit": "dash",
+      "kind": "pantry"
     },
     {
       "id": "yellowChartreuse",
-      "name": "Yellow Chartreuse"
+      "name": "Yellow Chartreuse",
+      "kind": "liqueur",
+      "family": "herbal"
     },
     {
       "id": "tripleSec",
-      "name": "Triple sec"
+      "name": "Triple sec",
+      "kind": "liqueur",
+      "family": "orange"
     },
     {
       "id": "brandy",
-      "name": "Brandy"
+      "name": "Brandy",
+      "kind": "spirit",
+      "family": "brandy"
     }
   ],
   "recipes": [
