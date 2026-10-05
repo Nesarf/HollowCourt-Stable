@@ -50,7 +50,7 @@ VERSION="$(grep -m1 '^version:' pubspec.yaml | tr -d '
 ' | sed 's/version: *//; s/+.*//')"
 BUILD_NUMBER="$(grep -m1 '^version:' pubspec.yaml | tr -d '
 ' | sed 's/.*+//')"
-DEFINES="--dart-define=APP_VERSION=$VERSION.$BUILD_NUMBER --dart-define=BUILD_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+DEFINES="--dart-define=APP_VERSION=$VERSION.$BUILD_NUMBER-J1407b-FFF8E7 --dart-define=BUILD_COMMIT=$(git rev-parse HEAD 2>/dev/null || echo unknown)"
 
 # A double hyphen inside an XML comment is a syntax error that WiX reports at a position
 # pointing at the comment rather than at the mistake. It has now cost this project a build twice,

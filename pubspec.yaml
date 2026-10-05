@@ -36,7 +36,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # is the whole point of the table, and quiet on `1000 x ABI` for the one that matters most on a phone.
 #
 # `docs/TODO.md` section 八之一 had already caught this; the comment here had not been changed with it.
-version: 1.0.0+3939
+version: 1.0.0+48000
 
 environment:
   sdk: ^3.13.3

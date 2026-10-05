@@ -107,7 +107,7 @@ BUILD_NUMBER="$(grep -m1 '^version:' pubspec.yaml | tr -d '
 # **And the build itself had already succeeded without either define**, which is the part worth keeping:
 # the bundle existed, the status was 127, and anybody reading only the artifact would have shipped a build
 # whose About screen says `unknown`. Both defines fit on one line.
-flutter build linux "$@" --dart-define=APP_VERSION="$VERSION.$BUILD_NUMBER" --dart-define=BUILD_COMMIT="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
+flutter build linux "$@" --dart-define=APP_VERSION="$VERSION.$BUILD_NUMBER-J1407b-FFF8E7" --dart-define=BUILD_COMMIT="$(git rev-parse HEAD 2>/dev/null || echo unknown)"
 
 echo
 echo "== artifact =="

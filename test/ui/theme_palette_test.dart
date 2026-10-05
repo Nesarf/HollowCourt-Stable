@@ -208,7 +208,7 @@ void main() {
       // RGB units of each other and are told apart by their accents; this one is 79 units from its nearest
       // neighbour, so it is the first addition in a while that a reader can separate with no words on the screen.
       //
-      // **The one light world is 白庭, and it is scheduled for removal** rather than counted as stable: its
+      // **The one light world is 宇宙拿铁, and it is scheduled for removal** rather than counted as stable: its
       // `#F4F1E9` and the planned 宇宙拿铁's `FFF8E7` are under 1% apart in every channel, so two light worlds
       // cannot both ship. See `docs/memo-themes.md`. It stays until the world replacing it exists, because having
       // no light theme at all is a worse state than having a duplicate -- and it is the only world the light-mode
@@ -220,7 +220,7 @@ void main() {
         reason: 'a name is the wire format, so two themes sharing one is a stored setting that opens '
             'the wrong theme',
       );
-      expect(HollowPaletteValue.whiteCourt.brightness, Brightness.light);
+      expect(HollowPaletteValue.cosmicLatte.brightness, Brightness.light);
       expect(HollowPaletteValue.honeyed.brightness, Brightness.dark);
       // **The fourth is dark, like two of the three before it, and that is allowed.** What separates worlds here is
       // the ground's material and the ornament rather than lightness; the test below is the one that would catch a
@@ -295,15 +295,15 @@ void main() {
 
       await container
           .read(displaySettingsProvider.notifier)
-          .setTheme(HollowPaletteValue.whiteCourt);
+          .setTheme(HollowPaletteValue.cosmicLatte);
 
-      expect(container.read(displaySettingsProvider).theme.name, 'whiteCourt');
+      expect(container.read(displaySettingsProvider).theme.name, 'cosmicLatte');
       expect(
         HollowPalette.ground,
-        HollowPaletteValue.whiteCourt.ground,
+        HollowPaletteValue.cosmicLatte.ground,
         reason: 'the whole interface reads this getter, so it is what a repaint would use',
       );
-      expect(HollowPalette.ink, HollowPaletteValue.whiteCourt.ink);
+      expect(HollowPalette.ink, HollowPaletteValue.cosmicLatte.ink);
     });
 
     testWidgets('a text style carries the colour of the theme in force', (tester) async {

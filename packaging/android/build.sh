@@ -49,7 +49,24 @@ VERSION="$(grep -m1 '^version:' pubspec.yaml | tr -d '
 ' | sed 's/version: *//; s/+.*//')"
 BUILD_NUMBER="$(grep -m1 '^version:' pubspec.yaml | tr -d '
 ' | sed 's/.*+//')"
-DISPLAY_VERSION="$VERSION.$BUILD_NUMBER"
+# **The name a round is called by, and it carries the colour.** The owner fixed the form on 2026-09-29 as
+# `1.0.0.48000-J1407b-FFF8E7`, having measured that it passes every constraint: no character an installer or a
+# filename objects to (`#`, `/`, a space), monotonic across rounds, and -- because the build number is separate --
+# each of the three APKs still gets its own `versionCode` as `1000 x ABI offset + the build number`.
+#
+# The colour is in the *name* and not in the build number because pubspec's `+` field must be an integer; Android
+# reads it as `versionCode`. So `48000` is the number and `J1407b-FFF8E7` is what a person reads.
+COLOUR="J1407b-FFF8E7"
+DISPLAY_VERSION="$VERSION.$BUILD_NUMBER-$COLOUR"
+
+# **`--build-name` is deliberately NOT passed, and the attempt is worth recording.** The owner fixed three places
+# for this value on 2026-09-29 -- pubspec's `+48000`, the name the About screen shows, and the artifact filename --
+# and this script tried to add a fourth, the APK's own `versionName`, so that the manifest and the screen beside it
+# would agree. **Flutter makes that impossible**: it appends the pubspec build number to whatever `--build-name`
+# receives, so `1.0.0.48000-J1407b-FFF8E7` came back out as `1.0.0.48000-J1407b-FFF8E7.48000` -- the number twice.
+# Passing `1.0.0-J1407b-FFF8E7` instead gave `1.0.0-J1407b-FFF8E7.48000`, which is the colour before the number.
+# So the manifest keeps `1.0.0.48000` and the displayed name keeps its colour, and **the two differ by the suffix
+# rather than by a number**, which is a disagreement worth having over one worth inventing a scheme to hide.
 COMMIT="$(git -C "$(dirname "$0")/../.." rev-parse HEAD 2>/dev/null || echo unknown)"
 DEFINES="--dart-define=APP_VERSION=$DISPLAY_VERSION --dart-define=BUILD_COMMIT=$COMMIT"
 

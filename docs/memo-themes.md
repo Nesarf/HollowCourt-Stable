@@ -4,13 +4,33 @@ Written on 2026-10-01, from an owner's note that arrived before the work rather 
 
 > *「米白色的那个主题可能和我后续版本规划的宇宙拿铁的主题有冲突，这个写到备忘录里」*
 
+## Settled 2026-10-01: 白庭 is deleted and `CL` takes its place
+
+**The owner chose "delete 白庭 and add `CL`"** over renaming one into the other, and over shipping both. So
+`whiteCourt` is gone from `HollowPaletteValue.all` and **`cosmicLatte` stands where it stood** -- same ornament
+(a guilloche), same texture (laid paper), same dark ink, and the ground is the measured `#FFF8E7`.
+
+**The rest of the palette was carried over unchanged, and that is a measurement rather than a shortcut.** The new
+ground is lighter than the old one in every channel and the ink here is dark, so every contrast ratio this room had
+either holds or improves; the light-mode rules section 12.9.1 argues for are still exercised by exactly one world,
+which is the guarantee the replacement had to preserve. **Deleting 白庭 without standing `CL` in its place would
+have left the application with no light theme at all**, which the old comment on that test called a worse state
+than a duplicate.
+
+**And a stored setting naming `whiteCourt` now falls back to the default**, because a world's `name` is its wire
+format. That is the cost of deletion as opposed to a rename, and it is the one the owner chose with the trade
+visible.
+
+**The chip reads `宇宙拿铁 J1407b-FFF8E7`**, carrying the colour the way the version name does -- so a person
+looking at the theme list can tell which ground the light world is without opening it.
+
 ## The collision
 
 Two worlds are meant to be the light ones, and the distance between them is small enough to be a problem.
 
 | World | Build | Ground | Where it is recorded |
 | --- | --- | --- | --- |
-| **白庭** (`whiteCourt`) | ships now | `#F4F1E9` | `lib/ui/theme.dart` |
+| **白庭** (`whiteCourt`) | **deleted 2026-10-01** | `#F4F1E9` | gone |
 | **`CL` — 宇宙拿铁** | **`48000`, not yet built** | **`FFF8E7`** | `docs/TODO.md` §八 |
 
 **Those are the same colour to a reader.** Both are near-white creams; the difference is four points of red, seven

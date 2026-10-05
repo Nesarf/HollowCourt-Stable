@@ -238,7 +238,7 @@ final class HollowPaletteValue {
   /// desktop window -- one picture cropped two ways would be the wrong drawing on both.
   final WorldArtwork? artwork;
 
-  /// The stored name: `honeyed`, `whiteCourt`, `winter`. A wire format by identity, like a unit's id, so
+  /// The stored name: `honeyed`, `cosmicLatte`, `winter`. A wire format by identity, like a unit's id, so
   /// renaming one breaks a stored setting rather than a test -- which is why `byName` falls back instead of
   /// throwing, and why a name from an older build is a case the tests cover.
   final String name;
@@ -296,18 +296,28 @@ final class HollowPaletteValue {
     hairline: Color(0xFF382C1D),
   );
 
-  /// **白庭 White Court: the same court at noon, in ivory and a single rose.**
+  /// **宇宙拿铁 Cosmic Latte: the same court at noon, in the colour of the sky averaged over all light.**
   ///
-  /// Built from a study of a rhythm game's *tone and material* -- a high-key ground, the dark kept for hairlines, and one
-  /// saturated colour doing all of the emphasis. What is deliberately **not** taken is that design's unreadable
-  /// small print: this room is pale and its ink is still dark enough to read, which section 12.9.1 argues for and
-  /// `test/ui/theme_palette_test.dart` checks rather than assumes.
-  static const HollowPaletteValue whiteCourt = HollowPaletteValue(
-    name: 'whiteCourt',
+  /// **This replaced 白庭 on 2026-10-01, and the replacement is the point.** The old world's `#F4F1E9` and this one's
+  /// `#FFF8E7` are four points apart in red, seven in green and two in blue -- under one percent each. Side by side
+  /// they can be told apart; **in two different builds, one after another, they cannot**, and a reader who chose the
+  /// light world would have been handed what looked like the same light world under a new name and would reasonably
+  /// have concluded that the theme switch does nothing. `docs/memo-themes.md` argues that at length, and the owner
+  /// settled it: **delete 白庭 and add `CL`**, rather than shipping both or renaming one.
+  ///
+  /// **The rest of the palette is carried over unchanged, and that is a measurement rather than a shortcut.** The new
+  /// ground is *lighter* than the old one in every channel, and the ink here is dark, so every contrast ratio this
+  /// room had either holds or improves; the light-mode rules that section 12.9.1 argues for and
+  /// `test/ui/theme_palette_test.dart` checks are exercised by this world exactly as they were by 白庭.
+  ///
+  /// The ornament and the texture stay too -- a guilloche on laid paper is what this room is made of, and the colour
+  /// is what changed.
+  static const HollowPaletteValue cosmicLatte = HollowPaletteValue(
+    name: 'cosmicLatte',
     ornament: Ornament.guilloche,
     brightness: Brightness.light,
     texture: GroundTexture.laid,
-    ground: Color(0xFFF4F1E9),
+    ground: Color(0xFFFFF8E7),
     surface: Color(0xFFFFFFFF),
     surfaceRaised: Color(0xFFFAF8F2),
     line: Color(0xFF898478),
@@ -427,7 +437,7 @@ final class HollowPaletteValue {
     hairline: Color(0xFF4E2129),
   );
 
-  static const List<HollowPaletteValue> all = [honeyed, whiteCourt, winter, wine, eternalDiva];
+  static const List<HollowPaletteValue> all = [honeyed, cosmicLatte, winter, wine, eternalDiva];
 
   /// The theme with [name], or the world the application was designed around when the name is one this build does not carry.
   ///
