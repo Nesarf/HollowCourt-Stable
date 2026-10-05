@@ -143,6 +143,13 @@ enum Ornament {
   /// **Sounding rings**: concentric rings with a radial burst across them, the ripple a note leaves.
   /// 永遠の歌姫, and the first ornament that is an event rather than an object.
   songRings,
+
+  /// **Cooperage**: the arched bands and vertical staves of a barrel's head, seen face on. 酒红.
+  ///
+  /// The only ornament here whose subject is a *container* rather than a night sky, an instrument or a note -- the
+  /// right subject for the room a cellar keeps its wine in, and the first one a reader could put a hand on rather
+  /// than only look up at.
+  cooperage,
 }
 
 /// The texture a world draws its ground with.
@@ -172,6 +179,13 @@ enum GroundTexture {
   /// is that they are four *materials*, and this one is ruled paper for music rather than ruled paper for prose --
   /// which is why the lines are close together and the marks on them are sparse.
   score,
+
+  /// **Grain**: long wavering lines along one axis, with occasional darker bands across them.
+  ///
+  /// A material rather than a pattern, which is the rule every ground here follows. Where `laid` is the straight
+  /// rule of a mould-made page, this one **wavers** -- the difference between paper and the grain of a stave, and
+  /// the reason it is not simply `laid` at another angle. 酒红.
+  grain,
 }
 
 /// The two shapes of one world's picture.
@@ -378,7 +392,42 @@ final class HollowPaletteValue {
     ),
   );
 
-  static const List<HollowPaletteValue> all = [honeyed, whiteCourt, winter, eternalDiva];
+  /// **The owner's wine-red room, added 2026-10-01, and the palette that is not a near-black.**
+  ///
+  /// Every other world is a dark ground with a coloured accent, and the three dark grounds sit within five to
+  /// seventeen RGB units of each other. **This one is a colour in its own right** — 79 units from 銅鳴, further than
+  /// any two existing worlds are from each other — which is why it earns a place rather than being a fifth shade.
+  ///
+  /// **Every role was derived from the contrast rules rather than chosen and then tested.** The values below were
+  /// solved backwards from `test/ui/theme_palette_test.dart`'s floors, and the two that failed a first attempt are
+  /// worth naming because they are the two the rules bite hardest: `inkFaint` has to clear 4.5:1 against the
+  /// *raised* surface rather than the ground (the lightest thing it can be drawn on), and `line` has to clear 3.0:1
+  /// against all three, which makes the raised surface the binding case for both. `line` at the first attempt was
+  /// 2.41:1 there.
+  ///
+  /// **`gold` here is a warm bronze rather than a gold**, for the reason 永遠の歌姫's accent is not its own rose: an
+  /// accent that sat too close to the ground would make the interface's emphasis indistinguishable from its
+  /// surfaces. It also clears 3:1 on the ground with room, and `ink` on it stays under 4.5:1 so that a label on an
+  /// accent is still visibly a label.
+  static const HollowPaletteValue wine = HollowPaletteValue(
+    name: 'wine',
+    ornament: Ornament.cooperage,
+    texture: GroundTexture.grain,
+    ground: Color(0xFF3A1219),
+    surface: Color(0xFF4A1A22),
+    surfaceRaised: Color(0xFF5C2430),
+    line: Color(0xFFB0707C),
+    ink: Color(0xFFF7ECEE),
+    inkSoft: Color(0xFFCFB2B7),
+    inkFaint: Color(0xFFBC9DA3),
+    rose: Color(0xFFF0A6B2),
+    gold: Color(0xFFD69B63),
+    absent: Color(0xFFB79AA0),
+    onAccent: Color(0xFF1E0A0E),
+    hairline: Color(0xFF4E2129),
+  );
+
+  static const List<HollowPaletteValue> all = [honeyed, whiteCourt, winter, wine, eternalDiva];
 
   /// The theme with [name], or the world the application was designed around when the name is one this build does not carry.
   ///
@@ -1955,6 +2004,23 @@ abstract final class Copy {
     also: {'zh-HK': '沒能同步', 'zh-TW': '沒能同步', 'ja': '同期できませんでした'},
   );
 
+  /// Shown when this device could not write its own identity down.
+  ///
+  /// **Its own line rather than folded into a sync failure, because the sync did not fail.** The pairing
+  /// succeeded, the reader was told so, and what went wrong is that it will not survive a restart -- so a message
+  /// about syncing would be describing the wrong event. Written after the review of 2026-10-01, where a silent
+  /// write failure meant peers began refusing this device days later with nothing anywhere having said why.
+  static const syncIdentityNotSaved = CopyLine.withLanguages(
+    Translated.authored('这台设备没能把自己的身份存下来——刚才记住的设备，重启后不会记得。'),
+    Translated.authored("This device could not save its own identity, so the device it just remembered "
+        "will be forgotten when the application restarts."),
+    also: {
+      'zh-HK': '這台裝置沒能把自己的身分存下來——剛才記住的裝置，重啟後不會記得。',
+      'zh-TW': '這台裝置沒能把自己的身分存下來——剛才記住的裝置，重啟後不會記得。',
+      'ja': 'この端末は自分の身元を保存できませんでした。今覚えた端末は、再起動すると忘れます。',
+    },
+  );
+
   // ---------------------------------------------------------------- the reader's own dictionary
 
   /// Shown on the back row of an open folder.
@@ -3264,25 +3330,55 @@ https://piapro.jp/license/pcl/summary
     Translated.authored('Plain'),
     also: {'ja': 'ふつう', 'zh-HK': '平常', 'zh-TW': '平常'});
 
+  /// **The worlds are named for colours now, not for courts, and that is the owner's restructure of 2026-10-01.**
+  ///
+  /// They used to be places -- 琥珀庭, 白庭, 冬庭 -- with 永遠の歌姫 as the one title among them, and an earlier note
+  /// here argued that the three courts and the one epithet were different kinds of name. **The owner has removed
+  /// that distinction by naming three of them after what they look like.** The old names had also stopped describing
+  /// their own colours -- 冬庭 was a deep blue night and never read as winter -- so the rename corrects an
+  /// inaccuracy as well as a taxonomy.
+  ///
+  /// **The stored `name` on each palette is deliberately NOT renamed with them.** Those strings are a wire format no
+  /// reader ever sees (see `HollowPaletteValue.name`), so renaming one would reset the theme of everybody who had
+  /// chosen it, in exchange for a cosmetic change. `honeyed` still means 銅鳴 and `winter` still means 群青 in the
+  /// settings file; only what a reader sees moves.
   static const themeAmber = CopyLine.withLanguages(
-    Translated.authored('琥珀庭'),
-    Translated.authored('Amber Court'),
-    also: {'ja': '琥珀の庭', 'zh-HK': '琥珀庭', 'zh-TW': '琥珀庭'});
+    Translated.authored('銅鳴'),
+    Translated.authored('Brazen Bell'),
+    also: {'ja': '銅鳴', 'zh-HK': '銅鳴', 'zh-TW': '銅鳴'});
+
+  /// **Scheduled for removal, and kept until `CL` exists.** See `docs/memo-themes.md`: its `#F4F1E9` and the
+  /// planned 宇宙拿铁's `FFF8E7` are under 1% apart in every channel, so two light worlds cannot both ship. It stays
+  /// until the world that replaces it is built, because removing it now would leave this application with **no light
+  /// theme at all** -- a worse state than a duplicate, and it is also the only world the light-mode contrast rules
+  /// are exercised against.
   static const themeWhiteCourt = CopyLine.withLanguages(
     Translated.authored('白庭'),
     Translated.authored('White Court'),
     also: {'ja': '白の庭', 'zh-HK': '白庭', 'zh-TW': '白庭'});
-  static const themeWinter = CopyLine.withLanguages(
-    Translated.authored('冬庭'),
-    Translated.authored('Winter Court'),
-    also: {'ja': '冬の庭', 'zh-HK': '冬庭', 'zh-TW': '冬庭'});
 
-  /// The fourth world's name, and **the one name in this table that is a title rather than a place.**
+  static const themeWinter = CopyLine.withLanguages(
+    Translated.authored('群青'),
+    Translated.authored('Ultramarine'),
+    also: {'ja': '群青', 'zh-HK': '群青', 'zh-TW': '群青'});
+
+  /// **The fifth world, and the first whose ground is a saturated colour rather than a near-black.**
   ///
-  /// The owner gave it: 永遠の歌姫. The other three are courts -- 琥珀庭, 白庭, 冬庭 -- and this one is a person's
-  /// epithet, which is the right shape for a world that is homage. **No voice is written for it**, and that is not
-  /// an omission: a name is a label rather than a sentence, and section 十二's own rule is that a voice belongs to
-  /// a sentence and not to a label. The three courts have no voices here either.
+  /// 銅鳴, 群青 and 永遠の歌姫 all sit between five and seventeen RGB units of each other -- they are told apart by
+  /// their accents rather than their grounds, and their luminance ratios are 1.00 to 1.01, meaning they are the same
+  /// brightness. **酒红 is the first that is a different colour to look at rather than a different tint**: 79 units
+  /// from 銅鳴, further than any two existing worlds are from each other. Worth recording because it changes what
+  /// the theme list *is* -- until now a reader chose between four shades of dark, and now one of the rooms is red.
+  static const themeWine = CopyLine.withLanguages(
+    Translated.authored('酒红'),
+    Translated.authored('Wine Red'),
+    also: {'ja': '酒紅', 'zh-HK': '酒紅', 'zh-TW': '酒紅'});
+
+  /// 永遠の歌姫's name. The note that used to sit here described a taxonomy this rename has removed -- it said the
+  /// others were courts and this one was a title, which is no longer the shape of the list. What survives is the part
+  /// that was never about courts: **no voice is written for it**, because a name is a label rather than a sentence,
+  /// and section 十二's rule is that a voice belongs to a sentence and not to a label. The colour names have none
+  /// either.
   static const themeEternalDiva = CopyLine.withLanguages(
     Translated.authored('永遠の歌姫'),
     Translated.authored('The Eternal Diva'),

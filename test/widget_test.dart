@@ -61,6 +61,21 @@ void main() {
     await tester.pump();
 
     await tester.tap(find.text(Copy.tabSettings.textFor('zh-Hans')));
+    // **Two discrete pumps, and `pumpAndSettle` is impossible here -- measured, not assumed.**
+    //
+    // Tapping a destination is two gestures inside one: `onTapDown` sets the pressed state and `onTap` calls back
+    // to change the page. One `pump` therefore lands the assertion somewhere inside that sequence rather than
+    // after it, which is why this test passed on its own and failed twice in the full suite.
+    //
+    // The obvious fix is `pumpAndSettle`, and it does not work: **it times out**, because something in this
+    // application schedules frames forever, so there is no quiet frame to settle on. That is worth knowing for its
+    // own sake -- it is why a single `pump` was a race in the first place -- and it is the reason the other tests
+    // in this file avoid `pumpAndSettle` for a different reason (the cellar's platform channel) while arriving at
+    // the same rule.
+    //
+    // So: pump twice, which is enough for the callback and the rebuild it causes. This is not a wait for an
+    // unknown amount of work; it is the exact number of frames that sequence needs.
+    await tester.pump();
     await tester.pump();
 
     expect(find.byKey(const ValueKey('primary-locale-picker')), findsOneWidget);

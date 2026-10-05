@@ -260,6 +260,8 @@ class PrismWashPainter extends CustomPainter {
         _frost(canvas, size, paint);
       case GroundTexture.score:
         _score(canvas, size, paint);
+      case GroundTexture.grain:
+        _grain(canvas, size, paint);
     }
   }
 
@@ -272,6 +274,36 @@ class PrismWashPainter extends CustomPainter {
   /// **Which lines carry a note is decided by the cell's own coordinates**, the rule `_frost` records: a repaint
   /// from a resize or a theme switch puts every note back exactly where it was, and nothing here needs a seed
   /// because there is nothing random about it.
+
+  /// Long wavering lines with occasional bands across them: the grain of a stave rather than the rule of a page.
+  ///
+  /// **The waver is the whole point, and it is deterministic.** Every ground in this file is built from coordinates
+  /// rather than from a random source, so a repaint produces the same drawing -- and a wave built from a sine of the
+  /// coordinate is the cheapest way to be both. `laid` is the same idea without the wave, which is why this is not
+  /// merely `laid` at another angle: paper is ruled, wood is not.
+  void _grain(Canvas canvas, Size size, Paint paint) {
+    final spacing = cell * 0.85;
+    final amplitude = spacing * 0.35;
+    for (var y = spacing; y < size.height + spacing; y += spacing) {
+      final path = Path()..moveTo(0, y);
+      for (var x = 0.0; x <= size.width; x += spacing / 2) {
+        // Two frequencies, so the line does not read as a single clean wave -- a stave has knots and run-out.
+        final dy = amplitude * math.sin(x / (spacing * 3.1)) + amplitude * 0.4 * math.sin(x / (spacing * 0.9));
+        path.lineTo(x, y + dy);
+      }
+      canvas.drawPath(path, paint);
+    }
+
+    // The bands across the grain: a barrel stave is quarter-sawn, so the grain is interrupted by occasional darker
+    // lines where a growth ring crosses it. Sparse, and never in the same place twice in a row.
+    var index = 0;
+    for (var y = spacing * 4; y < size.height; y += spacing * 5) {
+      index++;
+      if (index % 3 == 0) continue;
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
   void _score(Canvas canvas, Size size, Paint paint) {
     final stave = cell * 2.4;
     final gap = stave / 4;

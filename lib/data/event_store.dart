@@ -127,15 +127,39 @@ final class EventStore {
 
   /// The byte offset where an incomplete final line begins, or null when the
   /// file ends cleanly.
+  ///
+  /// **[A defect found by review on 2026-10-01, and the shape of it is worth keeping.]** This read
+  /// `handle.read(...)` with no `seek`, and `RandomAccessFile` starts at offset **0** -- so what the
+  /// comment called the tail was the file's **first** sixty-four kilobytes. The arithmetic below then
+  /// subtracted a position found near the *start* from a length measured at the *end*, so on any log
+  /// larger than 64 KiB with a torn final line it returned an absolute offset far below the real end,
+  /// and `append` called `truncate` on it. **That deletes every event between that offset and the
+  /// end**, silently, which is the worst thing this file can do to a reader.
+  ///
+  /// **Why nothing caught it.** A clean file returns at the first check, because it ends with `\n` --
+  /// so the fault needs a torn tail *and* a log over 64 KiB, and the existing tests had neither. A
+  /// cellar that has been in use for months has both as soon as one write is interrupted.
+  ///
+  /// The read now seeks to `length - 65536` where it belongs, and the offset it returns is absolute.
   Future<int?> _startOfTornTail(int length) async {
     final handle = await file.open();
     try {
-      final tail = await handle.read(length < 65536 ? length : 65536);
+      final tailStart = length < 65536 ? 0 : length - 65536;
+      await handle.setPosition(tailStart);
+      final tail = await handle.read(length - tailStart);
       if (tail.isEmpty || tail.last == 0x0A) return null; // ends with '\n'
       for (var i = tail.length - 1; i >= 0; i--) {
-        if (tail[i] == 0x0A) return length - (tail.length - 1 - i);
+        if (tail[i] == 0x0A) {
+          // Absolute, not relative: `tailStart` is where this window began in the file.
+          return tailStart + i + 1;
+        }
       }
-      return 0; // no newline anywhere in the tail we looked at
+      // No newline in the window at all. The torn line therefore begins at or before `tailStart` --
+      // and **the honest answer is `tailStart`, not 0**, because truncating to 0 would throw away the
+      // sixty-four kilobytes we just looked at that contain no newline but are not necessarily one
+      // broken line. A read this large with no newline in it is a corrupt file rather than a torn
+      // write, and keeping the bytes is the choice that leaves somebody able to look.
+      return tailStart;
     } finally {
       await handle.close();
     }
@@ -154,29 +178,76 @@ final class EventStore {
 
     final events = <Event>[];
     final defects = <LogDefect>[];
-    final raw = await file.readAsString();
 
-    // A file that does not end in a newline ends in an unfinished line. Keeping
-    // that fact lets the last line be judged as a torn write rather than as
-    // corruption -- different causes, different responses.
-    final endsCleanly = raw.isEmpty || raw.endsWith('\n');
-    final lines = const LineSplitter().convert(raw);
-    final lastIndex = lines.length - 1;
+    // **Streamed rather than read whole, and the distinction is not only about memory.** This used to be
+    // `readAsString` followed by `LineSplitter`, which loads the entire log as one string and then as a list of
+    // one string per event -- for a log the protocol explicitly permits to reach `maxClockEntries` (2^20), that is
+    // a copy of the whole cellar in memory to iterate over it once. Every consumer folds the result straight into
+    // a state and keeps the events, so the *events* have to be in memory; the string and the line list do not.
+    //
+    // **Split on the newline byte rather than decoding lines**, because "does the file end with a newline" is a
+    // question about bytes and answering it from a decoded string means the answer depends on the encoding. A log
+    // with a torn final write is exactly the case that question exists for.
+    var endedWithNewline = false;
+    var carry = <int>[];
+    var lineNumber = 0;
+    var pending = false;
 
-    for (var i = 0; i < lines.length; i++) {
-      final line = lines[i];
-      if (line.trim().isEmpty) continue;
+    void emit(List<int> bytes) {
+      lineNumber++;
+      final line = utf8.decode(bytes, allowMalformed: true);
+      if (line.trim().isEmpty) return;
       try {
         events.add(Event.decode(line));
+        pending = false;
       } catch (error) {
-        final isTornTail = i == lastIndex && !endsCleanly;
+        // **The defect is held rather than recorded**, because whether the last line is a torn write or
+        // corruption is only knowable once the stream has ended: a file that stops mid-line is a kill during a
+        // write, and everything else is a line somebody has to look at. Deferring by one is what lets the same
+        // judgement be made without holding the file.
+        pending = true;
         defects.add(
           LogDefect(
-            kind: isTornTail ? LogDefectKind.tornTail : LogDefectKind.unreadable,
-            lineNumber: i + 1,
+            kind: LogDefectKind.unreadable,
+            lineNumber: lineNumber,
             reason: '$error',
             snippet: line.length > 120 ? '${line.substring(0, 120)}...' : line,
           ),
+        );
+      }
+    }
+
+    await for (final chunk in file.openRead()) {
+      var start = 0;
+      for (var i = 0; i < chunk.length; i++) {
+        if (chunk[i] != 0x0A) continue;
+        endedWithNewline = true;
+        final part = chunk.sublist(start, i);
+        if (carry.isEmpty) {
+          emit(part);
+        } else {
+          carry.addAll(part);
+          emit(carry);
+          carry = <int>[];
+        }
+        start = i + 1;
+        endedWithNewline = false;
+      }
+      carry.addAll(chunk.sublist(start));
+      if (carry.isNotEmpty) endedWithNewline = false;
+    }
+
+    // Whatever is left in the carry is the last line, and the file did not end with a newline -- which is the
+    // torn write. **An empty carry means the file ended cleanly**, and then no line is torn whatever is above it.
+    if (carry.isNotEmpty) {
+      emit(carry);
+      if (pending && defects.isNotEmpty) {
+        final last = defects.last;
+        defects[defects.length - 1] = LogDefect(
+          kind: endedWithNewline ? LogDefectKind.unreadable : LogDefectKind.tornTail,
+          lineNumber: last.lineNumber,
+          reason: last.reason,
+          snippet: last.snippet,
         );
       }
     }

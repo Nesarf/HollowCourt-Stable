@@ -265,6 +265,100 @@ void main() {
       expect(a.digest.likelyInSyncWith(b.digest), isTrue);
     });
   });
+
+  group('**two writes at once do not lose one, and nothing prevented them from trying**', () {
+    // **[A defect found by review on 2026-10-01.]** `record`, `recordAll` and `merge` each did three things in
+    // order -- read the clock, append to the file, update memory -- and each of those awaits. Nothing said two
+    // callers could not interleave at every `await`, and two failures follow:
+    //
+    // * `HlcClock.next` is not reentrant, so two overlapping `record` calls can be handed **the same reading**.
+    //   `_byClock` is keyed by reading, so the second would overwrite the first **in memory** while both sat on
+    //   disk -- the log disagreeing with itself across a restart.
+    // * The two appends land in whichever order the awaits happened to resolve.
+    //
+    // What a caller depends on is that every event reaches the file and no two share a reading, so that is what
+    // is asserted -- not that some particular ordering happened.
+    test('concurrent records all land, each with its own reading', () async {
+      final log = await device('a');
+
+      // Started without awaiting, so they genuinely overlap.
+      final futures = [
+        for (var i = 0; i < 25; i++)
+          log.record((hlc) => StockEvents.bottleAdded(
+                hlc: hlc,
+                bottleId: 'bottle-$i',
+                sku: 'gin',
+                volume: Volume.fromMillilitres(700),
+              )),
+      ];
+      final events = await Future.wait(futures);
+
+      expect(events.map((e) => e.hlc).toSet(), hasLength(25), reason: 'two events shared a clock reading');
+
+      final reopened = await device('a');
+      expect(reopened.events, hasLength(25), reason: 'an event was lost between memory and the file');
+      expect(reopened.events.map((e) => e.hlc).toSet(), hasLength(25));
+    });
+
+    test('a concurrent record and merge both survive', () async {
+      // The pair that matters in the field: the reader pours a drink while a sync applies a peer's events.
+      final a = await device('a');
+      final b = await device('b', startMillis: 5000);
+      await b.record((hlc) => StockEvents.bottleAdded(
+            hlc: hlc,
+            bottleId: 'peer',
+            sku: 'rum',
+            volume: Volume.fromMillilitres(700),
+          ));
+
+      final pouring = a.record((hlc) => StockEvents.bottleAdded(
+            hlc: hlc,
+            bottleId: 'mine',
+            sku: 'gin',
+            volume: Volume.fromMillilitres(700),
+          ));
+      final merging = a.merge(b.events);
+      await Future.wait([pouring, merging]);
+
+      final reopened = await device('a');
+      expect(reopened.events, hasLength(2), reason: 'both the local pour and the peer batch must be present');
+    });
+  });
+
+  group('a large merge is a merge, not a scan per event', () {
+    // The same review found `_insert` doing an `indexWhere` per event -- **O(n x m)** for n events into a log of
+    // m, against a protocol that permits a million. This is a correctness test that happens to be slow on the old
+    // shape rather than a timing assertion, because a timing assertion is flaky on a loaded machine and this
+    // repository does not keep flaky tests.
+    test('ten thousand events merge in order, with no duplicates', () async {
+      final a = await device('a');
+      final b = await device('b', startMillis: 10000);
+      final batch = [
+        for (var i = 0; i < 10000; i++)
+          StockEvents.bottleAdded(
+            hlc: b.clock.next(),
+            bottleId: 'peer-$i',
+            sku: 'gin',
+            volume: Volume.fromMillilitres(700),
+          ),
+      ];
+      // Shuffled on the way in, so the merge has to sort as well as place.
+      final shuffled = [...batch]..shuffle();
+      expect(await a.merge(shuffled), hasLength(10000));
+
+      final reopened = await device('a');
+      expect(reopened.events, hasLength(10000));
+      for (var i = 1; i < reopened.events.length; i++) {
+        expect(
+          reopened.events[i - 1].hlc.compareTo(reopened.events[i].hlc) <= 0,
+          isTrue,
+          reason: 'the log must stay in clock order; the fold depends on it',
+        );
+      }
+      // A second merge of the same events adds nothing.
+      expect(await a.merge(shuffled), isEmpty);
+    }, timeout: const Timeout(Duration(minutes: 2)));
+  });
 }
 
 /// A thin helper so a test can append a duplicate without going through the

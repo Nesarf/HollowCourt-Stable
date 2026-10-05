@@ -363,6 +363,66 @@ void main() {
     expect(decodeScope('not json').isEverything, isTrue);
     expect(decodeScope('{"shelfId":""}').isEverything, isTrue);
   });
+
+  group('**a share keeps its content limits across a reload**', () {
+    // **The defect this group exists for, found by review on 2026-10-01.** `encodeScope` wrote `shelfId` and
+    // nothing else while `decodeScope` rebuilt every share as `SyncScope.shelf(...)`, whose `kinds` is null
+    // meaning *no limit*. So a reader who had narrowed a share to the stock list got prices and notes on the
+    // next load. **A permission that widens itself is worse than one that is lost**, because nothing tells
+    // them: the setting still looks like what they chose.
+    //
+    // The old tests could not see it because they only ever built `everything` and `shelf`, and neither carries
+    // a `kinds` -- the two combinations that do were never written down.
+
+    test('shelf plus kinds survives', () {
+      const scope = SyncScope.of(shelfId: 'bar', kinds: {SyncKind.stock, SyncKind.notes});
+      final back = decodeScope(encodeScope(scope));
+      expect(back.shelfId, 'bar');
+      expect(back.kinds, {SyncKind.stock, SyncKind.notes});
+    });
+
+    test('kinds without a shelf survives', () {
+      const scope = SyncScope.of(kinds: {SyncKind.prices});
+      final back = decodeScope(encodeScope(scope));
+      expect(back.shelfId, isNull);
+      expect(back.kinds, {SyncKind.prices});
+    });
+
+    test('**an empty kinds set is not the same as no kinds key**', () {
+      // Absent means "no opinion", which follows a kind added in a later build; empty means "carry none of
+      // them". A codec that collapsed the two would turn one into the other on the next release -- the same
+      // class of mistake in the opposite direction, and the reason this is asserted rather than assumed.
+      final empty = decodeScope(encodeScope(const SyncScope.of(kinds: <SyncKind>{})));
+      expect(empty.kinds, isEmpty);
+      expect(empty.kinds, isNotNull, reason: 'an empty set must not decode as "no limit"');
+
+      final absent = decodeScope(encodeScope(const SyncScope.shelf('bar')));
+      expect(absent.kinds, isNull, reason: 'a share with no kinds key means every kind');
+    });
+
+    test('**the narrow share does not widen**, which is the fault itself', () {
+      // Stated as its own assertion because it is the sentence the whole group is about: the reader chose
+      // stock, and after a reload they must still have chosen stock.
+      const chosen = SyncScope.of(shelfId: 'bar', kinds: {SyncKind.stock});
+      final afterReload = decodeScope(encodeScope(chosen));
+      expect(afterReload.kinds, isNot(isNull));
+      expect(afterReload.kinds, contains(SyncKind.stock));
+      expect(afterReload.kinds, isNot(contains(SyncKind.prices)));
+      expect(afterReload.kinds, isNot(contains(SyncKind.notes)));
+    });
+
+    test('a malformed kinds is refused rather than silently dropped', () {
+      // Dropping it is exactly the widening above, so a value this build cannot read becomes the whole cellar
+      // -- visible, and the same rule the rest of this function follows.
+      for (final bad in [
+        '{"shelfId":"bar","kinds":"stock"}',      // a string, not a list
+        '{"shelfId":"bar","kinds":[1]}',           // a non-string element
+        '{"shelfId":"bar","kinds":["nonsense"]}',  // a name no build carries
+      ]) {
+        expect(decodeScope(bad).isEverything, isTrue, reason: bad);
+      }
+    });
+  });
 }
 
 /// The three methods an exchange reads, over a plain list.

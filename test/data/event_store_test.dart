@@ -179,4 +179,57 @@ void main() {
     expect(line, contains('"type":"stock.bottle.added"'));
     expect(line, contains('"volumeMicrolitres":700000'));
   });
+
+  group('**how a log ends decides whether the last line is torn or broken**', () {
+    // The reader became a byte stream on 2026-10-01, and the four shapes below are every way a log can end.
+    // They exist because the old implementation and the new one had to agree about all four, and because the
+    // distinction is the difference between *a write was interrupted* and *a line somebody has to look at* --
+    // different causes, and the screen says different things about them.
+    //
+    // **The judgement is deferred by one line on purpose**: whether an unparseable final line is a torn write or
+    // corruption depends on whether the *file* ends with a newline, and that is only known once the stream has
+    // ended. An implementation that decided as it went would have to keep the whole file in order to change its
+    // mind.
+    String lineFor(int i) => Event(
+          hlc: Hlc(physicalMillis: 1000 + i, counter: 0, nodeId: 't'),
+          type: 'stock.bottle.added',
+          data: {'i': i},
+        ).encode();
+
+    test('a file that ends with a newline has no torn tail', () async {
+      final file = File('${dir.path}/clean.ndjson');
+      await file.writeAsString([lineFor(1), lineFor(2), ''].join('\n'));
+      final result = await EventStore(file).read();
+      expect(result.events, hasLength(2));
+      expect(result.defects, isEmpty);
+    });
+
+    test('a final line cut mid-write is a torn tail', () async {
+      final file = File('${dir.path}/torn.ndjson');
+      // No trailing newline, and the last line is half a record: a write that stopped.
+      await file.writeAsString('${[lineFor(1), lineFor(2)].join('\n')}\n{"hlc":');
+      final result = await EventStore(file).read();
+      expect(result.events, hasLength(2));
+      expect(result.defects.single.kind, LogDefectKind.tornTail);
+    });
+
+    test('garbage in the middle is unreadable, whatever the file does at the end', () async {
+      final file = File('${dir.path}/middle.ndjson');
+      await file.writeAsString([lineFor(1), '{not json}', lineFor(2), ''].join('\n'));
+      final result = await EventStore(file).read();
+      expect(result.events, hasLength(2), reason: 'a bad line must not cost the good ones after it');
+      expect(result.defects.single.kind, LogDefectKind.unreadable);
+      expect(result.defects.single.lineNumber, 2);
+    });
+
+    test('**an unparseable last line followed by a newline is not a torn tail**', () async {
+      // The case the streaming reader could most easily get wrong, and the reason the judgement is deferred: the
+      // line cannot be parsed *and* it is the last one, but the file ended cleanly, so nothing was cut mid-write.
+      final file = File('${dir.path}/broken.ndjson');
+      await file.writeAsString([lineFor(1), '{broken}', ''].join('\n'));
+      final result = await EventStore(file).read();
+      expect(result.events, hasLength(1));
+      expect(result.defects.single.kind, LogDefectKind.unreadable);
+    });
+  });
 }

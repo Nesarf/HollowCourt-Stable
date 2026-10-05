@@ -27,6 +27,30 @@ final syncIdentityProvider =
   SyncIdentityNotifier.new,
 );
 
+/// **Whether this device failed to write its own identity down**, and the message to show if so.
+///
+/// **The other half of the silence the store used to keep.** `_persist` is deliberately not awaited -- a screen
+/// must be able to say a device was remembered without waiting on a file (see [SyncIdentityNotifier.remember]) --
+/// and its failure used to be caught and dropped, so the sequence was: a sync succeeds, the device is remembered,
+/// the write fails, and next launch this device is a stranger to everybody. Nothing anywhere said so, and the
+/// reader's only clue was peers refusing them.
+///
+/// It is its own provider rather than a field on [StoredSyncIdentity] because it is not part of what is stored:
+/// a value that carried its own write error would be a claim about the file kept inside the file.
+final syncIdentityWriteFailureProvider =
+    NotifierProvider<SyncIdentityWriteFailureNotifier, String?>(
+  SyncIdentityWriteFailureNotifier.new,
+);
+
+class SyncIdentityWriteFailureNotifier extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  void report(String message) => state = message;
+
+  void clear() => state = null;
+}
+
 class SyncIdentityNotifier extends AsyncNotifier<StoredSyncIdentity> {
   @override
   Future<StoredSyncIdentity> build() async {
@@ -61,9 +85,16 @@ class SyncIdentityNotifier extends AsyncNotifier<StoredSyncIdentity> {
     try {
       final file = await ref.read(syncIdentityFileProvider.future);
       await SyncIdentityStore(file).write(value);
-    } on Object {
-      // A store that cannot be written costs the reader this decision next launch, and nothing
-      // today. There is no screen to tell at this point.
+      // Cleared on success, because a warning that never goes away is a warning nobody reads.
+      ref.read(syncIdentityWriteFailureProvider.notifier).clear();
+    } catch (error) {
+      // **Recorded rather than dropped.** This used to be an empty `on Object`, and the consequence is the one
+      // worth naming: the sync that caused this write has already succeeded, so the reader is told everything
+      // worked and finds out otherwise days later when a peer refuses them. The message says what is lost.
+      // **The cause and not a sentence.** The words a reader sees come from `Copy.syncIdentityNotSaved`, so
+      // that this message exists in every language the application speaks; what is kept here is the technical
+      // detail, which is diagnostic and belongs beside the failure rather than translated.
+      ref.read(syncIdentityWriteFailureProvider.notifier).report('$error');
     }
   }
 

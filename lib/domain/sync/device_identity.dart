@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:cryptography/dart.dart';
 
 /// This device's long-term identity: one key pair that outlives every connection.
 ///
@@ -77,17 +78,29 @@ final class DeviceIdentity {
       a.isNotEmpty && b.isNotEmpty && fingerprintKey(a) == fingerprintKey(b);
 
   static String _fingerprintDigest(String publicKey) {
-    // A deterministic, non-cryptographic digest is enough for a fingerprint people compare by eye;
-    // using SHA-256 would suggest a security property that a four-group display cannot carry.
-    var hash = 2166136261;
-    for (final byte in utf8.encode(publicKey)) {
-      hash = (hash ^ byte) * 16777619 & 0xffffffff;
-    }
+    // **SHA-256, and the comment that used to stand here argued the opposite.** It said a non-cryptographic digest
+    // was enough because "using SHA-256 would suggest a security property that a four-group display cannot carry".
+    // The second half is right and the first half hid a real defect:
+    //
+    // **[Found by review on 2026-10-01.]** The old digest was FNV-1a over thirty-two bits, expanded to sixteen
+    // characters by running a **linear congruential generator** off that state and taking one character per round.
+    // An LCG with a thirty-two-bit state carries thirty-two bits, so **all sixteen characters were the same
+    // thirty-two bits wearing a longer costume** -- `ABCD-EFGH-IJKL-MNOP` reads like eighty bits of fingerprint and
+    // was offering about 4.3 billion values, of which far fewer are reachable. Two different public keys colliding
+    // would show two devices as the same one in the place a person is asked to compare them by eye.
+    //
+    // **Using SHA-256 does not claim a security property here**, because nothing about this function is a secret
+    // or a key derivation -- the doc on `fingerprint` says what it is for, and a fingerprint that carries the bits
+    // it appears to carry is simply not lying. `DartSha256` rather than `Sha256` because it is synchronous: the
+    // getter below is synchronous and is read from an announcement parser, and an await there would ripple through
+    // every call site for no gain.
+    final digest = const DartSha256().hashSync(utf8.encode(publicKey)).bytes;
     const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     final buffer = StringBuffer();
     for (var i = 0; i < 16; i++) {
-      hash = (hash * 1664525 + 1013904223) & 0xffffffff;
-      buffer.write(alphabet[(hash >> 16) % alphabet.length]);
+      // Two bytes per character, so sixteen characters consume thirty-two bytes of the digest and every bit of
+      // each character comes from the hash rather than from a generator seeded by it.
+      buffer.write(alphabet[((digest[i * 2] << 8) | digest[i * 2 + 1]) % alphabet.length]);
     }
     return buffer.toString();
   }

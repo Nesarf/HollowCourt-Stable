@@ -185,6 +185,14 @@ final class HelloFrame extends WireFrame {
     if (count is! int || digest is! int) {
       throw FormatException('hello without a readable digest: $json');
     }
+    // **A negative count is refused here rather than downstream, because downstream is where it does damage.**
+    // `runExchange` collects readings until it has `count` of them, so a negative count completes that loop
+    // immediately with an empty set -- and then `missingFrom({})` returns **every event this device holds**, which
+    // it would send to a peer that claimed to have none. A malformed frame should be refused where it is read,
+    // not turned into a decision about what to disclose.
+    if (count < 0) {
+      throw FormatException('hello with a negative count: $json');
+    }
     if (token != null && token is! String) {
       throw FormatException('hello with an unreadable token: $json');
     }

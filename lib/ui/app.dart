@@ -83,7 +83,28 @@ class HollowCourtApp extends ConsumerWidget {
           // picture arrives. See `WorldArtworkWarmer`.
           // **The fade wraps the warmer, so the veil covers the picture too.** The other order would fade the
           // interface and leave the artwork changing underneath it, which is the seam this exists to hide.
-          child: ThemeCrossfade(child: WorldArtworkWarmer(child: child!)),
+          // **The key is the whole fix for "the new world only appears where you scroll".**
+          //
+          // `HollowPalette` is global mutable state read through getters (`HollowPalette.ground` and fifteen
+          // others, across thirty files). **Changing it notifies nobody.** So whether a given widget redraws in the
+          // new world depends on whether something *else* happened to rebuild it: scrolling rebuilt the rows that
+          // went past, which is why new colours arrived in patches, and switching tabs rebuilt nothing because
+          // `IndexedStack` only changes which child is painted. The owner reported exactly that shape.
+          //
+          // **Keying the subtree by the world forces every one of those readers to run again**, because a changed
+          // key makes Flutter discard the subtree and build a new one. It is not a tidy fix -- the honest one is an
+          // `InheritedWidget` or a provider, so that a reader depends on the palette through the widget tree and
+          // Flutter does the rest. That is recorded as debt rather than done here, because it touches the same
+          // thirty files while three approved screens are still unbuilt, and rebuilding on top of a moving
+          // foundation is how the next three mistakes get made.
+          //
+          // The key sits **below** `ThemeCrossfade`, so the veil keeps its state and can still fade across the
+          // change it is announcing; put it above and the widget would be replaced before it could draw.
+          child: ThemeCrossfade(
+            child: WorldArtworkWarmer(
+              child: KeyedSubtree(key: ValueKey(display.theme.name), child: child!),
+            ),
+          ),
         );
       },
       home: const _Shell(),
@@ -141,18 +162,32 @@ class _ShellState extends ConsumerState<_Shell> {
               Expanded(
                 child: IndexedStack(
                   index: _index,
-                  children: const [
-                    StockPage(),
-                    RecipesPage(),
+                  // **Not `const`, and this is the second time this exact fault has been in this file.**
+                  //
+                  // A `const` child is built once and never again, so these four pages kept the palette they
+                  // were born with. **Changing the world repainted nothing until something else forced a
+                  // rebuild** -- scrolling rebuilt the rows that went past, which is why new colours appeared in
+                  // patches, and switching tabs rebuilt nothing at all because `IndexedStack` only changes which
+                  // child is painted. The owner reported it in exactly that shape: *换主题后要等到页面刷新
+                  // （比如说滚动屏幕让对应区域重新显示一遍，目前切换底部栏不能进行新渲染）才启用新渲染*.
+                  //
+                  // The comment above `OrnamentBackdrop` describes the same bug for the same reason, and that
+                  // one was caught by a screenshot. **This is the same mistake in the same widget tree, which is
+                  // the argument against treating either as a one-off**: `HollowPalette` is global state read
+                  // through getters, so nothing rebuilds *because* the palette changed. Every widget that draws
+                  // a colour has to be rebuilt by whoever owns it, and `const` is a promise that it will not be.
+                  children: [
+                    const StockPage(),
+                    const RecipesPage(),
                     // Section 12.3 gives this tab statistics, a consumption curve, value, a
                     // shopping list, devices and sync. Only the value exists, so the page
                     // shows the value and keeps the sentence naming the rest -- replacing
                     // the placeholder outright would claim six features and ship one.
-                    CellarPage(),
+                    const CellarPage(),
                     // Section 12.3's fifth tab, asked for by the owner: the application's own
                     // settings, which were a section at the bottom of 记录. Devices and sync stay
                     // there -- see `SettingsPage` for where the line is and why.
-                    SettingsPage(),
+                    const SettingsPage(),
                   ],
                 ),
               ),

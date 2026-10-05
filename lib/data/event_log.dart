@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import '../domain/events/event.dart';
@@ -53,6 +54,33 @@ final class EventLog implements SyncSource {
 
   final List<Event> _events;
   final Map<Hlc, Event> _byClock;
+
+  /// **The tail of the write queue, and the reason the log cannot lose an event by being asked twice at once.**
+  ///
+  /// Every write path -- [record], [recordAll], [merge] -- does three things in order: read the clock, write to the
+  /// file, update memory. Each of those awaits, so two callers interleave at every `await` and nothing in the code
+  /// said they could not. Three failures follow from that, and they were found by review on 2026-10-01:
+  ///
+  /// * **Two events can share a clock reading.** [HlcClock.next] is not reentrant, so two overlapping calls can be
+  ///   handed the same reading -- and `_byClock` is keyed by reading, so the second would overwrite the first in
+  ///   memory while **both** are on disk. The log then disagrees with itself across a restart.
+  /// * **The file can be written out of order.** `merge` sorts before appending and `record` does not, so an
+  ///   interleaved pair lands in whichever order the awaits resolved.
+  /// * **A failed append and a successful one can be confused**, because neither knows the other is in flight.
+  ///
+  /// A chain of `Future`s is the whole mechanism: each write appends itself to the tail and awaits its predecessor,
+  /// so the three steps above become atomic with respect to every other writer. **It is deliberately not a lock
+  /// with a flag** -- a flag has to be released on every error path, and a lock that leaks is a log that stops
+  /// accepting writes, which is worse than the interleaving it prevents.
+  Future<void> _writeTail = Future<void>.value();
+
+  /// Runs [action] with no other write in flight.
+  Future<T> _serialised<T>(Future<T> Function() action) {
+    final previous = _writeTail;
+    final completer = Completer<void>();
+    _writeTail = completer.future;
+    return previous.then((_) => action()).whenComplete(completer.complete);
+  }
 
   /// Reads [file], restores the clock, and folds whatever is there.
   ///
@@ -154,23 +182,23 @@ final class EventLog implements SyncSource {
   ///
   /// The builder receives the reading rather than supplying one, so no caller
   /// can invent a clock and no two operations can accidentally share one.
-  Future<Event> record(Event Function(Hlc hlc) build) async {
+  Future<Event> record(Event Function(Hlc hlc) build) => _serialised(() async {
+    // **The clock is read inside the queue, not before it.** Taking the reading outside would hand two
+    // overlapping callers the same one -- see [_writeTail] -- and the reading is the event's identity.
     final event = build(clock.next());
     await store.append([event]);
     _insert(event);
     return event;
-  }
+  });
 
   /// Appends several operations atomically with respect to the clock.
-  Future<List<Event>> recordAll(Iterable<Event Function(Hlc hlc)> builders) async {
+  Future<List<Event>> recordAll(Iterable<Event Function(Hlc hlc)> builders) => _serialised(() async {
     final events = [for (final build in builders) build(clock.next())];
     if (events.isEmpty) return events;
     await store.append(events);
-    for (final event in events) {
-      _insert(event);
-    }
+    _insertAll(events);
     return events;
-  }
+  });
 
   /// Takes in events from a peer, keeping only the ones not already held.
   ///
@@ -183,7 +211,7 @@ final class EventLog implements SyncSource {
   /// append-only log that doubles itself on each handshake is not a log anyone
   /// will keep.
   @override
-  Future<List<Event>> merge(Iterable<Event> incoming) async {
+  Future<List<Event>> merge(Iterable<Event> incoming) => _serialised(() async {
     final fresh = <Event>[];
     for (final event in incoming) {
       if (_byClock.containsKey(event.hlc)) continue;
@@ -198,27 +226,62 @@ final class EventLog implements SyncSource {
       // operation recorded immediately afterwards sorts after everything just
       // received rather than racing it.
       clock.observe(event.hlc);
-      _insert(event);
     }
+    _insertAll(fresh);
     return fresh;
-  }
+  });
 
   /// The events a peer holding [theirClocks] does not have.
   @override
   List<Event> missingFrom(Set<Hlc> theirClocks) =>
       [for (final event in _events) if (!theirClocks.contains(event.hlc)) event];
 
-  void _insert(Event event) {
-    if (_byClock.containsKey(event.hlc)) return;
-    _byClock[event.hlc] = event;
-    // Insert in clock order. A peer's event can legitimately land before one
-    // already held, so appending to the end would leave the list unsorted and
-    // the fold would silently use the wrong order.
-    final at = _events.indexWhere((e) => e.hlc.compareTo(event.hlc) > 0);
-    if (at < 0) {
-      _events.add(event);
-    } else {
-      _events.insert(at, event);
+  void _insert(Event event) => _insertAll([event]);
+
+  /// Merges already-sorted events into the list, keeping clock order.
+  ///
+  /// **One merge rather than one insertion per event, and that is a second defect repaired here.** The old
+  /// `_insert` called `indexWhere` for every event, which is a linear scan of a list that grows with the cellar:
+  /// merging *n* events into a log of *m* cost **O(n x m)**, and the protocol permits a million events
+  /// (`maxClockEntries`). A sync that had to insert ten thousand events into a large log therefore scanned
+  /// millions of entries -- the kind of cost that only appears on the cellars most worth syncing, which is the
+  /// same shape as the frame-size defect this file's neighbours record.
+  ///
+  /// [incoming] must be in clock order, which every caller already guarantees: `merge` sorts, and `recordAll`
+  /// mints its readings in order.
+  void _insertAll(List<Event> incoming) {
+    final fresh = <Event>[];
+    for (final event in incoming) {
+      if (_byClock.containsKey(event.hlc)) continue;
+      _byClock[event.hlc] = event;
+      fresh.add(event);
     }
+    if (fresh.isEmpty) return;
+
+    if (_events.isEmpty) {
+      _events.addAll(fresh);
+      return;
+    }
+
+    // A two-finger merge into a new list. Allocating one list of the combined size is cheaper than a shift per
+    // insertion, and it is the only version whose cost does not depend on where in the log the events land.
+    final merged = <Event>[];
+    var i = 0, j = 0;
+    while (i < _events.length && j < fresh.length) {
+      if (_events[i].hlc.compareTo(fresh[j].hlc) <= 0) {
+        merged.add(_events[i++]);
+      } else {
+        merged.add(fresh[j++]);
+      }
+    }
+    while (i < _events.length) {
+      merged.add(_events[i++]);
+    }
+    while (j < fresh.length) {
+      merged.add(fresh[j++]);
+    }
+    _events
+      ..clear()
+      ..addAll(merged);
   }
 }

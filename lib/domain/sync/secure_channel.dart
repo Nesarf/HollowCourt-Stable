@@ -42,14 +42,28 @@ import 'short_code.dart';
 ///
 /// WHAT THIS DELIBERATELY DOES NOT DO.
 ///
-/// * **No long-term identity key.** The design says "long-term keys are exchanged during pairing"; what
-///   is implemented is a per-connection ephemeral pair authenticated by the pairing code. That gives
-///   confidentiality and authentication for the connection, and it does **not** give the property a
-///   long-term key would: that the device you synced with last week is the device you are syncing with
-///   now, without a human re-confirming a code. Recording that as a gap rather than calling the
-///   promise kept.
+/// * **It does have a long-term identity key, and this paragraph said it did not.** *"No long-term identity key.
+///   The design says 'long-term keys are exchanged during pairing'; what is implemented is a per-connection
+///   ephemeral pair authenticated by the pairing code."* That was true when it was written and stopped being true
+///   when `DeviceIdentity` landed: there is a long-lived X25519 key pair, a static-static secret between it and the
+///   peer's, an `identityProof`, and `expectedIdentity` / `acceptedIdentities` on the handshake -- and the property
+///   the old paragraph said was missing is what they give. **The device you synced with last week is the device you
+///   are syncing with now**, with no code re-typed.
+///
+///   **A stale sentence in a security model is worse than a stale sentence anywhere else**, because its whole
+///   purpose is to be the thing a reader trusts instead of reading the code. This one understated the system, which
+///   is the safer direction to be wrong in and still wrong: somebody deciding whether the pairing flow was worth
+///   using would have been told the feature did not exist.
+///
+///   What genuinely remains a gap, said here so the correction does not overclaim the other way: **the private key
+///   is a plain file** in the application support directory (see `SyncIdentityStore`), not held in a platform
+///   keystore -- so anything that can read that directory can impersonate this device. And identity is remembered
+///   *per peer*, because `acceptedIdentities` is assembled from the devices this one has learned, so a key that was
+///   never paired is a stranger however valid it is.
 /// * **No forward secrecy across connections beyond the ephemeral keys**, which is what ephemeral keys
-///   already give: a key stolen from one connection does not open another.
+///   already give: a key stolen from one connection does not open another. **The long-term key does not change
+///   that** -- it signs the handshake rather than encrypting traffic, so a later compromise of it does not open an
+///   earlier session's frames.
 /// * **No scoping.** Which events travel is decided by `SyncSource`, and nothing here filters them;
 ///   scoping to a Bar is a filter over events and does not belong inside a transport.
 ///

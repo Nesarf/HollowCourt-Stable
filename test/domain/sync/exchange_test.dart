@@ -547,6 +547,80 @@ void main() {
     });
   });
 
+  group('**a peer that contradicts its own announcement is refused, not averaged out**', () {
+    // Found by review on 2026-10-01. The reading loop already refused *too few* readings -- it waits for the
+    // deadline and reports that -- but the other half of the same sentence was missing, and so were two shapes of
+    // frame that would otherwise be absorbed.
+    //
+    // **The assertion is that the exchange fails, not on the wording of the failure.** The first version of these
+    // tests pinned the message and failed while the code was right: what matters to a caller is that a
+    // self-contradicting peer does not produce a successful sync, and the sentence is for a person reading a log.
+    Future<ExchangeOutcome> responderAgainst(
+      int announced,
+      void Function(({_Channel a, _Channel b}) link) send,
+    ) async {
+      final link = _pair();
+      final responder = runExchange(
+        seal: false,
+        channel: link.b,
+        source: _Cellar([on(at(1))]),
+        role: ExchangeRole.responder,
+        localName: 'right',
+        expectedToken: '',
+        timeout: const Duration(seconds: 3),
+      );
+      // The handshake the initiator would send: greet, then ask. The readings come after, which is why the
+      // responder is in the phase this test needs rather than refusing the frame as out of place.
+      link.a.sendLine(
+        HelloFrame(name: 'left', digest: ClockDigest.fromSummary(count: announced, digest: announced)).encode(),
+      );
+      link.a.sendLine(RequestFrame(kinds: const {SyncKind.stock}).encode());
+      send(link);
+      return responder;
+    }
+
+    test('**more readings than were announced is refused**', () async {
+      // The loop stops as soon as it has `announced` readings, so a frame carrying more than the remainder used to
+      // be taken whole -- and the extras then went into `missingFrom`, quietly changing what this device decided to
+      // send to the peer.
+      final outcome = await responderAgainst(1, (link) {
+        link.a.sendLine(ClocksFrame([at(1), at(2), at(3)]).encode());
+      });
+      expect(outcome.succeeded, isFalse, reason: 'a peer that announced 1 reading and sent 3 must not be obeyed');
+      expect(outcome.failure, isNotNull);
+    });
+
+    test('an empty readings frame is refused while readings are still owed', () async {
+      // The wire layer allows an empty frame, because a peer with no events must still announce `count = 0`. What
+      // cannot be allowed is one where readings were promised: it brings the loop no closer to finishing, so a peer
+      // sending them for ever is a deadline instead of an answer.
+      final outcome = await responderAgainst(2, (link) {
+        link.a.sendLine(ClocksFrame(const []).encode());
+      });
+      expect(outcome.succeeded, isFalse);
+      expect(outcome.failure, isNotNull);
+    });
+
+    test('**a negative count is refused where it is read, not downstream**', () async {
+      // The damage a negative count did was downstream and silent: the collection loop completes immediately with
+      // an empty set, and `missingFrom({})` then returns **every event this device holds** -- sending the whole
+      // cellar to a peer that claimed to have none. So the refusal is at decode.
+      // `WireFrame.parse` never throws -- it returns null for anything this version cannot use, which is the right
+      // contract for input that came off a socket. So the refusal is a null here and a closed connection there, and
+      // that is what is asserted.
+      expect(
+        WireFrame.parse('{"kind":"hello","name":"left","count":-1,"digest":0}'),
+        isNull,
+        reason: 'a negative count must not become a greeting the exchange then acts on',
+      );
+      // And the readable form still parses, so the check is not refusing every hello.
+      expect(
+        WireFrame.parse('{"kind":"hello","name":"left","count":0,"digest":0}'),
+        isA<HelloFrame>(),
+      );
+    });
+  });
+
   group('a cellar too large for one frame crosses anyway', () {
     test('more events than a frame holds arrive in several frames, all of them', () async {
       // The cap is 256 and this is 300, so it must be two frames. The assertion is on the count

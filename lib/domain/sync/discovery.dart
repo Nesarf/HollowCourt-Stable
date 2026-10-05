@@ -17,6 +17,25 @@ import 'names.dart';
 /// the reason is not only politeness about battery: a device that announces itself all day is a device
 /// that can be found all day, and "nobody can see me unless I am looking" is a better default for an
 /// application whose whole subject is what somebody has in the cupboard.
+///
+/// **What that does not cover, named here because a review raised it on 2026-10-01 and it is a real gap
+/// rather than a misunderstanding.** The fingerprint in an announcement is **stable** -- it is derived from the
+/// device's long-term public key, and it has to be, because the whole point of carrying it is that the *other*
+/// device can match this one to something it already knows. So while discovery is running, a passive observer on
+/// the same network sees a constant value and can tell that **the device announcing today is the device that
+/// announced yesterday**. The hand-started default bounds *when* that is observable; it does not make the
+/// observable value unlinkable.
+///
+/// **The obvious fix does not fix it, which is worth writing down before somebody spends a day on it.** An
+/// ephemeral session id per announcement would leave the same fingerprint travelling later in the handshake --
+/// and **a peer this device has synced with already holds the fingerprint**, because it remembers the public key
+/// it was given. So an ephemeral id would hide the device from observers who have never synced with it and change
+/// nothing for the ones already tracking it. A private cellar on a home network is a reasonable place to accept
+/// that; **what is not reasonable is not knowing it**, and this paragraph is the knowing.
+///
+/// If it does need closing, the shape is a separate and larger decision: discovery that reveals nothing until the
+/// two devices have proved they share a secret, which means pairing something out of band before either is
+/// visible. That is a design for this layer rather than an edit to it.
 final class DiscoveryAnnounce {
   const DiscoveryAnnounce({
     required this.deviceName,

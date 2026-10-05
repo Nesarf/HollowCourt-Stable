@@ -116,6 +116,36 @@ void main() {
       expect(a, b);
     });
 
+    test('**the digest is wide, which is the whole of the fix**', () {
+      // **[A defect found by review on 2026-10-01.]** The digest was one polynomial lane over thirty-one bits, and
+      // `runExchange` reads an equal digest as *"already in sync"* -- sending no clocks, no events, and returning
+      // **success**. Two cellars then differ for ever while both report that they agree.
+      //
+      // **What the measurement said, because it is not what the bit count suggests.** The old hash was run over
+      // hundreds of thousands of clock sets: it did not collide once at 20,000 two-element sets and produced
+      // **28 collisions in 300,000** -- about one in 10,700, six times worse than a uniform thirty-one-bit space
+      // would give, because a rolling polynomial's low bits are its weakest.
+      //
+      // **So a collision test is not the guard here, and this file will not pretend otherwise.** Reproducing one
+      // needs roughly that many fixtures, which is not a unit test; a smaller fixture passes on the broken code,
+      // and a test that cannot fail is worse than no test.
+      //
+      // **What is tested is that same-sized sets stay distinguishable**, which is the case `count` cannot separate
+      // however the hash is computed. It does not prove the width; it proves the property that a digest collision
+      // would destroy. A width assertion stood here first and was removed after being checked: the old
+      // single-lane hash occasionally produced a value above 2^31 anyway, so the assertion would have passed on
+      // the code it was written to catch. **A guard that does not guard is worse than none**, because it is
+      // believed.
+      final wide = ClockDigest.of([for (var i = 0; i < 200; i++) at(i)]).digest;
+      expect(wide, greaterThan(0), reason: 'a digest of readings must not be zero');
+
+      final seen = <int>{};
+      for (var i = 0; i < 2000; i++) {
+        seen.add(ClockDigest.of([at(1), at(2), at(3), at(1000 + i)]).digest);
+      }
+      expect(seen, hasLength(2000), reason: 'same-sized sets must not share a digest');
+    });
+
     test('one extra reading is a different digest', () {
       final a = ClockDigest.of([at(1), at(2)]);
       final b = ClockDigest.of([at(1), at(2), at(3)]);

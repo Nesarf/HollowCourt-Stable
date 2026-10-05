@@ -89,6 +89,7 @@ class DisplaySection extends ConsumerWidget {
     'winter' => Copy.themeWinter,
     'eternalDiva' => Copy.themeEternalDiva,
     'honeyed' => Copy.themeAmber,
+    'wine' => Copy.themeWine,
     _ => CopyLine.withLanguages(
         Translated.authored(value.name),
         Translated.authored(value.name),

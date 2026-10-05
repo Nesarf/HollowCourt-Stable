@@ -57,12 +57,39 @@ enum SyncKind {
   notes;
 
   /// The kind an event belongs to, or null for an event that is not shareable by kind.
-  static SyncKind? of(String eventType) {
-    if (eventType.startsWith('stock.')) return SyncKind.stock;
-    if (eventType.startsWith('price.')) return SyncKind.prices;
-    if (eventType.startsWith('overlay.')) return SyncKind.notes;
-    return null;
-  }
+  ///
+  /// **[A defect found by review on 2026-10-01.]** This used to match on prefixes -- `stock.`, `price.`, `overlay.`
+  /// -- which contradicts the paragraph quoted just above it: **"a new event type added later is *not* shared
+  /// until somebody decides it belongs in a scoped share."** A prefix match decides the opposite. The next
+  /// `stock.something` anybody writes, on purpose or by accident, becomes shareable with no decision made about it
+  /// and no test failing -- and the failure mode of a share is that something travels which nobody chose to send.
+  ///
+  /// **So the list is explicit, and adding an event type is now a decision somebody has to make here.** That is the
+  /// cost of this change and it is the intended one: a new event that is not named below is **not** carried by any
+  /// scoped share, which is the failure that leaks nothing.
+  ///
+  /// The kinds are the log's own event families -- `stock.*` (what is on the shelf and what happened to it),
+  /// `price.paid` (what was paid), and `overlay.*` (what the reader named things). **Note what is deliberately
+  /// absent**: the recipe families (`recipe.collection.*`, `recipe.authored.*`). A recipe the reader wrote is
+  /// theirs, and the owner's instruction of 2026-10-01 was that it stays on this device for now -- so those
+  /// arriving here as "not shareable" is the decision, not an omission. [`notes`] carries what the reader calls an
+  /// ingredient or a bottle, which is a different thing from a recipe of their own.
+  static const Map<String, SyncKind> _shareable = {
+    'stock.bottle.added': SyncKind.stock,
+    'stock.bottle.consumed': SyncKind.stock,
+    'stock.bottle.discarded': SyncKind.stock,
+    'stock.bottle.placed': SyncKind.stock,
+    'stock.bottle.recounted': SyncKind.stock,
+    'stock.bottle.removed': SyncKind.stock,
+    'price.paid': SyncKind.prices,
+    'overlay.field.set': SyncKind.notes,
+    'overlay.field.cleared': SyncKind.notes,
+  };
+
+  /// The event types a scoped share may carry, so a test can assert the list is complete.
+  static Map<String, SyncKind> get shareable => Map.unmodifiable(_shareable);
+
+  static SyncKind? of(String eventType) => _shareable[eventType];
 }
 
 /// **The default a share carries when nobody has chosen**: the cellar list, and nothing else.
@@ -238,16 +265,47 @@ final class ScopedSyncSource implements SyncSource {
 }
 
 /// The JSON a scope round-trips through, for a stored share.
-String encodeScope(SyncScope scope) =>
-    jsonEncode({'shelfId': scope.shelfId});
+///
+/// **[A defect found by review on 2026-10-01.]** This wrote `shelfId` and nothing else, and `decodeScope`
+/// rebuilt every share as `SyncScope.shelf(...)` -- whose `kinds` is **null, meaning no limit**. So a share the
+/// reader had narrowed to the stock list came back carrying prices and notes as well. **A stored permission that
+/// widens itself on reload is worse than one that is merely lost**, and the lines below are the whole of it.
+///
+/// **`kinds` absent and `kinds` empty are deliberately different.** Absent means the reader expressed no opinion,
+/// which follows a kind added in a later build; an empty list means they chose to carry none. A codec writing
+/// `[]` for both would turn "no opinion" into "nothing allowed" on the next release -- the same mistake in the
+/// opposite direction.
+String encodeScope(SyncScope scope) => jsonEncode({
+  'shelfId': scope.shelfId,
+  if (scope.kinds case final kinds?) 'kinds': [for (final kind in kinds) kind.name],
+});
 
 SyncScope decodeScope(String text) {
   try {
     final decoded = jsonDecode(text);
     if (decoded is! Map<String, Object?>) return const SyncScope.everything();
-    final shelfId = decoded['shelfId'];
-    if (shelfId is! String || shelfId.isEmpty) return const SyncScope.everything();
-    return SyncScope.shelf(shelfId);
+
+    // **A malformed `kinds` is refused rather than dropped**, because dropping it is exactly the widening this
+    // function was fixed for: the share would silently become "every kind" instead of failing to load.
+    final rawKinds = decoded['kinds'];
+    Set<SyncKind>? kinds;
+    if (rawKinds != null) {
+      if (rawKinds is! List) return const SyncScope.everything();
+      final parsed = <SyncKind>{};
+      for (final entry in rawKinds) {
+        if (entry is! String) return const SyncScope.everything();
+        final match = SyncKind.values.where((k) => k.name == entry);
+        if (match.isEmpty) return const SyncScope.everything();
+        parsed.add(match.first);
+      }
+      kinds = parsed;
+    }
+
+    final rawShelf = decoded['shelfId'];
+    if (rawShelf != null && rawShelf is! String) return const SyncScope.everything();
+    final shelf = (rawShelf is String && rawShelf.isNotEmpty) ? rawShelf : null;
+    if (shelf == null && kinds == null) return const SyncScope.everything();
+    return SyncScope.of(shelfId: shelf, kinds: kinds);
   } on FormatException {
     return const SyncScope.everything();
   }

@@ -77,6 +77,8 @@ class HollowOrnamentPainter extends CustomPainter {
         _snowCrystal(canvas, centre, span, hairline);
       case Ornament.songRings:
         _songRings(canvas, centre, span, hairline);
+      case Ornament.cooperage:
+        _cooperage(canvas, centre, span, hairline);
     }
   }
 
@@ -210,6 +212,45 @@ class HollowOrnamentPainter extends CustomPainter {
   /// **Nothing here quotes anything.** The world is homage and borrows no mark: the shape says sound, and the name
   /// the owner gave says the rest. A theme that drew somebody's logo would be the one thing this project does not
   /// do with other people's work.
+
+  /// **A barrel's head, seen face on.** Arched bands with staves between them.
+  ///
+  /// The first ornament here whose subject is a container rather than a sky, and the first a reader could put a hand
+  /// on -- which is the right subject for the room this world is. It is built from the same motif as everything
+  /// else: the **staves are radial lines between two arcs**, which is the prism ring's own construction opened out
+  /// from a circle into a face.
+  ///
+  /// **The bands bow outward** rather than running straight, because that is what a barrel looks like from in front
+  /// and a set of parallel lines would read as a ladder instead. The bow is a fixed fraction of the span, so the
+  /// drawing scales with the window rather than with the pixel.
+  void _cooperage(Canvas canvas, Offset centre, double span, Paint hairline) {
+    final radius = span * 0.40;
+    // Five bands, closer together toward the rim, which is what perspective does to a curved face.
+    final bands = <double>[-0.92, -0.52, 0.0, 0.52, 0.92];
+    for (final at in bands) {
+      final y = centre.dy + radius * at;
+      // How much the band bows: nothing at the centre, most at the edges.
+      final bow = radius * 0.22 * at.abs();
+      final path = Path()
+        ..moveTo(centre.dx - radius * 0.94, y + bow)
+        ..quadraticBezierTo(centre.dx, y - bow * 0.6, centre.dx + radius * 0.94, y + bow);
+      canvas.drawPath(path, hairline);
+    }
+
+    // The staves: radial lines from the outer band to the rim, every twelfth of the face.
+    final rim = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = hairline.color;
+    for (var i = 0; i <= 12; i++) {
+      final x = centre.dx - radius * 0.94 + (radius * 1.88) * (i / 12);
+      // The face is an ellipse, so a stave's length depends on how far along it sits.
+      final t = (i / 12) * 2 - 1;
+      final halfHeight = radius * 0.92 * math.sqrt(math.max(0.0, 1 - t * t));
+      canvas.drawLine(Offset(x, centre.dy - halfHeight), Offset(x, centre.dy + halfHeight), rim);
+    }
+  }
+
   void _songRings(Canvas canvas, Offset centre, double span, Paint hairline) {
     // Six rings, evenly spaced and thinning outward, the way a ripple loses amplitude rather than the way a dial
     // is ruled. The innermost is left out so the centre stays quiet.

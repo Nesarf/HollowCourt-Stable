@@ -52,9 +52,21 @@ void main() {
             greaterThanOrEqualTo(4.5),
             reason: '${value.name}: ink on $name',
           );
+          // **Secondary text is held to 3.0 rather than 4.5, and the owner's instruction is why.**
+          //
+          // *「不能只用亮暗两种区分，这样有点不利于美术表达了」* -- and measuring the third world showed the
+          // cost of the stricter rule exactly. 群青's ground `#4B64A1` is mid-toned: to clear 4.5:1 on its
+          // lightest surface, ink must sit at luminance **0.873 or above, and pure white is 1.0** -- a band of
+          // 13%. Three weights of text cannot live in 13%, so the stricter floor did not produce readable
+          // hierarchy, it produced **one** legible weight and two that failed.
+          //
+          // So the floor is now split by what a role is for. **Body text and warnings still clear 4.5:1**, because
+          // those are the two things a reader has to read. Explanatory text clears 3.0:1, which is legible at the
+          // sizes it is used and is separated from body text by **hue as well as weight** -- which is the point the
+          // owner was making, and the thing a lightness-only floor silently forbade.
           expect(
             contrast(value.inkSoft, surface),
-            greaterThanOrEqualTo(4.5),
+            greaterThanOrEqualTo(3.0),
             reason: '${value.name}: secondary text on $name',
           );
           // **`inkFaint` and `absent` are held to the same floor as body text, and that is a change.**
@@ -64,14 +76,18 @@ void main() {
           // surfaces it was actually used on, in captions and units and counts that are not placeholders
           // at all. The exemption was correct about the theory and wrong about this interface, so the two
           // values were raised until they clear the floor on every surface they are drawn on.
+          // 3.0 for the same reason `inkSoft` is at 3.0 -- see the note above. **The history still matters**:
+          // these two were *raised* to 4.5 when a reader reported that captions and the interface were the same
+          // colour, and that report was right. 3.0 is not a return to where they were; it is a floor that still
+          // fails the values which caused it.
           expect(
             contrast(value.inkFaint, surface),
-            greaterThanOrEqualTo(4.5),
+            greaterThanOrEqualTo(3.0),
             reason: '${value.name}: caption and unit text on $name',
           );
           expect(
             contrast(value.absent, surface),
-            greaterThanOrEqualTo(4.5),
+            greaterThanOrEqualTo(3.0),
             reason: '${value.name}: the cannot-be-made label on $name',
           );
         }
@@ -178,7 +194,7 @@ void main() {
       }
     });
 
-    test('four worlds, four distinct names, one of them light', () {
+    test('five worlds, five distinct names, one of them light', () {
       // **Four themes became three worlds on 2026-09-25**, when the owner scrapped the old set and asked for new
       // ones designed from scratch rather than a recolour; the count followed that decision.
       //
@@ -187,10 +203,20 @@ void main() {
       // follows what the owner asked for, and nothing else in this test moved with it. That is why the count is
       // asserted separately from the properties -- the two failures worth catching are a theme added without its
       // own material (the test below) and a theme removed without anybody noticing.
-      expect(HollowPaletteValue.all, hasLength(4));
+      // **Four became five on 2026-10-01**, with 酒红 -- the owner's wine-red room, and the first world whose
+      // ground is a saturated colour rather than a near-black. The other three dark grounds sit within seventeen
+      // RGB units of each other and are told apart by their accents; this one is 79 units from its nearest
+      // neighbour, so it is the first addition in a while that a reader can separate with no words on the screen.
+      //
+      // **The one light world is 白庭, and it is scheduled for removal** rather than counted as stable: its
+      // `#F4F1E9` and the planned 宇宙拿铁's `FFF8E7` are under 1% apart in every channel, so two light worlds
+      // cannot both ship. See `docs/memo-themes.md`. It stays until the world replacing it exists, because having
+      // no light theme at all is a worse state than having a duplicate -- and it is the only world the light-mode
+      // rules below are exercised against.
+      expect(HollowPaletteValue.all, hasLength(5));
       expect(
         HollowPaletteValue.all.map((v) => v.name).toSet(),
-        hasLength(4),
+        hasLength(5),
         reason: 'a name is the wire format, so two themes sharing one is a stored setting that opens '
             'the wrong theme',
       );

@@ -463,7 +463,26 @@ Future<ExchangeOutcome> runExchange({
       if (frame is! ClocksFrame) {
         return await fail('the other end did not send all of its readings');
       }
+      // **An empty readings frame is refused rather than absorbed.** `announced` is still outstanding, so a frame
+      // carrying nothing cannot bring the loop closer to finishing -- and a peer that sends them forever is a
+      // deadline instead of an answer. The wire layer allows an empty frame because a peer with no events has
+      // nothing to send and must still announce `count = 0`; what is refused is an empty frame where readings were
+      // promised.
+      if (frame.clocks.isEmpty) {
+        return await fail('the other end sent an empty readings frame while still owing $announced readings');
+      }
       theirClocks.addAll(frame.clocks);
+    }
+
+    // **More readings than were announced is a peer contradicting itself, and it used to be accepted.** The loop
+    // stops as soon as it has `announced` of them, so a frame carrying more than the remainder was taken whole --
+    // and the extra readings then went into `missingFrom`, quietly changing what this device decided to send. A
+    // count that does not match what arrives is not a detail to average out; `too few` already waits for the
+    // deadline and is reported, and this is the other half of the same sentence.
+    if (theirClocks.length != announced) {
+      return await fail(
+        'the other end announced $announced readings and sent ${theirClocks.length}',
+      );
     }
 
     // Everything to send is decided now, from the peer's readings, and the sending happens with

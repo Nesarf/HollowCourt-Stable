@@ -677,12 +677,30 @@ class _SyncSectionState extends ConsumerState<SyncSection> {
     // guard inside makes the retry idempotent, so no rebuild can bind a second socket on a second port.
     _openForRequests();
 
+    // **The identity's own failure, if it had one, and it goes above everything else on this screen.** A write
+    // that failed means the pairings below will not survive a restart, so it is the first thing a reader should
+    // know -- and it used to be dropped on the floor entirely, which is how a device became a stranger to every
+    // peer with nothing having said so.
+    final identityWriteFailure = ref.watch(syncIdentityWriteFailureProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DualCopyText(Copy.cellarSync, style: HollowType.heading),
         const SizedBox(height: 8),
         DualCopyText(Copy.syncHint, style: HollowType.caption),
+        if (identityWriteFailure != null) ...[
+          const SizedBox(height: 12),
+          DualCopyText(
+            Copy.syncIdentityNotSaved,
+            style: HollowType.caption.copyWith(color: HollowPalette.rose),
+          ),
+          const SizedBox(height: 4),
+          // The cause, untranslated on purpose -- the same rule the failed-sync message follows: it is
+          // diagnostic, it is not a closed set, and matching on its text would break the first time a platform
+          // reworded it.
+          Text(identityWriteFailure, style: HollowType.caption),
+        ],
         const SizedBox(height: 14),
         switch (sync.phase) {
           SyncPhase.hosting => _HostingView(
