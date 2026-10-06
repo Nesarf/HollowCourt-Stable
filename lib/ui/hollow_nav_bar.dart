@@ -181,5 +181,9 @@ List<HollowNavDestination> hollowDestinations(List<String> labels) => [
     // exists -- it is simply drawn inside the cellar now.
   HollowNavDestination(glyph: HollowGlyph.recipes, label: labels[1]),
   HollowNavDestination(glyph: HollowGlyph.journal, label: labels[2]),
-  HollowNavDestination(glyph: HollowGlyph.settings, label: labels[3]),
+  // **原料 joined the bar on 2026-10-06, by the owner's instruction**: it had been a section inside 设置, and it is
+  // a peer of the other three rather than something buried in a settings page -- a reader manages what they own, and
+  // the bar is where what they own lives.
+  HollowNavDestination(glyph: HollowGlyph.ingredients, label: labels[3]),
+  HollowNavDestination(glyph: HollowGlyph.settings, label: labels[4]),
 ];

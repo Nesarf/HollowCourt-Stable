@@ -5,7 +5,6 @@ import 'about_section.dart';
 import 'developer_section.dart';
 import 'display_section.dart';
 import 'names_section.dart';
-import 'ingredient_section.dart';
 import 'integrity_section.dart';
 import 'l10n/dual_copy_text.dart';
 import 'prism.dart';
@@ -78,13 +77,6 @@ class SettingsPage extends ConsumerWidget {
           // of nothing between them, which on a dark page is not a boundary. The motif divider is the
           // study's own suggestion for exactly this: a line plus small diamonds, so that the shape a
           // reader already associates with this application is also what tells them where one group ends.
-          const SizedBox(height: 20),
-          const PrismDivider(size: 8),
-          const SizedBox(height: 28),
-          // **Above the developer section**, which is where this page puts what is about the application rather than
-          // about the cellar. An ingredient list is maintenance rather than one of the four tabs, which is why it is
-          // here and not a fifth tab of its own.
-          const IngredientSection(),
           const SizedBox(height: 20),
           const PrismDivider(size: 8),
           const SizedBox(height: 28),

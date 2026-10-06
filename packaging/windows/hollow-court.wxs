@@ -32,9 +32,9 @@
   <Package
       Name="空庭 Hollow Court"
       Manufacturer="S.M.Y.T."
-      Version="1.0.3939"
+      Version="1.0.48000"
       UpgradeCode="7C4E1B62-5A3D-4F18-9E77-2B6D4A0C51E3"
-      ProductCode="901F7C20-9903-48B7-B875-FB2D21CE445A"
+      ProductCode="D83FD17A-2FD5-4144-BA46-85918AACAEA4"
       Scope="perUser"
       Compressed="yes">
 
@@ -52,6 +52,12 @@
          artifacts attached to the 1.0.0 release came from a source 154 commits behind HEAD and are being
          rebuilt; this is the Windows half. -->
 
+    <!-- **2026-10-06, the round that went to 48000 and the colour.** Version went to 1.0.48000 and ProductCode to
+         the GUID beside it. **This bump was missed for one build and the installer said so**: the application
+         displayed 1.0.0.48000 while the MSI registered 1.0.3939, which Windows reads as an *older* product,
+         so installing it over the previous round is a downgrade it may refuse. The two numbers live in different
+         files and only a person moving both keeps them together; the build script prints both, which is how it was
+         caught. -->
     <!-- **2026-09-30, the round the mark changed.** Version went to 1.0.2880 and ProductCode to
          00B3C0D2-DD59-4A93-98D5-5FF685015792, together and for the reason the first of these notes gives.
          This is the first round with a change a reader can see: the icon is no longer the medallion but a

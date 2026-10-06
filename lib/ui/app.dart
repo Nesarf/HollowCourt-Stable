@@ -8,6 +8,7 @@ import 'recipes_page.dart';
 import 'display_providers.dart';
 import 'ornament.dart';
 import 'theme_crossfade.dart';
+import 'ingredients_page.dart';
 import 'settings_page.dart';
 import 'stock_page.dart';
 import 'l10n/locale_providers.dart';
@@ -184,6 +185,10 @@ class _ShellState extends ConsumerState<_Shell> {
                     // shows the value and keeps the sentence naming the rest -- replacing
                     // the placeholder outright would claim six features and ship one.
                     const CellarPage(),
+                    // **原料, the fifth tab, by the owner's instruction of 2026-10-06.** It had been a section at
+                    // the bottom of 设置 and is a peer of the other three rather than part of an application's own
+                    // settings: a reader manages what they own, and the bar is where what they own lives.
+                    const IngredientsPage(),
                     // Section 12.3's fifth tab, asked for by the owner: the application's own
                     // settings, which were a section at the bottom of 记录. Devices and sync stay
                     // there -- see `SettingsPage` for where the line is and why.
@@ -217,6 +222,7 @@ class _ShellState extends ConsumerState<_Shell> {
           Copy.tabStock.textFor(locale.primaryTag),
           Copy.tabRecipes.textFor(locale.primaryTag),
           Copy.tabCellar.textFor(locale.primaryTag),
+          Copy.tabIngredients.textFor(locale.primaryTag),
           Copy.tabSettings.textFor(locale.primaryTag),
         ]),
         ),

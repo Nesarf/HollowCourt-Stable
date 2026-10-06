@@ -126,32 +126,110 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
           ),
         ),
         const SizedBox(height: 12),
-        for (final row in rows)
-          ListTile(
-            key: ValueKey('ingredient-${row.id}'),
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            leading: HollowGlyphMark(
-              // **The reader's own get a different mark**, because that is the fastest way to see which rows can be
-              // edited -- and the alternative, a note repeated on every one, is the same information at a worse cost.
-              row.isMine ? HollowGlyph.folder : HollowGlyph.book,
-              color: row.isMine ? HollowPalette.rose : HollowPalette.gold,
-            ),
-            title: Text(row.name, style: HollowType.body),
-            subtitle: Text(
-              [if (row.kind != null) row.kind!, if (row.aliases.isNotEmpty) row.aliases.join(' · ')].join('  '),
-              style: HollowType.caption,
-            ),
-            // **A long press, like a folder row**, and for the same reason: the list's job is to be scanned, so the
-            // affordance for changing a row is the gesture a reader already uses to act on one. A library ingredient
-            // opens read-only rather than not at all, so a reader can see what it is and copy its kind.
-            onLongPress: () => showIngredientEditor(context, editing: row),
-          ),
+        // **Two columns of cards, by the owner's instruction of 2026-10-06.** A list row carried one fact per line
+        // and this tab is a thing a reader scans rather than reads -- a name, what it is, and what else it is called
+        // fit in half a phone's width, so a single column spent the other half on nothing. `maxCrossAxisExtent`
+        // rather than a fixed count so that a tablet or a wide window gets more columns instead of two enormous
+        // ones, which is the failure mode of a hard-coded 2.
+        GridView.extent(
+          // **The grid does not scroll.** It is inside the page's own scroll view, so a scrollable here would be a
+          // second scroll region nested in the first -- the thing that makes a long list feel like it is fighting
+          // the finger. `shrinkWrap` measures the children and lets the page do the scrolling.
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          maxCrossAxisExtent: 260,
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 2.6,
+          children: [
+            for (final row in rows)
+              _IngredientCard(
+                key: ValueKey('ingredient-${row.id}'),
+                row: row,
+                // **A long press, like a folder row**, and for the same reason: what a reader does to a card is a
+                // gesture rather than a control, and the grid is dense enough that a button on every card would be
+                // the loudest thing on the page. A library ingredient opens read-only rather than not at all, so a
+                // reader can see what it is and copy its kind for their own addition.
+                onOpen: () => showIngredientEditor(context, editing: row),
+              ),
+          ],
+        ),
         if (rows.isEmpty) ...[
           const SizedBox(height: 8),
           Text(ref.copy(Copy.stockNoVocabulary), style: HollowType.caption),
         ],
       ],
+    );
+  }
+}
+
+
+/// One ingredient, as a card.
+///
+/// **A card rather than a row, and the difference is what fits beside it.** A row in a list may use the full width
+/// and one line per fact; a card has half a phone to work with, so the name goes on its own line and the two facts
+/// that qualify it go under it in one. `maxLines: 1` with an ellipsis on both, because a card that grew to fit
+/// "Plymouth Gin · spirit · Plymouth" would make its neighbours different heights and the grid ragged.
+class _IngredientCard extends StatelessWidget {
+  const _IngredientCard({super.key, required this.row, required this.onOpen});
+
+  final AuthorIngredientView row;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final qualifiers = [
+      if (row.kind != null) row.kind!,
+      if (row.aliases.isNotEmpty) row.aliases.join(' · '),
+    ].join('  ·  ');
+    return InkWell(
+      onLongPress: onOpen,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        decoration: BoxDecoration(
+          color: HollowPalette.surfaceRaised,
+          borderRadius: BorderRadius.circular(10),
+          // **A hairline in the reader's own colour for what they added**, which is the same signal the list gave
+          // with a different mark: a reader has to be able to see at a glance which cards they can change, and a
+          // border is the cheapest way to say it on a surface this small.
+          border: Border.all(
+            color: row.isMine ? HollowPalette.rose : HollowPalette.hairline,
+            width: row.isMine ? 1.2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            HollowGlyphMark(
+              row.isMine ? HollowGlyph.folder : HollowGlyph.book,
+              color: row.isMine ? HollowPalette.rose : HollowPalette.gold,
+              size: 16,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    row.name,
+                    style: HollowType.body,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (qualifiers.isNotEmpty)
+                    Text(
+                      qualifiers,
+                      style: HollowType.caption,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

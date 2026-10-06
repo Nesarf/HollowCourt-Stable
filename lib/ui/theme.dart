@@ -840,6 +840,17 @@ abstract final class Copy {
   ///
   /// A `String` like the other four: `NavigationDestination.label` takes one line, and the English
   /// belongs to section 12.4's `.arb` layer along with the rest.
+  /// The fifth tab, added 2026-10-06.
+  ///
+  /// **A `String` like the other four**, and it says the plural in both languages because the tab lists many
+  /// ingredients rather than describing a category -- 原料 is both singular and plural in Chinese, so the Japanese
+  /// line is the one that has to choose.
+  static const tabIngredients = CopyLine.withLanguages(
+    Translated.authored('原料'),
+    Translated.authored('Ingredients'),
+    also: {'ja': '材料', 'zh-HK': '原料', 'zh-TW': '原料'},
+  );
+
   static const tabSettings = CopyLine.withLanguages(
     Translated.authored('设置'),
     Translated.authored('Settings'),

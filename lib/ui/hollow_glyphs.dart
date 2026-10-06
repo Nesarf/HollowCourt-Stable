@@ -31,6 +31,10 @@ enum HollowGlyph {
   /// A page with ruled lines: the journal.
   journal,
 
+  /// A leaf on a stem: ingredients. The one thing in the vocabulary that is neither a vessel nor a page, because
+  /// what this tab lists is what goes *into* the vessels.
+  ingredients,
+
   /// The prism itself: settings.
   settings,
 
@@ -192,6 +196,22 @@ class HollowGlyphPainter extends CustomPainter {
           Path()
             ..moveTo(11.5, 12)
             ..lineTo(16.5, 12),
+        ];
+      case HollowGlyph.ingredients:
+        // A leaf with a stem and one vein, drawn in the same strokes as the rest: nothing here is filled, so a leaf
+        // is an outline rather than a shape.
+        return [
+          Path()
+            ..moveTo(12, 20)
+            ..lineTo(12, 12),
+          Path()
+            ..moveTo(12, 12)
+            ..cubicTo(4, 12, 5, 4, 12, 3)
+            ..cubicTo(19, 4, 20, 12, 12, 12)
+            ..close(),
+          Path()
+            ..moveTo(12, 12)
+            ..lineTo(12, 6),
         ];
       case HollowGlyph.settings:
         // The motif itself: the prism, with its facet.

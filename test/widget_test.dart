@@ -14,12 +14,13 @@ import 'package:hollow_court/ui/l10n/locale_settings.dart';
 import 'package:hollow_court/ui/theme.dart';
 
 void main() {
-  testWidgets('the shell draws four tabs, named as section 12.3 names them after the merge',
+  testWidgets('the shell draws five tabs, named as section 12.3 names them after the merge',
       (tester) async {
-    // **Four, and it was five.** The owner's decision of 2026-09-27 merged the bar into the cellar --
-    // 吧台并进酒窖，货架成为酒窖页的一个区块 -- so the shelf that had a tab of its own is a section of the cellar
-    // page now. The count is asserted as well as the names, because a list that only checked the names would
-    // pass whether or not a destination had been removed.
+    // **Five, and the arithmetic is worth keeping.** Section 12.3 named five tabs; the owner's decision of
+    // 2026-09-27 merged the bar into the cellar, so the shelf that had one of its own became a section and the
+    // count fell to four; and on 2026-10-06 原料 was promoted out of 设置, which is the fifth. **The count is
+    // asserted as well as the names**, because a list that only checked the names would pass whether or not a
+    // destination had been added or removed.
     // **The language is pinned, and that is the change of 2026-09-22 showing up in a test.** The tab labels
     // are resolved from the reader's locale now, and a test machine reports `en_US` -- so the labels here
     // would be English and an assertion about 简中 names would fail while the application was correct. Pinning
@@ -36,11 +37,12 @@ void main() {
     // Material's icon font in every destination; on 2026-09-25 the owner's instruction was that the interface
     // itself has to be made here, so this checks the application's own bar rather than the toolkit's.
     expect(find.byType(HollowNavBar), findsOneWidget);
-    expect(find.byType(HollowGlyphMark), findsNWidgets(4));
+    expect(find.byType(HollowGlyphMark), findsNWidgets(5));
     for (final label in [
       Copy.tabStock.textFor('zh-Hans'),
       Copy.tabRecipes.textFor('zh-Hans'),
       Copy.tabCellar.textFor('zh-Hans'),
+      Copy.tabIngredients.textFor('zh-Hans'),
       Copy.tabSettings.textFor('zh-Hans'),
     ]) {
       expect(find.text(label), findsWidgets, reason: label);
@@ -48,7 +50,7 @@ void main() {
 
     expect(
       tester.widget<HollowNavBar>(find.byType(HollowNavBar)).destinations.length,
-      4,
+      5,
     );
   });
 
