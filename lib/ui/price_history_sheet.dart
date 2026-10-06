@@ -33,6 +33,10 @@ Future<void> showPriceHistory(
   required String name,
 }) => showModalBottomSheet<void>(
   context: context,
+  // **`useSafeArea: true`, because a modal sheet removes the top padding by default** -- see the
+  // note on the pack editor. Without it a sheet\'s title runs into the status bar, and this one had
+  // the same fault as the three the owner reported; nothing had pointed at it.
+  useSafeArea: true,
   isScrollControlled: true,
   backgroundColor: HollowPalette.surface,
   builder: (_) => PriceHistorySheet(sku: sku, name: name),

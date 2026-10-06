@@ -31,15 +31,28 @@ Future<void> showCollectionEditor(
   required String Function(Recipe) nameOf,
   required RecipeCollections existing,
   RecipeCollection? editing,
+  /// **What is already ticked, for a collection made out of a selection.**
+  ///
+  /// The owner asked that the bigger collection be customisable, and this is where "合并" lands: the reader ticks
+  /// recipes and collections on the page, presses 收成一个合集, and arrives here with all of them chosen -- free to
+  /// rename, untick, or add more. **The alternative, writing a record straight from the bar, would produce a
+  /// collection named after a count**, which is the kind of name nobody chose.
+  Set<String>? preselected,
 }) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
+  // **The framework's own switch, and the reason two earlier attempts changed nothing**: a modal bottom sheet
+  // *removes* the top padding from the MediaQuery it passes down, so reading `MediaQuery.paddingOf` inside one
+  // reports zero -- and both a manual `system.top` and a `SafeArea` were reading a value that had deliberately
+  // been emptied. `useSafeArea` hands it back.
+  useSafeArea: true,
   backgroundColor: HollowPalette.surface,
   builder: (_) => _CollectionEditor(
     recipes: recipes,
     nameOf: nameOf,
     existing: existing,
     editing: editing,
+    preselected: preselected,
   ),
 );
 
@@ -49,12 +62,14 @@ class _CollectionEditor extends ConsumerStatefulWidget {
     required this.nameOf,
     required this.existing,
     this.editing,
+    this.preselected,
   });
 
   final List<Recipe> recipes;
   final String Function(Recipe) nameOf;
   final RecipeCollections existing;
   final RecipeCollection? editing;
+  final Set<String>? preselected;
 
   @override
   ConsumerState<_CollectionEditor> createState() => _CollectionEditorState();
@@ -78,10 +93,15 @@ class _CollectionEditorState extends ConsumerState<_CollectionEditor> {
     final editing = widget.editing;
     _id = editing?.id ?? 'own.collection.${DateTime.now().microsecondsSinceEpoch}';
     _name = TextEditingController(text: editing?.name ?? '');
-    _chosen = {
-      for (final member in editing?.members ?? const <CollectionMember>[])
-        member.encode(),
-    };
+    // **The selection when there is one, and the record's own members otherwise.** A preselected set is the whole
+    // membership rather than an addition to it, which is what makes the bar's action "collect these" rather than
+    // "add these to whatever was there".
+    _chosen = widget.preselected != null
+        ? {...widget.preselected!}
+        : {
+            for (final member in editing?.members ?? const <CollectionMember>[])
+              member.encode(),
+          };
   }
 
   @override

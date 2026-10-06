@@ -44,6 +44,35 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
   /// drinks, not of ten thousand notes.
   String? _openFolder;
 
+  /// **What is ticked while collecting, or null when nothing is being collected.**
+  ///
+  /// The state the owner asked for: a long press starts a selection, more long presses add to it, and the selection
+  /// is what a new collection is made from. **Null rather than an empty set**, because "not collecting" and
+  /// "collecting nothing" are different screens -- the first has no action bar and the second has one with a disabled
+  /// button -- and an empty set cannot tell them apart.
+  ///
+  /// It holds **recipe ids, and also collection ids**, because the proposal's own words are *"把配方与已有集合合并进
+  /// 新集合"*: a reader merging things is not choosing between drinks and folders, they are saying "these belong
+  /// together", and a collection is a legitimate thing to put in one.
+  Set<String>? _collecting;
+
+  /// Ticks or unticks one thing, entering selection mode on the first tick.
+  ///
+  /// **Entering on the first tick is why a long press and a tap can both call this**: a long press on nothing becomes
+  /// a selection of one, and a tap while collecting adds to it. The set holds `r:` and `c:` and `f:` prefixed ids --
+  /// the same three prefixes `CollectionMember` encodes -- so what is ticked here is exactly what the collection will
+  /// carry, with no translation step that could disagree with the fold.
+  void _toggle(String encoded) {
+    setState(() {
+      final current = _collecting ?? <String>{};
+      _collecting = {...current};
+      if (!_collecting!.remove(encoded)) _collecting!.add(encoded);
+      // **An emptied selection leaves selection mode**, because a mode with nothing in it and a disabled button is a
+      // state a reader has to work out how to leave.
+      if (_collecting!.isEmpty) _collecting = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final seed = ref.watch(seedProvider);
@@ -172,8 +201,82 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
                         icon: const Icon(Icons.create_new_folder_outlined, size: 18),
                         label: Text(ref.copy(Copy.collectionNew)),
                       ),
+                      // **The way into selection, which the long press could not be.** A long press on a collection or
+                      // a folder opens its own editor -- the owner's rule -- so selection had no gesture left, and a
+                      // mode with no way in is a feature that does not exist. It sits with the two makers because it
+                      // is the third thing a reader does to a library: make a drink, make a folder, gather several.
+                      if (_collecting == null)
+                        OutlinedButton.icon(
+                          key: const ValueKey('collect-start'),
+                          onPressed: () => setState(() => _collecting = <String>{}),
+                          icon: const Icon(Icons.checklist_outlined, size: 18),
+                          label: Text(ref.copy(Copy.collectStart)),
+                        ),
                     ],
                   ),
+                  // **The selection's action bar, above everything else on the page while it is up.** A mode with
+                  // no visible way out is a mode a reader gets stuck in, so the count and both actions are together
+                  // and at the top rather than in an app bar that this page does not have.
+                  if (_collecting case final ticking?) ...[
+                    const SizedBox(height: 12),
+                    // **Two rows, and the first version was one.** Four things side by side -- a count, a sentence, and
+                    // two buttons -- left the sentence with no width, so it wrapped one character per line and both
+                    // buttons ran off the right edge. **A `Row` with an `Expanded` in it does not make room; it takes
+                    // it from whatever is left**, and a handset is where that becomes visible.
+                    Container(
+                      key: const ValueKey('collect-bar'),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: HollowPalette.surfaceRaised,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                Copy.collectCount(ticking.length),
+                                style: HollowType.numeric,
+                              ),
+                              const Spacer(),
+                              TextButton(
+                                key: const ValueKey('collect-cancel'),
+                                onPressed: () => setState(() => _collecting = null),
+                                child: Text(ref.copy(Copy.collectCancel)),
+                              ),
+                            ],
+                          ),
+                          // **The hint gets a line of its own, and the second layout is why.** Beside a full-width
+                          // button an `Expanded` sentence had almost no width, so it wrapped one character per line --
+                          // the same fault as the first version, one row further down. **A sentence and a button do
+                          // not share a line on a handset**; the button takes the width and the sentence gets its own.
+                          Text(ref.copy(Copy.collectHint), style: HollowType.caption),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              FilledButton(
+                                key: const ValueKey('collect-make'),
+                                // **What is ticked becomes a new collection, and the reader names it.** The owner
+                                // asked for the bigger collection to be customisable, so this opens the same editor
+                                // the collection list does, with the ticks already chosen -- rather than writing a
+                                // record named after the count.
+                                onPressed: () => showCollectionEditor(
+                                  context,
+                                  recipes: [for (final e in visible) e.recipe],
+                                  nameOf: shown,
+                                  existing: state.collections,
+                                  preselected: ticking,
+                                ),
+                                child: Text(ref.copy(Copy.collectMake)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 14),
                   Wrap(
                     spacing: 8,
@@ -222,7 +325,22 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
                           '${collection.countIn(state.collections)}',
                           style: HollowType.caption,
                         ),
-                        onTap: () => showCollectionEditor(
+                        // **While collecting, a tap ticks rather than opens** -- that is what a selection mode is, and
+                        // the alternative is a reader who taps to add something and instead loses the screen they were
+                        // on. A long press starts the selection from either state.
+                        onTap: () => _collecting == null
+                            ? showCollectionEditor(
+                                context,
+                                recipes: [for (final e in visible) e.recipe],
+                                nameOf: shown,
+                                existing: state.collections,
+                                editing: collection,
+                              )
+                            : _toggle('c:${collection.id}'),
+                        // **The owner's rule: a long press on a collection is its own editor.** Renaming it, giving
+                        // it a colour, putting it in order -- that is what it was before selection existed, and it
+                        // stays that. Selecting is entered from the button beside the two makers.
+                        onLongPress: () => showCollectionEditor(
                           context,
                           recipes: [for (final e in visible) e.recipe],
                           nameOf: shown,
@@ -265,17 +383,18 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
                       style?.note ?? '${folder.count}',
                       style: HollowType.caption,
                     ),
-                    // **The way in to naming a folder, and it is a long press rather than a button.** The gesture a
-                    // reader already uses to act on a list row, and the alternative -- a control on every row --
-                    // would put a rename affordance on a list whose whole job is to be scanned for a drink. A pack the
-                    // reader made is edited here; one nobody has named yet becomes theirs the moment they do.
+                    // **A long press on a folder is its editor**, which is what it was before selection existed: name
+                    // it, give it a colour, put it in order. The trailing control that stood in for it while the long
+                    // press meant "select" is gone, because a gesture that does one thing needs no second affordance.
+                    onTap: _collecting == null
+                        ? () => setState(() => _openFolder = folder.key)
+                        : () => _toggle('f:${folder.key}'),
                     onLongPress: () => showPackEditor(
                       context,
                       packKey: folder.key,
                       derivedLabel: folder.label,
                       existing: state.packs[folder.key],
                     ),
-                        onTap: () => setState(() => _openFolder = folder.key),
                       ),
                     ],
                   );
@@ -332,8 +451,34 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
                     );
                   }
                 },
+                // **Only for a recipe the reader wrote.** `state.authoredRecipes.isMine` is the same question the
+                // composer already asks before offering to replace a record, and the library's 103 are part of the
+                // build -- so this is null for them and the long press does nothing rather than opening a form whose
+                // save would be refused.
+                // **A tap ticks while collecting**, for the reason the collection row's does: a selection mode
+                // that opened a drink's sheet would lose the reader the screen they were collecting from.
+                onCollect: _collecting == null ? null : () => _toggle('r:${entry.recipe.id}'),
+                collected: _collecting?.contains('r:${entry.recipe.id}') ?? false,
+                // **A long press opens the recipe's own sheet, like every other row.** It used to open the composer
+                // for a recipe the reader wrote and do *nothing at all* for one they did not -- so on the 103 the
+                // library ships, a long press was silent, which reads as a broken screen rather than as a rule. The
+                // sheet is where a drink's actions live, and "change this one" belongs among them.
+                onEdit: () => showModalBottomSheet<void>(
+                  context: context,
+                  useSafeArea: true,
+                  isScrollControlled: true,
+                  backgroundColor: HollowPalette.surface,
+                  builder: (_) => _RecipeSheet(
+                    recipe: entry.recipe,
+                    score: entry.score,
+                  ),
+                ),
                 onTap: () => showModalBottomSheet<void>(
                   context: context,
+                  // **`useSafeArea: true`, because a modal sheet removes the top padding by default** -- see the
+                  // note on the pack editor. Without it a sheet\'s title runs into the status bar, and this one had
+                  // the same fault as the three the owner reported; nothing had pointed at it.
+                  useSafeArea: true,
                   isScrollControlled: true,
                   backgroundColor: HollowPalette.surface,
                   builder: (_) => _RecipeSheet(
@@ -395,6 +540,9 @@ class _RecipeRow extends StatelessWidget {
     required this.planned,
     required this.onTogglePlan,
     required this.onTap,
+    this.onEdit,
+    this.onCollect,
+    this.collected = false,
   });
 
   final Recipe recipe;
@@ -417,6 +565,20 @@ class _RecipeRow extends StatelessWidget {
 
   final VoidCallback onTogglePlan;
 
+  /// What a long press does, or null when there is nothing it could do.
+  ///
+  /// **Null for a recipe the reader did not write.** The library's 103 are part of the build and cannot be edited, so
+  /// a long press on one does nothing rather than opening a form whose save would be refused -- and the nullable
+  /// callback is how that is expressed rather than a check inside the handler, because a row that *looks* pressable
+  /// and is not is worse than one that plainly is not.
+  final VoidCallback? onEdit;
+
+  /// What a tap does while a selection is being made, or null when one is not.
+  final VoidCallback? onCollect;
+
+  /// Whether this row is ticked.
+  final bool collected;
+
   /// Whether somebody wrote a note on this recipe.
   ///
   /// A fact about the overlay and not about the recipe, which is why it is passed
@@ -428,7 +590,8 @@ class _RecipeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
+    onTap: onCollect ?? onTap,
+    onLongPress: onEdit ?? onCollect,
     child: Padding(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
       child: Row(
@@ -570,6 +733,10 @@ class _RecipeSheet extends ConsumerWidget {
     final insets = MediaQuery.viewInsetsOf(context);
     final systemPadding = MediaQuery.paddingOf(context);
     final canMix = score.verdict == MatchVerdict.makeable;
+    // **Whether this is a drink the reader wrote**, which is the only case where changing it is possible --
+    // `RecipeAuthoredEvents.removed` refuses an id that is not `own.`-prefixed and `authorRecipe` writes the record
+    // whole, so a library recipe has nothing here to offer.
+    final authored = cellar?.authoredRecipes[recipe.id];
 
     // **Scrollable, and it was not before.** This sheet has grown three times now --
     // steps, items, and section 8's note field -- and a `Column` that only ever grows
@@ -678,6 +845,27 @@ class _RecipeSheet extends ConsumerWidget {
               child: Text(canMix ? Copy.mixIt : Copy.verdictInsufficient),
             ),
           ),
+          // **Changing this drink, offered from inside the drink's own sheet.** It was on the row's long press, and
+          // the long press now opens this sheet -- so the action has to be reachable from here or the composer would
+          // have no way in for a recipe the reader wrote, which is the state that caused this whole exchange.
+          if (authored != null) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                key: const ValueKey('recipe-edit'),
+                onPressed: () => showRecipeComposer(
+                  context,
+                  // Read here rather than passed: the sheet is already a `ConsumerWidget` and the library is one
+                  // more thing it needs, and a parameter added for it would be a parameter every call site must carry.
+                  ingredients: ref.watch(seedProvider).value?.ingredients ?? const [],
+                  editing: authored,
+                ),
+                icon: const Icon(Icons.edit_outlined, size: 17),
+                label: Text(ref.copy(Copy.packEditShort)),
+              ),
+            ),
+          ],
         ],
       ),
     );

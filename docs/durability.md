@@ -64,3 +64,30 @@ the last few events are gone and the file is still valid.**
 
 **What a caller may not rely on**: that a peer which has been told about an event will find it after a power cut.
 The merge path above is where that matters, and it is the open item.
+
+---
+
+## Appendix: the status-bar inset, and a method that worked
+
+Unrelated to durability, recorded here because the *method* is the same and the failure is one this project has now
+made twice: **guessing at a framework's behaviour instead of reading it.**
+
+Three bottom sheets had their title overlapping the status bar. Two attempts changed nothing -- a manual
+`MediaQuery.paddingOf(context).top` added to the padding, and wrapping the content in `SafeArea`. Both were reading a
+value that had deliberately been emptied, and neither attempt explained why the other had failed, so the second felt
+like trying something else rather than learning anything.
+
+**The answer came from the SDK source**, `packages/flutter/lib/src/material/bottom_sheet.dart`:
+
+    Widget bottomSheet = useSafeArea
+        ? SafeArea(...)
+        : MediaQuery.removePadding(context: context, removeTop: true, child: content);
+
+**`useSafeArea` defaults to false and the default branch removes the top padding**, so the zero a probe measured inside
+the sheet was by design. One line per sheet on `showModalBottomSheet` fixed all three, and a screenshot from the handset
+confirmed it.
+
+**The lesson is the cheap one**: two failed attempts were cheap, and the third was cheap once it began with reading
+rather than with trying. **A probe that prints the value being relied on is not slower than a guess; it is the thing
+that stops the guesses.** The same argument this project makes about measuring a claim instead of asserting it applies
+to the framework's claims as much as to its own.

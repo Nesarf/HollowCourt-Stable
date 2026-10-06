@@ -2592,6 +2592,127 @@ abstract final class Copy {
     Translated.authored('配方'),
     Translated.authored('Recipes'), also: {'ja': 'レシピ', 'zh-HK': '配方', 'zh-TW': '配方'});
 
+  /// The heading for the reader's own ingredients.
+  static const ingredientHeading = CopyLine.withLanguages(
+    Translated.authored('原料'),
+    Translated.authored('Ingredients'),
+    voices: {
+      Voice.heiress: '原料。库里有的，和本小姐这里记着的，都在下面。',
+      Voice.heiressJa: '材料。ライブラリにあるものと、あたしが預かっているもの、両方ここ。',
+      Voice.minister: 'Ingredients -- what the library carries, and what one has added to it.',
+    },
+    also: {'ja': '材料', 'zh-HK': '原料', 'zh-TW': '原料'},
+  );
+
+  /// What the section says it is for, above the list.
+  ///
+  /// **It states the count of the reader's own separately from the library's**, because the two are different kinds
+  /// of thing and a reader who has added three of their own should be able to see that at a glance rather than count
+  /// rows.
+  static const ingredientIntro = CopyLine.withLanguages(
+    Translated.authored('随应用发布的那些改不了。你自己加的，可以改、可以删。'),
+    Translated.authored('The ones that ship with the application cannot be changed. Your own can be edited and removed.'),
+    also: {
+      'ja': 'アプリに同梱のものは変更できません。自分で足したものは編集も削除もできます。',
+      'zh-HK': '隨應用發布嘅改唔到。你自己加嘅，可以改、可以刪。',
+      'zh-TW': '隨應用發布的改不了。你自己加的，可以改、可以刪。',
+    },
+  );
+
+  static const ingredientAdd = CopyLine.withLanguages(
+    Translated.authored('加一种原料'),
+    Translated.authored('Add an ingredient'),
+    voices: {
+      Voice.heiress: '库里有你手头这种吗？没有就自己加一个，本小姐给你记上。',
+      Voice.heiressJa: '手持ちの材料、ライブラリに無い？なら自分で足しなさい、控えておくわ。',
+      Voice.minister: 'If the library does not carry it, add it, and it shall be kept.',
+    },
+    also: {'ja': '材料を足す', 'zh-HK': '加一種原料', 'zh-TW': '加一種原料'},
+  );
+
+  static const ingredientOwnTitle = CopyLine.withLanguages(
+    Translated.authored('自己的一种原料'),
+    Translated.authored('An ingredient of your own'),
+    voices: {
+      Voice.heiress: '你自己的原料。叫什么、算哪一类，写吧。',
+      Voice.heiressJa: 'あなた自身の材料。名前と分類を書きなさい。',
+      Voice.minister: 'An ingredient of one\'s own. Its name and its kind are one\'s to state.',
+    },
+    also: {'ja': 'あなた自身の材料', 'zh-HK': '自己嘅一種原料', 'zh-TW': '自己的一種原料'},
+  );
+
+  /// The label above the kind field.
+  ///
+  /// **Its own line rather than a substitution of another's.** The first version of the editor built this label by
+  /// replacing 备注 inside the note field's line, which produced the right characters and the wrong thing: a label is
+  /// copy and copy is written, and the day either sentence is edited the other would silently break.
+  static const ingredientFieldKind = CopyLine.withLanguages(
+    Translated.authored('类别'),
+    Translated.authored('Kind'),
+    also: {'ja': '分類', 'zh-HK': '類別', 'zh-TW': '類別'},
+  );
+
+  /// What the kind field says under itself.
+  ///
+  /// **The kind is free text rather than a menu**, and the proposal is why: the kinds are *data*, so a reader can add
+  /// 茶 or 酊剂 the way they add a collection. A closed list would mean a build to add a shape.
+  static const ingredientKindHint = CopyLine.withLanguages(
+    Translated.authored('spirit、liqueur、syrup、tea……库里有的照抄，没有的自己写。'),
+    Translated.authored('spirit, liqueur, syrup, tea… copy one the library uses, or write your own.'),
+    also: {
+      'ja': 'spirit、liqueur、syrup、tea… ライブラリのを使うか、自分で書く。',
+      'zh-HK': 'spirit、liqueur、syrup、tea……庫裏有嘅照抄，冇嘅自己寫。',
+      'zh-TW': 'spirit、liqueur、syrup、tea……庫裡有的照抄，沒有自己寫。',
+    },
+  );
+
+  static const ingredientFieldAliases = CopyLine.withLanguages(
+    Translated.authored('别名'),
+    Translated.authored('Also called'),
+    also: {'ja': '別名', 'zh-HK': '別名', 'zh-TW': '別名'},
+  );
+
+  static const ingredientAliasesHint = CopyLine.withLanguages(
+    Translated.authored('用逗号分开。收据上写的是别的名字时有用。'),
+    Translated.authored('Separated by commas. Useful when a receipt calls it something else.'),
+    also: {
+      'ja': 'カンマ区切り。レシートが別の名前で書いている時に。',
+      'zh-HK': '用逗號分開。收據寫嘅係第二個名嗰陣有用。',
+      'zh-TW': '用逗號分開。收據上寫的是別的名字時有用。',
+    },
+  );
+
+  static const ingredientSave = CopyLine.withLanguages(
+    Translated.authored('收下'),
+    Translated.authored('Keep it'),
+    also: {'ja': '收める', 'zh-HK': '收下', 'zh-TW': '收下'},
+  );
+
+  static const ingredientNeedsName = CopyLine.withLanguages(
+    Translated.authored('得有个名字。'),
+    Translated.authored('It needs a name.'),
+    also: {'ja': '名前が要ります。', 'zh-HK': '要有個名。', 'zh-TW': '要有個名字。'},
+  );
+
+  static const ingredientDelete = CopyLine.withLanguages(
+    Translated.authored('不要这种原料了'),
+    Translated.authored('Remove this ingredient'),
+    also: {'ja': 'この材料を消す', 'zh-HK': '唔要呢種原料', 'zh-TW': '不要這種原料'},
+  );
+
+  /// **What is said before the button is pressed, because a removal here is not free.** A recipe or a bottle may
+  /// name this ingredient, and those references are not rewritten -- so the reader is told what they will be left
+  /// with rather than finding out on the shelf.
+  static const ingredientDeleteKeepsReferences = CopyLine.withLanguages(
+    Translated.authored('用它的配方和酒瓶会留着，只是认不出名字了。'),
+    Translated.authored('Recipes and bottles that name it stay — they simply stop resolving its name.'),
+    also: {
+      'ja': 'それを使うレシピや瓶は残ります。名前が引けなくなるだけです。',
+      'zh-HK': '用佢嘅配方同酒瓶會留低，只係認唔出個名。',
+      'zh-TW': '用它的配方和酒瓶會留著，只是認不出名字了。',
+    },
+  );
+
   /// The action that renames, describes, recolours or reorders a folder.
   static const packEdit = CopyLine.withLanguages(
     Translated.authored('改这个文件夹'),
@@ -2700,6 +2821,97 @@ abstract final class Copy {
       'zh-HK': '裏頭嘅配方會留低，只係唔再屬於任何文件夾。',
       'zh-TW': '裡頭的配方會留下，只是不再屬於任何資料夾。',
     },
+  );
+
+  /// The button that enters selection mode.
+  ///
+  /// **A long press could not be both "edit this" and "start selecting".** The owner's rule is that a long press on a
+  /// collection or a folder opens its own editor -- renaming it, giving it a colour, putting it in order -- and that
+  /// had to keep working, which left selection with no way in. So it gets one of its own, next to the two buttons that
+  /// already make things.
+  static const collectStart = CopyLine.withLanguages(
+    Translated.authored('挑几个'),
+    Translated.authored('Select'),
+    voices: {
+      Voice.heiress: '想挑几杯收在一起？按这个，本小姐看着。',
+      Voice.heiressJa: 'いくつか選んでまとめたいの？これを押しなさい。',
+      Voice.minister: 'To gather several, begin here.',
+    },
+    also: {'ja': 'いくつか選ぶ', 'zh-HK': '揀幾個', 'zh-TW': '挑幾個'},
+  );
+
+  /// The action that gathers what is ticked into one collection.
+  static const collectMake = CopyLine.withLanguages(
+    Translated.authored('收成一个合集'),
+    Translated.authored('Collect these'),
+    voices: {
+      Voice.heiress: '挑好了？那就收成一个合集吧。',
+      Voice.heiressJa: '選んだ？なら一つにまとめなさい。',
+      Voice.minister: 'Then let them be gathered into one.',
+    },
+    also: {'ja': '一つにまとめる', 'zh-HK': '收成一個合集', 'zh-TW': '收成一個合集'},
+  );
+
+  /// How many things are ticked, said as a count.
+  static String collectCount(int n) => CopyLine.withLanguages(
+    Translated.authored('选了 $n 个'),
+    Translated.authored('$n selected'),
+    also: {'ja': '$n 個選択', 'zh-HK': '揀咗 $n 個', 'zh-TW': '選了 $n 個'},
+  ).textFor('zh-Hans');
+
+  /// The action that leaves the selection without doing anything with it.
+  static const collectCancel = CopyLine.withLanguages(
+    Translated.authored('算了'),
+    Translated.authored('Cancel'),
+    also: {'ja': 'やめる', 'zh-HK': '算數', 'zh-TW': '算了'},
+  );
+
+  /// What is said while a selection is being made, so a reader knows what the gesture did.
+  static const collectHint = CopyLine.withLanguages(
+    Translated.authored('长按可以再选，点一下也能选。'),
+    Translated.authored('Long press or tap to add more.'),
+    also: {
+      'ja': '長押しかタップで足せます。',
+      'zh-HK': '長按可以再揀，㩒一下都得。',
+      'zh-TW': '長按可以再選，點一下也能選。',
+    },
+  );
+
+  /// The heading of the sheet that chooses where the selection goes.
+  static const collectWhere = CopyLine.withLanguages(
+    Translated.authored('收进哪个合集'),
+    Translated.authored('Which collection'),
+    voices: {
+      Voice.heiress: '收进哪个？新开一个也行。',
+      Voice.heiressJa: 'どれに入れる？新しく作ってもいいわ。',
+      Voice.minister: 'Into which, or into a new one.',
+    },
+    also: {'ja': 'どのコレクションへ', 'zh-HK': '收進邊個合集', 'zh-TW': '收進哪個合集'},
+  );
+
+  /// The action that makes the selection into a **new** collection, which the owner asked be customisable.
+  static const collectIntoNew = CopyLine.withLanguages(
+    Translated.authored('新开一个合集'),
+    Translated.authored('A new collection'),
+    also: {'ja': '新しいコレクション', 'zh-HK': '新開一個合集', 'zh-TW': '新開一個合集'},
+  );
+
+  /// The button that opens the pack editor, now that a long press means "select".
+  ///
+  /// **The gesture had to move.** A long press is what the owner asked for selecting, and a folder row cannot mean
+  /// both "start a selection" and "rename me" -- so renaming gets a control of its own, which is what it should have
+  /// had: a gesture that does two things is a gesture a reader cannot predict.
+  static const packEditShort = CopyLine.withLanguages(
+    Translated.authored('改名'),
+    Translated.authored('Rename'),
+    also: {'ja': '名前を変える', 'zh-HK': '改名', 'zh-TW': '改名'},
+  );
+
+  /// The action that removes a recipe the reader wrote.
+  static const recipeDelete = CopyLine.withLanguages(
+    Translated.authored('不要这条配方了'),
+    Translated.authored('Remove this recipe'),
+    also: {'ja': 'このレシピを消す', 'zh-HK': '唔要呢條配方', 'zh-TW': '不要這條配方'},
   );
 
   /// The button that starts a collection.

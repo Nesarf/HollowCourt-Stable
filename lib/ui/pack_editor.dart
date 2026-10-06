@@ -28,6 +28,11 @@ Future<void> showPackEditor(
 }) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
+  // **The framework's own switch, and the reason two earlier attempts changed nothing**: a modal bottom sheet
+  // *removes* the top padding from the MediaQuery it passes down, so reading `MediaQuery.paddingOf` inside one
+  // reports zero -- and both a manual `system.top` and a `SafeArea` were reading a value that had deliberately
+  // been emptied. `useSafeArea` hands it back.
+  useSafeArea: true,
   backgroundColor: HollowPalette.surface,
   builder: (_) => _PackEditor(packKey: packKey, derivedLabel: derivedLabel, existing: existing),
 );
@@ -117,10 +122,12 @@ class _PackEditorState extends ConsumerState<_PackEditor> {
 
   @override
   Widget build(BuildContext context) {
-    // **Both insets on both ends.** viewInsets is the keyboard and padding is the system's bars; the bottom is what
-    // fixed the save button being under the navigation bar, and **the top is still open** -- two attempts to clear
-    // the status bar changed nothing because MediaQuery.padding reports zero inside these sheets. This sheet uses the
-    // same arrangement as its two neighbours so that when the cause is found, it is fixed once rather than thrice.
+    // **Both insets on both ends, and the top half comes from `useSafeArea` rather than from here.** viewInsets is
+    // the keyboard and padding is the system's bars, and the bottom is what keeps the save button off the navigation
+    // bar. **The top cannot be read here at all**: `showModalBottomSheet` applies
+    // `MediaQuery.removePadding(removeTop: true)` unless `useSafeArea` is set, which is why two attempts to add
+    // `paddingOf(context).top` by hand changed nothing -- they were reading a value the framework had deliberately
+    // emptied. See the `useSafeArea` argument on this sheet's own `showModalBottomSheet`.
     final insets = MediaQuery.viewInsetsOf(context);
     final system = MediaQuery.paddingOf(context);
     return Padding(

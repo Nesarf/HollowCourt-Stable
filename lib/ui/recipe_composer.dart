@@ -33,6 +33,11 @@ Future<void> showRecipeComposer(
 }) => showModalBottomSheet<void>(
   context: context,
   isScrollControlled: true,
+  // **The framework's own switch, and the reason two earlier attempts changed nothing**: a modal bottom sheet
+  // *removes* the top padding from the MediaQuery it passes down, so reading `MediaQuery.paddingOf` inside one
+  // reports zero -- and both a manual `system.top` and a `SafeArea` were reading a value that had deliberately
+  // been emptied. `useSafeArea` hands it back.
+  useSafeArea: true,
   backgroundColor: HollowPalette.surface,
   builder: (_) => _RecipeComposer(ingredients: ingredients, editing: editing),
 );
@@ -226,6 +231,18 @@ class _RecipeComposerState extends ConsumerState<_RecipeComposer> {
     Navigator.of(context).pop();
   }
 
+  /// Removes the recipe being edited.
+  ///
+  /// **Only reachable while editing**, and the id it removes is the one the record came with -- so this cannot take
+  /// out a library recipe even if a caller passed one, because `RecipeAuthoredEvents.removed` refuses an id that is
+  /// not `own.`-prefixed, which is where that guard belongs.
+  Future<void> _remove() async {
+    final editing = widget.editing;
+    if (editing == null) return;
+    await ref.read(cellarProvider.notifier).removeAuthoredRecipe(editing.id);
+    if (mounted) Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     // **Both insets, and the second one was missing in the first version.** `viewInsets` is the keyboard;
@@ -309,13 +326,26 @@ class _RecipeComposerState extends ConsumerState<_RecipeComposer> {
               ),
             ],
             const SizedBox(height: 18),
-            Align(
-              alignment: Alignment.centerRight,
-              child: FilledButton(
-                key: const ValueKey('recipe-save'),
-                onPressed: _save,
-                child: Text(ref.copy(Copy.recipeSave)),
-              ),
+            Row(
+              children: [
+                // **Only while editing**, because there is nothing to remove until a record exists -- and a delete
+                // button on a form the reader has not filled in yet is a way to lose work they have not finished.
+                if (widget.editing != null)
+                  TextButton(
+                    key: const ValueKey('recipe-delete'),
+                    onPressed: _remove,
+                    child: Text(
+                      ref.copy(Copy.recipeDelete),
+                      style: HollowType.caption.copyWith(color: HollowPalette.rose),
+                    ),
+                  ),
+                const Spacer(),
+                FilledButton(
+                  key: const ValueKey('recipe-save'),
+                  onPressed: _save,
+                  child: Text(ref.copy(Copy.recipeSave)),
+                ),
+              ],
             ),
           ],
         ),
