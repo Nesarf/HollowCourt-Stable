@@ -2592,6 +2592,116 @@ abstract final class Copy {
     Translated.authored('配方'),
     Translated.authored('Recipes'), also: {'ja': 'レシピ', 'zh-HK': '配方', 'zh-TW': '配方'});
 
+  /// The action that renames, describes, recolours or reorders a folder.
+  static const packEdit = CopyLine.withLanguages(
+    Translated.authored('改这个文件夹'),
+    Translated.authored('Edit this folder'),
+    also: {'ja': 'このフォルダを編集', 'zh-HK': '改呢個文件夾', 'zh-TW': '改這個資料夾'},
+  );
+
+  static const packOwnTitle = CopyLine.withLanguages(
+    Translated.authored('自己的一个文件夹'),
+    Translated.authored('A folder of your own'),
+    voices: {
+      Voice.heiress: '你自己的文件夹。叫什么、什么颜色，你说了算。',
+      Voice.heiressJa: 'あなた自身のフォルダ。名前も色もあなたが決めるの。',
+      Voice.minister: 'A folder of one\'s own. Its name and its colour are one\'s to decide.',
+    },
+    also: {'ja': 'あなた自身のフォルダ', 'zh-HK': '自己嘅一個文件夾', 'zh-TW': '自己的一個資料夾'},
+  );
+
+  static const packFieldName = CopyLine.withLanguages(
+    Translated.authored('名字'),
+    Translated.authored('Name'),
+    also: {'ja': '名前', 'zh-HK': '名字', 'zh-TW': '名字'},
+  );
+
+  /// What the note field says under itself.
+  ///
+  /// **「里头是谁的」 is section 15's rule rather than a nicety**: a 友方酒 folder has to be able to say *whose* it
+  /// is, and a note is where that goes.
+  static const packFieldNote = CopyLine.withLanguages(
+    Translated.authored('备注'),
+    Translated.authored('Note'),
+    also: {'ja': 'メモ', 'zh-HK': '備註', 'zh-TW': '備註'},
+  );
+
+  static const packNoteHint = CopyLine.withLanguages(
+    Translated.authored('里头是谁的酒、什么时候收的，随便写。'),
+    Translated.authored('Whose drinks these are, or when you got them.'),
+    also: {
+      'ja': '誰のお酒か、いつ手に入れたか、自由に。',
+      'zh-HK': '裏頭係邊個嘅酒、幾時收嘅，隨便寫。',
+      'zh-TW': '裡頭是誰的酒、什麼時候收的，隨便寫。',
+    },
+  );
+
+  static const packFieldAccent = CopyLine.withLanguages(
+    Translated.authored('颜色'),
+    Translated.authored('Colour'),
+    also: {'ja': '色', 'zh-HK': '顏色', 'zh-TW': '顏色'},
+  );
+
+  /// What the accent field says under itself, and it says the format because that is what it accepts.
+  static const packAccentHint = CopyLine.withLanguages(
+    Translated.authored('#RRGGBB，不填就用界面的金色。'),
+    Translated.authored('#RRGGBB, or leave it empty for the interface gold.'),
+    also: {
+      'ja': '#RRGGBB、空なら画面の金色。',
+      'zh-HK': '#RRGGBB，唔填就用界面嘅金色。',
+      'zh-TW': '#RRGGBB，不填就用介面的金色。',
+    },
+  );
+
+  static const packFieldOrder = CopyLine.withLanguages(
+    Translated.authored('排位'),
+    Translated.authored('Order'),
+    also: {'ja': '並び順', 'zh-HK': '排位', 'zh-TW': '排序'},
+  );
+
+  static const packSave = CopyLine.withLanguages(
+    Translated.authored('收下'),
+    Translated.authored('Keep it'),
+    also: {'ja': '收める', 'zh-HK': '收下', 'zh-TW': '收下'},
+  );
+
+  /// Shown when the reader presses save with no name.
+  static const packNeedsName = CopyLine.withLanguages(
+    Translated.authored('得有个名字。'),
+    Translated.authored('It needs a name.'),
+    also: {'ja': '名前が要ります。', 'zh-HK': '要有個名。', 'zh-TW': '要有個名字。'},
+  );
+
+  /// Shown when a colour is not a colour, so the reader knows the field was the problem.
+  static const packAccentNotAColour = CopyLine.withLanguages(
+    Translated.authored('颜色要写成 #RRGGBB，比如 #8A5A32。'),
+    Translated.authored('A colour is written #RRGGBB, like #8A5A32.'),
+    also: {
+      'ja': '色は #RRGGBB の形で、たとえば #8A5A32。',
+      'zh-HK': '顏色要寫成 #RRGGBB，例如 #8A5A32。',
+      'zh-TW': '顏色要寫成 #RRGGBB，例如 #8A5A32。',
+    },
+  );
+
+  /// The action that removes a folder the reader made.
+  static const packDelete = CopyLine.withLanguages(
+    Translated.authored('不要这个文件夹了'),
+    Translated.authored('Remove this folder'),
+    also: {'ja': 'このフォルダを消す', 'zh-HK': '唔要呢個文件夾', 'zh-TW': '不要這個資料夾'},
+  );
+
+  /// **What the proposal asks be asked rather than done silently**, in its own words: *"deleting one asks what
+  /// happens to its recipes rather than silently orphaning them."*
+  static const packDeleteKeepsRecipes = CopyLine.withLanguages(
+    Translated.authored('里头的配方会留下，只是不再属于任何文件夹。'),
+    Translated.authored('The recipes stay — they simply belong to no folder.'),
+    also: {
+      'ja': '中のレシピは残ります。どのフォルダにも属さなくなるだけです。',
+      'zh-HK': '裏頭嘅配方會留低，只係唔再屬於任何文件夾。',
+      'zh-TW': '裡頭的配方會留下，只是不再屬於任何資料夾。',
+    },
+  );
+
   /// The button that starts a collection.
   ///
   /// **A noun with a verb under it** would be two controls; this is one, and the sheet that opens is where the name

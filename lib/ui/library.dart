@@ -7,6 +7,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../data/folder_styles.dart';
 import '../data/event_log.dart';
 import '../data/seed/seed_codec.dart';
 import '../data/seed/seed_repository.dart';
@@ -14,6 +15,7 @@ import '../domain/events/event.dart';
 import '../domain/events/hlc.dart';
 import '../domain/events/overlay.dart';
 import '../domain/events/price.dart';
+import '../domain/events/court_pack.dart';
 import '../domain/events/ingredient_authoring.dart';
 import '../domain/events/recipe_authoring.dart';
 import '../domain/events/recipe_collection.dart';
@@ -23,6 +25,7 @@ import '../domain/matching/match_score.dart';
 import '../domain/model/recipe.dart';
 import '../domain/model/ingredient_book.dart';
 import '../domain/model/recipe_book.dart';
+import '../domain/model/pack_book.dart';
 import '../domain/model/recipe_collections.dart';
 import '../domain/overlay/overlay.dart';
 import '../domain/overlay/overlay_key.dart';
@@ -85,6 +88,7 @@ final class Cellar {
     required this.authoredRecipes,
     required this.authoredIngredients,
     required this.collections,
+    required this.packs,
   });
 
   /// Both folds of one log, taken together.
@@ -101,6 +105,7 @@ final class Cellar {
     authoredRecipes: log.authoredRecipes,
     authoredIngredients: log.authoredIngredients,
     collections: log.collections,
+    packs: log.packs,
   );
 
   final EventLog log;
@@ -138,6 +143,13 @@ final class Cellar {
   /// it against a stale recipe list would show a collection containing drinks that no longer exist -- or, worse,
   /// hide drinks that do. Folded from the same log, that cannot happen.
   final RecipeCollections collections;
+
+  /// The packs the reader defined, folded from the same log.
+  ///
+  /// **Beside the collections and not inside them.** A collection is a reader saying *these belong together*, and a
+  /// pack is *where this recipe came from* -- so a recipe is in exactly one pack and may be in many collections, which
+  /// is why one is a field on the recipe and the other is a list of members.
+  final PackBook packs;
 
   /// A bottle is on the shelf when its sku has remaining volume.
   ///
@@ -240,7 +252,38 @@ class CellarNotifier extends AsyncNotifier<Cellar> {
   Future<Cellar> build() async {
     final log = _log ?? await _open();
     _log = log;
+    await _migrateFolderStylesOnce(log);
     return Cellar.of(log);
+  }
+
+  /// **Reads the old folder-style file into the log, once.**
+  ///
+  /// Until 2026-10-01 a reader's own name for a folder lived in `folder_styles.json`, a file beside the cellar -- so
+  /// it never synced while every other kind of reader-written thing did. The recipes page now reads the log instead,
+  /// which fixes that going forward and **would silently drop the names already in that file** if nothing read them.
+  ///
+  /// **It runs only when the log holds no packs at all**, which is what makes it idempotent without a flag: once
+  /// anything has been migrated the fold is no longer empty, and a reader who deletes every pack on purpose does not
+  /// get their old ones resurrected from a file they cannot see. **The file is left on disk on purpose** -- it is the
+  /// only copy of those names until this has run at least once, and a migration that deletes its source has no
+  /// second chance.
+  ///
+  /// A failure here is swallowed: an unreadable style file means there was nothing to migrate, and refusing to open
+  /// the cellar over it would trade folder names for the whole library.
+  Future<void> _migrateFolderStylesOnce(EventLog log) async {
+    if (log.packs.isNotEmpty) return;
+    try {
+      final directory = await getApplicationSupportDirectory();
+      final file = File('${directory.path}${Platform.pathSeparator}folder_styles.json');
+      if (!file.existsSync()) return;
+      final styles = await FolderStyleStore(file).read();
+      for (final entry in styles.entries) {
+        final pack = PackBook.packFromStyle(entry.key, entry.value);
+        await log.record((hlc) => CourtPackEvents.set(hlc: hlc, pack: pack));
+      }
+    } on Object {
+      // Nothing to migrate, or nothing readable. See above.
+    }
   }
 
   Future<EventLog> _open() async {
@@ -664,6 +707,43 @@ class CellarNotifier extends AsyncNotifier<Cellar> {
     await current.log.record(
       (hlc) => RecipeCollectionEvents.folderShown(hlc: hlc, folderKey: folderKey),
     );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Defines a pack, and re-folds.
+  ///
+  /// **The write path `docs/proposal-recipes-and-packs.md` §1 asked for**, and it is deliberately the same shape as
+  /// [authorRecipe], [authorIngredient] and [setCollection]: an operation is appended and the state is whatever the
+  /// operations add up to.
+  ///
+  /// **The whole record is written rather than a change to it**, so a device folding the log arrives at a state
+  /// instead of at a state that depends on whether it saw every earlier event -- which is what makes a rename travel
+  /// between devices, and is the point of the family existing at all.
+  ///
+  /// Returns the problem when the pack is refused, and null when it was written, so a screen can say which thing was
+  /// wrong. `official` is refused here because it ships with the build.
+  Future<PackProblem?> definePack(CourtPack pack) async {
+    final current = state.value;
+    if (current == null) return null;
+    final problems = validatePack(pack);
+    if (problems.isNotEmpty) return problems.first;
+    await current.log.record((hlc) => CourtPackEvents.set(hlc: hlc, pack: pack));
+    state = AsyncData(Cellar.of(current.log));
+    return null;
+  }
+
+  /// Removes a pack the reader defined.
+  ///
+  /// **Recorded rather than forgotten**, like the other removals: one that left no event would be undone by the next
+  /// sync. `CourtPackEvents.removed` refuses `official`, so the shipped pack cannot be deleted by calling this.
+  ///
+  /// **What happens to the recipes in it is the caller's decision, not this method's.** The proposal asks that
+  /// deleting a pack *"asks what happens to its recipes rather than silently orphaning them"*, and a store cannot ask
+  /// -- so this removes the pack and the screen is where the question is put.
+  Future<void> removePack(String id) async {
+    final current = state.value;
+    if (current == null) return;
+    await current.log.record((hlc) => CourtPackEvents.removed(hlc: hlc, id: id));
     state = AsyncData(Cellar.of(current.log));
   }
 

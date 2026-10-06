@@ -5,6 +5,7 @@ import '../domain/events/event.dart';
 import '../domain/events/hlc.dart';
 import '../domain/events/shelf.dart';
 import '../domain/model/ingredient_book.dart';
+import '../domain/model/pack_book.dart';
 import '../domain/model/recipe_book.dart';
 import '../domain/model/recipe_collections.dart';
 import '../domain/events/stock.dart';
@@ -254,6 +255,13 @@ final class EventLog implements SyncSource {
   /// belong together" in a way no derivation can guess. The hidden-derived-folder set rides here too, because a
   /// reader hiding a folder and a reader making one are the same kind of statement about the same screen.
   RecipeCollections get collections => RecipeCollections.of(_events);
+
+  /// The packs the reader defined, folded from the same events.
+  ///
+  /// **A seventh fold of one log**, and the one that fixes an inconsistency rather than adding a feature: a recipe's
+  /// folder name lived in `folder_styles.json` *beside* the log, so it never synced while everything else did.
+  /// `PackBook` argues it; `docs/proposal-recipes-and-packs.md` §1 is where the owner asked for it.
+  PackBook get packs => PackBook.of(_events);
 
   /// Where the bottles stand, folded from the same events.
   ///

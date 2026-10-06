@@ -4,13 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/matching/match_score.dart';
 import '../domain/model/item_role.dart';
 import '../domain/model/recipe.dart';
-import '../data/folder_styles.dart';
 import '../domain/model/recipe_folders.dart';
 import 'hollow_glyphs.dart';
-import 'folder_providers.dart';
 import '../domain/overlay/overlay_key.dart';
 import '../ui/library.dart';
 import '../ui/liquid_swatch.dart';
+import 'pack_editor.dart';
 import 'prism.dart';
 import 'seed_names.dart';
 import '../ui/theme.dart';
@@ -101,7 +100,11 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
     // is an override on top of it, so a reader who has renamed nothing sees exactly the folders they saw before
     // -- and one who has renamed something keeps their words across updates, because the styles live beside the
     // cellar rather than inside the build.
-    final styles = ref.watch(folderStylesProvider).asData?.value ?? const <String, FolderStyle>{};
+    // **The reader's own names and order, read off the log rather than beside it.** Until 2026-10-01 these came from
+    // `folder_styles.json`, a file next to the cellar -- so a folder renamed on one device kept its old name on the
+    // other while every other kind of reader-written thing travelled. `PackBook.asFolderStyles` is the migration, and
+    // it is a view rather than a second record because a pack carries the same four fields.
+    final styles = state.packs.asFolderStyles;
     final folders = foldersOf(visible.map((e) => e.recipe));
     folders.sort((a, b) {
       final ao = styles[a.key]?.order;
@@ -261,6 +264,16 @@ class _RecipesPageState extends ConsumerState<RecipesPage> {
                     subtitle: Text(
                       style?.note ?? '${folder.count}',
                       style: HollowType.caption,
+                    ),
+                    // **The way in to naming a folder, and it is a long press rather than a button.** The gesture a
+                    // reader already uses to act on a list row, and the alternative -- a control on every row --
+                    // would put a rename affordance on a list whose whole job is to be scanned for a drink. A pack the
+                    // reader made is edited here; one nobody has named yet becomes theirs the moment they do.
+                    onLongPress: () => showPackEditor(
+                      context,
+                      packKey: folder.key,
+                      derivedLabel: folder.label,
+                      existing: state.packs[folder.key],
                     ),
                         onTap: () => setState(() => _openFolder = folder.key),
                       ),
