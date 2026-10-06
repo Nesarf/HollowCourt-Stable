@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hollow_court/data/event_log.dart';
+
 import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/events/stock.dart';
@@ -11,6 +11,7 @@ import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:hollow_court/ui/cellar_page.dart';
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/ui/theme.dart';
+import '../support/open_logs.dart';
 
 /// Hands the page a real cellar, built outside the test's fake clock.
 ///
@@ -21,7 +22,7 @@ Future<Cellar> _cellar(WidgetTester tester, List<Event> events) async {
   final cellar = await tester.runAsync(() async {
     final dir = Directory.systemTemp.createTempSync('hollow_cellar_test');
     var clock = 1000;
-    final log = await EventLog.open(
+    final log = await openTracked(
       file: File('${dir.path}${Platform.pathSeparator}cellar.ndjson'),
       nodeId: 'test',
       nowMillis: () => clock++,
@@ -86,6 +87,9 @@ Future<void> _pump(WidgetTester tester, Cellar cellar) async {
 }
 
 void main() {
+  tearDown(() async {
+  await releaseCellars();});
+
   testWidgets('a fresh cellar says there is nothing to count', (tester) async {
     await _pump(tester, await _cellar(tester, const []));
 

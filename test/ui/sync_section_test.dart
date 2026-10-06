@@ -26,6 +26,7 @@ import 'package:hollow_court/domain/sync/scope.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:hollow_court/ui/sync_section.dart';
 import 'package:hollow_court/ui/theme.dart';
+import '../support/open_logs.dart';
 
 /// A service that does what a test tells it to, and remembers what it was asked.
 ///
@@ -184,7 +185,7 @@ Future<Cellar> _cellar(WidgetTester tester, [List<Event> events = const []]) asy
   final cellar = await tester.runAsync(() async {
     final dir = Directory.systemTemp.createTempSync('hollow_sync_ui');
     var clock = 1000;
-    final log = await EventLog.open(
+    final log = await openTracked(
       file: File('${dir.path}${Platform.pathSeparator}cellar.ndjson'),
       nodeId: 'test',
       nowMillis: () => clock++,
@@ -263,6 +264,9 @@ Future<_FakeSync> _pump(
 }
 
 void main() {
+  tearDown(() async {
+  await releaseCellars();});
+
   group('the section offers both directions before anything is started', () {
     testWidgets('it shows a way to host and a field to join', (tester) async {
       await _pump(tester, cellar: await _cellar(tester));

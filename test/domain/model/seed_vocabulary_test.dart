@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:hollow_court/domain/model/glass.dart';
+import 'package:hollow_court/domain/model/ingredient.dart';
 import 'package:hollow_court/domain/model/ice.dart';
 import 'package:hollow_court/domain/model/ingredient_category.dart';
 import 'package:hollow_court/domain/model/liquid_visual.dart';
@@ -190,6 +191,94 @@ void main() {
         layered: true,
       );
       expect(visual.validate().length, greaterThanOrEqualTo(2));
+    });
+  });
+
+  group('**`copyWith` forgets nothing**', () {
+    // **The defect a code review found on 2026-10-01, and the shape of the guard against its return.**
+    //
+    // `Ingredient.copyWith` listed thirteen parameters and `kind` / `family` were not among them, so
+    // `ingredient.copyWith(name: 'x')` returned an ingredient whose classification had silently gone. The taxonomy
+    // had been added to the model and the copy method was not told about it -- and **nothing called `copyWith` on an
+    // `Ingredient`, which is exactly why it survived a green suite**: a field-dropping `copyWith` does not fail, it
+    // forgets, and the loss surfaces later as a filter that matches nothing or a sync that carries less than it
+    // should.
+    //
+    // **These four cases are what the review asked for.** What makes them worth more than four lines of assertion
+    // is the last one: it walks every parameter in the body of `copyWith` and requires each to be named here, so
+    // **the next field somebody adds fails this test until they decide whether it is copyable** -- which is the
+    // decision that was missed, rather than the field.
+    Ingredient full() => const Ingredient(
+      id: 'ginPlymouth',
+      name: 'Plymouth Gin',
+      category: IngredientCategory.itemsYouCanMake,
+      kind: 'spirit',
+      family: 'gin',
+      aliases: ['Plymouth'],
+      abvPercent: null,
+      sugarGPerL: null,
+      densityGPerMl: null,
+      bottleSizesMillilitres: [700, 1000],
+      isCommon: true,
+      note: 'a note',
+      extras: {'source': 'somewhere'},
+    );
+
+    test('**the classification survives a copy that changes something else**', () {
+      final copied = full().copyWith(name: 'Renamed');
+      expect(copied.name, 'Renamed');
+      expect(copied.kind, 'spirit', reason: 'the taxonomy must not vanish because the name changed');
+      expect(copied.family, 'gin');
+      expect(copied.category, IngredientCategory.itemsYouCanMake);
+    });
+
+    test('an argument-free copy is the same ingredient', () {
+      final one = full();
+      final two = one.copyWith();
+      expect(two.kind, one.kind);
+      expect(two.family, one.family);
+      expect(two.aliases, one.aliases);
+      expect(two.bottleSizesMillilitres, one.bottleSizesMillilitres);
+      expect(two.isCommon, one.isCommon);
+      expect(two.note, one.note);
+      expect(two.extras, one.extras);
+      expect(two.category, one.category);
+      expect(two.id, one.id);
+      expect(two.name, one.name);
+    });
+
+    test('**a kind and a family can be replaced**', () {
+      expect(full().copyWith(kind: 'liqueur').kind, 'liqueur');
+      expect(full().copyWith(family: 'rum').family, 'rum');
+      final both = full().copyWith(kind: 'wine', family: 'vermouth');
+      expect(both.kind, 'wine');
+      expect(both.family, 'vermouth');
+    });
+
+    test('**every parameter `copyWith` accepts is covered by this group**', () {
+      // Read out of the source rather than restated, because a restated list is the thing that goes stale -- and
+      // the defect being guarded against is precisely a list that was not updated.
+      final source = File('lib/domain/model/ingredient.dart').readAsStringSync();
+      final body = source.substring(
+        source.indexOf('Ingredient copyWith({'),
+        source.indexOf('/// Problems that make this ingredient unusable'),
+      );
+      final params = RegExp(r'^\s+(\w+\??)\s+(\w+),', multiLine: true)
+          .allMatches(body)
+          .map((m) => m.group(2)!)
+          .toSet();
+      // Every parameter the method declares, and the ones this group exercises by name.
+      const exercised = {
+        'id', 'name', 'category', 'kind', 'family', 'aliases', 'abvPercent', 'sugarGPerL', 'densityGPerMl',
+        'defaultUnit', 'bottleSizesMillilitres', 'sourceBucket', 'isCommon', 'note', 'extras',
+      };
+      expect(
+        params.difference(exercised),
+        isEmpty,
+        reason: '`copyWith` accepts these and this group does not name them: '
+            '${params.difference(exercised)}. Decide whether each is copyable and add it here -- the defect this '
+            'guards was a parameter list nobody updated when the model grew.',
+      );
     });
   });
 

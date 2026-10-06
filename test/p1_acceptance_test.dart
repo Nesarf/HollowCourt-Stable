@@ -20,6 +20,7 @@ import 'package:hollow_court/domain/model/drink.dart';
 import 'package:hollow_court/domain/model/recipe.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:test/test.dart';
+import 'support/open_logs.dart';
 
 // Our own library, not the harvested seed: that artifact and its sources were deleted on 2026-09-22.
 const artifactPath = 'data/drinks/library.json';
@@ -46,13 +47,14 @@ void main() {
   setUp(() {
     dir = Directory.systemTemp.createTempSync('hollow-court-p1');
   });
-  tearDown(() {
+  tearDown(() async {
+    await releaseCellars();
     if (dir.existsSync()) dir.deleteSync(recursive: true);
   });
 
   Future<EventLog> cellar() {
     var now = 1000;
-    return EventLog.open(
+    return openTracked(
       file: File('${dir.path}${Platform.pathSeparator}cellar.ndjson'),
       nodeId: 'test',
       nowMillis: () => now++,
@@ -230,7 +232,7 @@ void main() {
 
       // ------------------------------------------------- and it survived disk
       // The log is a file, so the state above is what a second launch reads.
-      final reopened = await EventLog.open(
+      final reopened = await openTracked(
         file: File('${dir.path}${Platform.pathSeparator}cellar.ndjson'),
         nodeId: 'test',
         nowMillis: () => 99999,

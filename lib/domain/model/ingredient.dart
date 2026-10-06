@@ -113,6 +113,13 @@ final class Ingredient {
     String? id,
     String? name,
     IngredientCategory? category,
+    // **And the two that were missing, which a code review found on 2026-10-01.** `kind` and `family` were added
+    // when the taxonomy split, and `copyWith` was not told about them -- so `ingredient.copyWith(name: 'x')`
+    // returned an ingredient whose classification had silently gone. Nothing calls this on an `Ingredient` today,
+    // which is exactly why it survived: **a field-dropping `copyWith` does not fail, it forgets**, and the loss
+    // shows up later as a filter that matches nothing or a sync that carries less than it should.
+    String? kind,
+    String? family,
     List<String>? aliases,
     Rational? abvPercent,
     Rational? sugarGPerL,
@@ -127,6 +134,8 @@ final class Ingredient {
     id: id ?? this.id,
     name: name ?? this.name,
     category: category ?? this.category,
+    kind: kind ?? this.kind,
+    family: family ?? this.family,
     aliases: aliases ?? this.aliases,
     abvPercent: abvPercent ?? this.abvPercent,
     sugarGPerL: sugarGPerL ?? this.sugarGPerL,

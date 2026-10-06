@@ -214,10 +214,21 @@ final class PairingTicket {
 /// than in the widget, one place can be tested, and the minimum is a rule rather than a hint.
 ///
 /// **Six is the floor because that is what this project was already generating.** `mintPairingToken` picks six
-/// characters from this alphabet -- thirty-one to the sixth, about nine hundred million, which its own comment
-/// calls "small against a determined attacker and entirely adequate against the threat section 10.3 names:
-/// somebody else on the café's wifi". A reader who chooses their own token may choose a *better* one; the rule
-/// is only that they may not choose a worse one than the generator's default.
+/// characters from this alphabet, and **the space is `32^6 = 1,073,741,824`** -- measured rather than asserted, and
+/// the number this comment used to get wrong.
+///
+/// **It said "thirty-one to the sixth, about nine hundred million" until 2026-10-01, and a code review caught it.**
+/// `32^6` is 887,503,681 more than `31^6`, so the sentence understated the space by nearly two hundred million --
+/// in a comment whose whole job is to say how hard the token is to guess. **The alphabet is thirty-two symbols**
+/// (`ABCDEFGHJKLMNPQRSTUVWXYZ23456789`, no repeats, no `I`/`O`/`0`/`1`), which is what the generator's own code
+/// indexes with `& 0x1f`; nothing in the arithmetic was ever wrong, only the description of it.
+///
+/// The generator's own comment still calls six characters "small against a determined attacker and entirely
+/// adequate against the threat section 10.3 names: somebody else on the café's wifi", and that judgement is
+/// unchanged -- it rests on the threat rather than on the exact width. **What is not acceptable is a security
+/// number that a reader cannot trust**, which is why the test above this comment computes it instead of restating
+/// it. A reader who chooses their own token may choose a *better* one; the rule is only that they may not choose a
+/// worse one than the generator's default.
 ///
 /// **Eight is the ceiling because eighteen minus ten is eight.** The owner bounded the whole code at eighteen
 /// characters, ten of them carry the address, and the rest is the token.

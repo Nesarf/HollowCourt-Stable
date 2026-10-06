@@ -1,21 +1,109 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:hollow_court/data/event_log.dart';
+import 'package:hollow_court/data/event_store.dart';
 import 'package:hollow_court/domain/events/event.dart';
+import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:test/test.dart';
 
+/// **The silent conflict a code review found on 2026-10-01.**
+///
+/// A reading is an event's identity, and the log deduplicated on the reading alone -- so two *different* events
+/// sharing one reading meant the second was discarded without a word. That is not deduplication, it is a silent data
+/// conflict, and it is the shape this project has already been caught by twice this session: **something that looks
+/// like a safety measure and is actually a place a claim disappears.**
 void main() {
   late Directory dir;
 
+  /// Logs this test opened, so `tearDown` can give their claims up.
+  ///
+  /// **A lock lives while its handle does**, and the operating system only drops it when the process ends -- which is
+  /// right for the application and wrong for a test that removes its temporary directory afterwards. Without this
+  /// the deletion fails with `errno = 32`, naming a directory rather than a lock, which is where the first attempt
+  /// at this spent its time.
+  final opened = <EventLog>[];
+
+  Future<EventLog> track(EventLog log) async {
+    opened.add(log);
+    return log;
+  }
+
   setUp(() => dir = Directory.systemTemp.createTempSync('hollow_court_log'));
-  tearDown(() {
+  // **`tearDown` has to be asynchronous and has to await the releases.** `close()` returns a `Future`, so the first
+  // version fired them off and deleted the directory immediately -- a race, and one the file system lost: the lock
+  // file was still open when `deleteSync` ran. Awaiting is the whole fix.
+  tearDown(() async {
+    for (final log in opened) {
+      await log.close();
+    }
+    opened.clear();
     if (dir.existsSync()) dir.deleteSync(recursive: true);
   });
 
-  File fileFor(String name) =>
-      File('${dir.path}${Platform.pathSeparator}$name.ndjson');
+  /// Writes raw lines, so a test can put a log on disk that no honest writer would produce.
+  void writeLines(File file, List<String> lines) =>
+      file.writeAsStringSync('${lines.join('\n')}\n');
+
+  group('**a repeated reading is a duplicate only when it is the same event**', () {
+    /// One line, in the format the store actually reads.
+    String lineFor(String type, Map<String, Object?> data) =>
+        jsonEncode(Event(hlc: Hlc(physicalMillis: 1000, counter: 0, nodeId: 'a'), type: type, data: data).toJson());
+
+    test('the same event twice is a duplicate, and stays quiet', () async {
+      final file = File('${Directory.systemTemp.createTempSync('conflict').path}/same.ndjson');
+      final line = lineFor('stock.bottle.added', const {'bottleId': 'b1'});
+      writeLines(file, [line, line]);
+
+      final log = await track(await EventLog.open(file: file, nodeId: 'test', nowMillis: () => 2000));
+      final report = log.openReport;
+      expect(report.events, 1, reason: 'one event, however many times it was written');
+      expect(report.duplicates, 1);
+      expect(
+        report.defects.where((d) => d.kind == LogDefectKind.identityConflict),
+        isEmpty,
+        reason: 'an identical repeated line is a duplicate, not a conflict',
+      );
+    });
+
+    test('**two different events on one reading are reported rather than swallowed**', () async {
+      final file = File('${Directory.systemTemp.createTempSync('conflict').path}/conflict.ndjson');
+      writeLines(file, [
+        lineFor('stock.bottle.added', const {'bottleId': 'b1'}),
+        // Same reading, different type and payload: a genuinely different claim about the cellar.
+        lineFor('stock.bottle.removed', const {'bottleId': 'b2'}),
+      ]);
+
+      final log = await track(await EventLog.open(file: file, nodeId: 'test', nowMillis: () => 2000));
+      final report = log.openReport;
+      expect(report.events, 1, reason: 'one reading can only be one event');
+      final conflicts = report.defects.where((d) => d.kind == LogDefectKind.identityConflict).toList();
+      expect(conflicts, hasLength(1), reason: 'a conflict must be reported, not counted as a duplicate');
+      // **And the report says which two, and which was kept** -- a reader looking at this has to be able to tell.
+      expect(conflicts.single.reason, contains('stock.bottle.removed'));
+      expect(conflicts.single.reason, contains('stock.bottle.added'));
+      expect(log.events.single.type, 'stock.bottle.added', reason: 'the first reading is the one kept');
+    });
+
+    test('a conflict is not counted as a duplicate', () async {
+      // The two counters answer different questions, and conflating them is how a conflict stayed invisible: the
+      // report used to say "2 duplicates" for what was one duplicate and one disagreement.
+      final file = File('${Directory.systemTemp.createTempSync('conflict').path}/both.ndjson');
+      writeLines(file, [
+        lineFor('stock.bottle.added', const {'bottleId': 'b1'}),
+        lineFor('stock.bottle.added', const {'bottleId': 'b1'}),
+        lineFor('stock.bottle.removed', const {'bottleId': 'b2'}),
+      ]);
+
+      final log = await track(await EventLog.open(file: file, nodeId: 'test', nowMillis: () => 2000));
+      expect(log.openReport.duplicates, 1);
+      expect(log.openReport.defects.where((d) => d.kind == LogDefectKind.identityConflict), hasLength(1));
+    });
+  });
+
+  File fileFor(String name) => File('${dir.path}${Platform.pathSeparator}$name.ndjson');
 
   /// Opens a device whose wall clock starts at [startMillis].
   Future<EventLog> device(String name, {int startMillis = 1000}) {
@@ -24,7 +112,7 @@ void main() {
       file: fileFor(name),
       nodeId: name,
       nowMillis: () => now,
-    );
+    ).then(track);
   }
 
   StockLedger stockOf(EventLog log) => log.stock;
@@ -81,10 +169,8 @@ void main() {
 
       // Same device, but its wall clock has been moved backwards since -- a
       // wrong timezone, a corrected clock, a dead CMOS battery.
-      final second = await EventLog.open(
-        file: fileFor('a'),
-        nodeId: 'a',
-        nowMillis: () => 1000,
+      final second = await track(
+        await EventLog.open(file: fileFor('a'), nodeId: 'a', nowMillis: () => 1000),
       );
       final next = second.clock.next();
 

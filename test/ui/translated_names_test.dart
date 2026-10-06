@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hollow_court/data/event_log.dart';
+
 import 'package:hollow_court/data/seed/seed_repository.dart';
 import 'package:hollow_court/domain/model/glass.dart';
 import 'package:hollow_court/domain/model/ice.dart';
@@ -19,6 +19,7 @@ import 'package:hollow_court/ui/recipes_page.dart';
 import 'package:hollow_court/ui/seed_names.dart';
 import 'package:hollow_court/ui/stock_page.dart';
 import 'package:hollow_court/ui/theme.dart';
+import '../support/open_logs.dart';
 
 /// **The names the reader sees are the names in their language** -- the reported defect, as tests.
 ///
@@ -78,7 +79,8 @@ void main() {
   late Directory home;
 
   setUp(() => home = Directory.systemTemp.createTempSync('hollow-names'));
-  tearDown(() {
+  tearDown(() async {
+    await releaseCellars();
     if (home.existsSync()) home.deleteSync(recursive: true);
   });
 
@@ -86,7 +88,7 @@ void main() {
   /// records, because a widget test's fake clock never completes a real file write.
   Future<Cellar> cellar(WidgetTester tester) async {
     final built = await tester.runAsync(() async {
-      final log = await EventLog.open(
+      final log = await openTracked(
         file: File('${home.path}${Platform.pathSeparator}cellar.ndjson'),
         nodeId: 'test',
         nowMillis: () => 1000,

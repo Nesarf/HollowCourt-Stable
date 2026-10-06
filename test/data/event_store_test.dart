@@ -7,6 +7,15 @@ import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:test/test.dart';
 
+/// **The durability contract, as far as it can be tested from inside the process.**
+///
+/// `docs/durability.md` states what an append guarantees and what it does not. **What it does not guarantee -- that
+/// the bytes reached the platter -- cannot be tested here**, because Dart exposes no `fsync` and a test cannot cut
+/// the power. What *can* be tested is the bound the design actually rests on: **an append that returned is in the
+/// file, so a restart finds it**, and **a crash mid-append costs at most the tail and never the file**.
+///
+/// Writing the contract down and then asserting the half of it that is assertable is the point; the other half is
+/// stated as a limit in that document rather than left for a reader to assume.
 void main() {
   late Directory dir;
   late File file;
@@ -36,6 +45,23 @@ void main() {
         expect(result.events, isEmpty);
         expect(result.defects, isEmpty);
       });
+    });
+
+    test('**an append that returned is in the file, not in a buffer**', () async {
+      // **Half of the durability contract, and the half that is assertable** (`docs/durability.md`). What this can
+      // show is that `flush()` really did push the bytes out of Dart: a *second handle* over the same path, which
+      // shares no buffer with the appender, sees the line. What it cannot show is that the bytes reached the
+      // platter -- Dart exposes no `fsync`, and a test cannot cut the power.
+      await store.append([added('b1', 1)]);
+
+      // A fresh read through a different handle, which is what a restart does.
+      final reread = await EventStore(file).read();
+      expect(reread.events, hasLength(1));
+      expect(
+        file.readAsStringSync().endsWith('\n'),
+        isTrue,
+        reason: 'a complete line ends in a newline, which is what tells the next open nothing was torn',
+      );
     });
 
     test('round-trips events', () async {

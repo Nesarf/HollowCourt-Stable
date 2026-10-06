@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hollow_court/data/event_log.dart';
+
 import 'package:hollow_court/domain/overlay/overlay.dart' as domain;
 import 'package:hollow_court/domain/pricing/price.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:hollow_court/ui/library.dart';
+import '../support/open_logs.dart';
 
 /// Correcting a bottle that is already on the shelf.
 ///
@@ -19,7 +20,8 @@ void main() {
   late Directory home;
 
   setUp(() => home = Directory.systemTemp.createTempSync('hollow-edit-bottle'));
-  tearDown(() {
+  tearDown(() async {
+    await releaseCellars();
     if (home.existsSync()) home.deleteSync(recursive: true);
   });
 
@@ -32,7 +34,7 @@ void main() {
     Volume? bottleVolume,
   }) async {
     var clock = 1000;
-    final log = await EventLog.open(
+    final log = await openTracked(
       file: File('${home.path}${Platform.pathSeparator}cellar.ndjson'),
       nodeId: 'test',
       nowMillis: () => clock++,

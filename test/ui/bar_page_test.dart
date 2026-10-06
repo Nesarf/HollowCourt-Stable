@@ -13,6 +13,7 @@ import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:hollow_court/ui/bar_page.dart';
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/ui/theme.dart';
+import '../support/open_logs.dart';
 
 /// The cellar, built OUTSIDE the test's fake clock.
 ///
@@ -33,7 +34,7 @@ Future<Cellar> _cellarFor(WidgetTester tester, List<Event> events) async =>
 Future<Cellar> _cellarWith(List<Event> events) async {
   final dir = Directory.systemTemp.createTempSync('hollow_bar_test');
   var clock = 1000;
-  final log = await EventLog.open(
+  final log = await openTracked(
     file: File('${dir.path}${Platform.pathSeparator}cellar.ndjson'),
     nodeId: 'test',
     nowMillis: () => clock++,
@@ -151,6 +152,9 @@ Future<void> _pumpBar(WidgetTester tester, Cellar cellar) async {
 }
 
 void main() {
+  tearDown(() async {
+  await releaseCellars();});
+
   testWidgets('a bottle with stock and no position is still in the box',
       (tester) async {
     final cellar = await _cellarFor(tester, [_added('b1', 'gin', 700)]);

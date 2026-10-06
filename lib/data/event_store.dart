@@ -20,6 +20,20 @@ enum LogDefectKind {
   /// This is corruption or a bug, and unlike [tornTail] it is not something a
   /// rewrite will fix. Reported so it can be seen.
   unreadable,
+
+  /// **Two different events claiming the same clock reading.**
+  ///
+  /// A reading is an event's identity, so two events carrying one reading are two events the log cannot tell apart.
+  /// **The first is kept and this one is refused**, because keeping both would mean two events with one identity and
+  /// every fold would have to guess which; but refusing it *silently* would be worse, which is what happened until
+  /// 2026-10-01 -- a code review found that the deduplication compared readings alone and dropped the second event
+  /// without a word.
+  ///
+  /// This is not a crash during an append and not corruption of a line: the bytes are fine. It is what a bugged
+  /// client, a peer that reuses readings, or a hand-edited artifact produces, and the reason it is reported rather
+  /// than tolerated is that **the two payloads are genuinely different claims about the cellar** and the log has to
+  /// say so instead of picking one in silence.
+  identityConflict,
 }
 
 /// One line the reader could not turn into an [Event].

@@ -6,6 +6,7 @@ import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/overlay/overlay_key.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:test/test.dart';
+import '../support/open_logs.dart';
 
 /// Section 8's headline promise, with evidence rather than reasoning: **the seed is
 /// replaced wholesale on update and the overlay never is.**
@@ -19,7 +20,8 @@ void main() {
   late Directory dir;
 
   setUp(() => dir = Directory.systemTemp.createTempSync('hollow_court_overlay'));
-  tearDown(() {
+  tearDown(() async {
+    await releaseCellars();
     if (dir.existsSync()) dir.deleteSync(recursive: true);
   });
 
@@ -29,7 +31,7 @@ void main() {
   /// Opens a device whose wall clock starts at [startMillis].
   Future<EventLog> device(String name, {int startMillis = 1000}) {
     final now = startMillis;
-    return EventLog.open(
+    return openTracked(
       file: fileFor(name),
       nodeId: name,
       nowMillis: () => now,

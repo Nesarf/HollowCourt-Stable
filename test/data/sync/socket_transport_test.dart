@@ -7,6 +7,7 @@ import 'package:hollow_court/domain/sync/exchange.dart';
 import 'package:hollow_court/domain/sync/pairing.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:test/test.dart';
+import '../../support/open_logs.dart';
 
 /// Everything below talks over a real loopback socket.
 ///
@@ -26,6 +27,7 @@ void main() {
   setUp(() => home = Directory.systemTemp.createTempSync('hollow-sync'));
 
   tearDown(() async {
+    await releaseCellars();
     for (final server in servers) {
       await server.close();
     }
@@ -33,7 +35,7 @@ void main() {
     if (home.existsSync()) home.deleteSync(recursive: true);
   });
 
-  Future<EventLog> cellar(String node, {int startMillis = 1000}) => EventLog.open(
+  Future<EventLog> cellar(String node, {int startMillis = 1000}) => openTracked(
     file: File('${home.path}/$node.ndjson'),
     nodeId: node,
     nowMillis: () => startMillis,

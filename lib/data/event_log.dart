@@ -11,6 +11,7 @@ import '../domain/events/stock.dart';
 import '../domain/overlay/overlay.dart';
 import '../domain/sync/exchange.dart';
 import '../domain/sync/pairing.dart';
+import 'cellar_lock.dart';
 import 'event_store.dart';
 
 /// What happened when the log was opened.
@@ -46,6 +47,7 @@ final class EventLog implements SyncSource {
     required this.clock,
     required List<Event> events,
     required this.openReport,
+    required this.lock,
   }) : _events = events,
        _byClock = {for (final event in events) event.hlc: event};
 
@@ -54,6 +56,14 @@ final class EventLog implements SyncSource {
 
   /// What the last open found, including anything it could not read.
   final OpenReport openReport;
+
+  /// **The cross-process claim on this cellar, held for the process's life.**
+  ///
+  /// A field rather than a local, because the lock lives while its handle does: a local that went out of scope would
+  /// release the claim the instant `open` returned, which is the same as never having taken it. Production never
+  /// calls [close] -- the operating system drops the lock when the process ends, including when it crashes, which is
+  /// the case the design cares about.
+  final CellarLock lock;
 
   final List<Event> _events;
   final Map<Hlc, Event> _byClock;
@@ -95,21 +105,59 @@ final class EventLog implements SyncSource {
     required String nodeId,
     required int Function() nowMillis,
   }) async {
+    // **One writer per cellar, across processes.** `_writeTail` serialises this instance's writes and says nothing
+    // about the file; two processes appending to and rewriting one log would leave a file that is neither version's.
+    // `CellarLock` argues the whole thing.
+    //
+    // **Taken before anything is read**, which matters: the reader rewrites the log when it discards a torn tail, so
+    // a second instance must be refused *before* it decides the file is damaged. A lock taken after the read would
+    // let both processes agree the tail is torn and both truncate.
+    final lock = await CellarLock.acquire(file.path);
+
     final store = EventStore(file);
     final result = await store.read();
 
     // Dedupe on the way in. The ledger would tolerate a repeated reading
     // anyway, but two copies in the log means two copies to send on every sync
     // for the rest of the cellar's life.
-    final seen = <Hlc>{};
+    //
+    // **A repeated reading is only a duplicate when it is the *same event*, and telling the two apart is what a
+    // code review found missing on 2026-10-01.** The first version kept a `Set<Hlc>` and dropped anything whose
+    // reading it had already seen -- so two *different* events sharing one reading meant the second was discarded
+    // without a word. That is not deduplication, it is **a silent data conflict**: a bugged client, a peer that
+    // reuses readings, or a hand-edited artifact could hide a claim about the cellar by colliding with an existing
+    // reading, and nothing anywhere would say so.
+    //
+    // **The fix costs nothing, because `Event` already compares by value** -- reading, type and payload -- so the
+    // question "same reading, same event?" was always answerable and simply was never asked. An equal event is a
+    // duplicate; an unequal one is kept out of the log *and reported*, which is the difference between tolerating a
+    // conflict and hiding it.
+    final seen = <Hlc, Event>{};
     final events = <Event>[];
     var duplicates = 0;
+    final conflicts = <LogDefect>[];
     for (final event in result.events) {
-      if (seen.add(event.hlc)) {
+      final first = seen[event.hlc];
+      if (first == null) {
+        seen[event.hlc] = event;
         events.add(event);
-      } else {
-        duplicates++;
+        continue;
       }
+      if (first == event) {
+        duplicates++;
+        continue;
+      }
+      conflicts.add(
+        LogDefect(
+          kind: LogDefectKind.identityConflict,
+          // **Zero, because this is not a line's fault.** Both events are readable and each is fine on its own; what
+          // is wrong is that they claim the same identity, and no single line number says that.
+          lineNumber: 0,
+          reason: 'two different events carry the reading ${event.hlc}; '
+              'kept the ${first.type}, refused the ${event.type}',
+          snippet: event.type,
+        ),
+      );
     }
 
     events.sort((a, b) => a.hlc.compareTo(b.hlc));
@@ -129,10 +177,23 @@ final class EventLog implements SyncSource {
       openReport: OpenReport(
         events: events.length,
         duplicates: duplicates,
-        defects: result.defects,
+        defects: [...result.defects, ...conflicts],
       ),
+      lock: lock,
     );
   }
+
+  /// Gives up the cross-process claim on this cellar.
+  ///
+  /// **Tests need this; production does not.** A lock lives while its handle does, and production holds one until the
+  /// process ends -- which is what survives a crash, and the operating system does the dropping. But a test that
+  /// opens a cellar and then removes its temporary directory finds the directory will not go: the lock file is still
+  /// open, and the failure is `errno = 32` from `deleteSync`, naming a directory rather than a lock. **That is how
+  /// the need for this was found**, after 64 tests failed with an error that pointed at the wrong thing.
+  ///
+  /// Safe to call more than once, and safe on a reentrant claim -- which releases nothing, because the handle
+  /// belongs to whoever took it.
+  Future<void> close() => lock.release();
 
   /// Every event, in clock order.
   List<Event> get events => List.unmodifiable(_events);

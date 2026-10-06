@@ -30,7 +30,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hollow_court/data/event_log.dart';
 import 'package:hollow_court/domain/sync/link_mode.dart';
 import 'package:hollow_court/data/sync/sync_service.dart';
 import 'package:hollow_court/domain/events/stock.dart';
@@ -45,6 +44,7 @@ import 'package:hollow_court/domain/sync/discovery.dart';
 import 'package:hollow_court/ui/discovery_providers.dart';
 import 'package:hollow_court/ui/sync_identity.dart';
 import 'package:hollow_court/ui/sync_section.dart';
+import 'support/open_logs.dart';
 
 /// A `WireChannel` that is one end of a pair of crossed stream controllers.
 final class _MemoryChannel implements WireChannel {
@@ -448,7 +448,8 @@ void main() {
   setUp(() {
     dir = Directory.systemTemp.createTempSync('hollow-court-p3');
   });
-  tearDown(() {
+  tearDown(() async {
+    await releaseCellars();
     if (dir.existsSync()) dir.deleteSync(recursive: true);
   });
 
@@ -457,14 +458,14 @@ void main() {
 
     // Two logs, on disk, with different node ids -- which is what makes the merge a merge.
     final hostLog = (await tester.runAsync(
-      () => EventLog.open(
+      () => openTracked(
         file: File('${dir.path}${Platform.pathSeparator}host.ndjson'),
         nodeId: 'workstation',
         nowMillis: () => 1000,
       ),
     ))!;
     final guestLog = (await tester.runAsync(
-      () => EventLog.open(
+      () => openTracked(
         file: File('${dir.path}${Platform.pathSeparator}guest.ndjson'),
         nodeId: 'phone',
         nowMillis: () => 2000,
@@ -589,7 +590,7 @@ void main() {
 
     // Both directions were recorded, not just merged in memory: the state above survives a re-read.
     final rereadHost = await tester.runAsync(
-      () => EventLog.open(
+      () => openTracked(
         file: File('${dir.path}${Platform.pathSeparator}host.ndjson'),
         nodeId: 'workstation',
         nowMillis: () => 3000,
@@ -604,7 +605,7 @@ void main() {
     // network and the one the socket layer turns into an outcome instead of an exception.
     final board = _Switchboard();
     final log = (await tester.runAsync(
-      () => EventLog.open(
+      () => openTracked(
         file: File('${dir.path}${Platform.pathSeparator}solo.ndjson'),
         nodeId: 'phone',
         nowMillis: () => 1000,
@@ -655,14 +656,14 @@ void main() {
       (tester) async {
     final board = _Switchboard();
     final hostLog = (await tester.runAsync(
-      () => EventLog.open(
+      () => openTracked(
         file: File('${dir.path}${Platform.pathSeparator}tap-host.ndjson'),
         nodeId: 'workstation',
         nowMillis: () => 1000,
       ),
     ))!;
     final guestLog = (await tester.runAsync(
-      () => EventLog.open(
+      () => openTracked(
         file: File('${dir.path}${Platform.pathSeparator}tap-guest.ndjson'),
         nodeId: 'phone',
         nowMillis: () => 2000,

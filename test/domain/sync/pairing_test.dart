@@ -296,4 +296,29 @@ void main() {
       expect(PairingTicket.parse('not a code at all'), isNull);
     });
   });
+
+  group('**the token space is computed, not described**', () {
+    // **A code review found the arithmetic wrong in the comment on 2026-10-01**: it said `31^6` where the alphabet
+    // has thirty-two symbols, understating the space by nearly two hundred million in a sentence about how hard a
+    // secret is to guess. Nothing about the generator was wrong -- only the number written beside it -- and the
+    // lesson is the one this project keeps learning: **a claim in a comment is not measured unless something
+    // measures it.** So this computes the space from the alphabet itself.
+    test('the alphabet has no repeats and no confusable characters', () {
+      final alphabet = ShareCode.alphabet;
+      expect(alphabet.length, 32, reason: 'the code indexes it with `& 0x1f`, which is five bits');
+      expect(alphabet.split('').toSet().length, alphabet.length, reason: 'a repeated symbol would silently shrink the space');
+      for (final confusable in ['I', 'O', '0', '1']) {
+        expect(alphabet.contains(confusable), isFalse, reason: '$confusable is left out because a person reads it aloud');
+      }
+      expect(alphabet, matches(RegExp(r'^[A-Z2-9]+$')), reason: 'uppercase and digits, so a code can be read aloud');
+    });
+
+    test('**the space is 32^6, which is what the comment now says**', () {
+      final space = BigInt.from(ShareCode.alphabet.length).pow(6);
+      expect(space, BigInt.from(1073741824));
+      // And the number the comment used to give, so the correction is visible in the test rather than only in prose.
+      expect(BigInt.from(31).pow(6), BigInt.from(887503681));
+      expect(space - BigInt.from(31).pow(6), BigInt.from(186238143));
+    });
+  });
 }

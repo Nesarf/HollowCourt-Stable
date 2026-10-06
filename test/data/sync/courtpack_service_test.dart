@@ -6,6 +6,7 @@ import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/sync/courtpack.dart';
 import 'package:test/test.dart';
+import '../../support/open_logs.dart';
 
 /// **The carrier that needs no network: a file.**
 ///
@@ -16,11 +17,12 @@ void main() {
   late Directory dir;
 
   setUp(() => dir = Directory.systemTemp.createTempSync('hollow-pack'));
-  tearDown(() {
+  tearDown(() async {
+    await releaseCellars();
     if (dir.existsSync()) dir.deleteSync(recursive: true);
   });
 
-  Future<EventLog> logNamed(String node) async => EventLog.open(
+  Future<EventLog> logNamed(String node) async => openTracked(
     file: File('${dir.path}${Platform.pathSeparator}$node.ndjson'),
     nodeId: node,
     nowMillis: () => 1000,

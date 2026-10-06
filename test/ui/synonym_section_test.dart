@@ -3,25 +3,27 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hollow_court/data/event_log.dart';
+
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/ui/l10n/locale_providers.dart';
 import 'package:hollow_court/ui/l10n/locale_settings.dart';
 import 'package:hollow_court/ui/synonym_section.dart';
 import 'package:hollow_court/ui/theme.dart';
+import '../support/open_logs.dart';
 
 /// The bulk editor: it says what it understood before it saves, and it refuses to lose a line quietly.
 void main() {
   late Directory home;
 
   setUp(() => home = Directory.systemTemp.createTempSync('hollow-synonyms'));
-  tearDown(() {
+  tearDown(() async {
+    await releaseCellars();
     if (home.existsSync()) home.deleteSync(recursive: true);
   });
 
   Future<Cellar> cellar(WidgetTester tester) async {
     final built = await tester.runAsync(() async {
-      final log = await EventLog.open(
+      final log = await openTracked(
         file: File('${home.path}${Platform.pathSeparator}cellar.ndjson'),
         nodeId: 'test',
         nowMillis: () => 1000,

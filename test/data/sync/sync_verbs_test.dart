@@ -30,6 +30,7 @@ import 'package:hollow_court/domain/sync/exchange.dart';
 import 'package:hollow_court/domain/sync/pairing.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:test/test.dart';
+import '../../support/open_logs.dart';
 
 void main() {
   late Directory home;
@@ -41,6 +42,7 @@ void main() {
   setUp(() => home = Directory.systemTemp.createTempSync('hollow-verbs'));
 
   tearDown(() async {
+    await releaseCellars();
     for (final server in servers) {
       await server.close();
     }
@@ -50,7 +52,7 @@ void main() {
 
   Future<EventLog> cellar(String node) {
     ticks[node] = 1000;
-    return EventLog.open(
+    return openTracked(
       file: File('${home.path}/$node.ndjson'),
       nodeId: node,
       nowMillis: () => ticks[node] = ticks[node]! + 1,

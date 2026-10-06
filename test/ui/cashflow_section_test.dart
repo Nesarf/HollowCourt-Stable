@@ -7,13 +7,14 @@ import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/events/price.dart';
 import 'package:hollow_court/domain/pricing/cashflow.dart';
 import 'package:hollow_court/domain/pricing/price.dart';
-import 'package:hollow_court/data/event_log.dart';
+
 import 'package:hollow_court/ui/cash_settings.dart';
 import 'package:hollow_court/ui/cashflow_section.dart';
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/ui/money_text.dart';
 import 'package:hollow_court/ui/theme.dart';
 import 'package:hollow_court/ui/cashflow_providers.dart';
+import '../support/open_logs.dart';
 
 /// **The takings view, whose domain has existed since 2026-09-21 with nothing reading it.**
 ///
@@ -27,6 +28,10 @@ void main() {
     _fixture = await _build([('gin', 20000), ('vermouth', 10000)]);
     _emptyCellar = await _build(const []);
   });
+
+  tearDown(() async {
+
+  await releaseCellars();});
 
   group('the store', () {
     test('a deposit and a count survive a write and a read', () async {
@@ -276,7 +281,7 @@ late Cellar _emptyCellar;
 Future<Cellar> _build(List<(String, int)> purchases) async {
   final directory = Directory.systemTemp.createTempSync('cashflow_test');
   var clock = 1000;
-  final log = await EventLog.open(
+  final log = await openTracked(
     file: File('${directory.path}${Platform.pathSeparator}cellar.ndjson'),
     nodeId: 'test',
     nowMillis: () => clock++,

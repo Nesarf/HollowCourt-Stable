@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hollow_court/data/event_log.dart';
+
 import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/events/shelf.dart';
 import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:hollow_court/ui/library.dart';
+import '../support/open_logs.dart';
 
 /// The notifier's half of placing a bottle, on the real clock.
 ///
@@ -31,7 +32,7 @@ class _Seeded extends CellarNotifier {
 Future<(Cellar, ProviderContainer)> _open(List<Event> seed) async {
   final dir = Directory.systemTemp.createTempSync('hollow_placement_test');
   var clock = 1000;
-  final log = await EventLog.open(
+  final log = await openTracked(
     file: File('${dir.path}${Platform.pathSeparator}cellar.ndjson'),
     nodeId: 'test',
     nowMillis: () => clock++,
@@ -59,6 +60,9 @@ Iterable<Event> _placements(Cellar cellar) =>
     cellar.log.events.where((e) => e.type == ShelfEvent.bottlePlaced);
 
 void main() {
+  tearDown(() async {
+  await releaseCellars();});
+
   test('placing a bottle appends one event and re-folds', () async {
     final (cellar, container) = await _open([_added('b1', 'gin', 700)]);
 
