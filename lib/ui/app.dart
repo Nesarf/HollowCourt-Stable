@@ -180,15 +180,15 @@ class _ShellState extends ConsumerState<_Shell> {
                   children: [
                     const StockPage(),
                     const RecipesPage(),
+                    // **In the bar's order, not the order things were built in.** The stack's index is the bar's
+                    // index, so a child out of place shows one tab's page under another tab's name -- and nothing
+                    // would fail, because both pages draw.
+                    const IngredientsPage(),
                     // Section 12.3 gives this tab statistics, a consumption curve, value, a
                     // shopping list, devices and sync. Only the value exists, so the page
                     // shows the value and keeps the sentence naming the rest -- replacing
                     // the placeholder outright would claim six features and ship one.
                     const CellarPage(),
-                    // **原料, the fifth tab, by the owner's instruction of 2026-10-06.** It had been a section at
-                    // the bottom of 设置 and is a peer of the other three rather than part of an application's own
-                    // settings: a reader manages what they own, and the bar is where what they own lives.
-                    const IngredientsPage(),
                     // Section 12.3's fifth tab, asked for by the owner: the application's own
                     // settings, which were a section at the bottom of 记录. Devices and sync stay
                     // there -- see `SettingsPage` for where the line is and why.
@@ -221,8 +221,8 @@ class _ShellState extends ConsumerState<_Shell> {
         destinations: hollowDestinations([
           Copy.tabStock.textFor(locale.primaryTag),
           Copy.tabRecipes.textFor(locale.primaryTag),
-          Copy.tabCellar.textFor(locale.primaryTag),
           Copy.tabIngredients.textFor(locale.primaryTag),
+          Copy.tabCellar.textFor(locale.primaryTag),
           Copy.tabSettings.textFor(locale.primaryTag),
         ]),
         ),
