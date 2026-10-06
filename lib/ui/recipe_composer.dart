@@ -234,8 +234,20 @@ class _RecipeComposerState extends ConsumerState<_RecipeComposer> {
     // `_AddBottleSheet` has carried both since it was written, and this is the same arrangement.
     final insets = MediaQuery.viewInsetsOf(context);
     final system = MediaQuery.paddingOf(context);
-    return Padding(
-      padding: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20 + insets.bottom + system.bottom),
+    return SafeArea(
+      top: true,
+      bottom: false,
+      child: Padding(
+      // **Both insets on both ends.** The bottom was fixed first -- clearing only the keyboard left the save
+      // button under the navigation bar -- and **the top was still hard-coded at 20**, which a screenshot from a
+      // handset showed as the sheet's title running into the status bar. A modal sheet draws over everything,
+      // so it has to clear the system's bars itself rather than relying on the page underneath to have done it.
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: 20 + insets.bottom + system.bottom,
+      ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -307,6 +319,7 @@ class _RecipeComposerState extends ConsumerState<_RecipeComposer> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
