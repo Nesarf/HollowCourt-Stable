@@ -74,12 +74,15 @@ class DualCopyText extends ConsumerWidget {
     // **One watch, where there used to be two.** The voice was a display setting and had to be selected
     // narrowly so that a font-size change did not repaint every sentence in the application; now it arrives
     // with the language, and every field of this object changes the text this widget draws.
-    final voice = settings.voice;
+    //
+    // **One per line, since 2026-10-08.** `present` resolves the two lines separately, so a reader may have
+    // 伊丽莎白 above and Yes, Minister below -- which is the whole point of the pair being a pair.
     final shown = line.present(
       locale: settings.primaryTag,
       secondLocale: settings.secondaryTag,
       dualCopy: ref.watch(dualCopyProvider),
-      voice: voice,
+      voice: settings.primaryVoice,
+      secondVoice: settings.secondaryVoice,
     );
     final primary = Text(
       shown.primary,

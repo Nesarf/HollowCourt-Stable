@@ -149,6 +149,11 @@ if [ -z "$APK_VERSION" ]; then
 fi
 echo "== artifact versionName: $APK_VERSION (pubspec build-name $VERSION) =="
 
+# The marker lives where this project keeps its temporary files, and it is removed on the way out.
+RUN_STAMP="${TMPDIR:-/e/DaShaoHuo/cache/tmp}/hollow-court-build-started-$$"
+touch "$RUN_STAMP"
+RUN_STARTED_MARKER="$RUN_STAMP"
+trap 'rm -f "$RUN_STAMP"' EXIT INT TERM
 mkdir -p "$OUT_DIR"
 # The previous files **of this same version** go first, whatever shape they were: a universal APK left
 # beside a new per-ABI set is an artifact whose name says "release" and whose contents are the old build.
@@ -163,6 +168,26 @@ rm -f "$OUT_DIR"/hollow-court-"$APK_VERSION"-*.apk
 for receipt in "$OUT_DIR"/hollow-court-"$APK_VERSION"-*.apk.commit; do
   [ -f "$receipt" ] || continue
   [ -f "${receipt%.commit}" ] || rm -f "$receipt"
+done
+
+# **And a guard against a stale file this round would otherwise be blamed for.**
+#
+# The cleanup above removes artifacts whose *name* matches this round's, and the name is read out of the built APK's
+# `versionName` -- so a round whose `versionName` differs from an earlier one leaves the earlier files in place and
+# the bundle holds two APKs that both look current. **That is not hypothetical**: on 2026-10-06 an attempt at passing
+# a fuller `--build-name` produced `1.0.0.48000-J1407b-FFF8E7` while the settled form produced `1.0.0.48000`, so
+# `hollow-court-1.0.0.48000-arm64-v8a.apk` and `hollow-court-1.0.0-J1407b-FFF8E7.48000-arm64-v8a.apk` sat side by
+# side -- and **the older one was installed by hand and tested, which is a whole round of work spent on the wrong
+# binary.** Nothing failed; the build printed the commit it had built from and the artifact looked like every other.
+#
+# The check is about *age* rather than about names, because names are what stopped being reliable.
+for stale in "$OUT_DIR"/hollow-court-*"$BUILD_NUMBER"*.apk; do
+  [ -f "$stale" ] || continue
+  if [ "$stale" -ot "$RUN_STARTED_MARKER" ]; then
+    echo "build.sh: $stale names this round ($BUILD_NUMBER) but was not produced by it" >&2
+    echo "          it is from an earlier build under a different versionName; delete it or rename it." >&2
+    exit 1
+  fi
 done
 
 # ---- the checks that must run on every file this script produces -------------------------

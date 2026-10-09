@@ -97,6 +97,32 @@ case "$MSI_VERSION" in
 esac
 MSI_WIN="$(cygpath -w "$OUT_DIR/hollow-court-$MSI_VERSION.msi")"
 
+# **The check that the echo below used to be.**
+#
+# The two numbers live in different files -- the display version in `pubspec.yaml`, the installer's product version in
+# `hollow-court.wxs` -- and **only a person moving both keeps them together**. On 2026-10-06 pubspec went to 48000 and
+# the `.wxs` stayed at 3939, and the build *printed* both on one line, which is how it was noticed. **Printing is not
+# a check**: it was noticed because somebody read the output, and the next round's reader may not.
+#
+# Why a mismatch matters more than a wrong filename: **Windows Installer compares the product version**, so an MSI
+# registering 3939 against an installed 48000 is a *downgrade* -- it may refuse, or repair, rather than install. The
+# artifact looks current (the application inside it displays the new version) while the installer believes it is older
+# than what is on the machine, and **the build reports success either way.**
+#
+# The rule is that the installer's version **ends with the pubspec build number**, because Windows Installer compares
+# only three fields and ignores a fourth: pubspec's `1.0.0+48000` becomes `1.0.48000`.
+case "$MSI_VERSION" in
+  *".$BUILD_NUMBER")
+    : ;;
+  *)
+    echo "build.sh: the installer version and the pubspec build number disagree." >&2
+    echo "          hollow-court.wxs says  $MSI_VERSION" >&2
+    echo "          pubspec.yaml says       $VERSION+$BUILD_NUMBER  (so the .wxs needs 1.0.$BUILD_NUMBER)" >&2
+    echo "          Nothing has been built. **Bump Version and ProductCode together** -- the .wxs explains why, and" >&2
+    echo "          an installer that registers an older version than the machine holds is a downgrade." >&2
+    exit 1 ;;
+esac
+
 echo "== MSI product version: $MSI_VERSION (app display version $VERSION.$BUILD_NUMBER) =="
 echo "==> wix build  ($MSI_VERSION, release dir $RELEASE_DIR)"
 "$WIX" build "$WXS_WIN" \

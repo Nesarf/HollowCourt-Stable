@@ -36,6 +36,6 @@ extension CopyResolution on WidgetRef {
     // **The voice comes with the language now**, because they are one choice: 伊丽莎白 and 简中 are
     // both `zh-Hans` and differ only in the register, so a lookup that read them from two providers
     // could show one while the picker displayed the other.
-    return line.textFor(settings.primaryTag, voice: settings.voice);
+    return line.textFor(settings.primaryTag, voice: settings.primaryVoice);
   }
 }

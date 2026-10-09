@@ -283,6 +283,10 @@ final class CopyLine {
     String? locale,
     String? secondLocale,
     Voice voice = Voice.plain,
+    // **The second line's own register, and it is not [voice].** One field could not say which line a voice belonged
+    // to, which is what left the second line with five languages and none of the three voices -- reported from
+    // Windows on 2026-10-08. Defaulting to [Voice.plain] keeps every existing caller working unchanged.
+    Voice secondVoice = Voice.plain,
   }) {
     // **The reader's locale decides the first line, and it is the whole point of the change.** Until
     // 2026-09-22 this method drew `primary.text` regardless of what settings said, so the language picker
@@ -295,9 +299,12 @@ final class CopyLine {
     // following the reader's locale, a reader whose language *is* English got English twice: the same
     // sentence, printed small underneath itself. So the second line is looked up in the settings' secondary
     // language, and the authored English remains the fallback for a line nobody has translated.
+    //
+    // **And it reads in its own register now**: `textFor` falls back to the plain line when the chosen voice has
+    // nothing written for that language, which is the same chain the first line already relies on.
     final second = secondLocale == null || secondLocale == locale
         ? secondary?.text
-        : textFor(secondLocale, voice: voice);
+        : textFor(secondLocale, voice: secondVoice);
 
     if (!dualCopy) {
       return CopyPresentation._(first, null, SecondaryOmitted.bySetting);

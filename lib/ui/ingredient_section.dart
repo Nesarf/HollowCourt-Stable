@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/model/ingredient.dart';
 import 'ingredient_editor.dart';
 import 'l10n/copy_resolution.dart';
+import 'l10n/dual_copy.dart';
 import 'l10n/dual_copy_text.dart';
 import 'hollow_glyphs.dart';
 import 'library.dart';
@@ -16,19 +17,53 @@ import 'theme.dart';
 /// fold and its two write paths all landed before this, and nothing called them -- so a reader could not add the one
 /// ingredient their cellar is full of. That is what the family was built for, and this is where it is used.
 ///
-/// **It lives in 设置 rather than on a tab of its own**, because it is a thing a reader does occasionally rather than
-/// a place they work: the tabs are the cellar, the recipes, the record and the settings, and an ingredient list is
-/// maintenance rather than any of those four. It sits above the developer section, which is where the page puts the
-/// things that are about the application rather than about the cellar.
+/// **It is the 原料 tab**, by the owner's instruction of 2026-10-06: it had lived at the bottom of 设置, and it is a
+/// peer of 酒窖 / 配方 / 记录 rather than something buried in an application's settings. `ingredients_page.dart` is
+/// the frame and this is everything in it.
 ///
 /// **Both kinds are listed, and they are told apart.** The library's ingredients cannot be changed -- they are part
 /// of the build and their ids are not `own.`-prefixed -- so a reader looking for the one they added needs to be able
-/// to find it among 189 others, which is why the search field is there and why the reader's own sort to the top.
+/// to find it among 189 others, which is why the search field is there.
+///
+/// **And the 189 are drawn as two lists rather than one.** This is stage ① of `docs/catalogue-and-stock.md`, and the
+/// finding behind it is the owner's: *a warehouse keeps the supplier's catalogue and its own stock as two tables and
+/// never mixes them.* The tab mixed them -- it drew every ingredient the library carries, and a reader who actually
+/// manages twenty of them had to find those twenty inside it. Nothing about the data changed for this: the predicate
+/// already existed, as [Cellar.has], and the join is the one the shelf and every recipe score already use.
+///
+/// **So the reader's side is *what they hold a bottle of, plus what they wrote*, and the library's side is the
+/// rest.** The two sentences that name them are [Copy.ingredientMine] and [Copy.ingredientLibrary], and the search
+/// applies to both halves at once -- a reader who types a name is asking where a thing is, not which list it is in.
 class IngredientSection extends ConsumerStatefulWidget {
   const IngredientSection({super.key});
 
   @override
   ConsumerState<IngredientSection> createState() => _IngredientSectionState();
+}
+
+/// One ingredient, and which of the two lists it is in.
+///
+/// **The list is the held-ness, so nothing has to carry it.** A library ingredient reaches the reader's side only
+/// because a bottle of it stands on their shelf, and once it is there the partition has already said so -- a second
+/// flag would be the same fact written twice, and two copies of one fact is how the two come to disagree.
+///
+/// **What is *not* implied by the list is whether the card may be changed**, and that is [isMine]: a library
+/// ingredient the reader holds is theirs to look after and still not theirs to edit. That is the case the old
+/// single list could not express, and it is the one thing the split genuinely needs a flag for.
+class _Row {
+  const _Row({
+    required this.id,
+    required this.name,
+    required this.kind,
+    required this.aliases,
+    required this.isMine,
+  });
+
+  final String id;
+  final String name;
+  final String? kind;
+  final List<String> aliases;
+  final bool isMine;
 }
 
 class _IngredientSectionState extends ConsumerState<IngredientSection> {
@@ -40,50 +75,57 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
     super.dispose();
   }
 
-  /// Everything, with the reader's own first and both in a stable order.
-  List<AuthorIngredientView> _rows(List<Ingredient> library, Cellar cellar) {
+  /// The catalogue, cut in two along the line the reader's own shelf draws.
+  ///
+  /// **One pass, one predicate, and both lists come out of it.** `cellar.has` is asked once per library ingredient
+  /// rather than once per list, and the reader's authored ingredients are placed without being asked at all -- they
+  /// are theirs by construction, and a bottle of one would be a bottle whose sku happens to match an `own.` id.
+  ({List<_Row> mine, List<_Row> library}) _split(List<Ingredient> library, Cellar cellar) {
     final names = ref.read(seedNamesProvider).value;
     final locale = ref.read(seedNameLocaleProvider);
-    String shown(Ingredient i) => names?.nameFor(i.id, locale, fallback: i.name) ?? i.name;
 
-    final mine = [
+    final mine = <_Row>[
       for (final authored in cellar.authoredIngredients.all)
-        AuthorIngredientView(
+        _Row(
           id: authored.id,
           name: authored.name,
           kind: authored.category,
           aliases: authored.aliases,
-          note: authored.note,
           isMine: true,
         ),
     ];
-    final theirs = [
-      for (final ingredient in library)
-        AuthorIngredientView(
-          id: ingredient.id,
-          name: shown(ingredient),
-          // **The library's own two-level classification**, so a reader can see what a shipped ingredient is as well
-          // as what their own is -- and so that copying a kind for their own addition means copying a real one.
-          kind: ingredient.kind,
-          aliases: ingredient.aliases,
-          note: ingredient.note,
-          isMine: false,
-        ),
-    ];
-    mine.sort((a, b) => a.name.compareTo(b.name));
-    theirs.sort((a, b) => a.name.compareTo(b.name));
+    final theirs = <_Row>[];
+
+    for (final ingredient in library) {
+      final held = cellar.has(ingredient.id);
+      final row = _Row(
+        id: ingredient.id,
+        name: names?.nameFor(ingredient.id, locale, fallback: ingredient.name) ?? ingredient.name,
+        // **The library's own two-level classification**, so a reader can see what a shipped ingredient is as well
+        // as what their own is -- and so that copying a kind for their own addition means copying a real one.
+        kind: ingredient.kind,
+        aliases: ingredient.aliases,
+        isMine: false,
+      );
+      // **A held library ingredient joins the reader's side, and stays read-only.** It is on their shelf, so it is
+      // theirs to look after; it is still part of the build, so it is not theirs to change. Both facts survive,
+      // which is the reason the two flags are separate.
+      (held ? mine : theirs).add(row);
+    }
 
     final needle = _search.text.trim().toLowerCase();
-    bool matches(AuthorIngredientView v) =>
+    bool matches(_Row v) =>
         needle.isEmpty ||
         v.name.toLowerCase().contains(needle) ||
         (v.kind ?? '').toLowerCase().contains(needle) ||
         v.aliases.any((a) => a.toLowerCase().contains(needle));
 
-    return [
-      ...mine.where(matches),
-      ...theirs.where(matches),
-    ];
+    // **Alphabetical within each half rather than the reader's own first.** The two halves are already the
+    // grouping; sorting a half by anything else would make it two groups wearing one heading, and the glyph and the
+    // border already say which cards are editable.
+    mine.sort((a, b) => a.name.compareTo(b.name));
+    theirs.sort((a, b) => a.name.compareTo(b.name));
+    return (mine: mine.where(matches).toList(), library: theirs.where(matches).toList());
   }
 
   @override
@@ -92,8 +134,9 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
     final cellar = ref.watch(cellarProvider).value;
     if (seed == null || cellar == null) return const SizedBox.shrink();
 
-    final rows = _rows(seed.ingredients, cellar);
+    final split = _split(seed.ingredients, cellar);
     final mineCount = cellar.authoredIngredients.length;
+    final heldCount = split.mine.where((row) => !row.isMine).length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,9 +146,11 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
         DualCopyText(Copy.ingredientIntro, style: HollowType.caption),
         const SizedBox(height: 4),
         Text(
-          // **The two counts, said separately.** A reader who has added three of their own should be able to see that
-          // at a glance rather than count rows in a list of 189.
-          '$mineCount / ${seed.ingredients.length}',
+          // **The counts, said separately.** A reader who has added three of their own should be able to see that at
+          // a glance rather than count rows in a list of 189 -- and now that the two lists are drawn apart, the
+          // second number is the size of the catalogue *they are not looking after*, which is the fact the tab has
+          // never been able to state.
+          '$mineCount + $heldCount / ${seed.ingredients.length}',
           style: HollowType.numeric,
         ),
         const SizedBox(height: 14),
@@ -125,44 +170,128 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
             label: Text(ref.copy(Copy.ingredientAdd)),
           ),
         ),
-        const SizedBox(height: 12),
-        // **Two columns of cards, by the owner's instruction of 2026-10-06.** A list row carried one fact per line
-        // and this tab is a thing a reader scans rather than reads -- a name, what it is, and what else it is called
-        // fit in half a phone's width, so a single column spent the other half on nothing. `maxCrossAxisExtent`
-        // rather than a fixed count so that a tablet or a wide window gets more columns instead of two enormous
-        // ones, which is the failure mode of a hard-coded 2.
-        GridView.extent(
-          // **The grid does not scroll.** It is inside the page's own scroll view, so a scrollable here would be a
-          // second scroll region nested in the first -- the thing that makes a long list feel like it is fighting
-          // the finger. `shrinkWrap` measures the children and lets the page do the scrolling.
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          maxCrossAxisExtent: 260,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 2.6,
+        const SizedBox(height: 18),
+        _Group(
+          key: const ValueKey('ingredient-group-mine'),
+          heading: Copy.ingredientMine,
+          count: split.mine.length,
+          rows: split.mine,
+          emptyText: ref.copy(Copy.ingredientMineEmpty),
+          onOpen: (row) => showIngredientEditor(context, editing: _editing(row)),
+        ),
+        const SizedBox(height: 20),
+        _Group(
+          key: const ValueKey('ingredient-group-library'),
+          heading: Copy.ingredientLibrary,
+          count: split.library.length,
+          rows: split.library,
+          emptyText: ref.copy(Copy.ingredientLibraryEmpty),
+          onOpen: (row) => showIngredientEditor(context, editing: _editing(row)),
+        ),
+      ],
+    );
+  }
+
+  /// One row, as the editor expects it.
+  ///
+  /// **The conversion is here rather than on the row**, because `AuthorIngredientView` is the editor's shape and the
+  /// editor is not what this screen is organized around: the split is about which list a thing is in, and the
+  /// editor only ever asks whether it may be changed.
+  AuthorIngredientView _editing(_Row row) => AuthorIngredientView(
+    id: row.id,
+    name: row.name,
+    kind: row.kind,
+    aliases: row.aliases,
+    isMine: row.isMine,
+  );
+}
+
+/// One of the two lists: its heading, its count, and its cards.
+///
+/// **A group rather than two copies of the same column**, because the two differ in exactly three values -- the
+/// sentence, the rows, and what an empty half says -- and the grid's own arguments are the ones that were worth
+/// writing down once (see [_Grid]).
+class _Group extends StatelessWidget {
+  const _Group({
+    super.key,
+    required this.heading,
+    required this.count,
+    required this.rows,
+    required this.emptyText,
+    required this.onOpen,
+  });
+
+  final CopyLine heading;
+  final int count;
+  final List<_Row> rows;
+
+  /// What this half says when it has nothing in it -- resolved by the caller rather than here, because a stateless
+  /// group has no `ref` and the sentence is the only thing it needs from one.
+  final String emptyText;
+  final void Function(_Row) onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
           children: [
-            for (final row in rows)
-              _IngredientCard(
-                key: ValueKey('ingredient-${row.id}'),
-                row: row,
-                // **A long press, like a folder row**, and for the same reason: what a reader does to a card is a
-                // gesture rather than a control, and the grid is dense enough that a button on every card would be
-                // the loudest thing on the page. A library ingredient opens read-only rather than not at all, so a
-                // reader can see what it is and copy its kind for their own addition.
-                onOpen: () => showIngredientEditor(context, editing: row),
-              ),
+            Expanded(child: DualCopyText(heading, style: HollowType.title)),
+            const SizedBox(width: 8),
+            Text('$count', style: HollowType.numeric),
           ],
         ),
-        if (rows.isEmpty) ...[
-          const SizedBox(height: 8),
-          Text(ref.copy(Copy.stockNoVocabulary), style: HollowType.caption),
-        ],
+        const SizedBox(height: 8),
+        if (rows.isEmpty)
+          Text(emptyText, style: HollowType.caption)
+        else
+          _Grid(rows: rows, onOpen: onOpen),
       ],
     );
   }
 }
 
+/// Two columns of cards, by the owner's instruction of 2026-10-06.
+///
+/// A list row carried one fact per line and this tab is a thing a reader scans rather than reads -- a name, what it
+/// is, and what else it is called fit in half a phone's width, so a single column spent the other half on nothing.
+/// `maxCrossAxisExtent` rather than a fixed count so that a tablet or a wide window gets more columns instead of two
+/// enormous ones, which is the failure mode of a hard-coded 2.
+///
+/// **The grid does not scroll.** It is inside the page's own scroll view, so a scrollable here would be a second
+/// scroll region nested in the first -- the thing that makes a long list feel like it is fighting the finger.
+/// `shrinkWrap` measures the children and lets the page do the scrolling.
+class _Grid extends StatelessWidget {
+  const _Grid({required this.rows, required this.onOpen});
+
+  final List<_Row> rows;
+  final void Function(_Row) onOpen;
+
+  @override
+  Widget build(BuildContext context) => GridView.extent(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    maxCrossAxisExtent: 260,
+    mainAxisSpacing: 8,
+    crossAxisSpacing: 8,
+    childAspectRatio: 2.6,
+    children: [
+      for (final row in rows)
+        _IngredientCard(
+          key: ValueKey('ingredient-${row.id}'),
+          row: row,
+          // **A long press, like a folder row**, and for the same reason: what a reader does to a card is a gesture
+          // rather than a control, and the grid is dense enough that a button on every card would be the loudest
+          // thing on the page. A library ingredient opens read-only rather than not at all, so a reader can see what
+          // it is and copy its kind for their own addition.
+          onOpen: () => onOpen(row),
+        ),
+    ],
+  );
+}
 
 /// One ingredient, as a card.
 ///
@@ -173,7 +302,7 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
 class _IngredientCard extends StatelessWidget {
   const _IngredientCard({super.key, required this.row, required this.onOpen});
 
-  final AuthorIngredientView row;
+  final _Row row;
   final VoidCallback onOpen;
 
   @override
@@ -192,7 +321,9 @@ class _IngredientCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           // **A hairline in the reader's own colour for what they added**, which is the same signal the list gave
           // with a different mark: a reader has to be able to see at a glance which cards they can change, and a
-          // border is the cheapest way to say it on a surface this small.
+          // border is the cheapest way to say it on a surface this small. **A held library ingredient does not get
+          // it** -- it is on the reader's side of the split but it still ships with the build, and a border that
+          // promised an edit the editor then refused would be worse than no border.
           border: Border.all(
             color: row.isMine ? HollowPalette.rose : HollowPalette.hairline,
             width: row.isMine ? 1.2 : 1,

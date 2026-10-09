@@ -68,11 +68,23 @@ final class LocaleSettingsStore {
       // `Voice.byName` answers [Voice.plain] for anything it does not know, which is the same
       // discipline as the tags above: a name this build never shipped leaves the reader on the
       // default rather than on nothing.
+      //
+      // **And the migration, which is why the primary voice reads the old key first.** Until
+      // 2026-10-08 there was one flat `voice`, applying to the primary line only, so a file written
+      // before then has `voice` meaning exactly what `primaryVoice` means now. Reading it that way
+      // costs one `??` and keeps every reader who had chosen 伊丽莎白 on 伊丽莎白; the secondary
+      // voice has no old key to inherit and starts plain. **Nothing has to be rewritten on disk**:
+      // the old key is read, the new ones are written, and the file converges the next time anything
+      // is changed.
+      final primaryVoice = Voice.byName(
+        (decoded['primaryVoice'] as String?) ?? (decoded['voice'] as String?),
+      );
       return LocaleSettings(
         primaryTag: resolveLocaleTag(decoded['primary'] as String?),
         secondaryTag: byTag(decoded['secondary'] as String?)?.tag ?? referenceTag,
         dualCopy: decoded['dualCopy'] as bool? ?? true,
-        voice: Voice.byName(decoded['voice'] as String?),
+        primaryVoice: primaryVoice,
+        secondaryVoice: Voice.byName(decoded['secondaryVoice'] as String?),
       ).guarded();
     } catch (_) {
       return null;
@@ -91,7 +103,15 @@ final class LocaleSettingsStore {
           'dualCopy': settings.dualCopy,
           // **Written only when there is one.** Every file written before this key existed has no
           // voice, and reading one has to keep meaning "plain" rather than "unset".
-          if (settings.voice != Voice.plain) 'voice': settings.voice.name,
+          //
+          // **And the old name is written as well**, for one release, so that a reader who rolls back
+          // to the previous build keeps the voice they had instead of finding 伊丽莎白 gone. It carries
+          // the primary voice, which is what the old key always meant. **Removing this line is a
+          // separate decision**, and it is deliberately not taken in the same change that added the
+          // second field -- the cost of keeping it is eleven bytes.
+          if (settings.primaryVoice != Voice.plain) 'voice': settings.primaryVoice.name,
+          if (settings.primaryVoice != Voice.plain) 'primaryVoice': settings.primaryVoice.name,
+          if (settings.secondaryVoice != Voice.plain) 'secondaryVoice': settings.secondaryVoice.name,
         }),
       );
     } catch (_) {
@@ -167,8 +187,15 @@ class LocaleSettingsNotifier extends Notifier<LocaleSettings> {
   Future<void> setPrimary(String tag, {Voice voice = Voice.plain}) =>
       _commit(state.withPrimary(tag, voice: voice));
 
-  /// Point the reference line at a shipped language, subject to the same guard.
-  Future<void> setSecondary(String tag) => _commit(state.withSecondary(tag));
+  /// **The second line takes a register now**, which is the owner's answer of 2026-10-08 to a Windows report that the
+  /// voices could not be chosen there -- the picker offered five languages and no voices, because one stored field
+  /// cannot say which line a register belongs to.
+  ///
+  /// [LocaleSettings.withSecondary] **drops a voice that does not speak the tag it was paired with** rather than
+  /// storing an impossible pair, so this cannot leave the reader with a second line that reads in a language other
+  /// than the one they picked.
+  Future<void> setSecondary(String tag, {Voice voice = Voice.plain}) =>
+      _commit(state.withSecondary(tag, voice: voice));
 
   /// Draw the second language, or stop drawing it.
   Future<void> setDualCopy(bool value) => _commit(state.withDualCopy(value));

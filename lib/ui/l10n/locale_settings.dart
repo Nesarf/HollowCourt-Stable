@@ -26,7 +26,8 @@ final class LocaleSettings {
     required this.primaryTag,
     required this.secondaryTag,
     required this.dualCopy,
-    this.voice = Voice.plain,
+    this.primaryVoice = Voice.plain,
+    this.secondaryVoice = Voice.plain,
   });
 
   /// The line the reader reads. Always a shipped locale, never a raw system tag.
@@ -41,7 +42,21 @@ final class LocaleSettings {
   /// which of them was chosen.
   ///
   /// [Voice.plain] is what every locale other than the three written for offers.
-  final Voice voice;
+  final Voice primaryVoice;
+
+  /// **The same for the second line, and this field is why it exists.**
+  ///
+  /// Until 2026-10-08 there was one `voice`, applying to the primary line only -- so the second line could be *any of
+  /// five languages* but never one of the three voices. **A reader on Windows reported it as a defect**: *"无法在副语言
+  /// 里选择"*. The old shape could not express the answer, because one field cannot say which line a register belongs
+  /// to; the storage migration in `locale_providers.dart` reads an old single `voice` as this one's
+  /// [primaryVoice] and leaves this at [Voice.plain], so nothing a reader had already chosen is lost.
+  ///
+  /// **A voice is written in its own language, and the pair is checked rather than assumed**: pairing a `ja` voice with
+  /// a secondary tag of `fr` would name a register that does not exist, so [withSecondary] refuses it the way
+  /// [guarded] refuses a repeated tag. What the reader gets instead is the plain line for the tag they chose, which is
+  /// the honest reading of "this build has no French minister".
+  final Voice secondaryVoice;
 
   /// The line drawn under it, when [dualCopy] is on.
   final String secondaryTag;
@@ -86,7 +101,14 @@ final class LocaleSettings {
       primaryTag: primaryTag,
       secondaryTag: primaryTag == referenceTag ? fallbackTag : referenceTag,
       dualCopy: dualCopy,
-      voice: voice,
+      primaryVoice: primaryVoice,
+      // **The register moves with the line it belongs to.** This is the guard's own path: the secondary tag is being
+      // changed because it collided with the primary, so a voice written for the language it is leaving must not
+      // follow it into a language it does not speak -- `withSecondary` refuses that pairing, and the tag guard has to
+      // hold the same rule or the two would disagree about what is storable.
+      secondaryVoice: secondaryVoice.language == (primaryTag == referenceTag ? fallbackTag : referenceTag)
+          ? secondaryVoice
+          : Voice.plain,
     );
   }
 
@@ -107,22 +129,35 @@ final class LocaleSettings {
         primaryTag: byTag(tag)?.tag ?? primaryTag,
         secondaryTag: secondaryTag,
         dualCopy: dualCopy,
-        voice: voice,
+        primaryVoice: voice,
+        secondaryVoice: secondaryVoice,
       ).guarded();
 
-  /// Same refusal as [withPrimary], for the same reason.
-  LocaleSettings withSecondary(String tag) => LocaleSettings(
-        primaryTag: primaryTag,
-        secondaryTag: byTag(tag)?.tag ?? secondaryTag,
-        dualCopy: dualCopy,
-        voice: voice,
-      ).guarded();
+  /// **The second line takes a register too, and only one that speaks its language.**
+  ///
+  /// A voice is written in exactly one language, so pairing `ツンデレお嬢様` (a `ja` voice) with a secondary tag of `fr`
+  /// would be a choice the application cannot honour. **It is refused rather than stored and ignored**, and the
+  /// refusal keeps the tag the reader picked while dropping the voice -- because the tag is what they were choosing
+  /// and the register was a refinement of it. A caller offering an impossible pair therefore gets the plain second
+  /// line rather than a second line that silently reads in a language it was not asked for.
+  LocaleSettings withSecondary(String tag, {Voice voice = Voice.plain}) {
+    final resolved = byTag(tag)?.tag ?? secondaryTag;
+    final speaksIt = voice == Voice.plain || voice.language == resolved;
+    return LocaleSettings(
+      primaryTag: primaryTag,
+      secondaryTag: resolved,
+      dualCopy: dualCopy,
+      primaryVoice: primaryVoice,
+      secondaryVoice: speaksIt ? voice : Voice.plain,
+    ).guarded();
+  }
 
   LocaleSettings withDualCopy(bool value) => LocaleSettings(
         primaryTag: primaryTag,
         secondaryTag: secondaryTag,
         dualCopy: value,
-        voice: voice,
+        primaryVoice: primaryVoice,
+        secondaryVoice: secondaryVoice,
       ).guarded();
 
   /// The second line to draw, or null when there is not one.
@@ -139,12 +174,14 @@ final class LocaleSettings {
       other.primaryTag == primaryTag &&
       other.secondaryTag == secondaryTag &&
       other.dualCopy == dualCopy &&
-      other.voice == voice;
+      other.primaryVoice == primaryVoice &&
+      other.secondaryVoice == secondaryVoice;
 
   @override
-  int get hashCode => Object.hash(primaryTag, secondaryTag, dualCopy, voice);
+  int get hashCode =>
+      Object.hash(primaryTag, secondaryTag, dualCopy, primaryVoice, secondaryVoice);
 
   @override
-  String toString() =>
-      'LocaleSettings($primaryTag, $secondaryTag, dualCopy: $dualCopy, voice: ${voice.name})';
+  String toString() => 'LocaleSettings($primaryTag/${primaryVoice.name}, '
+      '$secondaryTag/${secondaryVoice.name}, dualCopy: $dualCopy)';
 }

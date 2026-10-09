@@ -6,7 +6,6 @@ import '../domain/units/measure_set.dart';
 import '../domain/units/unit.dart';
 import '../domain/units/unit_system.dart';
 import 'choice_set_editor.dart';
-import 'l10n/locale_catalogue.dart';
 import 'l10n/locale_choices.dart';
 import 'l10n/voice.dart';
 import 'l10n/copy_resolution.dart';
@@ -64,7 +63,8 @@ class SettingsSection extends ConsumerWidget {
           // handed over and the picker draws it as the unknown one, which is what keeps the
           // screen up instead of throwing.
           value: localeChoices().firstWhere(
-            (choice) => choice.tag == settings.primaryTag && choice.voice == settings.voice,
+            (choice) =>
+                choice.tag == settings.primaryTag && choice.voice == settings.primaryVoice,
             orElse: () => LocaleChoice(settings.primaryTag, settings.primaryTag, Voice.plain),
           ),
           onChanged: (choice) => notifier.setPrimary(choice.tag, voice: choice.voice),
@@ -76,26 +76,24 @@ class SettingsSection extends ConsumerWidget {
         const SizedBox(height: 6),
         _LocalePicker(
           key: const ValueKey('secondary-locale-picker'),
-          // **Matched on the tag alone, and this is a fix rather than a simplification.** It used to
-          // require `choice.voice == settings.voice` as well, and `voice` is the register the PRIMARY line
-          // is written in -- so with 伊丽莎白 as the primary and English as the second language nothing
-          // could match: the language entries all carry `Voice.plain`, and the voice entries carry their
-          // own. The lookup fell through to the fallback and drew `en` as a language this build does not
-          // know, for a tag this build ships. The register has nothing to do with the second line, so it is
-          // not consulted.
+          // **It offers the voices now, and this reverses a decision made here on purpose.** The note that stood in
+          // this place read the shipped *languages* alone, on the reasoning that "the register has nothing to do with
+          // the second line". **That was wrong**, and a reader on Windows said so on 2026-10-08: *"无法在副语言里选择"*.
+          // There is nothing about a second line that makes a register inapplicable to it -- that reasoning was a
+          // description of the storage, not of the reader's choice, since one flat `voice` field could only ever
+          // belong to one of the two lines. The field is per line now, so the picker is too.
           //
-          // It reads the shipped LANGUAGES rather than the joined list for the same reason: the joined one
-          // contains the voices too, whose language belongs to the register.
-          value: () {
-            final known = byTag(settings.secondaryTag);
-            if (known != null) {
-              return LocaleChoice(known.tag, known.nativeName, Voice.plain);
-            }
-            // A tag an older build shipped. Handed over unchanged so the screen stays up and shows what is
-            // actually stored, which is what `settingsUnknown` is for.
-            return LocaleChoice(settings.secondaryTag, settings.secondaryTag, Voice.plain);
-          }(),
-          onChanged: (choice) => notifier.setSecondary(choice.tag),
+          // **Matched on the pair, like the primary**, because `ja` is two entries: the plain 日语 and
+          // ツンデレお嬢様 written for it. Matching on the tag alone would draw whichever came first and quietly drop
+          // the register -- which is the same fault the primary picker's own note records.
+          value: localeChoices().firstWhere(
+            (choice) =>
+                choice.tag == settings.secondaryTag && choice.voice == settings.secondaryVoice,
+            orElse: () => LocaleChoice(settings.secondaryTag, settings.secondaryTag, Voice.plain),
+          ),
+          // **The voice travels with the tag.** `setSecondary` drops a register that does not speak the language it
+          // was paired with, so a reader cannot end up with a second line reading in a language they did not choose.
+          onChanged: (choice) => notifier.setSecondary(choice.tag, voice: choice.voice),
         ),
         const SizedBox(height: 6),
         // Said rather than enforced silently, so a reader who picks the same tag

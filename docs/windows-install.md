@@ -59,6 +59,31 @@ $view = $db.GetType().InvokeMember('OpenView','InvokeMethod',$null,$db,
 **`ProductVersion` is in the Property table**, not in the summary information: summary property 3 is the product name
 and 4 is the template `S.M.Y.T.`, which reads like a version and is not one.
 
+## `EXITCODE=1638` is a correct answer, not a failure
+
+Measured on 2026-10-06, re-running the installer over an installation of the same round:
+
+    EXITCODE=1638
+
+**"Another version of this product is already installed."** The same `Version` and the same `ProductCode` is a
+**repair**, and Windows refuses it rather than silently replacing files -- which is exactly what
+`hollow-court.wxs`'s own comment says: *"Windows Installer treats the same version with the same ProductCode as a
+REPAIR and only replaces a file whose version is higher. 'Installed successfully' and 'the new code is on the machine'
+are two different facts."*
+
+**So the code has to be read before it is believed.** 1638 after an install that already succeeded means the machine
+is current; 1638 when it is not means the round forgot to bump `ProductCode`, and the fix is a new GUID rather than
+another attempt. **A new round therefore must move both**, which is also why the build script now refuses a
+`.wxs` whose version and pubspec disagree.
+
+## The guard that keeps those two numbers together
+
+`packaging/windows/build.sh` compares the installer's version against the pubspec build number and **fails the build**
+when they disagree, rather than printing both and hoping somebody reads it. The rule is that the installer's version
+**ends with** the build number, because Windows Installer compares three fields and ignores a fourth: `1.0.0+48000`
+becomes `1.0.48000`. Verified against the pair that actually shipped wrong on 2026-10-06, as well as against the
+current one.
+
 ## The other half of 2026-10-06
 
 The same round found that **the MSI was registering `1.0.3939` while the application displayed `1.0.0.48000`** --

@@ -34,7 +34,7 @@
       Manufacturer="S.M.Y.T."
       Version="1.0.48000"
       UpgradeCode="7C4E1B62-5A3D-4F18-9E77-2B6D4A0C51E3"
-      ProductCode="D83FD17A-2FD5-4144-BA46-85918AACAEA4"
+      ProductCode="61B33F6B-3C47-42E0-A182-8C878F607A9E"
       Scope="perUser"
       Compressed="yes">
 
@@ -51,6 +51,13 @@
          it is about Windows Installer answering a same-version same-ProductCode install with a repair. The
          artifacts attached to the 1.0.0 release came from a source 154 commits behind HEAD and are being
          rebuilt; this is the Windows half. -->
+
+    <!-- **2026-10-08, the same version number and a new ProductCode.** The locale work changed the code without moving
+         `Version`, which is what a same-round rebuild is, and **the rule above says the two still move together**,
+         because Windows treats same-version same-code as a repair and only replaces a file whose version is higher.
+         Measured on the previous round: installing over the same pair answered `1638`, *another version of this
+         product is already installed*, and the machine was already current. **The distinction that matters is whether
+         the code changed**, not whether the number did. -->
 
     <!-- **2026-10-06, the round that went to 48000 and the colour.** Version went to 1.0.48000 and ProductCode to
          the GUID beside it. **This bump was missed for one build and the installer said so**: the application

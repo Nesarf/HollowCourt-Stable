@@ -29,7 +29,10 @@ class _RecordingSettings extends LocaleSettingsNotifier {
       calls.add('primary:$tag@${voice.name}');
 
   @override
-  Future<void> setSecondary(String tag) async => calls.add('secondary:$tag');
+  // **The register is recorded too, since 2026-10-08.** It used to be dropped on the floor here, which was a
+  // faithful double for a setter that only took a tag -- and the second line's picker could not offer a voice at all.
+  Future<void> setSecondary(String tag, {Voice voice = Voice.plain}) async =>
+      calls.add('secondary:$tag@${voice.name}');
 
   @override
   Future<void> setDualCopy(bool value) async => calls.add('dual:$value');
@@ -168,7 +171,7 @@ void main() {
                 primaryTag: 'zh-Hans',
                 secondaryTag: 'en',
                 dualCopy: true,
-                voice: Voice.heiress,
+                primaryVoice: Voice.heiress,
               ),
             );
             return _notifier;

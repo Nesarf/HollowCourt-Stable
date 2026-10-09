@@ -5,6 +5,7 @@ import 'about_section.dart';
 import 'developer_section.dart';
 import 'display_section.dart';
 import 'names_section.dart';
+import 'archive_section.dart';
 import 'integrity_section.dart';
 import 'l10n/dual_copy_text.dart';
 import 'prism.dart';
@@ -73,6 +74,13 @@ class SettingsPage extends ConsumerWidget {
           const PrismDivider(size: 8),
           const SizedBox(height: 28),
           IntegritySection(),
+          // **归档 belongs beside 检查完整性**, because both are about the reader's own data rather than about the
+          // interface: integrity says whether the log is sound, and archives say what is in it. **Above the developer
+          // section**, which is where this page puts what is about the application itself.
+          const SizedBox(height: 20),
+          const PrismDivider(size: 8),
+          const SizedBox(height: 28),
+          const ArchiveSection(),
           // **The gap alone was the whole separation, and a reader said so.** Sections had 32 pixels
           // of nothing between them, which on a dark page is not a boundary. The motif divider is the
           // study's own suggestion for exactly this: a line plus small diamonds, so that the shape a

@@ -128,9 +128,10 @@ class _CollectionEditorState extends ConsumerState<_CollectionEditor> {
       setState(() => _problem = ref.copy(Copy.collectionNeedsName));
       return;
     }
+    // **A member this build cannot decode is dropped rather than guessed at**, which is the same rule the fold follows
+    // for a payload written by a newer build -- and the `?` marker says exactly that: keep it if it decoded.
     final members = <CollectionMember>[
-      for (final encoded in _chosen)
-        if (CollectionMember.tryDecode(encoded) case final member?) member,
+      for (final encoded in _chosen) ?CollectionMember.tryDecode(encoded),
     ];
     final notifier = ref.read(cellarProvider.notifier);
     notifier

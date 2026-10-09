@@ -1,3 +1,4 @@
+import 'archive_providers.dart';
 import '../domain/units/unit.dart';
 import '../domain/units/matter_inference.dart';
 import 'dart:io';
@@ -7,6 +8,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../data/archive_package.dart';
 import '../data/folder_styles.dart';
 import '../data/event_log.dart';
 import '../data/seed/seed_codec.dart';
@@ -89,7 +91,18 @@ final class Cellar {
     required this.authoredIngredients,
     required this.collections,
     required this.packs,
+    required this.archivedEvents,
   });
+
+  /// **How many of the events these folds read came out of the reader's packages.**
+  ///
+  /// Carried so that a screen can say so, and it is not a decoration: **a consumption curve drawn from three years of
+  /// log and one drawn from ten years of log plus two archives look identical**, and only one of them is the whole
+  /// history. This is the number that tells them apart.
+  final int archivedEvents;
+
+  /// Whether any of what is folded here came from a package.
+  bool get readsArchives => archivedEvents > 0;
 
   /// Both folds of one log, taken together.
   ///
@@ -97,16 +110,46 @@ final class Cellar {
   /// have to be of the *same* log: a caller that folded one of them from a stale
   /// list would produce a screen where the shelf and the notes disagree about
   /// what has happened, and the disagreement would be invisible.
-  factory Cellar.of(EventLog log) => Cellar(
-    log: log,
-    stock: log.stock,
-    overlay: log.overlay,
-    shelf: log.shelf,
-    authoredRecipes: log.authoredRecipes,
-    authoredIngredients: log.authoredIngredients,
-    collections: log.collections,
-    packs: log.packs,
-  );
+  ///
+  /// **[archived] is the events a reader attached from their own packages**, and `docs/archival.md` is why they are
+  /// merged here rather than folded separately: **history cannot be folded in two halves and combined.** Every fold
+  /// sorts by clock and applies in that order, so a bottle added in a package and poured in the log would fold as *a
+  /// pour of nothing, then an unopened bottle*. Merging first is the only order that works, and it is the same one a
+  /// merge from a peer already uses.
+  ///
+  /// **And the line this does not cross**: [log]'s `digest` and `missingFrom` are about *the working log* and keep
+  /// reading it alone. **Archives travel by their own frame rather than by the event difference** -- if a peer's clock
+  /// set described events this machine has moved out of the log, the two would agree about a history neither of them
+  /// can send.
+  factory Cellar.of(EventLog log, {List<Event> archived = const []}) {
+    // **Nothing archived is the ordinary case, and it costs nothing**: not one fold is recomputed, so a cellar whose
+    // history fits in the log behaves exactly as it did before this parameter existed.
+    if (archived.isEmpty) {
+      return Cellar(
+        log: log,
+        stock: log.stock,
+        overlay: log.overlay,
+        shelf: log.shelf,
+        authoredRecipes: log.authoredRecipes,
+        authoredIngredients: log.authoredIngredients,
+        collections: log.collections,
+        packs: log.packs,
+        archivedEvents: 0,
+      );
+    }
+    final all = [...archived, ...log.events]..sort((a, b) => a.hlc.compareTo(b.hlc));
+    return Cellar(
+      log: log,
+      stock: StockLedger.of(all),
+      overlay: Overlay.of(all),
+      shelf: ShelfLayout.of(all),
+      authoredRecipes: RecipeBook.of(all),
+      authoredIngredients: IngredientBook.of(all),
+      collections: RecipeCollections.of(all),
+      packs: PackBook.of(all),
+      archivedEvents: archived.length,
+    );
+  }
 
   final EventLog log;
   final StockLedger stock;
@@ -253,7 +296,33 @@ class CellarNotifier extends AsyncNotifier<Cellar> {
     final log = _log ?? await _open();
     _log = log;
     await _migrateFolderStylesOnce(log);
-    return Cellar.of(log);
+    return Cellar.of(log, archived: await _attachedEvents());
+  }
+
+  /// **The events of the packages the reader has attached, and nothing else.**
+  ///
+  /// `docs/archival.md`: no package is read unless it was chosen. **Watched rather than read**, so that ticking a
+  /// package on the 归档 section re-folds every projection in the application -- which is the whole point of attaching
+  /// one, and would otherwise be a control that changes a list and nothing else.
+  ///
+  /// **A package that cannot be read is skipped rather than fatal**, the same rule `CellarHistory` follows and for the
+  /// same reason: one damaged file out of several must not cost the reader their library. `archiveCatalogProvider`
+  /// has already read each one's manifest, so a package reaching this point is one this build could parse a moment
+  /// ago; the second read is the price of not holding every package's events in memory for a section nobody has open.
+  Future<List<Event>> _attachedEvents() async {
+    final selection = ref.watch(archiveSelectionProvider);
+    if (selection.isEmpty) return const [];
+    final catalog = await ref.watch(archiveCatalogProvider.future);
+    final events = <Event>[];
+    for (final entry in catalog) {
+      if (!entry.isUsable || !selection.contains(entry.fileName)) continue;
+      try {
+        events.addAll((await ArchivePackage.read(entry.file)).events);
+      } on Object {
+        continue;
+      }
+    }
+    return events;
   }
 
   /// **Reads the old folder-style file into the log, once.**

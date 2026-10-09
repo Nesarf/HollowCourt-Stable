@@ -2630,6 +2630,65 @@ abstract final class Copy {
     },
   );
 
+  /// The heading over the reader's own side of the tab: what they hold a bottle of, and what they wrote.
+  ///
+  /// **The two halves are named rather than implied**, which is the whole of stage ① of
+  /// `docs/catalogue-and-stock.md`: the tab used to draw 189 library ingredients as one list, and a reader who
+  /// actually manages twenty of them had to find those twenty in it. A heading is what turns *a list* into *your
+  /// list and the library's*, and no data model had to change for it.
+  static const ingredientMine = CopyLine.withLanguages(
+    Translated.authored('你手上的'),
+    Translated.authored('Yours'),
+    voices: {
+      Voice.heiress: '你手上有瓶子的，和你自己写的。这一半是本小姐替你看着的。',
+      Voice.heiressJa: '手持ちの瓶があるもの、そして自分で書いたもの。こちらはあたしが預かっている側よ。',
+      Voice.minister: 'What one holds a bottle of, and what one has written down. This half is kept.',
+    },
+    also: {'ja': '手持ちのもの', 'zh-HK': '你手上嘅', 'zh-TW': '你手上的'},
+  );
+
+  /// The heading over the library's side: the catalogue, less everything already on the reader's side.
+  ///
+  /// **What the split buys, said where it can be read**: `docs/ingredient-gap.md` measured that 68 of the 189
+  /// shipped ingredients are used by no recipe at all -- 36% dead stock, carried because the library was derived
+  /// from recipes that each kept every item. A reader cannot be told that today, because the tab never
+  /// distinguished the third they are responsible for from the third nothing uses.
+  static const ingredientLibrary = CopyLine.withLanguages(
+    Translated.authored('库里的'),
+    Translated.authored('The library'),
+    voices: {
+      Voice.heiress: '库里剩下的。这些不是你的责任，想要的时候再来翻。',
+      Voice.heiressJa: 'ライブラリの残り。これはあなたの責務ではないわ、要るときに覗きなさい。',
+      Voice.minister: 'What remains in the library. Not one\'s charge -- consulted when it is wanted.',
+    },
+    also: {'ja': 'ライブラリのもの', 'zh-HK': '庫裏嘅', 'zh-TW': '庫裡的'},
+  );
+
+  /// What the reader's half says when it is empty.
+  ///
+  /// **Two sentences rather than one shared "nothing here"**, because the halves are empty for opposite reasons and
+  /// the useful reply differs: an empty reader's side means *add a bottle or write an ingredient*, and an empty
+  /// library side means *you have all of it*.
+  static const ingredientMineEmpty = CopyLine.withLanguages(
+    Translated.authored('这里还是空的。记下一瓶酒，或者自己加一种原料。'),
+    Translated.authored('Nothing here yet. Record a bottle, or add an ingredient of your own.'),
+    also: {
+      'ja': 'ここはまだ空です。瓶を記録するか、自分で材料を足してください。',
+      'zh-HK': '呢度仲係空嘅。記低一瓶酒，或者自己加一種原料。',
+      'zh-TW': '這裡還是空的。記下一瓶酒，或者自己加一種原料。',
+    },
+  );
+
+  static const ingredientLibraryEmpty = CopyLine.withLanguages(
+    Translated.authored('库里已经没有别的了 —— 目录上的你都有了。'),
+    Translated.authored('Nothing left in the library -- you hold all of it.'),
+    also: {
+      'ja': 'ライブラリに残りはありません。カタログのものは全部手元にあります。',
+      'zh-HK': '庫裏已經冇其他嘢喇 —— 目錄上嘅你都有齊。',
+      'zh-TW': '庫裡已經沒有別的了 —— 目錄上的你都有了。',
+    },
+  );
+
   static const ingredientAdd = CopyLine.withLanguages(
     Translated.authored('加一种原料'),
     Translated.authored('Add an ingredient'),
@@ -4015,6 +4074,121 @@ https://piapro.jp/license/pcl/summary
     Translated.authored('not included'), also: {'ja': '含まない', 'zh-HK': '未包含', 'zh-TW': '未包含'});
 
   // ---------------------------------------------------------------- integrity
+
+  /// The heading for the reader's own archives.
+  ///
+  /// **A noun rather than a verb**, unlike 检查完整性 beside it: that section does something when pressed, and this one
+  /// is a state of affairs -- there are packages, or there are not, and the reader decides which are in play.
+  static const archiveHeading = CopyLine.withLanguages(
+    Translated.authored('归档'),
+    Translated.authored('Archives'),
+    voices: {
+      Voice.heiress: '更早的那些，本小姐替你收在文件里了——要看就挑一份。',
+      Voice.heiressJa: 'もっと前のものは、ファイルにしまってあるわ——見たいなら選びなさい。',
+      Voice.minister: 'The earlier years are kept in files. One selects which to consult.',
+    },
+    also: {'ja': 'アーカイブ', 'zh-HK': '歸檔', 'zh-TW': '歸檔'},
+  );
+
+  /// What an archive is, said before anything else on the section.
+  ///
+  /// **The one sentence that has to be right**, because the whole feature rests on it: nothing is deleted, and the
+  /// reader's history is in a file rather than in this application. A reader who believes the second half has an
+  /// obligation to look after that file, and is entitled to know it.
+  static const archiveExplain = CopyLine.withLanguages(
+    Translated.authored(
+      '早于五年的记录可以收进一个文件，放在你的文档里。收走的那些不会被删——它们从工作日志里搬出去，'
+      '历史仍然是完整的。',
+    ),
+    Translated.authored(
+      'Records older than five years can be moved into a file in your documents. Nothing is deleted: they leave '
+      'the working log, and the history stays complete.',
+    ),
+    also: {
+      'ja': '五年より前の記録は、書類フォルダのファイルに移せます。消えるのではなく、作業ログから出るだけで、'
+          '履歴は完全なままです。',
+      'zh-HK': '早過五年嘅記錄可以收進一個文件，放喺你嘅文件夾。收走嘅唔會刪——佢哋由工作日誌搬出去，'
+          '歷史仍然完整。',
+      'zh-TW': '早於五年的記錄可以收進一個檔案，放在你的文件裡。收走的那些不會被刪——它們從工作日誌搬出去，'
+          '歷史仍然是完整的。',
+    },
+  );
+
+  /// Shown when there is nothing old enough to archive.
+  static const archiveNothingOld = CopyLine.withLanguages(
+    Translated.authored('还没有早于五年的记录，暂时没什么可收的。'),
+    Translated.authored('Nothing is older than five years yet, so there is nothing to move.'),
+    also: {
+      'ja': 'まだ五年より前の記録がないので、移すものはありません。',
+      'zh-HK': '暫時未有早過五年嘅記錄，冇嘢好收。',
+      'zh-TW': '還沒有早於五年的記錄，暫時沒什麼可收的。',
+    },
+  );
+
+  /// What the button does, and it says what will be moved rather than "archive now".
+  static String archiveMovePrompt(int count, String through) => CopyLine.withLanguages(
+    Translated.authored('把到 $through 为止的 $count 条收进一个文件'),
+    Translated.authored('Move $count events, up to $through, into a file'),
+    also: {
+      'ja': '$through までの $count 件をファイルに移す',
+      'zh-HK': '把到 $through 為止嘅 $count 條收進一個文件',
+      'zh-TW': '把到 $through 為止的 $count 條收進一個檔案',
+    },
+  ).textFor('zh-Hans');
+
+  /// The heading over the list of packages.
+  static const archiveWhich = CopyLine.withLanguages(
+    Translated.authored('读哪些'),
+    Translated.authored('Which to read'),
+    voices: {
+      Voice.heiress: '要看哪几年的，自己挑。不挑就只有最近这些。',
+      Voice.heiressJa: 'どの年を見るか、自分で選びなさい。選ばなければ最近の分だけよ。',
+      Voice.minister: 'One chooses which years to consult. Unchosen, only the recent ones are read.',
+    },
+    also: {'ja': 'どれを読むか', 'zh-HK': '讀邊幾份', 'zh-TW': '讀哪幾份'},
+  );
+
+  /// What the list says when there are no packages at all.
+  static const archiveNone = CopyLine.withLanguages(
+    Translated.authored('一个归档都还没有。'),
+    Translated.authored('There are no archives yet.'),
+    also: {'ja': 'アーカイブはまだありません。', 'zh-HK': '一個歸檔都未有。', 'zh-TW': '一個歸檔都還沒有。'},
+  );
+
+  /// The two controls the owner asked for by name.
+  static const archiveSelectAll = CopyLine.withLanguages(
+    Translated.authored('全选'),
+    Translated.authored('Select all'),
+    also: {'ja': 'すべて選ぶ', 'zh-HK': '全選', 'zh-TW': '全選'},
+  );
+
+  static const archiveInvert = CopyLine.withLanguages(
+    Translated.authored('反选'),
+    Translated.authored('Invert'),
+    also: {'ja': '選択を反転', 'zh-HK': '反選', 'zh-TW': '反選'},
+  );
+
+  /// How many events the selected packages hold, said under the list.
+  static String archiveAttached(int packages, int events) => CopyLine.withLanguages(
+    Translated.authored('已挂上 $packages 份，共 $events 条旧记录。'),
+    Translated.authored('$packages attached, holding $events older events.'),
+    also: {
+      'ja': '$packages 件を接続中、古い記録 $events 件。',
+      'zh-HK': '掛上咗 $packages 份，共 $events 條舊記錄。',
+      'zh-TW': '已掛上 $packages 份，共 $events 條舊記錄。',
+    },
+  ).textFor('zh-Hans');
+
+  /// Shown on a package this build cannot use, with the reason.
+  static String archiveUnusable(String reason) => CopyLine.withLanguages(
+    Translated.authored('这一份读不出来：$reason'),
+    Translated.authored('This one cannot be read: $reason'),
+    also: {
+      'ja': 'これは読めません：$reason',
+      'zh-HK': '呢份讀唔出：$reason',
+      'zh-TW': '這一份讀不出來：$reason',
+    },
+  ).textFor('zh-Hans');
 
   static const integrityHeading = CopyLine.withLanguages(
     Translated.authored('检查完整性'),
