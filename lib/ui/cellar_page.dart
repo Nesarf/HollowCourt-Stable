@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'archive_note.dart';
 import 'bar_page.dart';
 import 'cashflow_section.dart';
 import '../domain/consumption/consumption.dart';
@@ -259,7 +260,13 @@ class CellarPage extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
             children: [
               DualCopyText(Copy.cellarTitle, style: HollowType.display),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+              // **Under the title, above everything it qualifies.** Five readings on this page are folded from the
+              // merged history -- the value, the curve, the statistics, the money windows and the running-low
+              // speeds -- so a note beside any one of them would read as being about that one. It renders nothing
+              // when no package is attached, which is the ordinary case.
+              const ArchivedHistoryNote(),
+              const SizedBox(height: 10),
               DualCopyText(Copy.cellarValue, style: HollowType.caption),
               const SizedBox(height: 6),
               Text(

@@ -90,6 +90,22 @@ always there; what made it visible is that the running-low section added in ⑤'
 **a screen that agrees with itself while being wrong is one thing, and a screen whose two halves disagree is a defect
 somebody can see.**
 
+## And the readings now say so
+
+Those five are folded from the whole history, and the cellar page had no way of telling a reader that. `Cellar` carried
+`archivedEvents` and `readsArchives` for exactly this and **nothing called them** -- so a reader who attached a package
+saw a chart *longer* than their log, with nothing on the screen to explain it. **This file already names that shape from
+the other side** -- *"a reader attaching archives and still seeing a truncated chart"* -- and a chart longer than
+expected is the same failure arriving from the opposite direction.
+
+`lib/ui/archive_note.dart` is the line. It sits **under the cellar page's title**, because the note qualifies five
+readings and a note beside any one of them would read as being about that one; and **it renders nothing when no package
+is attached**, which is what lets it sit at the top of a page without costing anything.
+
+**Its two numbers come from two places on purpose**: the package count is what the reader ticked, and the event count is
+how many the fold **actually used**. A ticked package that contributed nothing counts towards the first and not the
+second, and saying both is more honest than picking one.
+
 **And two places still read the log alone, on purpose**:
 
 * **`SyncScope` and the exchange read the working log**, because that is the invariant the whole archive design rests

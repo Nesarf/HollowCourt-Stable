@@ -2887,6 +2887,43 @@ abstract final class Copy {
     also: {'ja': 'または何日以内', 'zh-HK': '或者撐唔過幾多日', 'zh-TW': '或者撐不過多少天'},
   );
 
+  /// Said on the readings themselves, when they were folded from more than the working log.
+  ///
+  /// **`docs/archival.md` calls the alternative a silent failure, and this was that failure.** Attaching a package
+  /// changes every chart and every number on the cellar page -- the value, the consumption curve, the statistics, the
+  /// money windows, the running-low speeds -- and the page said nothing about it. **A reader looking at ten years of
+  /// curve had no way to know why it was longer than the log**, which is exactly the shape the design refuses when it
+  /// says history depth must be *a visible choice rather than a hidden constant*.
+  ///
+  /// **`Cellar.archivedEvents` and `readsArchives` were written for this and had no caller until now.** The section in
+  /// 设置 says which packages are ticked; that does not help a reader who is looking at a chart.
+  ///
+  /// **It qualifies the whole page rather than anything on it**, which is why it goes under the title: a note beside
+  /// the value would read as being about the value, and the same note applies to each of the five readings below.
+  ///
+  /// **Placeholders rather than an interpolated string**, so the numbers go where each language wants them -- the
+  /// lesson `archiveAttached` did not learn for a fortnight, when it resolved `.textFor('zh-Hans')` and showed a
+  /// Chinese sentence in an English interface.
+  static const cellarReadsArchives = CopyLine.withLanguages(
+    Translated.authored('这一页的读数含你附加的 {packages} 个包 —— {events} 条更早的记录。在设置里可以改。'),
+    Translated.authored(
+      'The readings here include {packages} attached packages -- {events} earlier events. '
+      'Change them in Settings.',
+    ),
+    voices: {
+      Voice.heiress: '这一页下面的数字，用的是你附加的 {packages} 个包 —— 多出来 {events} 条更早的记录。不想要就去设置里摘掉。',
+      Voice.heiressJa: 'この頁の数字は、あなたが接続した {packages} 件の包みを含んでいるわ —— 古い記録が {events} 件多いの。要らなければ設定で外しなさい。',
+      Voice.minister:
+          'The figures on this page are drawn from {packages} attached packages besides the log, '
+          'which is {events} earlier events. They may be detached in the settings.',
+    },
+    also: {
+      'ja': 'この頁の数字は接続中の {packages} 件を含みます —— 古い記録が {events} 件。設定で変更できます。',
+      'zh-HK': '呢一頁嘅數字含你掛上嘅 {packages} 份 —— 多咗 {events} 條更早嘅記錄。喺設定度可以改。',
+      'zh-TW': '這一頁的讀數含你附加的 {packages} 個包 —— {events} 條更早的記錄。在設定裡可以改。',
+    },
+  );
+
   static const ingredientAdd = CopyLine.withLanguages(
     Translated.authored('加一种原料'),
     Translated.authored('Add an ingredient'),
@@ -4429,15 +4466,30 @@ https://piapro.jp/license/pcl/summary
   );
 
   /// How many events the selected packages hold, said under the list.
-  static String archiveAttached(int packages, int events) => CopyLine.withLanguages(
-    Translated.authored('已挂上 $packages 份，共 $events 条旧记录。'),
-    Translated.authored('$packages attached, holding $events older events.'),
+  ///
+  /// **[A defect found 2026-10-11, corrected here.]** This used to be `static String archiveAttached(...)` returning
+  /// `CopyLine.withLanguages(...).textFor('zh-Hans')` -- so the line was written in five languages and then **always
+  /// resolved to Chinese**, and an English reader ticking packages in 设置 got a Chinese sentence. **The five
+  /// translations were there and the resolver ignored them**, which is worse than an untranslated line because it
+  /// looks translated in the source.
+  ///
+  /// It is a `CopyLine` with two placeholders now, and the call site substitutes through `ref.copy` so that the
+  /// numbers go where each language wants them. `cellarReadsArchives` is the same line for the readings themselves,
+  /// and its comment records why placeholders rather than interpolation.
+  static const archiveAttached = CopyLine.withLanguages(
+    Translated.authored('已挂上 {packages} 份，共 {events} 条旧记录。'),
+    Translated.authored('{packages} attached, holding {events} older events.'),
     also: {
-      'ja': '$packages 件を接続中、古い記録 $events 件。',
-      'zh-HK': '掛上咗 $packages 份，共 $events 條舊記錄。',
-      'zh-TW': '已掛上 $packages 份，共 $events 條舊記錄。',
+      'ja': '{packages} 件を接続中、古い記録 {events} 件。',
+      'zh-HK': '掛上咗 {packages} 份，共 {events} 條舊記錄。',
+      'zh-TW': '已掛上 {packages} 份，共 {events} 條舊記錄。',
     },
-  ).textFor('zh-Hans');
+  );
+
+  /// The line above, with the two counts in it.
+  static String archiveAttachedText(String template, int packages, int events) => template
+      .replaceFirst('{packages}', '$packages')
+      .replaceFirst('{events}', '$events');
 
   /// Shown on a package this build cannot use, with the reason.
   static String archiveUnusable(String reason) => CopyLine.withLanguages(

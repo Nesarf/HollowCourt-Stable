@@ -103,7 +103,16 @@ class ArchiveSection extends ConsumerWidget {
             ),
           if (selected.isNotEmpty) ...[
             const SizedBox(height: 6),
-            Text(Copy.archiveAttached(selected.length, attachedEvents), style: HollowType.caption),
+            Text(
+              // **Through `ref.copy`, so it is the reader's language.** It used to resolve `zh-Hans` whatever the
+              // interface was set to -- see the note on the line itself.
+              Copy.archiveAttachedText(
+                ref.copy(Copy.archiveAttached),
+                selected.length,
+                attachedEvents,
+              ),
+              style: HollowType.caption,
+            ),
           ],
         ],
       ],
