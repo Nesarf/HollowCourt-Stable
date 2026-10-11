@@ -22,12 +22,14 @@ import '../domain/events/ingredient_authoring.dart';
 import '../domain/events/recipe_authoring.dart';
 import '../domain/events/recipe_collection.dart';
 import '../domain/events/shelf.dart';
+import '../domain/events/shelf_authoring.dart';
 import '../domain/events/stock.dart';
 import '../domain/matching/match_score.dart';
 import '../domain/model/recipe.dart';
 import '../domain/model/ingredient_book.dart';
 import '../domain/model/recipe_book.dart';
 import '../domain/model/pack_book.dart';
+import '../domain/model/shelf_book.dart';
 import '../domain/model/recipe_collections.dart';
 import '../domain/overlay/overlay.dart';
 import '../domain/overlay/overlay_key.dart';
@@ -91,6 +93,7 @@ final class Cellar {
     required this.authoredIngredients,
     required this.collections,
     required this.packs,
+    required this.shelves,
     required this.archivedEvents,
   });
 
@@ -134,6 +137,7 @@ final class Cellar {
         authoredIngredients: log.authoredIngredients,
         collections: log.collections,
         packs: log.packs,
+        shelves: log.shelves,
         archivedEvents: 0,
       );
     }
@@ -147,6 +151,7 @@ final class Cellar {
       authoredIngredients: IngredientBook.of(all),
       collections: RecipeCollections.of(all),
       packs: PackBook.of(all),
+      shelves: ShelfBook.of(all),
       archivedEvents: archived.length,
     );
   }
@@ -194,6 +199,14 @@ final class Cellar {
   /// is why one is a field on the recipe and the other is a list of members.
   final PackBook packs;
 
+  /// What the reader calls their shelves, folded from the same log.
+  ///
+  /// **Beside the placements rather than inside them.** `ShelfLayout` says which bottle stands on which shelf id,
+  /// and this says what that id is called; one is a fact about a cupboard and the other is a word for it, which is
+  /// the same split `docs/catalogue-and-stock.md` draws between a catalogue and a stock. A screen that says where
+  /// something is needs both, and [shelfName] is where they are joined.
+  final ShelfBook shelves;
+
   /// A bottle is on the shelf when its sku has remaining volume.
   ///
   /// The join between the seed and the shelf is this one comparison. A recipe
@@ -203,6 +216,62 @@ final class Cellar {
   bool has(String ingredientId) => stock.bottles.any(
     (bottle) => bottle.sku == ingredientId && bottle.remaining.microlitres > 0,
   );
+
+  /// The shelf a bottle of [ingredientId] stands on, **by id**, or null.
+  ///
+  /// **This is the join stage ③ is**: an ingredient is not a physical thing, and a bottle is. Nothing new is stored
+  /// to answer *where is it* -- the bottle has stood somewhere since `ShelfEvent.bottlePlaced` existed, and this
+  /// walks the one path from a name to a place: ingredient id → the bottle carrying it as a sku → that bottle's
+  /// placement → the shelf id in it.
+  ///
+  /// **The id rather than a name**, so that the caller resolves a reader's word for their own shelf and this stays
+  /// free of copy: the built-in shelf's readable name is a sentence in the interface, and a reader's is data.
+  ///
+  /// **Null for a bottle nobody has stood anywhere**, which is the ordinary state rather than a fault -- the bar page
+  /// names those bottles as "in the box" for the same reason.
+  ///
+  /// **The first standing bottle wins when there are several.** Two bottles of the same sku on two shelves is legal
+  /// and unusual, and answering with one of them is better than refusing to answer; the card that draws it says
+  /// which shelf it is, so a reader who has split their stock can see that it did.
+  String? shelfOf(String ingredientId) {
+    for (final bottle in stock.bottles) {
+      if (bottle.sku != ingredientId) continue;
+      if (bottle.remaining.microlitres <= 0) continue;
+      final placement = shelf.placementOf(bottle.bottleId);
+      if (placement != null) return placement.shelfId;
+    }
+    return null;
+  }
+
+  /// What to call [shelfId] -- the reader's word for it, or the id.
+  String shelfName(String shelfId) => shelves.nameOf(shelfId);
+
+  /// Every shelf this cellar knows about.
+  ///
+  /// **The union of the two things that make a shelf exist**: a reader having named one, and a bottle actually
+  /// standing on one. Neither alone is enough -- a shelf just added has nothing on it yet, and the built-in `bar`
+  /// shelf has had bottles on it since before anybody could name a shelf, so a list built from declarations alone
+  /// would hide the only shelf most cellars have.
+  ///
+  /// **And the built-in shelf is offered when there is nothing else.** A cellar with bottles but no placements would
+  /// otherwise have no shelves at all and nowhere to drop the first one -- the board the reader puts their first
+  /// bottle on is not something they should have to create first, and `bar` is where that drag has always been
+  /// written. It keeps its place in the list once something stands on it, and disappears from the row only when the
+  /// reader has named shelves *and* left it empty, which is the one case where it is furniture.
+  ///
+  /// **Named shelves first, in the order they were named**, and then any shelf that exists only because something
+  /// stands on it, sorted so that two devices folding the same log list them the same way.
+  List<String> get shelfIds {
+    final named = [for (final shelf in shelves.all) shelf.id];
+    final placed = shelf.shelves.where((id) => !named.contains(id)).toList()..sort();
+    final out = [...named, ...placed];
+    if (out.isEmpty || placed.contains(builtInShelfId)) {
+      // `placed.contains` rather than a second scan: the built-in shelf is in `placed` exactly when something stands
+      // on it and nobody has named it, which is the case it has to be offered for.
+      return out.isEmpty ? [builtInShelfId] : [builtInShelfId, ...out.where((id) => id != builtInShelfId)];
+    }
+    return out;
+  }
 
   /// Section 9's score, for one recipe against this shelf.
   MatchScore scoreOf(Recipe recipe) => MatchScore.of([
@@ -685,6 +754,49 @@ class CellarNotifier extends AsyncNotifier<Cellar> {
         : ingredient;
     await current.log.record(
       (hlc) => IngredientAuthoredEvents.set(hlc: hlc, ingredient: withId),
+    );
+    state = AsyncData(Cellar.of(current.log));
+  }
+
+  /// Names a shelf, or renames one the reader already named, and re-folds.
+  ///
+  /// **One write for both, because a rename is a declaration whose clock reading is later** -- the same reason
+  /// `ShelfEvent.bottlePlaced` covers a move. Passing [id] renames; leaving it null mints a fresh id from the log's
+  /// own clock, which is what a form adding a shelf does.
+  ///
+  /// **Nothing is validated here**, the rule [authorIngredient] records: `validateAuthoredShelf` belongs to the form,
+  /// which can say which part of it is wrong. What *is* refused here is a rename of a shelf the reader never named,
+  /// because that would be the reader taking over an id -- and the one id that matters is `bar`, which every
+  /// placement written before this family existed points at.
+  Future<AuthoredShelf?> declareShelf(String name, {String? id}) async {
+    final current = state.value;
+    if (current == null) return null;
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return null;
+    if (id != null && !AuthoredShelfId.isMine(id)) return null;
+    final withId = AuthoredShelf(
+      id: id ?? AuthoredShelfId.from(trimmed, current.log.clock.next()),
+      name: trimmed,
+    );
+    await current.log.record(
+      (hlc) => ShelfAuthoredEvents.declared(hlc: hlc, shelf: withId),
+    );
+    state = AsyncData(Cellar.of(current.log));
+    return withId;
+  }
+
+  /// Removes the name off a shelf the reader named.
+  ///
+  /// **The bottles standing on it are not moved, and that is the decision rather than an omission.** A removal here
+  /// is a statement about the *word*, not about the cupboard: the shelf goes on existing as a place those bottles
+  /// stand, and `ShelfBook.nameOf` falls back to its id -- so the worst a mistaken removal does is lose a name, and
+  /// nothing a reader owns can be unmade by tapping the wrong thing.
+  Future<void> removeAuthoredShelf(String id) async {
+    final current = state.value;
+    if (current == null) return;
+    if (!AuthoredShelfId.isMine(id)) return;
+    await current.log.record(
+      (hlc) => ShelfAuthoredEvents.removed(hlc: hlc, id: id),
     );
     state = AsyncData(Cellar.of(current.log));
   }

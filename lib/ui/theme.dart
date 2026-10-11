@@ -3351,6 +3351,68 @@ abstract final class Copy {
   static const barShelfMain = CopyLine.withLanguages(
     Translated.authored('主架'),
     Translated.authored('Main shelf'), also: {'ja': 'メインの棚', 'zh-HK': '主架', 'zh-TW': '主架'});
+
+  // ---------------------------------------------------------------------------------------------------------------
+  // Stage ③ of `docs/catalogue-and-stock.md`: shelves the reader names.
+  //
+  // **These are new copy rather than new data**, which is the shape of the whole stage: a shelf id has been a key on
+  // every placement since the first version, and what was missing was a word for it. The built-in shelf's word is
+  // `barShelfMain` above -- a sentence, because it is part of the build -- while a reader's own shelf carries its
+  // name in the log, because the places a person keeps things in are data.
+  // ---------------------------------------------------------------------------------------------------------------
+
+  /// The last offer in the chooser: a place that does not exist yet.
+  static const shelfAdd = CopyLine.withLanguages(
+    Translated.authored('加一个架子'),
+    Translated.authored('Add a shelf'),
+    voices: {
+      Voice.heiress: '再添一格吧。东西多了，一格是放不下的。',
+      Voice.heiressJa: 'もう一段足しなさい。物が増えれば、一段では収まらないわ。',
+      Voice.minister: 'Add another. One shelf does not hold what has accumulated.',
+    },
+    also: {'ja': '棚を足す', 'zh-HK': '加一個架子', 'zh-TW': '加一個架子'},
+  );
+
+  /// The label on the field that names one.
+  static const shelfNameField = CopyLine.withLanguages(
+    Translated.authored('叫什么'),
+    Translated.authored('Its name'),
+    also: {'ja': '名前', 'zh-HK': '叫咩名', 'zh-TW': '叫什麼'},
+  );
+
+  /// The control that renames one.
+  static const shelfRename = CopyLine.withLanguages(
+    Translated.authored('改名字'),
+    Translated.authored('Rename it'),
+    also: {'ja': '名前を変える', 'zh-HK': '改名', 'zh-TW': '改名字'},
+  );
+
+  /// The control that takes a shelf's name away.
+  ///
+  /// **Worded as the thing it actually does.** "Delete" would be a lie about a place that keeps standing with bottles
+  /// on it, and the sentence below says so; this control removes a *name*.
+  static const shelfForget = CopyLine.withLanguages(
+    Translated.authored('取消这个名字'),
+    Translated.authored('Take the name away'),
+    voices: {
+      Voice.heiress: '把名字收回来也可以 —— 架子还在，瓶子也还在。',
+      Voice.heiressJa: '名前を外してもいい。棚は残るし、瓶もそのままよ。',
+      Voice.minister: 'The name may be withdrawn. The shelf remains, and so does everything on it.',
+    },
+    also: {'ja': '名前を外す', 'zh-HK': '取消呢個名', 'zh-TW': '取消這個名字'},
+  );
+
+  /// What a reader is told before they take one away, because the alternative reading is the frightening one.
+  static const shelfForgetHint = CopyLine.withLanguages(
+    Translated.authored('架子上的瓶子不会动 —— 少掉的只是一个名字。'),
+    Translated.authored('The bottles on it do not move. Only the name goes.'),
+    also: {
+      'ja': '棚の瓶は動きません。消えるのは名前だけです。',
+      'zh-HK': '架上面嘅瓶唔會郁 —— 少咗嘅淨係一個名。',
+      'zh-TW': '架子上的瓶子不會動 —— 少掉的只是一個名字。',
+    },
+  );
+
   static const barInTheBox = CopyLine.withLanguages(
     Translated.authored('还没上架'),
     Translated.authored('Still in the box'), also: {'ja': 'まだ棚に置いていません', 'zh-HK': '還沒上架', 'zh-TW': '還沒上架'});

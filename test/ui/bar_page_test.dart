@@ -10,6 +10,7 @@ import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/events/shelf.dart';
 import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
+import 'package:hollow_court/domain/events/shelf_authoring.dart';
 import 'package:hollow_court/ui/bar_page.dart';
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/ui/theme.dart';
@@ -71,6 +72,21 @@ class _SeededCellar extends CellarNotifier {
   /// Every `placeBottle` the page called, in order.
   final List<PlacementCall> calls = [];
 
+  /// Every `declareShelf` the page called, in order.
+  ///
+  /// **Recorded rather than folded**, the split `ingredient_editor_test` and `pack_editor_test` already make: a real
+  /// `EventLog` open does not complete under the fake clock a widget test runs in, so what these prove is that the
+  /// page maps what a reader typed onto an `AuthoredShelf` and refuses what it should. That one survives a restart
+  /// belongs to `ShelfBook.of` on real events, which `shelf_book_test` covers.
+  final List<AuthoredShelf> shelves = [];
+
+  @override
+  Future<AuthoredShelf?> declareShelf(String name, {String? id}) async {
+    final shelf = AuthoredShelf(id: id ?? 'own.test-${shelves.length}-0', name: name.trim());
+    shelves.add(shelf);
+    return shelf;
+  }
+
   @override
   Future<Cellar> build() async => _initial;
 
@@ -98,11 +114,17 @@ Event _added(String id, String sku, int millilitres, {int millis = 1}) =>
       volume: Volume.fromMillilitres(millilitres),
     );
 
+/// A shelf the reader named, at a clock reading that puts it after the bottles.
+Event _named(String id, String name) => ShelfAuthoredEvents.declared(
+  hlc: Hlc(physicalMillis: 9, counter: 0, nodeId: 'test'),
+  shelf: AuthoredShelf(id: id, name: name),
+);
+
 Event _placed(String id, int x, int y, {int millis = 5}) =>
     ShelfEvents.bottlePlaced(
       hlc: Hlc(physicalMillis: millis, counter: 0, nodeId: 'test'),
       bottleId: id,
-      shelfId: BarShelfSection.defaultShelfId,
+      shelfId: builtInShelfId,
       posXPermille: x,
       posYPermille: y,
     );
@@ -224,7 +246,7 @@ void main() {
     expect(_notifier.calls, hasLength(1), reason: 'the drop is the write');
     final call = _notifier.calls.single;
     expect(call.bottleId, 'b1');
-    expect(call.shelfId, BarShelfSection.defaultShelfId);
+    expect(call.shelfId, builtInShelfId);
     // Within a few per-mille of where the finger was, rather than a fixed
     // expected pair: the drop point is a pixel and the stored value is whole, and
     // pinning the exact number would make this fail on a layout change instead of
@@ -256,17 +278,74 @@ void main() {
     expect(call.y, greaterThan(970));
   });
 
-  testWidgets('the page draws one named shelf, and does not offer a choice',
-      (tester) async {
-    // Section 12.3 asks this tab to let a person choose which Bar is being worked
-    // on. One shelf with a chooser over it would be furniture, so the page names
-    // the shelf and offers nothing -- and this asserts the absence, because an
-    // absence that is not tested is an absence that quietly becomes a dropdown.
+  testWidgets('**the page names its shelf and offers the ones it has, plus one more**', (tester) async {
+    // **This test used to assert the opposite**, and the shape of the change is worth keeping: it read *"one shelf
+    // with a chooser over it would be furniture, so the page names the shelf and offers nothing -- and this asserts
+    // the absence, because an absence that is not tested is an absence that quietly becomes a dropdown."*
+    //
+    // **That was right when nothing could make a second shelf.** `shelf.authored.declared` can, so the picker is now
+    // the thing the old comment was waiting for and the absence it guarded is no longer the intent. What survives is
+    // the other half: the built-in shelf is named rather than shown as its key.
     final cellar = await _cellarFor(tester, [_added('b1', 'gin', 700)]);
 
     await _pumpBar(tester, cellar);
 
-    expect(find.text(Copy.barShelfMain.primary.text), findsOneWidget);
-    expect(find.byType(DropdownButton<Object>), findsNothing);
+    // The one shelf a cellar with nothing placed on it has, and the offer to make another.
+    expect(find.text(Copy.barShelfMain.primary.text), findsWidgets);
+    expect(find.byKey(const ValueKey('shelf-chip-bar')), findsOneWidget);
+    expect(find.byKey(const ValueKey('shelf-add')), findsOneWidget);
+  });
+
+  testWidgets('**naming a shelf from the row writes the name the reader typed**', (tester) async {
+    // **What this proves and what it does not**, the split `ingredient_editor_test` and `pack_editor_test` record: a
+    // recorder rather than a real log, because a real `EventLog` open does not complete under the fake clock a widget
+    // test runs in. So it proves the sheet maps what a reader typed onto an `AuthoredShelf`; that one draws on the
+    // row is the next test, which builds a real cellar that already holds the declaration.
+    final cellar = await _cellarFor(tester, [_added('b1', 'gin', 700)]);
+
+    await _pumpBar(tester, cellar);
+
+    await tester.tap(find.byKey(const ValueKey('shelf-add')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('shelf-name')), '冰箱');
+    await tester.tap(find.byKey(const ValueKey('shelf-name-confirm')));
+    await tester.pumpAndSettle();
+
+    expect(_notifier.shelves, hasLength(1));
+    expect(_notifier.shelves.single.name, '冰箱');
+    expect(_notifier.shelves.single.id, startsWith(AuthoredShelfId.prefix));
+  });
+
+  testWidgets('**a shelf the reader named is drawn in their own words**', (tester) async {
+    // The rendering half, from a cellar that really holds the declaration -- so `shelfIds` is the fold's answer
+    // rather than a fake's memory.
+    final cellar = await _cellarFor(tester, [
+      _added('b1', 'gin', 700),
+      _named('own.fridge-1-0', '冰箱'),
+    ]);
+
+    await _pumpBar(tester, cellar);
+
+    expect(find.text('冰箱'), findsWidgets, reason: 'the chip, and the caption over the board it moved to');
+    // **And the built-in shelf is gone from the row**, which is the rule rather than an oversight: it is offered
+    // while it is the only shelf or while something stands on it, and a reader who has named one and left the other
+    // empty has said which cupboard they use. It comes back the moment a bottle stands on it.
+    expect(find.byKey(const ValueKey('shelf-chip-bar')), findsNothing);
+  });
+
+  testWidgets('**emptying the name field adds nothing**', (tester) async {
+    // The form's own rule, and the one `validateAuthoredShelf` states in the domain: a shelf with no name is the
+    // state a shelf is already in when nobody has named it, so adding one would write an event that says nothing.
+    final cellar = await _cellarFor(tester, [_added('b1', 'gin', 700)]);
+
+    await _pumpBar(tester, cellar);
+
+    await tester.tap(find.byKey(const ValueKey('shelf-add')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('shelf-name')), '   ');
+    await tester.tap(find.byKey(const ValueKey('shelf-name-confirm')));
+    await tester.pumpAndSettle();
+
+    expect(_notifier.shelves, isEmpty);
   });
 }

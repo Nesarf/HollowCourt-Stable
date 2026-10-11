@@ -9,6 +9,8 @@ import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/events/ingredient_authoring.dart';
 import 'package:hollow_court/domain/events/recipe_authoring.dart';
+import 'package:hollow_court/domain/events/shelf.dart';
+import 'package:hollow_court/domain/events/shelf_authoring.dart';
 import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/model/glass.dart';
 import 'package:hollow_court/domain/model/ice.dart';
@@ -345,6 +347,75 @@ void main() {
     // And the three classes the query emptied are gone, so the page is one heading rather than four.
     expect(find.byKey(const ValueKey('ingredient-demand-core')), findsNothing);
     expect(find.byKey(const ValueKey('ingredient-demand-dead')), findsNothing);
+  });
+
+  // ---------------------------------------------------------------------------------------------------------------
+  // Stage ③: where the bottle of it actually stands.
+  // ---------------------------------------------------------------------------------------------------------------
+
+  /// A bottle of [sku], standing on [shelfId].
+  List<Event> standing(String sku, String shelfId) => [
+    StockEvents.bottleAdded(
+      hlc: tick(),
+      bottleId: 'b-$sku',
+      sku: sku,
+      volume: Volume.fromMillilitres(700),
+    ),
+    ShelfEvents.bottlePlaced(
+      hlc: tick(),
+      bottleId: 'b-$sku',
+      shelfId: shelfId,
+      posXPermille: 100,
+      posYPermille: 100,
+    ),
+  ];
+
+  testWidgets('**an ingredient the reader holds says which shelf it stands on**', (tester) async {
+    // The join, on the screen it is for: ingredient id -> bottle -> placement -> the shelf book's word for it.
+    final built = await cellar(tester, [
+      ...standing('gin', 'own.fridge-1-0'),
+      ShelfAuthoredEvents.declared(
+        hlc: tick(),
+        shelf: const AuthoredShelf(id: 'own.fridge-1-0', name: '冰箱'),
+      ),
+    ]);
+    await pump(tester, built, recipes: theFourClasses());
+
+    expect(inMine('gin'), findsOneWidget);
+    expect(
+      find.descendant(of: inMine('gin'), matching: find.text('冰箱')),
+      findsOneWidget,
+      reason: 'the reader\'s own word for the shelf, not the id',
+    );
+  });
+
+  testWidgets('**the built-in shelf is named rather than shown as its key**', (tester) async {
+    // A bottle of gin on `bar`, which nobody declared -- the state every existing cellar is in. The card must say
+    // what the shelf is called, and `bar` is a key rather than a word.
+    await pump(tester, await cellar(tester, standing('gin', 'bar')), recipes: theFourClasses());
+
+    expect(find.descendant(of: inMine('gin'), matching: find.text('主架')), findsOneWidget);
+    expect(find.text('bar'), findsNothing);
+  });
+
+  testWidgets('**a bottle nobody has stood anywhere marks nothing**', (tester) async {
+    // Most of the catalogue, and the whole of a reader's first day: a card with a shelf on it means they own the
+    // thing *and* have put it somewhere, which is what makes the mark worth looking at.
+    await pump(
+      tester,
+      await cellar(tester, [
+        StockEvents.bottleAdded(
+          hlc: tick(),
+          bottleId: 'b1',
+          sku: 'gin',
+          volume: Volume.fromMillilitres(700),
+        ),
+      ]),
+      recipes: theFourClasses(),
+    );
+
+    expect(inMine('gin'), findsOneWidget, reason: 'it is held, so it is on the reader\'s side');
+    expect(find.descendant(of: inMine('gin'), matching: find.text('主架')), findsNothing);
   });
 }
 

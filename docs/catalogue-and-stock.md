@@ -2,12 +2,12 @@
 
 Written 2026-10-08, from the owner's question about **managing many ingredients and many recipes** -- *"原料和配方都很多的时候，如何提升管理效率"* -- and their observation that this is **仓库管理的逻辑**.
 
-**This was a design note rather than a record. ① and ② are now built** -- the 原料 tab draws the reader's side and the
-library's as two headed lists, and the library's is cut again into four demand classes, in
-`lib/ui/ingredient_section.dart` with `IngredientDemand` behind it. `test/ui/ingredient_section_test.dart` and
-`test/domain/model/ingredient_demand_test.dart` hold both to that. **③ through ⑤ are still unbuilt**, and
-`docs/ingredient-gap.md`'s rule applies to everything below that is written in the present tense about them: nothing
-there is a claim about what the code does.
+**This was a design note rather than a record. ①, ② and ③ are now built** -- the 原料 tab draws the reader's side and
+the library's as two headed lists cut again into four demand classes, a held ingredient shows the shelf its bottle
+stands on, and the bar is back with named shelves and bottles coloured by kind. `test/ui/ingredient_section_test.dart`,
+`test/domain/model/ingredient_demand_test.dart`, `test/domain/model/shelf_book_test.dart` and `test/ui/bar_page_test.dart`
+hold them to that. **④ and ⑤ are still unbuilt**, and `docs/ingredient-gap.md`'s rule applies to everything below
+that is written in the present tense about them: nothing there is a claim about what the code does.
 
 ## The finding, and it is not about speed
 
@@ -89,6 +89,48 @@ answer than *"four recipes want it"*.
 
 **③ Then location for ingredients**, the way bottles already have it. For somebody managing two hundred things, *"where
 is it"* is asked more often than *"what is it called"*.
+
+**Built, and the sentence above was wrong about the bottles.** "The way bottles already have it" was the premise, and
+measuring it killed it: **a bottle did not have a location.** It had *a position along one shelf called `bar`*, which
+is an arrangement rather than a place. `shelfId` had been a key on every placement since the first version --
+`shelf_test` places bottles on `'fridge'`, `SyncScope.shelf('back')` scopes a share by it -- and **nothing in the
+interface had ever written a second one**, deliberately, because a picker over one shelf would be furniture.
+
+**So the family does not invent shelves. It names them.**
+
+    shelf.authored.declared    a shelf is named, or renamed
+    shelf.authored.removed     a shelf's name is taken away
+
+**Nothing is back-filled and a log written before this folds correctly**: `ShelfBook.nameOf` answers with the reader's
+word when there is one and with the id otherwise, so every cellar with bottles on `bar` and no declaration of it
+resolves to a name the *screen* supplies rather than one the log invented. Removing a name does not move a bottle --
+it is a statement about the word, not the cupboard.
+
+**And `where is it` is a join, not a field.** `Cellar.shelfOf` walks ingredient id → the bottle carrying it as a sku →
+that bottle's placement → the shelf id; `shelfLabel` turns that into a word. Nothing new is stored on an ingredient.
+
+### The bar came back, and only because it earned it
+
+**It had been taken off the interface on 2026-09-30 and the owner's reason is the whole of this section**:
+*"吧台因为基本上只有一个把瓶子放到架上的功能，而且没有颜色区分，很鸡肋，我就强制下架了"* -- one function, and no colour
+differentiation.
+
+**The colour complaint had a cause that was written down and was still correct.** `bar_page.dart` refused a
+`LiquidSwatch` because a drink's colour is a fact about a *recipe* and painting it on a bottle would say the bottle
+holds one cocktail. **The reasoning is sound and the screen it produced was a wall of identical grey rectangles**,
+which is the pair worth keeping: a correct argument can still leave a useless screen.
+
+**The resolution is to find a fact about the ingredient**, and there is exactly one that is complete: `kind`, at
+189 of 189. `ingredient_colour.dart` gives each kind a hue in `liquidColour`'s idiom, and it colours the way a bar is
+actually organised -- spirits together, liqueurs together. **The colour is a key and not a liquid**, so the bottle
+carries its name as well and the colour is never the only signal.
+
+**The second defect was worse than the colour.** A bottle's name existed only in a `Tooltip`, and a tooltip on a
+handset never appears -- so the labels existed for a reader with a mouse, which is the wrong half of the audience for
+a thing you look at while standing in a kitchen. It was also the raw sku, so even the tooltip said `gin`.
+
+So the bar now has: bottles coloured by kind and named underneath; a chooser over the reader's shelves with an offer
+to add one; and a long press on a chip to rename it or take its name away.
 
 **④ Then reorder points from low stock**, rather than from the plan alone.
 

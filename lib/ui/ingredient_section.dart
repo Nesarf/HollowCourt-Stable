@@ -10,6 +10,7 @@ import 'l10n/dual_copy_text.dart';
 import 'hollow_glyphs.dart';
 import 'library.dart';
 import 'seed_names.dart';
+import 'shelf_label.dart';
 import 'theme.dart';
 
 /// The reader's own ingredients, and the library's beside them.
@@ -58,6 +59,7 @@ class _Row {
     required this.kind,
     required this.aliases,
     required this.isMine,
+    required this.shelf,
   });
 
   final String id;
@@ -65,6 +67,13 @@ class _Row {
   final String? kind;
   final List<String> aliases;
   final bool isMine;
+
+  /// What this ingredient's shelf is called, or null when it is not standing anywhere.
+  ///
+  /// **Resolved by the caller rather than held as an id here**, because the two halves of the answer come from
+  /// different books -- the placement says which shelf, and the shelf book says what the reader calls it -- and a
+  /// row that carried an id would invite a second lookup at the point of drawing.
+  final String? shelf;
 }
 
 class _IngredientSectionState extends ConsumerState<IngredientSection> {
@@ -93,6 +102,7 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
           kind: authored.category,
           aliases: authored.aliases,
           isMine: true,
+          shelf: _shelfLabelOf(cellar, authored.id),
         ),
     ];
     final theirs = <_Row>[];
@@ -107,6 +117,7 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
         kind: ingredient.kind,
         aliases: ingredient.aliases,
         isMine: false,
+        shelf: _shelfLabelOf(cellar, ingredient.id),
       );
       // **A held library ingredient joins the reader's side, and stays read-only.** It is on their shelf, so it is
       // theirs to look after; it is still part of the build, so it is not theirs to change. Both facts survive,
@@ -127,6 +138,16 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
     mine.sort((a, b) => a.name.compareTo(b.name));
     theirs.sort((a, b) => a.name.compareTo(b.name));
     return (mine: mine.where(matches).toList(), library: theirs.where(matches).toList());
+  }
+
+  /// What to call the shelf a bottle of [ingredientId] stands on, or null.
+  ///
+  /// **The two halves of the answer, joined.** `Cellar.shelfOf` walks ingredient → bottle → placement and answers
+  /// with a shelf *id*; `shelfLabel` turns that into the reader's word for it, or the built-in shelf's copy. A caller
+  /// that showed the id would be showing a key, which is why the id never leaves this method.
+  String? _shelfLabelOf(Cellar cellar, String ingredientId) {
+    final shelfId = cellar.shelfOf(ingredientId);
+    return shelfId == null ? null : shelfLabel(ref, cellar, shelfId);
   }
 
   @override
@@ -418,6 +439,30 @@ class _IngredientCard extends StatelessWidget {
                 ],
               ),
             ),
+            // **Where it stands, at the trailing edge and only when it stands somewhere.** Stage ③, and the answer
+            // to the question a reader managing two hundred things asks more often than *what is it called*.
+            //
+            // It is on the right rather than appended to the qualifier line, because it is a different kind of fact:
+            // the line under the name says what the ingredient *is*, and this says where the bottle of it is. It is
+            // absent for anything not held or not yet put down, which is most of the catalogue -- and a card with a
+            // shelf on it is therefore a card the reader owns, readable at a glance down the grid.
+            //
+            // **The glyph is the shelf one** -- a board with two bottles on it -- so the mark on a card and the board on the
+            // bar page are visibly the same idea rather than two drawings of it.
+            if (row.shelf case final shelf?) ...[
+              const SizedBox(width: 6),
+              HollowGlyphMark(HollowGlyph.bar, color: HollowPalette.gold, size: 14),
+              const SizedBox(width: 4),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 64),
+                child: Text(
+                  shelf,
+                  style: HollowType.caption,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ],
         ),
       ),

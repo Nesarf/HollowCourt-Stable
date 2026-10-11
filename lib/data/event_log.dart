@@ -6,6 +6,7 @@ import '../domain/events/hlc.dart';
 import '../domain/events/shelf.dart';
 import '../domain/model/ingredient_book.dart';
 import '../domain/model/pack_book.dart';
+import '../domain/model/shelf_book.dart';
 import '../domain/model/recipe_book.dart';
 import '../domain/model/recipe_collections.dart';
 import '../domain/events/stock.dart';
@@ -262,6 +263,14 @@ final class EventLog implements SyncSource {
   /// folder name lived in `folder_styles.json` *beside* the log, so it never synced while everything else did.
   /// `PackBook` argues it; `docs/proposal-recipes-and-packs.md` §1 is where the owner asked for it.
   PackBook get packs => PackBook.of(_events);
+
+  /// What the reader calls their shelves, folded from the same events.
+  ///
+  /// **The eighth fold, and the one that names a key that already existed.** `shelf` below answers *where a bottle
+  /// stands* and has carried a `shelfId` since its first version; this answers what that id is called. A shelf
+  /// nobody declared has its id for a name, which is why a log written before this fold existed folds correctly
+  /// here -- see `ShelfBook.nameOf`.
+  ShelfBook get shelves => ShelfBook.of(_events);
 
   /// Where the bottles stand, folded from the same events.
   ///
