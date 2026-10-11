@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:hollow_court/domain/sync/pairing.dart';
+import 'package:hollow_court/domain/archive/archive_manifest.dart';
 import 'package:hollow_court/domain/sync/wire.dart';
 
 /// **The segment announcement, and the two compatibility claims it rests on.**
@@ -16,10 +17,24 @@ import 'package:hollow_court/domain/sync/wire.dart';
 /// this build must do with an old peer) and **a hello with a field it does not know still parses** (what an old peer
 /// does with this one) -- plus the rules for a field that is present and wrong.
 void main() {
-  SegmentClaim claim(String digest, {int count = 3, String first = 'a', String last = 'b'}) =>
-      SegmentClaim(digest: digest, count: count, first: first, last: last);
+  ArchiveManifest claim(
+    String digest, {
+    int count = 3,
+    String first = 'a',
+    String last = 'b',
+    String nodeId = 'test',
+    int createdMillis = 1000,
+  }) => ArchiveManifest(
+    format: ArchiveManifest.formatVersion,
+    createdMillis: createdMillis,
+    firstClock: first,
+    lastClock: last,
+    count: count,
+    nodeId: nodeId,
+    digest: digest,
+  );
 
-  HelloFrame hello({Iterable<SegmentClaim> segments = const []}) => HelloFrame(
+  HelloFrame hello({Iterable<ArchiveManifest> segments = const []}) => HelloFrame(
     name: 'cellar',
     digest: ClockDigest.fromSummary(count: 0, digest: 0),
     segments: segments,
@@ -36,8 +51,8 @@ void main() {
       expect(got.segments, hasLength(2));
       expect(got.segments.first.digest, 'abc');
       expect(got.segments.first.count, 12);
-      expect(got.segments.last.first, 'a');
-      expect(got.segments.last.last, 'b');
+      expect(got.segments.last.firstClock, 'a');
+      expect(got.segments.last.lastClock, 'b');
     });
 
     test('**and a hello with none is byte-for-byte the hello that came before this feature**', () {
@@ -75,12 +90,17 @@ void main() {
     });
 
     test('and a segment entry carrying a field this build does not know keeps its readable fields', () {
-      const line = '{"kind":"hello","name":"n","count":0,"digest":0,'
-          '"segments":[{"digest":"abc","count":2,"first":"a","last":"b","later":"x"}]}';
+      // **The whole manifest now, and that is the correction this round is about.** The first version announced
+      // `{digest, count, first, last}` -- enough to identify a package and not enough to receive one, because a
+      // receiver writes the file it is given and needs *when* it was made and *which device* made it.
+      const line = '{"kind":"hello","name":"n","count":0,"digest":0,"segments":['
+          '{"version":1,"createdMillis":7,"firstClock":"a","lastClock":"b","count":2,'
+          '"nodeId":"them","digest":"abc","later":"x"}]}';
 
       final read = WireFrame.parse(line)! as HelloFrame;
 
-      expect(read.segments.single, claim('abc', count: 2));
+      expect(read.segments.single, claim('abc', count: 2, nodeId: 'them', createdMillis: 7));
+      expect(read.segments.single.createdMillis, 7);
     });
   });
 
@@ -98,12 +118,15 @@ void main() {
       // cannot read costs that claim and not the four beside it. A peer that announced five segments and garbled one
       // is announcing four, which is a true statement about it -- where refusing the whole hello would end a sync
       // over a field that does nothing but describe.
-      const line = '{"kind":"hello","name":"n","count":0,"digest":0,"segments":['
-          '{"digest":"good","count":1,"first":"a","last":"b"},'
-          '{"digest":"","count":1,"first":"a","last":"b"},'
+      String entry(String digest, int count) =>
+          '{"version":1,"createdMillis":1,"firstClock":"a","lastClock":"b",'
+          '"count":$count,"nodeId":"them","digest":"$digest"}';
+      final line = '{"kind":"hello","name":"n","count":0,"digest":0,"segments":['
+          '${entry('good', 1)},'
+          '${entry('', 1)},'
           '{"count":1,"first":"a","last":"b"},'
           '"not an object",'
-          '{"digest":"also","count":2,"first":"c","last":"d"}]}';
+          '${entry('also', 2)}]}';
 
       final read = WireFrame.parse(line)! as HelloFrame;
 
@@ -114,14 +137,35 @@ void main() {
     test('a negative count is refused, and a zero one is not', () {
       // A count is what a receiver sizes itself against, and a negative one is the same class of defect the
       // `digest.count` field already refuses: a claim that would make a loop complete immediately.
-      expect(SegmentClaim.tryFromJson({'digest': 'd', 'count': -1, 'first': 'a', 'last': 'b'}), isNull);
-      expect(SegmentClaim.tryFromJson({'digest': 'd', 'count': 0, 'first': 'a', 'last': 'b'}), isNotNull);
+      Map<String, Object?> claimJson(String digest, int count) => {
+        'version': ArchiveManifest.formatVersion,
+        'createdMillis': 1,
+        'firstClock': 'a',
+        'lastClock': 'b',
+        'count': count,
+        'nodeId': 'them',
+        'digest': digest,
+      };
+
+      expect(readSegmentClaim(claimJson('d', -1)), isNull);
+      expect(readSegmentClaim(claimJson('d', 0)), isNotNull);
     });
 
     test('an empty digest names nothing, and is dropped', () {
       // The digest **is** the identity: a segment with no digest cannot be asked for, and keeping it would put a
       // claim on the outcome that names nothing a reader could act on.
-      expect(SegmentClaim.tryFromJson({'digest': '', 'count': 1, 'first': 'a', 'last': 'b'}), isNull);
+      Map<String, Object?> claimJson(String digest) => {
+        'version': ArchiveManifest.formatVersion,
+        'createdMillis': 1,
+        'firstClock': 'a',
+        'lastClock': 'b',
+        'count': 1,
+        'nodeId': 'them',
+        'digest': digest,
+      };
+
+      expect(readSegmentClaim(claimJson('')), isNull);
+      expect(readSegmentClaim(claimJson('abc')), isNotNull);
     });
   });
 }

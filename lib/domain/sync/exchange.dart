@@ -34,6 +34,7 @@ import 'device_identity.dart';
 import 'pairing.dart';
 import 'scope.dart';
 import 'secure_channel.dart';
+import '../archive/archive_manifest.dart';
 import 'wire.dart';
 
 /// What a sync needs from a cellar. `EventLog` already satisfies it, member for member.
@@ -135,7 +136,7 @@ final class ExchangeOutcome {
   ///
   /// A peer whose build predates segments announces none, so this is empty -- and empty means *nothing was said*,
   /// not *the peer has nothing*. The two are the same on this frame and a caller must not report the second.
-  final List<SegmentClaim> peerSegments;
+  final List<ArchiveManifest> peerSegments;
 
   /// How many of the peer's events were new to this cellar.
   final int merged;
@@ -194,7 +195,7 @@ Future<ExchangeOutcome> runExchange({
   ///
   /// Passed in rather than reached for, for the reason `SyncSource` is: the exchange knows about frames and cannot
   /// know which files a reader has ticked. Empty is the ordinary answer and the one every existing caller gives.
-  Iterable<SegmentClaim> segments = const [],
+  Iterable<ArchiveManifest> segments = const [],
   /// **The reader's confirmation, when the device is being added by comparing screens.**
   ///
   /// Called with the six digits derived from this handshake (`short_code.dart`) **after** the channel is

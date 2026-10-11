@@ -133,7 +133,7 @@ error"* is **unsatisfiable by adding a frame kind**.
 **So the announcement rides an optional field on `hello`, which every build already parses.**
 
     hello { name, count, digest, token?, segments? }
-    segments: [ { digest, count, first, last } ]
+    segments: [ <an ArchiveManifest, whole> ]
 
 An older peer ignores a key it does not know, answers the handshake exactly as it always did, and **the session
 proceeds with the segments simply not announced** -- which is the required degradation, obtained without asking
@@ -143,6 +143,29 @@ to announce, which is the ordinary case.
 **The digest is the identity**, not the file name: `ArchiveManifest.digest` is a stable hash over the package's own
 encoded lines, while a file name is a *range* that two devices can independently produce for two different sets of
 events -- so comparing names would report a difference that is not there, or miss one that is.
+
+### The announcement carries the whole manifest, and that is a correction
+
+**The first version carried `{digest, count, first, last}` and it was not enough -- found by asking what a receiver
+would have to do with it.** A receiver writes the package it is given, and a manifest has **seven** fields: those four
+plus `createdMillis` and `nodeId`, which are *when the package was made* and *which device made it*. A receiver that
+reconstructed those would be writing **"made on this machine, just now"** about a file made on somebody else's machine
+a month ago -- and the manifest is the one thing in this project that is meant to still be true in five years.
+
+So the field carries an `ArchiveManifest`, and `ArchiveManifest`/`ArchiveUnreadable` moved from `lib/data/` to
+`lib/domain/archive/` so that the wire can speak about one: `lib/domain/sync/wire.dart` may not import `lib/data/`, and
+a summary type would have been a second statement of what a manifest is. `archive_package.dart` re-exports both, so no
+call site changed.
+
+**Two more small holes closed on the way**, both of the kind that only show up when a value starts travelling:
+
+* **A negative `count` is refused when the announcement is read**, the rule `hello`'s own `count` already follows: a
+  receiver sizes a loop against it, and a negative one completes that loop immediately with nothing -- a decision about
+  what to accept, made by the far end of a socket.
+* **`ArchiveManifest` had no equality.** It is seven fields describing a file and two manifests read out of the same
+  bytes compared as different objects. Nothing depended on it until a peer began announcing one, and a test asserting
+  *the peer announced the package I hold* could not be written without it. Its `toString` also gained `createdMillis`,
+  because the first version omitted it and a failed equality printed two lines that looked identical.
 
 **What this gives a reader today**: sync two devices and the outcome says how many segments the other one holds that
 this one has not, and the screen says so. **What it does not do yet is move one across**, and that is now the only

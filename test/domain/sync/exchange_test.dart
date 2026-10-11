@@ -5,6 +5,7 @@ import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/sync/exchange.dart';
 import 'package:hollow_court/domain/sync/pairing.dart';
+import 'package:hollow_court/domain/archive/archive_manifest.dart';
 import 'package:hollow_court/domain/sync/wire.dart';
 import 'package:test/test.dart';
 import "package:hollow_court/domain/sync/scope.dart";
@@ -120,6 +121,28 @@ final class _Channel implements WireChannel {
 /// the sealed path is `secure_channel_test.dart` (the handshake, tampering, replay, a peer with the
 /// wrong code), `socket_transport_test.dart`, `sync_verbs_test.dart` and the P3 acceptance test --
 /// all of which run with the seal on, because they go through the real entry points.
+/// A package manifest, as a peer announces one.
+///
+/// **The whole manifest rather than a summary**, because a receiver writes the package it is given: `createdMillis`
+/// and `nodeId` are as load-bearing as the digest, and a receiver that invented them would be writing "made here,
+/// just now" about somebody else's file.
+ArchiveManifest _manifest(
+  String digest, {
+  int count = 3,
+  String first = 'a',
+  String last = 'b',
+  String nodeId = 'them',
+  int createdMillis = 1000,
+}) => ArchiveManifest(
+  format: ArchiveManifest.formatVersion,
+  createdMillis: createdMillis,
+  firstClock: first,
+  lastClock: last,
+  count: count,
+  nodeId: nodeId,
+  digest: digest,
+);
+
 Future<(ExchangeOutcome, ExchangeOutcome)> _syncBoth({
   required _Channel a,
   required _Channel b,
@@ -145,8 +168,8 @@ Future<(ExchangeOutcome, ExchangeOutcome)> _syncBoth({
   /// and the gate tests would otherwise pass a gate that was never called.
   bool seal = false,
   /// **Each side's announced history**, so a test can watch the segments travel rather than assume them.
-  Iterable<SegmentClaim> leftSegments = const [],
-  Iterable<SegmentClaim> rightSegments = const [],
+  Iterable<ArchiveManifest> leftSegments = const [],
+  Iterable<ArchiveManifest> rightSegments = const [],
 }) async {
   final results = await Future.wait([
     runExchange(
@@ -736,7 +759,7 @@ void main() {
         left: _Cellar([on(at(1000))]),
         right: _Cellar([on(at(2000))]),
         rightSegments: [
-          const SegmentClaim(digest: 'theirs', count: 12, first: 'a', last: 'b'),
+          _manifest('theirs', count: 12, first: 'a', last: 'b'),
         ],
       );
 
@@ -749,15 +772,15 @@ void main() {
     test('**a segment both devices hold is not reported**', () async {
       // By digest, not by file name: a name is a *range*, and two devices can independently produce the same range
       // name for two different sets of events -- so comparing names would report a difference that is not there.
-      const ours = SegmentClaim(digest: 'shared', count: 5, first: 'a', last: 'b');
+      final ours = _manifest('shared', count: 5, first: 'a', last: 'b');
       final (:a, :b) = _pair();
       final (left, right) = await _syncBoth(
         a: a,
         b: b,
         left: _Cellar([on(at(1000))]),
         right: _Cellar([on(at(2000))]),
-        leftSegments: const [ours],
-        rightSegments: const [ours],
+        leftSegments: [ours],
+        rightSegments: [ours],
       );
 
       expect(left.peerSegments, isEmpty);
@@ -790,7 +813,7 @@ void main() {
         left: _Cellar([event]),
         right: _Cellar([event]),
         rightSegments: [
-          const SegmentClaim(digest: 'theirs', count: 3, first: 'a', last: 'b'),
+          _manifest('theirs', count: 3, first: 'a', last: 'b'),
         ],
       );
 

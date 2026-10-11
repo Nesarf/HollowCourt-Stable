@@ -36,6 +36,7 @@ import 'scope.dart';
 
 import 'dart:convert';
 
+import '../archive/archive_manifest.dart';
 import '../events/event.dart';
 import '../events/hlc.dart';
 import 'pairing.dart';
@@ -89,91 +90,34 @@ enum WireKind {
   }
 }
 
-/// **One segment of history the peer holds which its log does not.**
+/// Reads one announced segment, or null when this build cannot use it.
 ///
-/// `docs/archival.md` is the whole of why this exists: an archive is a **move**, not a deletion, so a device that has
-/// archived 2015-2020 holds a log that starts in 2021 **and a file that starts in 2015**. Two devices can therefore
-/// agree completely about the log and still disagree about the history -- and until this existed, neither of them
-/// could tell.
+/// **One unreadable entry costs that entry and not the four beside it**, which is the rule this build applies to the
+/// `segments` list and not to its other fields. A segment is a *claim about somebody's files*, so a claim this build
+/// cannot use is dropped and the rest are kept: a peer that announced five and sent one this build cannot parse is
+/// announcing four, which is a true statement about it. Refusing the whole hello would end a sync over a field that
+/// does nothing but describe.
 ///
-/// ## Why it rides in `hello` rather than in a frame of its own
+/// **A negative count is refused here rather than downstream, for the reason `digest.count` already is.** A count is
+/// what a receiver sizes itself against -- a loop that reads exactly that many events -- so a negative one completes
+/// that loop immediately with nothing, which is a decision about what to accept made by the far end of a socket. The
+/// comment on `HelloFrame._fromJson` records the same argument for the same kind of number.
 ///
-/// `docs/archival.md` asks for *"a new frame in the sync protocol"* and says an older peer **"must degrade to 'I do
-/// not have that' rather than to an error"**. **Those two requirements cannot both be met by adding a frame kind**, and
-/// measuring the exchange is what shows it: `WireFrame.parse` returns null for a kind this build does not know, and
-/// the reader of that null calls `_end('the other end sent something unreadable')`. **An old peer does not have a path
-/// that says "I do not have that"; the only thing it can do with a frame it cannot read is hang up.**
-///
-/// So the announcement is an **optional field on a frame every build already parses**, which is the mechanism the
-/// protocol already uses for version tolerance ([HelloFrame.token] is the same shape). An older peer ignores a key it
-/// does not know, answers the handshake as it always did, and **the session proceeds with the segments simply not
-/// announced** -- which is exactly the required degradation, obtained without asking anything of the old build.
-///
-/// **The ask, when it is built, is gated on this announcement**: a peer that announced no segments is never sent one,
-/// so the frame kind for it is only ever sent to a build that has proved it can read it. **The announcement is the
-/// half that has to exist first**, and this is it.
-///
-/// ## The digest is the identity
-///
-/// `ArchiveManifest.digest` is a stable hash **over the encoded event lines**, which `archive_package.dart` already
-/// verifies on every read and refuses a mismatch on. So a segment is named by what is *in* it rather than by its file
-/// name -- and the file name is a range (`cellar-archive-<first>-<last>.courtarchive`) that two devices can
-/// independently produce for two different sets of events. **A name would collide; the digest cannot.**
-final class SegmentClaim {
-  const SegmentClaim({
-    required this.digest,
-    required this.count,
-    required this.first,
-    required this.last,
-  });
-
-  /// `ArchiveManifest.digest`. What a peer asks for it by.
-  final String digest;
-
-  /// How many events it holds, so a receiver knows what it is being offered before it accepts anything.
-  final int count;
-
-  /// The clock readings at each end, for a reader telling two segments apart.
-  final String first;
-  final String last;
-
-  Map<String, Object?> toJson() => {
-    'digest': digest,
-    'count': count,
-    'first': first,
-    'last': last,
-  };
-
-  /// Reads one, or null when it is not readable.
-  ///
-  /// **Null rather than a throw, unlike the frames below**, because one unreadable entry among five must not cost the
-  /// other four: a peer that announced four segments and garbled one is announcing three, which is a true statement
-  /// about it, while refusing the whole hello would end a sync over a field that does nothing but describe.
-  static SegmentClaim? tryFromJson(Object? json) {
-    if (json is! Map<String, Object?>) return null;
-    final digest = json['digest'];
-    final count = json['count'];
-    final first = json['first'];
-    final last = json['last'];
-    if (digest is! String || digest.isEmpty) return null;
-    if (count is! int || count < 0) return null;
-    if (first is! String || last is! String) return null;
-    return SegmentClaim(digest: digest, count: count, first: first, last: last);
+/// **A known limitation, stated rather than discovered later**: a segment written in a *newer* package format is
+/// dropped here along with a garbage one, so a reader is not told that it exists. The honest fix is a claim that
+/// survives an unreadable manifest and says so; it is not built, and this is where that would go.
+ArchiveManifest? readSegmentClaim(Object? entry) {
+  if (entry is! Map<String, Object?>) return null;
+  try {
+    final manifest = ArchiveManifest.fromJson(entry);
+    if (manifest.count < 0) return null;
+    // A segment nothing names cannot be asked for, and keeping it would put a claim on an outcome that a reader
+    // could not act on.
+    if (manifest.digest.isEmpty) return null;
+    return manifest;
+  } on Object {
+    return null;
   }
-
-  @override
-  bool operator ==(Object other) =>
-      other is SegmentClaim &&
-      other.digest == digest &&
-      other.count == count &&
-      other.first == first &&
-      other.last == last;
-
-  @override
-  int get hashCode => Object.hash(digest, count, first, last);
-
-  @override
-  String toString() => 'SegmentClaim($digest, $count events, $first..$last)';
 }
 
 /// One message on a sync connection.
@@ -240,7 +184,7 @@ final class HelloFrame extends WireFrame {
     required this.name,
     required this.digest,
     this.token = '',
-    Iterable<SegmentClaim> segments = const [],
+    Iterable<ArchiveManifest> segments = const [],
   }) : segments = List.unmodifiable(segments);
 
   @override
@@ -255,12 +199,18 @@ final class HelloFrame extends WireFrame {
   /// The pairing token the sender was given, or empty when it was given none.
   final String token;
 
-  /// **The history this device holds that its log does not** -- the archives its reader has attached.
+  /// **The history this device holds that its log does not** -- the manifests of the archives its reader has attached.
   ///
   /// Empty for every build that came before this one, and empty for a reader who has attached nothing, which is the
   /// ordinary case. **Its absence is not a claim that the peer has no archives**, only that it has announced none:
-  /// the two are indistinguishable on this frame and treating them the same is what makes the degradation automatic.
-  final List<SegmentClaim> segments;
+  /// the two are indistinguishable on this frame, and treating them the same is what makes the degradation automatic.
+  ///
+  /// **The whole manifest rather than a summary of it** -- `{digest, count, first, last}` was the first version and it
+  /// was enough to *identify* a package and not enough to *receive* one. A receiver writes the package it is given,
+  /// and a manifest needs `createdMillis` and `nodeId` too: **when the package was made, and which device made it.**
+  /// Reconstructing those would put "made here, just now" on a file made on somebody else's machine a month ago,
+  /// and the manifest is the one thing in this project that is meant to still be true in five years.
+  final List<ArchiveManifest> segments;
 
   @override
   Map<String, Object?> _toJson() => {
@@ -301,9 +251,8 @@ final class HelloFrame extends WireFrame {
     if (rawSegments != null && rawSegments is! List) {
       throw FormatException('hello with a segments field that is not a list: $json');
     }
-    final segments = <SegmentClaim>[
-      for (final entry in (rawSegments as List?) ?? const [])
-        ?SegmentClaim.tryFromJson(entry),
+    final segments = <ArchiveManifest>[
+      for (final entry in (rawSegments as List?) ?? const []) ?readSegmentClaim(entry),
     ];
     return HelloFrame(
       name: name,

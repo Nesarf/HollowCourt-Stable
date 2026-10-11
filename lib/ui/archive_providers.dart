@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../data/archive_package.dart';
-import '../domain/sync/wire.dart';
 
 /// Where a reader's archives live: **in their own documents directory, beside `.courtpack` files.**
 ///
@@ -127,18 +126,16 @@ class ArchiveSelection extends Notifier<Set<String>> {
 ///
 /// **Empty when the reader has ticked nothing**, which is the ordinary case, and empty is what every build before
 /// this one announces -- which is what makes the degradation automatic rather than negotiated.
-final attachedSegmentsProvider = Provider<List<SegmentClaim>>((ref) {
+final attachedSegmentsProvider = Provider<List<ArchiveManifest>>((ref) {
   final entries = ref.watch(archiveCatalogProvider).value ?? const <ArchiveEntry>[];
   final selected = ref.watch(archiveSelectionProvider);
   return [
     for (final entry in entries)
       if (entry.isUsable && selected.contains(entry.fileName))
-        SegmentClaim(
-          digest: entry.package!.manifest.digest,
-          count: entry.count ?? entry.package!.events.length,
-          first: entry.package!.manifest.firstClock,
-          last: entry.package!.manifest.lastClock,
-        ),
+        // **The reader's own manifest, passed through unchanged.** Not reconstructed from its fields: a receiver
+        // writes this thing into a file and the point of carrying it whole is that what arrives is byte-faithful to
+        // what the sender holds -- including *when* it was made and *which device* made it.
+        entry.package!.manifest,
   ];
 });
 

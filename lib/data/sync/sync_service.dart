@@ -4,7 +4,7 @@ import 'dart:io';
 
 import '../../domain/sync/device_identity.dart';
 import '../../domain/sync/exchange.dart';
-import '../../domain/sync/wire.dart';
+import '../../domain/archive/archive_manifest.dart';
 import '../../domain/sync/pairing.dart';
 import '../../domain/sync/link_mode.dart';
 import 'socket_transport.dart';
@@ -64,7 +64,7 @@ abstract interface class SyncService {
     Future<bool> Function(String shortCode)? confirmComparison,
     /// **The history this device holds that its log does not** -- the archives its reader has attached, announced
     /// in the hello. Empty is the ordinary answer and the one every build before this one gives.
-    Iterable<SegmentClaim> segments = const [],
+    Iterable<ArchiveManifest> segments = const [],
   });
 
   /// Binds the listener a neighbour's tap arrives at, and answers with the port it holds.
@@ -97,7 +97,7 @@ abstract interface class SyncService {
   Future<ExchangeOutcome> awaitRequest({
     DeviceIdentity? identity,
     Future<bool> Function(String shortCode)? confirmComparison,
-    Iterable<SegmentClaim> segments = const [],
+    Iterable<ArchiveManifest> segments = const [],
   });
 
   /// Reaches the device the code names and runs the exchange.
@@ -112,7 +112,7 @@ abstract interface class SyncService {
     /// The same gate as [awaitPeer], and it belongs on both: a joiner that confirmed while the host did not
     /// would be a device whose owner compared two screens against a device that never asked.
     Future<bool> Function(String shortCode)? confirmComparison,
-    Iterable<SegmentClaim> segments = const [],
+    Iterable<ArchiveManifest> segments = const [],
   });
 
   /// Gives up the role it was in: closes a session's listener, or a connection in flight.
@@ -225,7 +225,7 @@ final class SocketSyncService implements SyncService {
     DeviceIdentity? identity,
     String expectedIdentity = '',
     Future<bool> Function(String shortCode)? confirmComparison,
-    Iterable<SegmentClaim> segments = const [],
+    Iterable<ArchiveManifest> segments = const [],
   }) async {
     final server = _server;
     if (server == null) {
@@ -262,7 +262,7 @@ final class SocketSyncService implements SyncService {
     DeviceIdentity? identity,
     String expectedIdentity = '',
     Future<bool> Function(String shortCode)? confirmComparison,
-    Iterable<SegmentClaim> segments = const [],
+    Iterable<ArchiveManifest> segments = const [],
   }) async {
     await _stopHosting();
     return syncWithTicket(
@@ -332,7 +332,7 @@ final class SocketSyncService implements SyncService {
   Future<ExchangeOutcome> awaitRequest({
     DeviceIdentity? identity,
     Future<bool> Function(String shortCode)? confirmComparison,
-    Iterable<SegmentClaim> segments = const [],
+    Iterable<ArchiveManifest> segments = const [],
   }) async {
     if (_requests == null) {
       return const ExchangeOutcome(
