@@ -2,12 +2,12 @@
 
 Written 2026-10-08, from the owner's question about **managing many ingredients and many recipes** -- *"原料和配方都很多的时候，如何提升管理效率"* -- and their observation that this is **仓库管理的逻辑**.
 
-**This was a design note rather than a record. ①, ② and ③ are now built** -- the 原料 tab draws the reader's side and
-the library's as two headed lists cut again into four demand classes, a held ingredient shows the shelf its bottle
-stands on, and the bar is back with named shelves and bottles coloured by kind. `test/ui/ingredient_section_test.dart`,
-`test/domain/model/ingredient_demand_test.dart`, `test/domain/model/shelf_book_test.dart` and `test/ui/bar_page_test.dart`
-hold them to that. **④ and ⑤ are still unbuilt**, and `docs/ingredient-gap.md`'s rule applies to everything below
-that is written in the present tense about them: nothing there is a claim about what the code does.
+**This was a design note rather than a record. ①, ②, ③ and ④ are now built** -- the 原料 tab draws the reader's side
+and the library's as two headed lists cut again into four demand classes, a held ingredient shows the shelf its bottle
+stands on, the bar is back with named shelves and bottles coloured by kind, and the cellar page carries a
+running-low section beside the shopping list. The tests that hold them are named in the sections above. **⑤ is still
+unbuilt**, and `docs/ingredient-gap.md`'s rule applies to everything below that is written in the present tense about
+it: nothing there is a claim about what the code does.
 
 ## The finding, and it is not about speed
 
@@ -133,6 +133,31 @@ So the bar now has: bottles coloured by kind and named underneath; a chooser ove
 to add one; and a long press on a chip to rename it or take its name away.
 
 **④ Then reorder points from low stock**, rather than from the plan alone.
+
+**Built, as three signals rather than one.** The owner's instruction was to combine all three, and the reason each is
+needed is a case the others miss:
+
+    快见底了   remaining / added  under a fifth          what a person actually notices
+    剩得不多   under 100 ml                             a big bottle at a fifth is an evening; a small one is a drink
+    照这个喝法快没了   inside 30 days at the observed rate    the only one that is a *reorder point* rather than a level
+
+**Neither level rule subsumes the other**, and the pair of tests that proves it is the point: a litre at eight percent
+and a 150 ml bitters bottle at sixty percent are both worth knowing about, for opposite reasons.
+
+**The third signal usually cannot speak, and it says so by being absent.** A rate needs two pours at least a day
+apart; under that the number is an artefact of two events landing in the same minute, and it fires on every bottle a
+reader pours twice while unpacking their shopping. So `lastsFor` is null and the horizon rule does not fire -- and the
+screen draws two reasons instead of three rather than showing "unknown", which would read as a fault when it is the
+ordinary state of a log a fortnight old. **A warning that cannot be trusted is worse than no warning.**
+
+**The thresholds are the reader's**, and they live in `CellarPreferences` beside the units and the link mode rather
+than in the log: a threshold is not a fact about the cellar, it is how careful this reader wants to be. There are no
+switches to turn a signal off -- a reader who does not want one sets it to a value nothing reaches.
+
+**It has a section of its own rather than rows in the shopping list**, which is the owner's choice and the right one:
+that list answers *what do the drinks I plan to make need*, this answers *what is running out*, and merging them would
+produce rows nobody could account for. The section says which thresholds it was built against, and changes them from
+the same place -- a list a reader cannot argue with is a list they will stop reading.
 
 **⑤ And a database, if ever, last.** The review already said it and the numbers agree: the log is **1.6 KB after three
 weeks**, the seed is 253 KB and never changes, and what a database would eventually fix is *query* cost -- which is

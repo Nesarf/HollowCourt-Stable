@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../domain/stats/reorder.dart';
 import '../domain/sync/link_mode.dart';
 import '../domain/preferences/cellar_preferences.dart';
 import '../domain/preferences/choice_set.dart';
@@ -132,6 +133,10 @@ class PreferencesNotifier extends Notifier<CellarPreferences> {
   /// restriction gone is making a choice, and `withLinkMode(null)` is how they make it.
   Future<void> setLinkMode(SyncLink? mode) =>
       _commit(state.withLinkMode(mode));
+
+  /// **Replaces the three reorder thresholds** -- stage ④'s control, and what makes "reader-adjustable" a fact
+  /// rather than a word in a design note.
+  Future<void> setReorder(ReorderPoint point) => _commit(state.withReorder(point));
 
   /// The unit this reader measures [state] in.
   ///

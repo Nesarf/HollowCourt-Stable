@@ -94,6 +94,7 @@ final class Cellar {
     required this.collections,
     required this.packs,
     required this.shelves,
+    required this.events,
     required this.archivedEvents,
   });
 
@@ -106,6 +107,15 @@ final class Cellar {
 
   /// Whether any of what is folded here came from a package.
   bool get readsArchives => archivedEvents > 0;
+
+  /// **The events every fold above was folded from -- the log's and the attached packages', merged and ordered.**
+  ///
+  /// Kept because a question can be asked of the history that no fold answers. A bottle's *speed* is the one that
+  /// needed it: the ledger keeps a quantity and throws the clock readings away, so `BottleState` can say what is left
+  /// and not when it went, and a rate needs two times. **A screen that reached for `log.events` instead would compute
+  /// a speed from a history it is not drawing**, which is the same mistake `Cellar.of` exists to prevent one level up
+  /// -- and the reason this is the merged list rather than the log's.
+  final List<Event> events;
 
   /// Both folds of one log, taken together.
   ///
@@ -138,6 +148,7 @@ final class Cellar {
         collections: log.collections,
         packs: log.packs,
         shelves: log.shelves,
+        events: log.events,
         archivedEvents: 0,
       );
     }
@@ -152,6 +163,7 @@ final class Cellar {
       collections: RecipeCollections.of(all),
       packs: PackBook.of(all),
       shelves: ShelfBook.of(all),
+      events: all,
       archivedEvents: archived.length,
     );
   }

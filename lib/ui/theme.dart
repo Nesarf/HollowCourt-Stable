@@ -2777,6 +2777,116 @@ abstract final class Copy {
     },
   );
 
+  // ---------------------------------------------------------------------------------------------------------------
+  // Stage ④ of `docs/catalogue-and-stock.md`: what is worth buying again.
+  //
+  // **A heading, three reasons, and three thresholds said out loud.** The reasons are named rather than shown as a
+  // score, because the three do not agree about what is wrong: a bottle can be half full and still a fortnight from
+  // being finished, or nearly full and one drink from being finished, and a reader deciding whether to go to the shop
+  // wants to know which.
+  // ---------------------------------------------------------------------------------------------------------------
+
+  static const reorderTitle = CopyLine.withLanguages(
+    Translated.authored('该补了'),
+    Translated.authored('Running low'),
+    voices: {
+      Voice.heiress: '该补了。这几瓶快见底，或者照这个喝法撑不了几天。',
+      Voice.heiressJa: 'もう補充の頃よ。底が見えているか、この調子では数日もたないか。',
+      Voice.minister: 'Running low: these are nearly out, or will not last at the present rate.',
+    },
+    also: {'ja': '補充どき', 'zh-HK': '該補了', 'zh-TW': '該補了'},
+  );
+
+  /// What the section says when nothing is low.
+  ///
+  /// **A sentence rather than nothing at all**, because an absence with no explanation reads as a feature that did
+  /// not load -- the same reason `cellarShoppingNoPlans` exists beside the shopping list.
+  static const reorderNothing = CopyLine.withLanguages(
+    Translated.authored('没有见底的 —— 现在不用去店里。'),
+    Translated.authored('Nothing is low. No reason to go to the shop.'),
+    also: {
+      'ja': '底をついているものはありません。今は店に行く必要はないわ。',
+      'zh-HK': '冇嘢見底 —— 而家唔使去舖頭。',
+      'zh-TW': '沒有見底的 —— 現在不用去店裡。',
+    },
+  );
+
+  static const reorderNearlyEmpty = CopyLine.withLanguages(
+    Translated.authored('快见底了'),
+    Translated.authored('Nearly empty'),
+    also: {'ja': 'もうすぐ空', 'zh-HK': '就快見底', 'zh-TW': '快見底了'},
+  );
+
+  static const reorderSmallRemainder = CopyLine.withLanguages(
+    Translated.authored('剩得不多'),
+    Translated.authored('Little left'),
+    also: {'ja': '残りわずか', 'zh-HK': '剩得唔多', 'zh-TW': '剩得不多'},
+  );
+
+  /// The reason that most often cannot be given, and it says so by being absent.
+  static const reorderRunningOutSoon = CopyLine.withLanguages(
+    Translated.authored('照这个喝法快没了'),
+    Translated.authored('Going fast'),
+    also: {'ja': '減りが早い', 'zh-HK': '照咁飲法好快冇', 'zh-TW': '照這個喝法快沒了'},
+  );
+
+  /// The line under the section that says what the three thresholds currently are.
+  ///
+  /// **Said out loud rather than left to a settings screen.** A list that warns about a bottle and does not say what
+  /// it was asked for is a list a reader cannot argue with -- and the numbers are the whole of the argument.
+  ///
+  /// **Three placeholders rather than `{count}`**, because `withCount` replaces one and this sentence has three
+  /// numbers in it. `reorderThresholdsText` does the substitution, and it does it on the *resolved* string so that
+  /// each language keeps its own word order -- which is the reason the placeholders are named rather than numbered.
+  static const reorderThresholds = CopyLine.withLanguages(
+    Translated.authored('标准：剩下不到 {percent}%、或不足 {ml} 毫升、或撑不过 {days} 天。'),
+    Translated.authored('Thresholds: under {percent}% of the bottle, or under {ml} ml, or inside {days} days.'),
+    also: {
+      'ja': '基準：残りが {percent}% 未満、または {ml} ml 未満、または {days} 日以内。',
+      'zh-HK': '標準：剩返唔夠 {percent}%、或者唔夠 {ml} 毫升、或者撐唔過 {days} 日。',
+      'zh-TW': '標準：剩下不到 {percent}%、或不足 {ml} 毫升、或撐不過 {days} 天。',
+    },
+  );
+
+  /// How long a bottle lasts at the speed it has been going.
+  ///
+  /// **A whole sentence with the number in it**, because "9 d" is not a thing to say in five languages: a bare
+  /// number and a unit label would need a unit word per language and a plural rule for each, and this line is the
+  /// only place either is wanted.
+  static const reorderLasts = CopyLine.withLanguages(
+    Translated.authored('还能撑 {days} 天'),
+    Translated.authored('about {days} days left'),
+    also: {
+      'ja': 'あと {days} 日ほど',
+      'zh-HK': '仲撐到 {days} 日',
+      'zh-TW': '還能撐 {days} 天',
+    },
+  );
+
+  static const reorderEdit = CopyLine.withLanguages(
+    Translated.authored('改标准'),
+    Translated.authored('Change the thresholds'),
+    also: {'ja': '基準を変える', 'zh-HK': '改標準', 'zh-TW': '改標準'},
+  );
+
+  static const reorderFieldPercent = CopyLine.withLanguages(
+    Translated.authored('剩下不到几成算低'),
+    Translated.authored('Low below this much of the bottle'),
+    also: {'ja': '瓶の何割を切ったら低いか', 'zh-HK': '剩返幾成算低', 'zh-TW': '剩下幾成算低'},
+  );
+
+  static const reorderFieldMillilitres = CopyLine.withLanguages(
+    Translated.authored('或者不足多少毫升'),
+    Translated.authored('Or under this many millilitres'),
+    also: {'ja': 'または何 ml を切ったら', 'zh-HK': '或者唔夠幾多毫升', 'zh-TW': '或者不足多少毫升'},
+  );
+
+  static const reorderFieldDays = CopyLine.withLanguages(
+    Translated.authored('或者撑不过多少天'),
+    Translated.authored('Or inside this many days'),
+    also: {'ja': 'または何日以内', 'zh-HK': '或者撐唔過幾多日', 'zh-TW': '或者撐不過多少天'},
+  );
+
   static const ingredientAdd = CopyLine.withLanguages(
     Translated.authored('加一种原料'),
     Translated.authored('Add an ingredient'),

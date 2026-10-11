@@ -8,6 +8,7 @@ import '../domain/pricing/cellar_value.dart';
 import '../domain/pricing/shopping_spend.dart';
 import '../domain/stats/cellar_stats.dart';
 import '../domain/stats/shopping_list.dart';
+import 'reorder_section.dart';
 import '../domain/units/measure_set.dart';
 import '../domain/units/unit.dart';
 import '../domain/units/unit_system.dart';
@@ -332,6 +333,26 @@ class CellarPage extends ConsumerWidget {
               const SizedBox(height: 28),
               if (shelfPlacementIsShown) const BarShelfSection(),
               const CashflowSection(),
+              const SizedBox(height: 28),
+              // **Above the shopping list, and the order is the argument.** The two answer different questions --
+              // *what is running out* against *what the drinks I plan to make still need* -- and a reader at the
+              // shop reads both. Running-low comes first because it is about the shelf as it stands rather than
+              // about a plan that may not happen, and because the list below is often empty while this one is not.
+              ReorderSection(
+                nameOf: (ingredientId) {
+                  final english = seed?.ingredientById(ingredientId)?.name ?? ingredientId;
+                  return ref
+                          .watch(seedNamesProvider)
+                          .value
+                          ?.nameFor(ingredientId, ref.watch(seedNameLocaleProvider),
+                              fallback: english) ??
+                      english;
+                },
+                // **The merged set, not the log.** The caller already holds log plus whatever packages the reader
+                // attached; a section that reached for `cellar.log.events` would silently compute speeds from a
+                // history it is not drawing.
+                events: state.events,
+              ),
               const SizedBox(height: 28),
               DualCopyText(Copy.cellarShopping, style: HollowType.heading),
               const SizedBox(height: 8),

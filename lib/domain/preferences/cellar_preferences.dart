@@ -1,4 +1,5 @@
 import '../pricing/price.dart';
+import '../stats/reorder.dart';
 import '../sync/link_mode.dart';
 import '../units/measure_set.dart';
 import '../units/unit.dart';
@@ -21,6 +22,7 @@ final class CellarPreferences {
     required this.measures,
     required this.currencies,
     this.linkMode,
+    this.reorder = ReorderPoint.defaults,
   });
 
   /// The measuring system, by matter state.
@@ -43,6 +45,17 @@ final class CellarPreferences {
   /// before this one did; a mode means the other kinds are refused rather than ranked below this one.
   final SyncLink? linkMode;
 
+  /// **When a bottle is worth buying again** -- stage ④'s three thresholds.
+  ///
+  /// **Here rather than in the log, and the distinction is the same one `linkMode` draws.** A threshold is not a fact
+  /// about the cellar; it is how careful *this reader* wants to be, and two people sharing one log would set it
+  /// differently. What is stored in the log is the bottle and its pours, which is what a reorder list is computed
+  /// *from*; nothing about the reader's tolerance belongs in it.
+  ///
+  /// A value with defaults rather than nullable, unlike [linkMode]: there is no "unset" for a threshold, because a
+  /// reorder list always has one and a screen would have to invent a fallback every time it drew the list.
+  final ReorderPoint reorder;
+
   /// What this reader measures [state] in, if they have said.
   ChoiceSet<Unit>? measuresFor(MatterState state) => measures[state];
 
@@ -50,6 +63,7 @@ final class CellarPreferences {
       CellarPreferences(
         measures: {...measures, state: units},
         currencies: currencies,
+        reorder: reorder,
         // **Carried, and the omission was caught by a test rather than by reading.** There are two `with…` methods
         // on this class and the first version of this field was threaded through only one of them, so choosing a
         // unit quietly lifted the link restriction -- a setting that disappears when somebody touches a different
@@ -58,12 +72,32 @@ final class CellarPreferences {
       );
 
   CellarPreferences withCurrencies(ChoiceSet<Currency> next) =>
-      CellarPreferences(measures: measures, currencies: next, linkMode: linkMode);
+      CellarPreferences(
+        measures: measures,
+        currencies: next,
+        linkMode: linkMode,
+        reorder: reorder,
+      );
+
+  /// **The same trap the comment above records, met again by the same method.** Adding a field to this class means
+  /// adding it to every `with…` on it, and the first version of [reorder] was threaded through `withMeasures` and
+  /// forgotten here -- so choosing a currency silently put the thresholds back to their defaults. There are two
+  /// `with…` methods that rebuild the whole record and one that passes the old value through; all three carry it now.
+  CellarPreferences withReorder(ReorderPoint next) => CellarPreferences(
+    measures: measures,
+    currencies: currencies,
+    linkMode: linkMode,
+    reorder: next,
+  );
 
   /// The link mode, or none. **Passing null lifts the restriction**, which is a thing a reader may want and is
   /// therefore a value rather than the absence of one.
-  CellarPreferences withLinkMode(SyncLink? next) =>
-      CellarPreferences(measures: measures, currencies: currencies, linkMode: next);
+  CellarPreferences withLinkMode(SyncLink? next) => CellarPreferences(
+    measures: measures,
+    currencies: currencies,
+    linkMode: next,
+    reorder: reorder,
+  );
 
   /// Writes the choices out as JSON.
   ///
@@ -85,6 +119,13 @@ final class CellarPreferences {
     // **Omitted when nothing is restricted**, because an absent key is what every file written before this
     // field existed looks like, and reading one of those has to keep working.
     if (linkMode != null) 'linkMode': linkMode!.name,
+    // **Written whole rather than omitted when it is default.** The three numbers are read together and a file that
+    // left one out would be a file whose reader has two thresholds from their own build and one from this one's.
+    'reorder': <String, Object?>{
+      'fillPercent': reorder.fillPercent,
+      'millilitres': reorder.millilitres,
+      'horizonDays': reorder.horizonDays,
+    },
   };
 
   /// Reads the choices back, **re-resolving every id and refusing what it cannot**.
@@ -140,8 +181,31 @@ final class CellarPreferences {
       measures: measures,
       currencies: currencies,
       linkMode: linkMode,
+      reorder: _reorderFromJson(json['reorder']),
     );
   }
+}
+
+/// The three thresholds, read back, per field and each one refusing on its own.
+///
+/// **Per field, the rule the rest of this file keeps**: a number a reader typed into a build that allowed something
+/// this one does not should cost them that number and not the other two. And **refused rather than clamped**, because
+/// a threshold silently moved to a legal value is a list that warns about the wrong things and says nothing about
+/// why -- the same argument `Rating` and `UnitSystem` make about a value out of range.
+ReorderPoint _reorderFromJson(Object? json) {
+  if (json is! Map<String, Object?>) return ReorderPoint.defaults;
+  final defaults = ReorderPoint.defaults;
+  return ReorderPoint(
+    fillPercent: _bounded(json['fillPercent'], 0, 100, defaults.fillPercent),
+    millilitres: _bounded(json['millilitres'], 0, 10000, defaults.millilitres),
+    horizonDays: _bounded(json['horizonDays'], 0, 3650, defaults.horizonDays),
+  );
+}
+
+int _bounded(Object? raw, int low, int high, int fallback) {
+  if (raw is! int) return fallback;
+  if (raw < low || raw > high) return fallback;
+  return raw;
 }
 
 /// One choice set, read from one JSON object, or null when it cannot be read.
