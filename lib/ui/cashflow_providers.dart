@@ -41,7 +41,7 @@ final cashflowsProvider = Provider<AsyncValue<List<Cashflow>>>((ref) {
 
 List<Cashflow> _fold(Cellar cellar, DateTime now) {
   final expenses = <CashflowEntry>[];
-  for (final event in cellar.log.events) {
+  for (final event in cellar.events) {
     // **`PriceOp.tryParse`, not a look at `event.type`.** The log is an open set of dotted names on purpose --
     // an older build has to carry a newer one's events across a sync -- so reading the payload directly would
     // mean this screen understanding a wire format it does not own. The op layer knows which strings are its

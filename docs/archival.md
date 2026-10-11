@@ -71,6 +71,33 @@ application still holds -- they can open it, and the lines are the same lines.
 both kinds: a `.courtpack` is *imported*, merging its events into the log; an archive is *read beside* it. **A reader
 who confuses them would delete their history believing they were restoring it.**
 
+## A screen that reads the log while its neighbour reads the history
+
+**Found 2026-10-11, while the reorder section was being built, and it was the section's own doing.** Attaching a
+package already changed the folds -- `Cellar.of` merges before folding, and `ShelfLayout`, `Overlay` and the rest all
+come out of the whole history. **What did not change were five projections that reached for `cellar.log.events`
+directly**, so a reader who attached a package got a screen where the shelf knew about ten years and the chart beside
+it knew about three.
+
+    cellarValueOf      the cellar's value, priced from its own receipts
+    ConsumptionCurve   the consumption chart
+    CellarStats        the statistics joined to it
+    priceSeriesOf      the price history
+    Cashflow           the four money windows
+
+**All five now read `Cellar.events`**, which is log plus attached packages, merged and ordered. The inconsistency was
+always there; what made it visible is that the running-low section added in ⑤'s round reads the merged history --
+**a screen that agrees with itself while being wrong is one thing, and a screen whose two halves disagree is a defect
+somebody can see.**
+
+**And two places still read the log alone, on purpose**:
+
+* **`SyncScope` and the exchange read the working log**, because that is the invariant the whole archive design rests
+  on: `digest` and `missingFrom` decide by clock identity what to send, and **archives travel by their own frame rather
+  than by the event difference**. A peer asked for what is missing from the *working log*, not from a history the
+  reader assembled out of files only they have.
+* **The developer section prints `log.events.length`**, and its label says so. It is a count of the file.
+
 ## What this still costs, stated rather than discovered later
 
 * **A new frame in the sync protocol.** A peer has to be able to ask for a segment and be answered with the package.

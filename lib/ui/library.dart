@@ -355,7 +355,10 @@ final priceSeriesForProvider = Provider.family<PriceSeries, String>((ref, sku) {
   // same log and only one of them knows that a line can be withdrawn; without this a bottle removed
   // by mistake would keep its purchase in the chart, and the chart would look like data.
   return priceSeriesOf(
-    cellar.log.events,
+    // **The merged history, for the reason the other charts give.** A price paid three years ago and moved into a
+    // package is still a price this reader paid, and a chart drawn from the working log alone would quietly lose it
+    // on the day the history was archived.
+    cellar.events,
     sku: sku,
     removedBottles: cellar.stock.removedBottleIds,
   );

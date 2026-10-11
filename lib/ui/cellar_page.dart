@@ -211,14 +211,17 @@ class CellarPage extends ConsumerWidget {
                 .map(
                   (bottle) => (sku: bottle.sku, onHand: bottle.remaining),
                 ),
-            state.log.events,
+            // **The merged history, not the log.** `Cellar.events` is log plus whatever packages the reader
+            // attached; the log alone would price a cellar against a history the reader can see is longer, and
+            // `docs/archival.md`'s rule is that a projection is folded from everything the reader is reading.
+            state.events,
           );
 
           // Cut on the local calendar, which the domain deliberately does not know
           // about: `PricePeriod.bucketOf` is the same calendar the price chart uses,
           // so a day on this screen is a day on that one.
           final curve = ConsumptionCurve.of(
-            state.log.events,
+            state.events,
             bucketOf: PricePeriod.day.bucketOf,
           );
 
@@ -226,7 +229,7 @@ class CellarPage extends ConsumerWidget {
           // ledger and the volumes from the curve above.
           final stats = CellarStats.of(
             stock: state.stock,
-            events: state.log.events,
+            events: state.events,
           );
           final unit =
               ref.watch(preferencesProvider).measuresFor(MatterState.liquid)?.primary ??
