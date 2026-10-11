@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:hollow_court/data/seed/seed_codec.dart';
 import 'package:hollow_court/domain/model/ingredient_demand.dart';
 
 /// **How many recipes call for each ingredient** -- stage ② of `docs/catalogue-and-stock.md`, as arithmetic.
@@ -99,6 +102,54 @@ void main() {
     test('an id nothing knows lands in dead, like every other unknown', () {
       final demand = IngredientDemand.of(const []);
       expect(demand.histogramOf(['gin', 'yuzu', 'campari']), {DemandClass.dead: 3});
+    });
+  });
+
+  /// **The numbers the whole stage exists to show**, against the library that actually ships.
+  ///
+  /// They are `docs/ingredient-gap.md`'s, measured 2026-10-01, and this is the second measurement of them by a
+  /// different route -- that one counted by hand over the artifact, this one folds the real seed through
+  /// [IngredientDemand]. Two measurements agreeing is worth more than either, and the day they stop agreeing is a
+  /// day somebody should look.
+  ///
+  /// **It is pinned exactly rather than bounded, and that is the point.** The numbers are a documented claim about
+  /// the shipped data, so a seed change that moves them has made a document wrong, and a test that tolerated the
+  /// move would be the same failure as the one `seed_vocabulary_test` records: a check that quietly redefines what
+  /// it checks. Whoever adds ingredients or recipes updates this and the document together, deliberately.
+  group('the library that ships', () {
+    test('**33 / 31 / 57 / 68, over 189 ingredients and 103 recipes**', () {
+      final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
+      final demand = IngredientDemand.of([
+        for (final recipe in seed.recipes)
+          [for (final item in recipe.items) item.ingredientId],
+      ]);
+      final histogram = demand.histogramOf([for (final i in seed.ingredients) i.id]);
+
+      expect(seed.ingredients, hasLength(189));
+      expect(seed.recipes, hasLength(103));
+      expect(histogram[DemandClass.core], 33);
+      expect(histogram[DemandClass.occasional], 31);
+      expect(histogram[DemandClass.rare], 57);
+      expect(histogram[DemandClass.dead], 68);
+
+      // **And the four add up to the catalogue**, which is the check that survives a wrong histogram: every
+      // ingredient is in exactly one class, so a bucket lost to a bug shows up as a total that is short.
+      final total = DemandClass.values.fold(0, (sum, c) => sum + (histogram[c] ?? 0));
+      expect(total, seed.ingredients.length);
+    });
+
+    test('**dead stock is a third of the catalogue, and that is the finding**', () {
+      // Said as a ratio rather than the raw 68, because the claim being guarded is the one a reader meets on the
+      // screen -- "a third of these are not your responsibility" -- and 68 over 189 is what makes it true.
+      final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
+      final demand = IngredientDemand.of([
+        for (final recipe in seed.recipes)
+          [for (final item in recipe.items) item.ingredientId],
+      ]);
+      final dead = demand.histogramOf([for (final i in seed.ingredients) i.id])[DemandClass.dead]!;
+
+      expect(dead / seed.ingredients.length, greaterThan(0.35));
+      expect(dead / seed.ingredients.length, lessThan(0.37));
     });
   });
 }
