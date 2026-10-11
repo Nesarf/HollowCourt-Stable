@@ -2689,6 +2689,94 @@ abstract final class Copy {
     },
   );
 
+  /// The four demand classes, as a reader meets them: most wanted first, nothing-wants-it last.
+  ///
+  /// **The threshold is in the sentence rather than left to the name.** "Core" over a grid of 33 says nothing about
+  /// *why* those 33; `docs/ingredient-gap.md` measured the buckets, so the buckets can say what they are, and a
+  /// reader who has never heard of ABC still reads the line correctly. The alternative -- a caption under each
+  /// heading -- would have been four more lines on a page that already has five headings on it.
+  ///
+  /// **The vocabulary is the warehouse's, because the problem is the warehouse's.** 死库存 is the retail term for
+  /// the same thing English calls dead stock; Japanese pairs **死に筋** with **稼ぎ筋**, which is the trade's own
+  /// word for the line that carries a shop, so the two ends of this table are the two ends of that one; Cantonese
+  /// says 死貨 and Taiwanese retail says 滯銷. **Each language gets its own term rather than a translation of the
+  /// English**, because a reader who manages a store already has the word and a literal rendering would not be it.
+  static const demandCore = CopyLine.withLanguages(
+    Translated.authored('核心（四个以上的配方用到）'),
+    Translated.authored('Core (four or more recipes)'),
+    voices: {
+      Voice.heiress: '核心。四个以上的配方都要它 —— 这几样缺了，吧台就停了。',
+      Voice.heiressJa: '主力。4つ以上のレシピが求めているもの。これが欠けるとバーが止まるわ。',
+      Voice.minister: 'Core: four or more recipes call for it. Without these the bar stops.',
+    },
+    also: {
+      'ja': '主力（4つ以上のレシピが使う）',
+      'zh-HK': '核心（四個以上嘅配方用到）',
+      'zh-TW': '核心（四個以上的配方用到）',
+    },
+  );
+
+  static const demandOccasional = CopyLine.withLanguages(
+    Translated.authored('偶尔（两三个配方用到）'),
+    Translated.authored('Occasional (two or three recipes)'),
+    voices: {
+      Voice.heiress: '偶尔。两三个配方的事 —— 备着不亏，缺了也只是少几杯。',
+      Voice.heiressJa: '時々。2、3のレシピのこと。備えておいて損はないけれど、無ければ数杯が作れないだけ。',
+      Voice.minister: 'Occasional: two or three recipes. Worth keeping, and their absence costs a few drinks.',
+    },
+    also: {
+      'ja': '時々（2〜3のレシピが使う）',
+      'zh-HK': '間中（兩三個配方用到）',
+      'zh-TW': '偶爾（兩三個配方用到）',
+    },
+  );
+
+  static const demandRare = CopyLine.withLanguages(
+    Translated.authored('少见（只有一个配方用到）'),
+    Translated.authored('Rare (exactly one recipe)'),
+    voices: {
+      Voice.heiress: '少见。只有一个配方指名要它 —— 那杯酒你想喝的时候，它才重要。',
+      Voice.heiressJa: 'まれ。たった1つのレシピだけが名指しするもの。その一杯を飲みたいときに、初めて要る。',
+      Voice.minister: 'Rare: exactly one recipe names it. It matters on the day one wants that drink.',
+    },
+    also: {
+      'ja': 'まれ（1つのレシピだけが使う）',
+      'zh-HK': '少見（得一個配方用到）',
+      'zh-TW': '少見（只有一個配方用到）',
+    },
+  );
+
+  /// The class stage ② exists for, and the reason it is not merged into [demandRare].
+  static const demandDead = CopyLine.withLanguages(
+    Translated.authored('死库存（没有任何配方用到）'),
+    Translated.authored('Dead stock (no recipe at all)'),
+    voices: {
+      Voice.heiress: '死库存。没有任何配方用到 —— 这不是你的责任，是库自己带来的。',
+      Voice.heiressJa: '死に筋。どのレシピも使わない。これはあなたの責務じゃない、ライブラリが抱えてきたものよ。',
+      Voice.minister: 'Dead stock: no recipe calls for it. Not one\'s responsibility -- the library brought it along.',
+    },
+    also: {
+      'ja': '死に筋（どのレシピにも使われない）',
+      'zh-HK': '死貨（冇任何配方用到）',
+      'zh-TW': '滯銷（沒有任何配方用到）',
+    },
+  );
+
+  /// What the page says when a query matched nothing at all.
+  ///
+  /// **One line at the foot rather than one per empty half**, because with a query typed an empty half is the
+  /// query's doing rather than the reader's: saying "nothing here yet" over a half that holds twenty things the
+  /// query simply did not match would be false, and saying it twice would be noise.
+  static const ingredientNoMatch = CopyLine.withLanguages(
+    Translated.authored('没有匹配的。'),
+    Translated.authored('Nothing matches that.'),
+    also: {
+      'ja': '一致するものはありません。',
+      'zh-HK': '冇嘢夾得到。',
+      'zh-TW': '沒有符合的。',
+    },
+  );
+
   static const ingredientAdd = CopyLine.withLanguages(
     Translated.authored('加一种原料'),
     Translated.authored('Add an ingredient'),

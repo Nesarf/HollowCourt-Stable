@@ -2,10 +2,12 @@
 
 Written 2026-10-08, from the owner's question about **managing many ingredients and many recipes** -- *"原料和配方都很多的时候，如何提升管理效率"* -- and their observation that this is **仓库管理的逻辑**.
 
-**This was a design note rather than a record. ① is now built** -- the 原料 tab draws the reader's side and the
-library's as two headed lists, in `lib/ui/ingredient_section.dart`, with `test/ui/ingredient_section_test.dart`
-holding it to that. **② through ⑤ are still unbuilt**, and `docs/ingredient-gap.md`'s rule applies to everything
-below that is written in the present tense about them: nothing there is a claim about what the code does.
+**This was a design note rather than a record. ① and ② are now built** -- the 原料 tab draws the reader's side and the
+library's as two headed lists, and the library's is cut again into four demand classes, in
+`lib/ui/ingredient_section.dart` with `IngredientDemand` behind it. `test/ui/ingredient_section_test.dart` and
+`test/domain/model/ingredient_demand_test.dart` hold both to that. **③ through ⑤ are still unbuilt**, and
+`docs/ingredient-gap.md`'s rule applies to everything below that is written in the present tense about them: nothing
+there is a claim about what the code does.
 
 ## The finding, and it is not about speed
 
@@ -61,6 +63,29 @@ side and stays read-only**, and the row needs only one flag to say that: the lis
 **② Then velocity.** Put ABC in front of the reader -- core, occasional, dead -- because **"68 of these are not your
 responsibility" is information they cannot get today**, and it is the thing that makes a long list stop feeling like a
 backlog.
+
+**Built, and it is four classes rather than ABC's three.** `IngredientDemand` counts how many recipes call for each
+ingredient -- **derived on every read, never stored**, because the number is a function of the recipes and a stored
+copy would be a second truth that can disagree with the first. The second consequence is better than the saving: a
+recipe the reader writes moves an ingredient out of dead stock the moment they save it, with nothing to invalidate.
+
+    核心    ≥ 4 recipes     core        稼ぎ筋 / 主力
+    偶尔    2-3              occasional  時々
+    少见    1                rare        まれ
+    死库存  0                dead        死に筋 / 死貨 / 滯銷
+
+**The fourth class is the point, and merging it into the third -- which is what ABC does, calling both "C" -- would
+hide the number this stage exists to show.** *Called for by one recipe* is a real ingredient that happens to be in one
+drink; *called for by nothing* is a record the library kept because the derivation kept everything. The owner chose
+four over three for exactly that reason.
+
+**The library's half is drawn as four sub-sections, most wanted first**, which the owner chose over a badge on every
+card: the heading and its count *are* the sentence -- 死库存 68 -- and a badge would have put the same fact on 189
+cards to say it once. Each language gets its own trade term rather than a translation of the English, because a reader
+who manages a store already has the word.
+
+**A held ingredient shows no class at all.** It left the catalogue in ①, and *"you already have this"* is a better
+answer than *"four recipes want it"*.
 
 **③ Then location for ingredients**, the way bottles already have it. For somebody managing two hundred things, *"where
 is it"* is asked more often than *"what is it called"*.

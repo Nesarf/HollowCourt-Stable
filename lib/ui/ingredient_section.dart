@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../domain/model/ingredient.dart';
+import '../domain/model/ingredient_demand.dart';
 import 'ingredient_editor.dart';
 import 'l10n/copy_resolution.dart';
 import 'l10n/dual_copy.dart';
@@ -137,6 +138,27 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
     final split = _split(seed.ingredients, cellar);
     final mineCount = cellar.authoredIngredients.length;
     final heldCount = split.mine.where((row) => !row.isMine).length;
+    final searching = _search.text.trim().isNotEmpty;
+    void open(_Row row) => showIngredientEditor(context, editing: _editing(row));
+
+    // **The demand index is over both kinds of recipe**, and that is the same rule every fold in this application
+    // follows: a drink the reader wrote is a drink, so an ingredient only their own recipe calls for is not dead.
+    // The two record shapes differ (`RecipeItem` and `AuthoredItem`) and neither belongs in the index, so what is
+    // handed over is the ids.
+    final demand = IngredientDemand.of([
+      for (final recipe in seed.recipes)
+        [for (final item in recipe.items) item.ingredientId],
+      for (final recipe in cellar.authoredRecipes.all)
+        [for (final item in recipe.items) item.ingredientId],
+    ]);
+
+    // The library's half, cut again by how much is actually asked of it. `DemandClass.values` is already in
+    // reader order -- core first, dead last -- so the iteration order is the display order and there is no second
+    // place for that decision to live.
+    final buckets = <DemandClass, List<_Row>>{};
+    for (final row in split.library) {
+      buckets.putIfAbsent(demand.classOf(row.id), () => []).add(row);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,26 +193,57 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
           ),
         ),
         const SizedBox(height: 18),
-        _Group(
+        _Half(
           key: const ValueKey('ingredient-group-mine'),
           heading: Copy.ingredientMine,
           count: split.mine.length,
-          rows: split.mine,
-          emptyText: ref.copy(Copy.ingredientMineEmpty),
-          onOpen: (row) => showIngredientEditor(context, editing: _editing(row)),
+          // **A sentence only when there is nothing to have qualified it.** With a query typed, "nothing here yet"
+          // is a lie -- the half may hold twenty things and the query matched none of them -- so an empty half says
+          // nothing and the one line at the foot of the page says what actually happened.
+          emptyText: searching ? null : ref.copy(Copy.ingredientMineEmpty),
+          children: [_Grid(rows: split.mine, onOpen: open)],
         ),
         const SizedBox(height: 20),
-        _Group(
+        _Half(
           key: const ValueKey('ingredient-group-library'),
           heading: Copy.ingredientLibrary,
           count: split.library.length,
-          rows: split.library,
-          emptyText: ref.copy(Copy.ingredientLibraryEmpty),
-          onOpen: (row) => showIngredientEditor(context, editing: _editing(row)),
+          emptyText: searching ? null : ref.copy(Copy.ingredientLibraryEmpty),
+          children: [
+            for (final entry in DemandClass.values)
+              if (buckets[entry] case final rows? when rows.isNotEmpty) ...[
+                _Half(
+                  key: ValueKey('ingredient-demand-${entry.name}'),
+                  heading: _classCopy[entry]!,
+                  count: rows.length,
+                  // **Smaller than the two halves above it.** A class is a subdivision of the library rather than a
+                  // peer of it, and the depth has to be visible or five headings read as five of the same thing.
+                  style: HollowType.label,
+                  children: [_Grid(rows: rows, onOpen: open)],
+                ),
+                const SizedBox(height: 16),
+              ],
+          ],
         ),
+        if (searching && split.mine.isEmpty && split.library.isEmpty) ...[
+          const SizedBox(height: 12),
+          Text(ref.copy(Copy.ingredientNoMatch), style: HollowType.caption),
+        ],
       ],
     );
   }
+
+  /// The four class names, as copy.
+  ///
+  /// **A map rather than a method on the enum**, because `DemandClass` is domain vocabulary and the words a reader
+  /// reads are the interface's: an enum that knew how to name itself in five languages would be a model that has
+  /// to be rebuilt to change a sentence.
+  static const _classCopy = <DemandClass, CopyLine>{
+    DemandClass.core: Copy.demandCore,
+    DemandClass.occasional: Copy.demandOccasional,
+    DemandClass.rare: Copy.demandRare,
+    DemandClass.dead: Copy.demandDead,
+  };
 
   /// One row, as the editor expects it.
   ///
@@ -206,29 +259,38 @@ class _IngredientSectionState extends ConsumerState<IngredientSection> {
   );
 }
 
-/// One of the two lists: its heading, its count, and its cards.
+/// One heading, the count beside it, and whatever is under it.
 ///
-/// **A group rather than two copies of the same column**, because the two differ in exactly three values -- the
-/// sentence, the rows, and what an empty half says -- and the grid's own arguments are the ones that were worth
-/// writing down once (see [_Grid]).
-class _Group extends StatelessWidget {
-  const _Group({
+/// **A heading and a count on one line rather than a heading and then a number**, because the number is the whole
+/// point of the subdivision: *死库存 68* is the sentence stage ② exists to say, and *死库存* over a grid a reader
+/// would have to count answers a different question.
+///
+/// **The same widget serves both depths** -- the two halves and the four classes inside the library's -- because the
+/// only difference is [style]. Two widgets would have been two places to change the day a third depth arrives, and
+/// the depth is already carried by the palette rather than by the layout.
+class _Half extends StatelessWidget {
+  const _Half({
     super.key,
     required this.heading,
     required this.count,
-    required this.rows,
-    required this.emptyText,
-    required this.onOpen,
+    required this.children,
+    this.style,
+    this.emptyText,
   });
 
   final CopyLine heading;
   final int count;
-  final List<_Row> rows;
+  final List<Widget> children;
+  final TextStyle? style;
 
-  /// What this half says when it has nothing in it -- resolved by the caller rather than here, because a stateless
-  /// group has no `ref` and the sentence is the only thing it needs from one.
-  final String emptyText;
-  final void Function(_Row) onOpen;
+  /// What this part says when it has nothing in it, or null for nothing at all -- see the caller, where null means
+  /// *a query is typed and the empty part is the query's doing rather than the reader's*.
+  ///
+  /// **[count] is what decides whether it is shown**, and that is not a detail: the first version rendered the
+  /// sentence whenever one was passed, and the caller passed one unconditionally -- so the library's half said
+  /// "nothing left in the library, you hold all of it" directly above four grids of the things it holds. A sentence
+  /// about emptiness has to be conditional on the emptiness, and the count is the only thing here that knows.
+  final String? emptyText;
 
   @override
   Widget build(BuildContext context) {
@@ -239,16 +301,14 @@ class _Group extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Expanded(child: DualCopyText(heading, style: HollowType.title)),
+            Expanded(child: DualCopyText(heading, style: style ?? HollowType.title)),
             const SizedBox(width: 8),
             Text('$count', style: HollowType.numeric),
           ],
         ),
         const SizedBox(height: 8),
-        if (rows.isEmpty)
-          Text(emptyText, style: HollowType.caption)
-        else
-          _Grid(rows: rows, onOpen: onOpen),
+        if (emptyText case final text? when count == 0) Text(text, style: HollowType.caption),
+        ...children,
       ],
     );
   }

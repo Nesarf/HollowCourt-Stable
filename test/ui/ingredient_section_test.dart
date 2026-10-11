@@ -8,10 +8,16 @@ import 'package:hollow_court/data/seed/seed_repository.dart';
 import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/events/ingredient_authoring.dart';
+import 'package:hollow_court/domain/events/recipe_authoring.dart';
 import 'package:hollow_court/domain/events/stock.dart';
+import 'package:hollow_court/domain/model/glass.dart';
+import 'package:hollow_court/domain/model/ice.dart';
 import 'package:hollow_court/domain/model/ingredient.dart';
 import 'package:hollow_court/domain/model/ingredient_category.dart';
+import 'package:hollow_court/domain/model/item_role.dart';
+import 'package:hollow_court/domain/model/recipe.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
+import 'package:hollow_court/domain/units/unit_system.dart';
 import 'package:hollow_court/ui/ingredient_section.dart';
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/ui/l10n/locale_providers.dart';
@@ -66,7 +72,7 @@ void main() {
     return built!;
   }
 
-  Future<void> pump(WidgetTester tester, Cellar built) async {
+  Future<void> pump(WidgetTester tester, Cellar built, {List<Recipe> recipes = const []}) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -78,8 +84,9 @@ void main() {
                   ingredient('gin', 'Gin'),
                   ingredient('sweetVermouth', 'Sweet vermouth'),
                   ingredient('campari', 'Campari'),
+                  ingredient('yuzu', 'Yuzu'),
                 ],
-                recipes: const [],
+                recipes: recipes,
               ),
             ),
           ),
@@ -98,6 +105,35 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// A recipe that calls for [ids]; nothing else about it matters here.
+  Recipe drink(String id, List<String> ids) => Recipe(
+    id: id,
+    name: id,
+    packId: 'official',
+    glass: Glass.lowball,
+    ice: IceKind.cubes,
+    method: Method.stirred,
+    methodSteps: const ['Stir.'],
+    items: [
+      for (final ingredientId in ids)
+        RecipeItem(
+          ingredientId: ingredientId,
+          amount: 30000,
+          unit: UnitSystem.millilitre,
+          role: ItemRole.base,
+        ),
+    ],
+  );
+
+  /// Four recipes naming gin, two naming vermouth, one naming campari, and **none naming yuzu** -- the measured
+  /// shape of the library in miniature: a core, an occasional, a rare, and a piece of dead stock.
+  List<Recipe> theFourClasses() => [
+    drink('r1', ['gin']),
+    drink('r2', ['gin', 'sweetVermouth']),
+    drink('r3', ['gin', 'sweetVermouth']),
+    drink('r4', ['gin', 'campari']),
+  ];
+
   /// The same finder a reader's eye is: which of the two grids is this card inside?
   Finder inMine(String id) => find.descendant(
     of: find.byKey(const ValueKey('ingredient-group-mine')),
@@ -105,6 +141,10 @@ void main() {
   );
   Finder inLibrary(String id) => find.descendant(
     of: find.byKey(const ValueKey('ingredient-group-library')),
+    matching: find.byKey(ValueKey('ingredient-$id')),
+  );
+  Finder inClass(String name, String id) => find.descendant(
+    of: find.byKey(ValueKey('ingredient-demand-$name')),
     matching: find.byKey(ValueKey('ingredient-$id')),
   );
 
@@ -187,6 +227,124 @@ void main() {
     final mineEmpty = Copy.ingredientMineEmpty.textFor('zh-Hans');
     expect(find.text(mineEmpty), findsOneWidget);
     expect(find.text(Copy.ingredientLibraryEmpty.textFor('zh-Hans')), findsNothing);
+  });
+
+  // ---------------------------------------------------------------------------------------------------------------
+  // Stage ②: the library's half, cut again by how much is actually asked of it.
+  // ---------------------------------------------------------------------------------------------------------------
+
+  testWidgets('**the library is drawn as four classes, and each ingredient is in the right one**', (tester) async {
+    await pump(tester, await cellar(tester, const []), recipes: theFourClasses());
+
+    // gin is named by four recipes, vermouth by two, campari by one, and yuzu by none -- the four buckets of
+    // `docs/ingredient-gap.md`, reached from the interface rather than asserted about the seed.
+    expect(inClass('core', 'gin'), findsOneWidget);
+    expect(inClass('occasional', 'sweetVermouth'), findsOneWidget);
+    expect(inClass('rare', 'campari'), findsOneWidget);
+    expect(inClass('dead', 'yuzu'), findsOneWidget);
+
+    // **And each is in exactly one class.** A row drawn twice would be a reader counting an ingredient twice and
+    // concluding the library is bigger than it is.
+    expect(inClass('dead', 'gin'), findsNothing);
+    expect(inClass('rare', 'gin'), findsNothing);
+    expect(inClass('core', 'yuzu'), findsNothing);
+  });
+
+  testWidgets('**the classes are drawn most-wanted first, and dead stock last**', (tester) async {
+    await pump(tester, await cellar(tester, const []), recipes: theFourClasses());
+
+    // Compared by position rather than by the order of a list in the source, because what a reader gets is the
+    // vertical arrangement: `DemandClass.values` being right and the loop iterating it in another order would look
+    // identical in the code and completely different on the screen.
+    double top(String name) => tester.getTopLeft(find.byKey(ValueKey('ingredient-demand-$name'))).dy;
+    expect(top('core'), lessThan(top('occasional')));
+    expect(top('occasional'), lessThan(top('rare')));
+    expect(top('rare'), lessThan(top('dead')));
+  });
+
+  testWidgets('**a class nothing falls into is not drawn at all**', (tester) async {
+    // Every one of the four ingredients is called for by something, so there is no dead stock -- and a heading
+    // saying "0" over an empty grid would be a line of furniture reporting the absence of things nobody had.
+    // **The first version of this test was wrong rather than the code**: it named only gin, which left three of the
+    // four in dead stock and the assertion failing for the opposite of the reason it was written.
+    await pump(
+      tester,
+      await cellar(tester, const []),
+      recipes: [
+        drink('r1', ['gin']),
+        drink('r2', ['gin', 'sweetVermouth']),
+        drink('r3', ['gin', 'sweetVermouth']),
+        drink('r4', ['gin', 'campari', 'yuzu']),
+      ],
+    );
+
+    for (final drawn in ['core', 'occasional', 'rare']) {
+      expect(find.byKey(ValueKey('ingredient-demand-$drawn')), findsOneWidget, reason: '$drawn holds something');
+    }
+    expect(find.byKey(const ValueKey('ingredient-demand-dead')), findsNothing);
+  });
+
+  testWidgets('**a recipe the reader wrote counts, so their own drink rescues dead stock**', (tester) async {
+    // **The same rule every fold here follows**: a drink the reader wrote is a drink. Yuzu is called for by nothing
+    // in the library, and one recipe of their own is enough to move it out of dead stock -- with nothing to
+    // invalidate, because the count is derived rather than stored.
+    final built = await cellar(tester, [
+      RecipeAuthoredEvents.set(
+        hlc: tick(),
+        recipe: const AuthoredRecipe(
+          id: 'own.yuzu-sour',
+          name: 'Yuzu Sour',
+          items: [AuthoredItem(ingredientId: 'yuzu', amount: '30')],
+        ),
+      ),
+    ]);
+    await pump(tester, built, recipes: theFourClasses());
+
+    expect(inClass('rare', 'yuzu'), findsOneWidget);
+    expect(inClass('dead', 'yuzu'), findsNothing);
+  });
+
+  testWidgets('**an ingredient the reader holds is on their side, not in a class**', (tester) async {
+    // The two cuts are on different halves. A held ingredient left the catalogue in stage ①, and its class is not
+    // shown at all -- it is something the reader already has, which is a better answer than how wanted it is.
+    final built = await cellar(tester, [
+      StockEvents.bottleAdded(
+        hlc: tick(),
+        bottleId: 'b1',
+        sku: 'yuzu',
+        volume: Volume.fromMillilitres(700),
+      ),
+    ]);
+    await pump(tester, built, recipes: theFourClasses());
+
+    expect(inMine('yuzu'), findsOneWidget);
+    expect(find.byKey(const ValueKey('ingredient-demand-dead')), findsNothing);
+  });
+
+  testWidgets('**a query that matches nothing says so, instead of saying the half is empty**', (tester) async {
+    // **The false sentence this replaces.** With a query typed, "nothing here yet" over a half that holds twenty
+    // things the query did not match is simply untrue -- so an empty half says nothing and one line at the foot
+    // says what happened.
+    await pump(tester, await cellar(tester, const []), recipes: theFourClasses());
+
+    await tester.enterText(find.byKey(const ValueKey('ingredient-search')), 'zzzz');
+    await tester.pumpAndSettle();
+
+    expect(find.text(Copy.ingredientNoMatch.textFor('zh-Hans')), findsOneWidget);
+    expect(find.text(Copy.ingredientMineEmpty.textFor('zh-Hans')), findsNothing);
+    expect(find.text(Copy.ingredientLibraryEmpty.textFor('zh-Hans')), findsNothing);
+  });
+
+  testWidgets('**a query cuts the classes as well as the halves**', (tester) async {
+    await pump(tester, await cellar(tester, const []), recipes: theFourClasses());
+
+    await tester.enterText(find.byKey(const ValueKey('ingredient-search')), 'campari');
+    await tester.pumpAndSettle();
+
+    expect(inClass('rare', 'campari'), findsOneWidget);
+    // And the three classes the query emptied are gone, so the page is one heading rather than four.
+    expect(find.byKey(const ValueKey('ingredient-demand-core')), findsNothing);
+    expect(find.byKey(const ValueKey('ingredient-demand-dead')), findsNothing);
   });
 }
 
