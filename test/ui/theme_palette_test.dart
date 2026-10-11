@@ -310,12 +310,18 @@ void main() {
       // The subtler half of the same property: the seven text styles used to be `const`, which baked
       // in the colour they were compiled with -- so a theme switch would have left every word in the
       // old one. They are getters now, and this is what says so.
+      // **The expectation moved from the loose ink to the role**, which is the change of 2026-10-11: the styles
+      // used to read `ink`/`inkSoft` directly, so `body` and `display` were guaranteed the same colour and there was
+      // nowhere to say that a caption and a tab label want different ones. The claim -- *a text style carries the
+      // colour of the theme in force* -- is the same claim, asked of the role now.
       HollowPalette.use(HollowPaletteValue.honeyed);
-      expect(HollowType.body.color, HollowPaletteValue.honeyed.ink);
+      expect(HollowType.body.color, HollowPaletteValue.honeyed.text.body);
+      expect(HollowType.caption.color, HollowPaletteValue.honeyed.text.caption);
 
       HollowPalette.use(HollowPaletteValue.winter);
-      expect(HollowType.body.color, HollowPaletteValue.winter.ink);
-      expect(HollowType.caption.color, HollowPaletteValue.winter.inkSoft);
+      expect(HollowType.body.color, HollowPaletteValue.winter.text.body);
+      expect(HollowType.caption.color, HollowPaletteValue.winter.text.caption);
+      expect(HollowType.label.color, HollowPaletteValue.winter.text.label);
       expect(HollowType.numeric.color, HollowPaletteValue.winter.inkSoft);
     });
 

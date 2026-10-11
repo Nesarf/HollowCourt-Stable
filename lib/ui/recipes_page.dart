@@ -632,7 +632,7 @@ class _RecipeRow extends StatelessWidget {
             icon: Icon(
               planned ? Icons.bookmark : Icons.bookmark_border,
               size: 17,
-              color: planned ? HollowPalette.gold : HollowPalette.inkFaint,
+              color: planned ? HollowPalette.gold : HollowPalette.text.faint,
               semanticLabel: planned ? Copy.recipePlanned : Copy.recipeNotPlanned,
             ),
           ),
@@ -641,7 +641,7 @@ class _RecipeRow extends StatelessWidget {
             Icon(
               Icons.sticky_note_2_outlined,
               size: 14,
-              color: HollowPalette.inkFaint,
+              color: HollowPalette.text.faint,
               semanticLabel: Copy.recipeHasNote,
             ),
           ],
@@ -682,7 +682,7 @@ class _VerdictBadge extends StatelessWidget {
         // is missing" is honest exactly when that is all that is missing.
         Text(
           verdictDetail(score),
-          style: HollowType.caption.copyWith(color: HollowPalette.inkFaint),
+          style: HollowType.caption.copyWith(color: HollowPalette.text.faint),
         ),
       ],
     );
@@ -913,7 +913,7 @@ class _ItemRow extends StatelessWidget {
             child: Text(
               name ?? item.ingredientId,
               style: HollowType.body.copyWith(
-                color: available ? HollowPalette.ink : HollowPalette.inkFaint,
+                color: available ? HollowPalette.ink : HollowPalette.text.faint,
               ),
             ),
           ),

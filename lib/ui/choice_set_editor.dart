@@ -183,7 +183,7 @@ class _AddSecondary<T> extends StatelessWidget {
         backgroundColor: Colors.transparent,
         side: BorderSide(color: HollowPalette.line),
         avatar: !value.isFull && available.isNotEmpty
-            ? Icon(Icons.add, size: 15, color: HollowPalette.inkFaint)
+            ? Icon(Icons.add, size: 15, color: HollowPalette.text.faint)
             : null,
       ),
     );

@@ -91,6 +91,9 @@ abstract final class HollowPalette {
   /// Text that is barely there -- a placeholder, a disabled control.
   static Color get inkFaint => _current.inkFaint;
 
+  /// **The colours text is written in, by role.** The group the type styles read; see [TextColours].
+  static TextColours get text => _current.text;
+
   /// The accent, and the one saturated colour in any of these palettes. Used sparingly, for the
   /// thing the screen is *for*.
   static Color get rose => _current.rose;
@@ -204,6 +207,82 @@ final class WorldArtwork {
   final String wide;
 }
 
+/// **The text colours of one world, named by the role they play rather than by how dark they are.**
+///
+/// ## Why this exists, and what it replaces
+///
+/// Every theme already had its own `ink`, `inkSoft` and `inkFaint`, and every text style already named one --
+/// measured 2026-10-11, and the count of hardcoded colours in the whole interface is **zero**. What was missing was
+/// the **grouping**: three loose colours, and *how pale this piece of text should be* was decided at each call site
+/// with a `copyWith`, twenty of them, each one a private judgement. **Nothing said what the tones were for**, so
+/// nothing could be tuned for a role or checked against one.
+///
+/// **Three tones were also too few for the hierarchy the interface has.** `ink` carried titles and body alike, and
+/// `inkSoft` carried numerals, captions and tab labels -- so a screen's hierarchy came from type size alone, and the
+/// one role that most needs its own value is the smallest: the **tab label**, 11 points with wide letter spacing,
+/// which is where a colour that is merely "soft" stops being readable.
+///
+/// **So there are five roles and each theme supplies all five.**
+///
+/// ## And the values are checked rather than chosen
+///
+/// A palette is a taste argument except for the one part that is not: **whether the text can be read on the ground
+/// it sits on.** `test/ui/theme_contrast_test.dart` measures every role against its theme's `surface` and refuses
+/// anything under the floor for that role -- which is what makes "tuned per theme" a claim with evidence rather
+/// than a note about intent.
+final class TextColours {
+  const TextColours({
+    required this.title,
+    required this.body,
+    required this.caption,
+    required this.label,
+    required this.faint,
+  });
+
+  /// Screen titles and section headings. The brightest tone, and the one that must survive the largest type.
+  final Color title;
+
+  /// Running text: a recipe's instructions, a paragraph of explanation.
+  final Color body;
+
+  /// The line under a name, and the numbers beside it.
+  final Color caption;
+
+  /// **Tab labels and field names**, which are small, letter-spaced, and read at arm's length. It gets its own
+  /// role rather than sharing [caption] because it fails first: same size as a caption, less room around it, and
+  /// often on the bar rather than on a page.
+  final Color label;
+
+  /// The dimmest text there is -- a hint, a disabled line, a placeholder.
+  final Color faint;
+
+  /// Every role, for a test that has to check all of them without listing them twice.
+  Map<String, Color> get byRole => {
+    'title': title,
+    'body': body,
+    'caption': caption,
+    'label': label,
+    'faint': faint,
+  };
+
+  TextColours copyWith({
+    Color? title,
+    Color? body,
+    Color? caption,
+    Color? label,
+    Color? faint,
+  }) => TextColours(
+    title: title ?? this.title,
+    body: body ?? this.body,
+    caption: caption ?? this.caption,
+    label: label ?? this.label,
+    faint: faint ?? this.faint,
+  );
+
+  @override
+  String toString() => 'TextColours($title, $body, $caption, $label, $faint)';
+}
+
 final class HollowPaletteValue {
   const HollowPaletteValue({
     required this.name,
@@ -219,6 +298,7 @@ final class HollowPaletteValue {
     required this.absent,
     required this.onAccent,
     required this.hairline,
+    required this.text,
     this.texture = GroundTexture.lattice,
     this.ornament = Ornament.halo,
     this.brightness = Brightness.dark,
@@ -264,6 +344,14 @@ final class HollowPaletteValue {
   /// A decorative stroke, kept below 1.8:1. See [HollowPalette.hairline].
   final Color hairline;
 
+  /// **The colours text is written in, by role.** See [TextColours] for why a group replaced three loose tones.
+  ///
+  /// Kept beside `ink` rather than replacing it, and the boundary is worth stating: **`ink` and its two neighbours
+  /// remain the palette's general foreground** -- a border, a glyph, a rule drawn in the same colour as the words
+  /// beside it -- while this group is what the *type styles* read. A world that wants its rules dimmer than its
+  /// faintest text says so in both places, which is two decisions rather than one that quietly does both.
+  final TextColours text;
+
   /// What this world's ground is made of. See [GroundTexture].
   final GroundTexture texture;
 
@@ -294,6 +382,9 @@ final class HollowPaletteValue {
     absent: Color(0xFF988D7B),
     onAccent: Color(0xFF1A1208),
     hairline: Color(0xFF382C1D),
+    // **honeyed's own text group.** The values are checked against this world's `surface` by
+    // `theme_contrast_test`, so these are a measurement rather than a preference.
+    text: TextColours(title: Color(0xFFF7EEDB), body: Color(0xFFEADCC0), caption: Color(0xFFC9B694), label: Color(0xFFD8C6A2), faint: Color(0xFF9D8C6A)),
   );
 
   /// **宇宙拿铁 Cosmic Latte: the same court at noon, in the colour of the sky averaged over all light.**
@@ -329,6 +420,9 @@ final class HollowPaletteValue {
     absent: Color(0xFF6F685F),
     onAccent: Color(0xFFFFFDF8),
     hairline: Color(0xFFE3DCCC),
+    // **cosmicLatte's own text group.** The values are checked against this world's `surface` by
+    // `theme_contrast_test`, so these are a measurement rather than a preference.
+    text: TextColours(title: Color(0xFF1B1813), body: Color(0xFF2E2921), caption: Color(0xFF4C463C), label: Color(0xFF3E382F), faint: Color(0xFF70695D)),
   );
 
   /// **冬庭 Winter Court: the court after frost.**
@@ -353,6 +447,9 @@ final class HollowPaletteValue {
     absent: Color(0xFF84959C),
     onAccent: Color(0xFF0A1014),
     hairline: Color(0xFF24333A),
+    // **winter's own text group.** The values are checked against this world's `surface` by
+    // `theme_contrast_test`, so these are a measurement rather than a preference.
+    text: TextColours(title: Color(0xFFEDF6FA), body: Color(0xFFD6E6EC), caption: Color(0xFFA9C0C9), label: Color(0xFFBCD2DA), faint: Color(0xFF80959E)),
   );
 
   /// **永遠の歌姫: the fourth world, and the first one that is homage rather than a place.**
@@ -400,6 +497,9 @@ final class HollowPaletteValue {
       tall: 'assets/art/diva-tall.png',
       wide: 'assets/art/diva-wide.png',
     ),
+    // **eternalDiva's own text group.** The values are checked against this world's `surface` by
+    // `theme_contrast_test`, so these are a measurement rather than a preference.
+    text: TextColours(title: Color(0xFFF0FAF8), body: Color(0xFFDCF0ED), caption: Color(0xFFB6CFCC), label: Color(0xFFC6DEDA), faint: Color(0xFF8AA3A0)),
   );
 
   /// **The owner's wine-red room, added 2026-10-01, and the palette that is not a near-black.**
@@ -435,6 +535,9 @@ final class HollowPaletteValue {
     absent: Color(0xFFB79AA0),
     onAccent: Color(0xFF1E0A0E),
     hairline: Color(0xFF4E2129),
+    // **wine's own text group.** The values are checked against this world's `surface` by
+    // `theme_contrast_test`, so these are a measurement rather than a preference.
+    text: TextColours(title: Color(0xFFFBF3F4), body: Color(0xFFEFDDE0), caption: Color(0xFFCFB2B7), label: Color(0xFFDCBEC3), faint: Color(0xFFBC9DA3)),
   );
 
   static const List<HollowPaletteValue> all = [honeyed, cosmicLatte, winter, wine, eternalDiva];
@@ -475,7 +578,7 @@ abstract final class HollowType {
     height: 1.15,
     letterSpacing: 0.4,
     fontWeight: FontWeight.w300,
-    color: HollowPalette.ink,
+    color: HollowPalette.text.title,
   );
 
   /// A section heading inside a screen.
@@ -484,7 +587,7 @@ abstract final class HollowType {
     height: 1.3,
     letterSpacing: 0.2,
     fontWeight: FontWeight.w400,
-    color: HollowPalette.ink,
+    color: HollowPalette.text.title,
   );
 
   /// A recipe's name in a list.
@@ -493,13 +596,13 @@ abstract final class HollowType {
     height: 1.3,
     letterSpacing: 0.1,
     fontWeight: FontWeight.w400,
-    color: HollowPalette.ink,
+    color: HollowPalette.text.title,
   );
 
   static TextStyle get body => TextStyle(
     fontSize: 14,
     height: 1.45,
-    color: HollowPalette.ink,
+    color: HollowPalette.text.body,
   );
 
   /// A unit, a count, a percentage. Tabular so that a column of them lines up, which is the one place
@@ -509,14 +612,14 @@ abstract final class HollowType {
     height: 1.4,
     letterSpacing: 0.3,
     fontFeatures: const [FontFeature.tabularFigures()],
-    color: HollowPalette.inkSoft,
+    color: HollowPalette.text.caption,
   );
 
   static TextStyle get caption => TextStyle(
     fontSize: 12,
     height: 1.4,
     letterSpacing: 0.2,
-    color: HollowPalette.inkSoft,
+    color: HollowPalette.text.caption,
   );
 
   /// Small, spaced, and upper case. Used for a tab label and a field's name, which is the closest
@@ -526,7 +629,7 @@ abstract final class HollowType {
     height: 1.4,
     letterSpacing: 1.6,
     fontWeight: FontWeight.w500,
-    color: HollowPalette.inkSoft,
+    color: HollowPalette.text.label,
   );
 }
 
@@ -632,7 +735,7 @@ abstract final class HollowTheme {
         style: ButtonStyle(
           foregroundColor: WidgetStateProperty.resolveWith(
             (states) => states.contains(WidgetState.disabled)
-                ? HollowPalette.inkFaint
+                ? HollowPalette.text.faint
                 : HollowPalette.rose,
           ),
           overlayColor: WidgetStateProperty.resolveWith(
@@ -658,7 +761,7 @@ abstract final class HollowTheme {
           borderSide: BorderSide(color: HollowPalette.rose),
         ),
         labelStyle: HollowType.label,
-        hintStyle: TextStyle(color: HollowPalette.inkFaint),
+        hintStyle: TextStyle(color: HollowPalette.text.faint),
       ),
       textTheme: TextTheme(
         displaySmall: HollowType.display,
@@ -679,7 +782,7 @@ abstract final class HollowTheme {
             size: 21,
             color: states.contains(WidgetState.selected)
                 ? HollowPalette.rose
-                : HollowPalette.inkFaint,
+                : HollowPalette.text.faint,
           ),
         ),
       ),

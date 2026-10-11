@@ -574,7 +574,7 @@ class _Bottle extends StatelessWidget {
               height: 62,
               decoration: BoxDecoration(
                 color: ingredientKindColour(kind),
-                border: Border.all(color: HollowPalette.inkFaint),
+                border: Border.all(color: HollowPalette.text.faint),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(4),
                   bottom: Radius.circular(7),

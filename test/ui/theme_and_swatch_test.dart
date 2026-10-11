@@ -94,7 +94,7 @@ void main() {
       expect(theme.brightness, Brightness.dark);
       expect(theme.scaffoldBackgroundColor, HollowPalette.ground);
       expect(theme.colorScheme.primary, HollowPalette.rose);
-      expect(theme.textTheme.displaySmall?.color, HollowPalette.ink);
+      expect(theme.textTheme.displaySmall?.color, HollowPalette.text.title);
     });
 
     test('every string a person reads is real UTF-8, not ASCII-fied', () {

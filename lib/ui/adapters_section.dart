@@ -168,7 +168,7 @@ class _Disclosure extends ConsumerWidget {
         if (disclosure.sendsAnythingAboutTheCellar)
           DualCopyText(
             Copy.adapterSendsCellar,
-            style: HollowType.caption.copyWith(color: HollowPalette.inkFaint),
+            style: HollowType.caption.copyWith(color: HollowPalette.text.faint),
           ),
         if (isLocal)
           DualCopyText(

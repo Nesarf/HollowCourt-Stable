@@ -104,7 +104,7 @@ class AboutSection extends StatelessWidget {
         // before "where to find it" begins.
         SelectableText(
           Copy.aboutCharacterCredit,
-          style: HollowType.caption.copyWith(color: HollowPalette.inkFaint, height: 1.5),
+          style: HollowType.caption.copyWith(color: HollowPalette.text.faint, height: 1.5),
         ),
         const SizedBox(height: 20),
         const _ExternalLink(

@@ -93,7 +93,7 @@ class _ShoppingRows extends ConsumerWidget {
                 else
                   Text(
                     '${Copy.cellarShoppingNeededBy} ${entry.neededBy}',
-                    style: HollowType.caption.copyWith(color: HollowPalette.inkFaint),
+                    style: HollowType.caption.copyWith(color: HollowPalette.text.faint),
                   ),
               ],
             ),
@@ -182,7 +182,7 @@ class _StatsRows extends StatelessWidget {
         Expanded(child: Text(left, style: HollowType.body)),
         Text(
           right,
-          style: HollowType.caption.copyWith(color: HollowPalette.inkFaint),
+          style: HollowType.caption.copyWith(color: HollowPalette.text.faint),
         ),
       ],
     ),
@@ -319,7 +319,7 @@ class CellarPage extends ConsumerWidget {
                       '${ref.copy(Copy.cellarDiscarded)} '
                       '${curve.discardedTotal.microlitres ~/ 1000} ml',
                       style: HollowType.caption.copyWith(
-                        color: HollowPalette.inkFaint,
+                        color: HollowPalette.text.faint,
                       ),
                     ),
                   ],

@@ -482,7 +482,7 @@ class _LineRow extends StatelessWidget {
               key: ValueKey('recipe-line-$index-remove'),
               onPressed: onRemove,
               icon: const Icon(Icons.close, size: 18),
-              color: HollowPalette.inkFaint,
+              color: HollowPalette.text.faint,
             ),
           ],
         ),

@@ -48,7 +48,7 @@ class CashflowSection extends ConsumerWidget {
         children: [
           DualCopyText(Copy.cellarCashflow, style: HollowType.heading),
           const SizedBox(height: 8),
-          Text('…', style: HollowType.body.copyWith(color: HollowPalette.inkFaint)),
+          Text('…', style: HollowType.body.copyWith(color: HollowPalette.text.faint)),
         ],
       );
     }
@@ -159,7 +159,7 @@ class CashflowSection extends ConsumerWidget {
         Expanded(child: Text(label.primary.text, style: HollowType.body)),
         Text(
           value,
-          style: HollowType.body.copyWith(color: colour ?? HollowPalette.inkFaint),
+          style: HollowType.body.copyWith(color: colour ?? HollowPalette.text.faint),
         ),
       ],
     ),

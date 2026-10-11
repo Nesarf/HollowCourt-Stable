@@ -16,7 +16,7 @@ import 'theme.dart';
 /// palette already means something -- `dual_copy_text.dart` writes that "a rose error
 /// line and a gold verdict keep their colour in the second language" -- so a rise is
 /// [HollowPalette.gold] and a fall is [HollowPalette.rose], and a period that opened
-/// and closed alike is [HollowPalette.inkFaint] rather than green. Painting a flat
+/// and closed alike is [HollowPalette.text.faint] rather than green. Painting a flat
 /// period green would claim a movement that did not happen.
 ///
 /// **An empty chart draws a baseline and no text.** Section 12.4's rule is that a
@@ -114,7 +114,7 @@ class _CandlePainter extends CustomPainter {
           ? HollowPalette.gold
           : candle.isFalling
               ? HollowPalette.rose
-              : HollowPalette.inkFaint;
+              : HollowPalette.text.faint;
       final centre = slot * (i + 0.5);
       final open = yFor(candle.open.toDouble());
       final close = yFor(candle.close.toDouble());

@@ -113,7 +113,7 @@ class _Report extends StatelessWidget {
                 Text(
                   '$count',
                   style: HollowType.numeric.copyWith(
-                    color: count == 0 ? HollowPalette.inkFaint : HollowPalette.rose,
+                    color: count == 0 ? HollowPalette.text.faint : HollowPalette.rose,
                   ),
                 ),
               ],
