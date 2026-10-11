@@ -24,6 +24,21 @@
 //     dart run tool/sync_probe.dart join <code> --dir <cellar> [--name <label>] [--identity <file>]
 //     dart run tool/sync_probe.dart beacon --dir <cellar> [--name <label>] [--identity <file>] [--agree] [--hold <s>] [--port <n>]
 //
+// **`--archives <dir>` is the segment half**, and it is what makes this probe able to exercise the one thing the
+// in-memory tests cannot: a real socket carrying a real archive.
+//
+//     dart run tool/sync_probe.dart pack --dir <cellar> --archives <dir>
+//
+// `pack` writes every event in the log out as one package, so that a device can *hold* a segment to announce. It is
+// deliberately not the grain `ArchivalService` uses -- a probe's log is minutes old and nothing in it is five years
+// old, so the production rule would never propose anything and the probe would have nothing to test with. **What it
+// makes is a real package in the real format**, written by the real `ArchivePackage`, so everything downstream of it
+// is the production path.
+//
+// With `--archives`, `host`, `join` and `beacon` all announce what that directory holds, serve any of it that is
+// asked for, and **write down whatever arrives** -- printing what moved either way. Run one side with `--archives`
+// and the other without and the direction is visible in the output.
+//
 // `beacon` is the **second screen** §10.3.2 needs: it announces itself on the LAN and holds a listener a tap can
 // arrive at, so the application can be the side that asks. It answers with the six digits printed on this
 // process's own stdout -- the other half of the comparison a person makes across two screens -- and, with
@@ -44,7 +59,9 @@ import 'package:hollow_court/domain/sync/discovery.dart';
 import 'package:hollow_court/domain/sync/exchange.dart';
 import 'package:hollow_court/domain/sync/pairing.dart';
 import 'package:hollow_court/domain/sync/short_code.dart';
+import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
+import 'package:hollow_court/data/archive_package.dart';
 
 Future<void> main(List<String> args) async {
   if (args.isEmpty) {
@@ -57,6 +74,8 @@ Future<void> main(List<String> args) async {
   switch (verb) {
     case 'bottle':
       await _bottle(options);
+    case 'pack':
+      await _pack(options);
     case 'show':
       await _show(options);
     case 'host':
@@ -156,12 +175,16 @@ Future<void> _host(_Options options) async {
   //
   // The remembered-key path is the **joiner's**: it is the side that knows an address and has learned a
   // key at it.
+  final held = await _held(options.value('archives'));
+  if (held.isNotEmpty) print('holding       : ${held.length} package(s), offered to the peer');
   final outcome = await acceptForSync(
     server: server,
     source: log,
     localName: name,
     expectedToken: token,
     identity: stored.identity,
+    segments: [for (final package in held) package.manifest],
+    serveSegment: _serverOf(held),
     // **The devices this host has met**, so one of them can come back without a code. The code is still
     // accepted -- it is on this machine's own screen -- but it is no longer the only way in.
     acceptedIdentities: {for (final device in stored.trusted) device.publicKey},
@@ -173,6 +196,7 @@ Future<void> _host(_Options options) async {
     address: null,
     peerName: 'peer',
     identityDirectory: options.value('dir') ?? '.',
+    archives: options.value('archives'),
   );
 }
 
@@ -242,6 +266,8 @@ Future<void> _beacon(_Options options) async {
   }
 
   var trusted = stored;
+  final held = await _held(options.value('archives'));
+  if (held.isNotEmpty) print('holding       : ${held.length} package(s), offered to the peer');
   while (true) {
     final socket = await next();
     print('');
@@ -250,6 +276,8 @@ Future<void> _beacon(_Options options) async {
       socket: socket,
       source: log,
       localName: name,
+      segments: [for (final package in held) package.manifest],
+      serveSegment: _serverOf(held),
       // **No code, because this device displays none.** It is merely reachable, so the proof of who the peer is
       // is the comparison below -- and a peer that proved a remembered key skips it (`runExchange` decides that,
       // not this file).
@@ -323,6 +351,8 @@ Future<void> _join(_Options options) async {
   print('reaching      : ${ticket.host}:${ticket.port}');
   print('authentication: ${known == null ? 'the pairing code' : 'the remembered key of ${known.name}'}');
 
+  final held = await _held(options.value('archives'));
+  if (held.isNotEmpty) print('holding       : ${held.length} package(s), offered to the peer');
   final outcome = await syncWithTicket(
     ticket: known == null
         ? ticket
@@ -336,6 +366,8 @@ Future<void> _join(_Options options) async {
     localName: name,
     identity: stored.identity,
     expectedIdentity: known?.publicKey ?? '',
+    segments: [for (final package in held) package.manifest],
+    serveSegment: _serverOf(held),
   );
   await _report(
     outcome,
@@ -344,7 +376,104 @@ Future<void> _join(_Options options) async {
     address: '${ticket.host}:${ticket.port}',
     peerName: ticket.name.isEmpty ? 'peer' : ticket.name,
     identityDirectory: options.value('dir') ?? '.',
+    archives: options.value('archives'),
   );
+}
+
+/// Every package in [directory], read and verified; a directory that is not there reads as none.
+Future<List<ArchivePackage>> _held(String? directory) async {
+  if (directory == null) return const [];
+  final dir = Directory(directory);
+  if (!await dir.exists()) return const [];
+  final out = <ArchivePackage>[];
+  for (final entry in dir.listSync()) {
+    if (entry is! File || !entry.path.endsWith('.courtarchive')) continue;
+    try {
+      out.add(await ArchivePackage.read(entry));
+    } on Object catch (error) {
+      // **Reported rather than skipped silently.** A probe is for finding out what is wrong, and a package this
+      // build cannot read is exactly the kind of thing a person running it wants to be told about.
+      print('unreadable    : ${entry.path} -- $error');
+    }
+  }
+  return out;
+}
+
+/// How to serve one of the held packages, by digest.
+///
+/// The production shape: a lookup rather than a second read, and null for a digest that is not here -- which is the
+/// case `SegmentDeniedFrame` exists for and the one a probe can produce by deleting a file between the announcement
+/// and the ask.
+Future<List<Event>?> Function(ArchiveManifest) _serverOf(List<ArchivePackage> held) {
+  return (segment) async {
+    for (final package in held) {
+      if (package.manifest.digest == segment.digest) return package.events;
+    }
+    return null;
+  };
+}
+
+/// Writes down every segment that arrived, and says what it was.
+///
+/// **The sender's own manifest, unchanged** -- and refused if the events do not hash to the digest it announced,
+/// which is the same check `ArchivePackage.read` keeps on the way back in and therefore catches a damaged transfer
+/// before the file exists.
+Future<void> _keep(List<ReceivedSegment> segments, String? directory) async {
+  if (segments.isEmpty) return;
+  if (directory == null) {
+    print('received      : ${segments.length} segment(s), and no --archives directory to write them to');
+    return;
+  }
+  final dir = Directory(directory);
+  for (final segment in segments) {
+    if (!segment.isIntact) {
+      print('received      : ${segment.manifest.digest} -- DAMAGED, refused rather than written');
+      continue;
+    }
+    final file = await ArchivePackage(
+      first: segment.manifest.firstClock,
+      last: segment.manifest.lastClock,
+      events: segment.events,
+      manifest: segment.manifest,
+    ).writeTo(dir);
+    print('received      : ${segment.events.length} events, made by ${segment.manifest.nodeId}, '
+        'written to ${file.path.split(Platform.pathSeparator).last}');
+  }
+}
+
+/// Writes the whole log out as one package, so a device has a segment to hold.
+Future<void> _pack(_Options options) async {
+  final dir = options.value('dir');
+  final archives = options.value('archives');
+  if (dir == null || archives == null) {
+    stderr.writeln('usage: sync_probe pack --dir <cellar> --archives <dir>');
+    exit(2);
+  }
+  final log = await _open(options);
+  final events = log.events;
+  if (events.isEmpty) {
+    print('nothing to pack: the log holds no events');
+    await log.close();
+    return;
+  }
+  final manifest = ArchiveManifest(
+    format: ArchiveManifest.formatVersion,
+    createdMillis: DateTime.now().millisecondsSinceEpoch,
+    firstClock: events.first.hlc.toString(),
+    lastClock: events.last.hlc.toString(),
+    count: events.length,
+    nodeId: log.clock.nodeId,
+    digest: ArchiveManifest.digestOf(events),
+  );
+  final file = await ArchivePackage(
+    first: manifest.firstClock,
+    last: manifest.lastClock,
+    events: events,
+    manifest: manifest,
+  ).writeTo(Directory(archives));
+  print('packed        : ${events.length} events, digest ${manifest.digest}');
+  print('written       : ${file.path}');
+  await log.close();
 }
 
 Future<String> _describe(EventLog log) async =>
@@ -358,11 +487,22 @@ Future<void> _report(
   required String? address,
   required String peerName,
   required String identityDirectory,
+  String? archives,
 }) async {
   print('OUTCOME       : ${outcome.succeeded ? 'ok' : 'failed'}'
       '${outcome.failure == null ? '' : ' -- ${outcome.failure}'}');
   print('merged        : ${outcome.merged}');
   print('sent          : ${outcome.sent}');
+  // **The segment half, said in the probe's own words.** `peerSegments` is what the other device announced that this
+  // one has not, and `received`/`deniedSegments` are what happened about it -- which together are the whole of what a
+  // real socket is being asked to prove.
+  if (outcome.peerSegments.isNotEmpty) {
+    print('peer holds    : ${outcome.peerSegments.length} segment(s) this device has not');
+  }
+  for (final digest in outcome.deniedSegments) {
+    print('denied        : $digest -- the other end could not serve it');
+  }
+  await _keep(outcome.received, archives);
   print('peer          : ${outcome.peerName}');
   if (outcome.peerIdentity.isNotEmpty) {
     print('peer key      : ${TrustedDevice(publicKey: outcome.peerIdentity, name: peerName).shortKey}...');

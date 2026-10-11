@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:hollow_court/data/event_log.dart';
 import 'package:hollow_court/data/sync/socket_transport.dart';
+import 'package:hollow_court/domain/archive/archive_manifest.dart';
+import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/sync/exchange.dart';
 import 'package:hollow_court/domain/sync/pairing.dart';
@@ -65,6 +67,10 @@ void main() {
     String leftName = 'phone',
     String rightName = 'laptop',
     Duration timeout = const Duration(seconds: 10),
+    Iterable<ArchiveManifest> leftSegments = const [],
+    Iterable<ArchiveManifest> rightSegments = const [],
+    Future<List<Event>?> Function(ArchiveManifest)? leftServes,
+    Future<List<Event>?> Function(ArchiveManifest)? rightServes,
   }) async {
     final server = await listening();
     final ticket = PairingTicket(
@@ -80,6 +86,8 @@ void main() {
         source: left,
         localName: leftName,
         timeout: timeout,
+        segments: leftSegments,
+        serveSegment: leftServes,
       ),
       acceptForSync(
         server: server,
@@ -87,6 +95,8 @@ void main() {
         localName: rightName,
         expectedToken: expectedToken,
         timeout: timeout,
+        segments: rightSegments,
+        serveSegment: rightServes,
       ),
     ]);
     return (results[0], results[1]);
@@ -332,6 +342,92 @@ void main() {
       // flow is a string that can be typed, so a null here is a fallback and not a failure.
       final address = await lanAddress();
       expect(address == null || address.isNotEmpty, isTrue);
+    });
+  });
+
+  group('a segment over a real socket', () {
+    /// One package's events, and the manifest that describes exactly them.
+    (ArchiveManifest, List<Event>) pack(EventLog log) {
+      final events = log.events;
+      return (
+        ArchiveManifest(
+          format: ArchiveManifest.formatVersion,
+          createdMillis: 42,
+          firstClock: events.first.hlc.toString(),
+          lastClock: events.last.hlc.toString(),
+          count: events.length,
+          nodeId: log.clock.nodeId,
+          digest: ArchiveManifest.digestOf(events),
+        ),
+        events,
+      );
+    }
+
+    test('**the host announces its archive and the joiner receives it**', () async {
+      // **This test exists because the in-memory ones could not see the defect it catches.** They call `runExchange`
+      // directly; the application reaches it through `acceptForSync`, and that function declared `segments` and
+      // `serveSegment` and then **did not pass them on** -- so a host announced nothing and served nothing, and both
+      // ends reported a successful sync while a joiner that held none of the history was told about none of it.
+      // Found by running the probe against a real socket, and this is where it belongs.
+      final phone = await cellar('phone');
+      final laptop = await cellar('laptop', startMillis: 2000);
+      for (var i = 0; i < 3; i++) {
+        await addBottle(laptop, 'l$i');
+      }
+      final (manifest, events) = pack(laptop);
+
+      final (left, right) = await meet(
+        left: phone,
+        right: laptop,
+        rightSegments: [manifest],
+        rightServes: (segment) async => segment.digest == manifest.digest ? events : null,
+      );
+
+      expect(left.succeeded, isTrue);
+      expect(right.succeeded, isTrue);
+      // **What the host announced reached the joiner**, which is the half that was dropped.
+      expect(left.peerSegments.map((s) => s.digest), [manifest.digest]);
+      expect(left.received, hasLength(1));
+      expect(left.received.single.manifest, manifest, reason: 'the manifest the sender wrote, unchanged');
+      expect(left.received.single.events, hasLength(3));
+      expect(left.received.single.isIntact, isTrue);
+    });
+
+    test('**a host that holds nothing announces nothing, and the sync is unchanged**', () async {
+      // The gate, over a socket rather than in memory: a reader with no archives must not pay a round trip for a
+      // feature they do not use.
+      final phone = await cellar('phone');
+      final laptop = await cellar('laptop', startMillis: 2000);
+      await addBottle(laptop, 'l1');
+
+      final (left, _) = await meet(left: phone, right: laptop);
+
+      expect(left.succeeded, isTrue);
+      expect(left.peerSegments, isEmpty);
+      expect(left.received, isEmpty);
+      expect(left.merged, 1, reason: 'the ordinary event exchange still happened');
+    });
+
+    test('**a segment the host can no longer serve is denied rather than awaited**', () async {
+      // The file was moved between the announcement and the ask. Over a socket this is where a missing file would
+      // otherwise become a hang followed by a deadline.
+      final phone = await cellar('phone');
+      final laptop = await cellar('laptop', startMillis: 2000);
+      for (var i = 0; i < 2; i++) {
+        await addBottle(laptop, 'l$i');
+      }
+      final (manifest, _) = pack(laptop);
+
+      final (left, _) = await meet(
+        left: phone,
+        right: laptop,
+        rightSegments: [manifest],
+        rightServes: (segment) async => null,
+      );
+
+      expect(left.succeeded, isTrue);
+      expect(left.received, isEmpty);
+      expect(left.deniedSegments, [manifest.digest]);
     });
   });
 }

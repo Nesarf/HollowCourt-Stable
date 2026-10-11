@@ -364,6 +364,12 @@ Future<ExchangeOutcome> acceptForSync({
     acceptedIdentities: acceptedIdentities,
     confirmComparison: confirmComparison,
     timeout: timeout,
+    // **These two were declared and then dropped, and a real socket is what found it.** Without them the host
+    // announced nothing about its archives and served nothing, so a joiner that held none of the history was told
+    // about none of it -- silently, with the sync reporting success on both ends. The in-memory tests could not see
+    // it: they call `runExchange` directly and never pass through this function.
+    segments: segments,
+    serveSegment: serveSegment,
   );
 }
 
