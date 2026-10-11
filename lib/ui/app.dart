@@ -147,12 +147,12 @@ class _ShellState extends ConsumerState<_Shell> {
         children: [
           // **Not `const`, and that is the whole bug this comment exists to prevent.** A `const` widget is built
           // once and never again, so this backdrop kept the palette it was born with -- the default world,
-          // because the stored setting arrives asynchronously -- and went on drawing Amber Court's ground while
+          // because the stored setting arrives asynchronously -- and went on drawing the amber world's ground while
           // the rest of the screen had already turned to Winter. The colours followed the theme and the art did
           // not, which is precisely the fault a screenshot caught and no test could have.
           // **Not `const`, and that is the whole bug this comment exists to prevent.** A `const` widget is built
           // once and never again, so this backdrop kept the palette it was born with -- the default world, because
-          // the stored setting arrives asynchronously -- and went on drawing Amber Court's ground while the rest
+          // the stored setting arrives asynchronously -- and went on drawing the amber world's ground while the rest
           // of the screen had already turned to Winter. The colours followed the theme and the art did not, which
           // is the fault a screenshot caught and no assertion about the palette could have.
           // `test/ui/world_art_fidelity_test.dart` fails if it ever becomes const again.

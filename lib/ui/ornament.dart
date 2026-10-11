@@ -32,7 +32,7 @@ class HollowOrnamentPainter extends CustomPainter {
   ///
   /// **Passed in rather than read, because a painter may be drawing a world that is not the current one.** A
   /// review sheet does exactly that, and the first version of the sheets came back with Winter's ground and
-  /// Amber Court's line colour on it -- the same fault as the backdrop that would not rebuild, seen from the
+  /// the amber world's line colour on it -- the same fault as the backdrop that would not rebuild, seen from the
   /// other side: one read the world too rarely, this read it too eagerly.
   final Color? color;
 
@@ -292,7 +292,7 @@ class HollowOrnamentPainter extends CustomPainter {
 ///
 /// **And it watches the world rather than being told about it.** The first version read the palette when it was
 /// built, which looked right and was not: the backdrop sits under a subtree that does not rebuild, so switching
-/// to the white world recoloured the screen and left **Amber Court's lattice** drawn on it. The colours followed
+/// to the white world recoloured the screen and left **the amber world's lattice** drawn on it. The colours followed
 /// and the art did not -- caught by a screenshot, and now by `test/ui/world_art_fidelity_test.dart`, which drives
 /// the real settings change and then asks these two painters what they are drawing.
 class OrnamentBackdrop extends ConsumerWidget {

@@ -137,3 +137,67 @@ that should be made before `48000`.
 **All three are further from their nearest neighbour than any two existing worlds are from each other**, so
 none of them collides. 橡木桶 is the closest of the three to 琥珀庭, and 49 is nearly three times the widest
 current gap — comfortable, and worth keeping in mind only if a *fourth* brown is ever proposed.
+
+---
+
+## The five worlds, in one place (2026-10-11)
+
+**Written because the same world was carrying three different names in one file**, and because a reader of the source
+could not have told which of them was current without opening four others.
+
+### What a world is
+
+A `HollowPaletteValue`: **a ground, a surface and a raised surface; a line and a hairline; a ground texture and an
+ornament; an accent (`gold`) and a secondary accent (`rose`); and a [TextColours] group of five named text roles.**
+`HollowTheme.build` turns the whole thing into a `ThemeData`, and `HollowPalette.use` is what makes every getter in the
+application answer for the world in force.
+
+**Nothing in the interface names a colour literally.** Measured 2026-10-11: the count of `color: Color(0x…)` outside
+`theme.dart` is **zero**. That is the property that makes five worlds possible at all.
+
+### The three names a world has, and why they are three
+
+| | What it is | Where it lives | May it change? |
+| --- | --- | --- | --- |
+| **The identifier** | `honeyed`, `cosmicLatte`, … | `HollowPaletteValue.name` | **No.** It is the key a reader's `display.json` holds, and changing it silently returns them to the default world |
+| **The Dart constant** | `HollowPaletteValue.cosmicLatte` | `theme.dart` | Only with a rename, and the two must match -- see the defect below |
+| **The name a person reads** | 銅鳴 / 宇宙拿铁 / 群青 / 酒红 / 永遠の歌姫 | `Copy.themeLabelFor` | Freely, and that is the point |
+
+**All three are needed and conflating any two of them is how this file got into the state it was in.** The identifier is
+stable and ugly on purpose; the constant is for Dart; the label is prose in five languages.
+
+### The five
+
+| Identifier | Named | Accent | Light? | Told apart by |
+| --- | --- | --- | --- | --- |
+| `honeyed` | 銅鳴 / Brazen Bell | `#E2A63E` | no | the world the application was designed around |
+| `cosmicLatte` | 宇宙拿铁 / Cosmic Latte | `#876A29` | **yes** | the only light room |
+| `winter` | 群青 / Ultramarine | `#8FBAC6` | no | a cool ground, a frost texture |
+| `wine` | 酒红 / Wine Red | `#D69B63` | no | **the first whose ground is a colour rather than a near-black** |
+| `eternalDiva` | 永遠の歌姫 / The Eternal Diva | `#39C5BB` | no | the only one carrying artwork, and no voice is written for it |
+
+### What was retired, and the two things it left behind
+
+**The 庭 taxonomy.** The worlds were once courts -- 琥珀庭, 白庭 -- and the list was retitled when it stopped being one.
+Retitling a world is cheap; **retitling everything that referred to it is not**, and two references survived:
+
+* **`Copy.themeWhiteCourt` lived ten days past the world it named.** `白庭` was deleted on 2026-10-01 and `CL` took its
+  place; the palette value was renamed to `cosmicLatte` and the copy line was not. The label switch kept matching
+  `'whiteCourt'`, so the light world fell through to the id fallback and its chip in 设置 read **`cosmicLatte`** -- a
+  camelCase key, in no language. `theme_label_test.dart` now walks `HollowPalette.all` and refuses a label that equals
+  a world's own key.
+* **`Copy.themeAmber` was named for 琥珀庭**, and the constant kept that name while the world became 銅鳴. It is
+  `themeBrazen` now. **No test can see a stale identifier** -- it is only wrong to somebody reading the source, which
+  is why this section exists rather than another assertion.
+
+**And one thing that is *not* a leftover, stated so it is not "fixed" later**: `honeyed` is still the identifier of
+the world called 銅鳴, and `winter` is still the identifier of the one called 群青. **The identifier is a key, not a
+description**, and renaming either would lose the choice of every reader who made it.
+
+### The rules the worlds are held to
+
+1. **Every world has a name in all five languages**, and the label is never the identifier. `theme_label_test.dart`.
+2. **Every text role clears its contrast floor** against that world's surface *and* its ground. `theme_contrast_test.dart`.
+3. **A world's identifier never changes.** A world may be added or removed; an identifier may not be rewritten.
+4. **A theme this build does not carry falls back to the default**, because a setting written by a newer build still
+   has to open.

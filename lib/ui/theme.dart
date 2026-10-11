@@ -165,7 +165,7 @@ enum Ornament {
 /// Each is drawn rather than shipped as an image: a repeating texture as a PNG would need one per density and
 /// would fight the theme's colours, while a painter takes the world's own ink and scales with the display.
 enum GroundTexture {
-  /// **The motif itself**, as a rhombic lattice: the halo's crystal, tiled. Amber Court.
+  /// **The motif itself**, as a rhombic lattice: the halo's crystal, tiled.
   lattice,
 
   /// **Laid paper**: fine horizontal laid lines with a chain line every few centimetres, which is how paper was
@@ -359,7 +359,11 @@ final class HollowPaletteValue {
   final Ornament ornament;
 
   /// The theme this application started with: a Renaissance medallion in a dark room.
-  /// **琥珀庭 Amber Court: the court as it is.**
+  /// **銅鳴 / Brazen Bell -- the world this application was designed around.**
+  ///
+  /// **[Retitled 2026-10-11.]** This said *琥珀庭 Amber Court*, and the room was retitled when the 庭 taxonomy was
+  /// retired; the constant, the value's `name` and several comments were not, which is how three different names for
+  /// one world came to sit in one file. The name here is the one the reader reads, and it is in `themeBrazen`.
   ///
   /// The home world, and the one the name describes -- a honeyed court in a hollow. Its ground is nearly black so
   /// the amber reads as light *in* the room rather than paint on it, and the one saturated colour is the honey.
@@ -4373,7 +4377,17 @@ https://piapro.jp/license/pcl/summary
   /// reader ever sees (see `HollowPaletteValue.name`), so renaming one would reset the theme of everybody who had
   /// chosen it, in exchange for a cosmetic change. `honeyed` still means 銅鳴 and `winter` still means 群青 in the
   /// settings file; only what a reader sees moves.
-  static const themeAmber = CopyLine.withLanguages(
+  /// **`themeBrazen`, not `themeAmber`, and the rename is the point of this line.**
+  ///
+  /// The constant was `themeAmber` for a world called 琥珀庭 -- a room that has not existed since the taxonomy was
+  /// retitled. The *value* was renamed with the world and the *label* was not, which is the same fault that left
+  /// `Copy.themeWhiteCourt` behind for ten days; `theme_label_test.dart` now refuses a label that falls through to an
+  /// id, but **a stale identifier is not something a test can see** -- it is only wrong to a reader of the source.
+  ///
+  /// **The palette value's own `name` stays `honeyed`**, and that is deliberate rather than another leftover: it is
+  /// the key a reader's stored setting holds, and changing it would silently return them to the default world. The
+  /// name a *person* reads is this line.
+  static const themeBrazen = CopyLine.withLanguages(
     Translated.authored('銅鳴'),
     Translated.authored('Brazen Bell'),
     also: {'ja': '銅鳴', 'zh-HK': '銅鳴', 'zh-TW': '銅鳴'});
@@ -4867,7 +4881,7 @@ https://piapro.jp/license/pcl/summary
     'cosmicLatte' => Copy.themeCosmicLatte,
     'winter' => Copy.themeWinter,
     'eternalDiva' => Copy.themeEternalDiva,
-    'honeyed' => Copy.themeAmber,
+    'honeyed' => Copy.themeBrazen,
     'wine' => Copy.themeWine,
     _ => CopyLine.withLanguages(
         Translated.authored(value.name),
