@@ -14,6 +14,7 @@ import 'package:hollow_court/domain/sync/lan_address.dart';
 import 'package:hollow_court/data/sync/sync_service.dart';
 import 'package:hollow_court/domain/sync/device_identity.dart';
 import 'package:hollow_court/domain/sync/exchange.dart';
+import 'package:hollow_court/domain/sync/wire.dart';
 import 'package:hollow_court/domain/sync/pairing.dart';
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/data/sync/identity_store.dart';
@@ -78,6 +79,7 @@ final class _FakeSync implements SyncService {
     DeviceIdentity? identity,
     String expectedIdentity = '',
     Future<bool> Function(String shortCode)? confirmComparison,
+    Iterable<SegmentClaim> segments = const [],
   }) {
     // **This fake never runs an exchange, so it cannot honour a gate** -- and the parameter is named here rather
     // than ignored silently, because a fake that accepts a security parameter and drops it is a test that will
@@ -96,6 +98,7 @@ final class _FakeSync implements SyncService {
     DeviceIdentity? identity,
     String expectedIdentity = '',
     Future<bool> Function(String shortCode)? confirmComparison,
+    Iterable<SegmentClaim> segments = const [],
   }) async {
     assert(confirmComparison == null, 'this fake cannot answer a comparison');
     calls.add('join');
@@ -149,6 +152,7 @@ final class _FakeSync implements SyncService {
   Future<ExchangeOutcome> awaitRequest({
     DeviceIdentity? identity,
     Future<bool> Function(String shortCode)? confirmComparison,
+    Iterable<SegmentClaim> segments = const [],
   }) {
     // The listener is reachable by anybody, so the gate is not optional here: it is the proof this connection
     // otherwise does not have. A fake that accepted a null gate would hide exactly the bug this records.

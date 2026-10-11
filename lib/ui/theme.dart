@@ -2924,6 +2924,35 @@ abstract final class Copy {
     },
   );
 
+  /// **What the other device has that this one has not.**
+  ///
+  /// `docs/archival.md`: an archive is a move rather than a deletion, so a device that has archived 2015-2020 holds a
+  /// log starting in 2021 **and a file starting in 2015**. Two devices can therefore agree completely about the log
+  /// and not hold the same history -- and until a peer announced its segments, neither could tell.
+  ///
+  /// **It says so rather than moving anything.** The transfer is the next step; this is the half that needs nothing
+  /// of an older build, and it is already the useful half: a reader who syncs a new phone and then looks at a chart
+  /// three years shorter than the old one has, until now, had nothing to tell them why.
+  static const syncPeerHasSegments = CopyLine.withLanguages(
+    Translated.authored('对方的历史里还有 {count} 段不在这台设备上 —— 那些存在它自己的文件里，这一次没有带过来。'),
+    Translated.authored(
+      'The other device holds {count} further segments that are not on this one. They live in its own '
+      'files, and did not travel with this sync.',
+    ),
+    voices: {
+      Voice.heiress: '对方手里还有 {count} 段，这台没有 —— 它们住在对方自己的文件里，这次没有跟过来。',
+      Voice.heiressJa: '相手はさらに {count} の区切りを持っているわ、この機械には無い。あちらのファイルの中よ、今回は付いてこなかった。',
+      Voice.minister:
+          'The other party holds {count} further segments which are not on this machine. They reside in its '
+          'own files and did not accompany this synchronisation.',
+    },
+    also: {
+      'ja': '相手の履歴には、この端末に無い区切りが {count} つあります —— それは相手のファイルの中にあり、今回は移動していません。',
+      'zh-HK': '對方嘅歷史仲有 {count} 段唔喺呢部機度 —— 嗰啲住喺對方自己嘅檔案裡面，今次冇跟過嚟。',
+      'zh-TW': '對方的歷史裡還有 {count} 段不在這台裝置上 —— 那些存在它自己的檔案裡，這一次沒有帶過來。',
+    },
+  );
+
   static const ingredientAdd = CopyLine.withLanguages(
     Translated.authored('加一种原料'),
     Translated.authored('Add an ingredient'),

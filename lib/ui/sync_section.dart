@@ -18,6 +18,7 @@ import '../domain/sync/exchange.dart';
 import '../domain/sync/pairing.dart';
 import '../domain/sync/lan_address.dart';
 import '../domain/sync/scope.dart';
+import 'archive_providers.dart';
 import 'l10n/copy_resolution.dart';
 import 'l10n/dual_copy.dart';
 import 'l10n/dual_copy_text.dart';
@@ -303,6 +304,7 @@ final class SyncController extends Notifier<SyncState> {
       // nothing and letting the handshake through -- would be a first meeting that nothing authenticates.
       expectedIdentity: key,
       confirmComparison: key.isEmpty ? _askToCompare : null,
+      segments: ref.read(attachedSegmentsProvider),
     );
     await _remember(
       outcome,
@@ -465,7 +467,10 @@ final class SyncController extends Notifier<SyncState> {
     // compare numbers for a device they synced with last week would be ceremony. A brand-new device is exactly
     // the case this exists for.
     final compare = _comparisonWanted ? _askToCompare : null;
-    final outcome = await service.awaitPeer(confirmComparison: compare);
+    final outcome = await service.awaitPeer(
+      confirmComparison: compare,
+      segments: ref.read(attachedSegmentsProvider),
+    );
     state = state.comparingCode == null
         ? state
         : SyncState(phase: SyncPhase.working, scope: _scope);
@@ -489,6 +494,7 @@ final class SyncController extends Notifier<SyncState> {
       ticket,
       identity: stored?.identity,
       confirmComparison: compare,
+      segments: ref.read(attachedSegmentsProvider),
     );
     await _remember(
       outcome,
@@ -522,6 +528,7 @@ final class SyncController extends Notifier<SyncState> {
       PairingTicket(host: parts[0], port: port, token: '', name: device.name),
       identity: stored?.identity,
       expectedIdentity: device.publicKey,
+      segments: ref.read(attachedSegmentsProvider),
     );
     await _remember(outcome, address: address, fallbackName: device.name);
     state = SyncState(phase: SyncPhase.done, outcome: outcome, scope: _scope);
@@ -1880,13 +1887,18 @@ class _WorkingView extends StatelessWidget {
 }
 
 /// What the exchange did, or why it did not.
-class _OutcomeView extends StatelessWidget {
+///
+/// **A `ConsumerWidget` for one line**, and it is the line about the peer's history: the sentence has a number
+/// substituted into it and this application resolves copy through `ref`, so a plain `StatelessWidget` would have had
+/// to be handed an already-built string by its caller -- which puts the resolution of this widget's own label in
+/// somebody else's build method.
+class _OutcomeView extends ConsumerWidget {
   const _OutcomeView({required this.outcome});
 
   final ExchangeOutcome outcome;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final failed = !outcome.succeeded;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1915,6 +1927,17 @@ class _OutcomeView extends StatelessWidget {
           DualCopyText(Copy.syncWith, style: HollowType.caption),
           const SizedBox(height: 4),
           Text(outcome.peerName, style: HollowType.body),
+        ],
+        // **What the peer has that this device has not.** Said after the peer's name, because it is a fact about
+        // that device rather than about the sync: the events moved, and the history still did not.
+        if (!failed && outcome.peerSegments.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          Text(
+            ref
+                .copy(Copy.syncPeerHasSegments)
+                .replaceFirst('{count}', '${outcome.peerSegments.length}'),
+            style: HollowType.caption,
+          ),
         ],
       ],
     );

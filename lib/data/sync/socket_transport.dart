@@ -270,6 +270,8 @@ Future<ExchangeOutcome> syncWithTicket({
   Future<bool> Function(String shortCode)? confirmComparison,
   Duration connectTimeout = const Duration(seconds: 8),
   Duration timeout = const Duration(seconds: 30),
+  /// The history this device holds that its log does not; see `runExchange`.
+  Iterable<SegmentClaim> segments = const [],
 }) async {
   // **An address, never a name.** `Socket.connect` takes a `String` and resolves it if it is a hostname,
   // which means a pairing code carrying a name would send this process to a name service -- and a name
@@ -310,6 +312,7 @@ Future<ExchangeOutcome> syncWithTicket({
     expectedIdentity: expectedIdentity,
     confirmComparison: confirmComparison,
     timeout: timeout,
+    segments: segments,
   );
 }
 
@@ -330,6 +333,7 @@ Future<ExchangeOutcome> acceptForSync({
   Set<String> acceptedIdentities = const {},
   Future<bool> Function(String shortCode)? confirmComparison,
   Duration timeout = const Duration(seconds: 30),
+  Iterable<SegmentClaim> segments = const [],
 }) async {
   final Socket socket;
   try {
@@ -372,6 +376,7 @@ Future<ExchangeOutcome> runAccepted({
   Set<String> acceptedIdentities = const {},
   Future<bool> Function(String shortCode)? confirmComparison,
   Duration timeout = const Duration(seconds: 30),
+  Iterable<SegmentClaim> segments = const [],
 }) async {
   // **Read before the exchange, because the exchange closes the socket.** `Socket.remoteAddress` on a closed
   // socket throws `SocketException: Socket has been closed` -- which turned two existing tests into errors the
@@ -393,6 +398,7 @@ Future<ExchangeOutcome> runAccepted({
     acceptedIdentities: acceptedIdentities,
     confirmComparison: confirmComparison,
     timeout: timeout,
+    segments: segments,
   );
   // **The address comes from the socket, and only the socket knows it.** This is what a device that accepted a
   // tap remembers, and without it the peer is remembered with a key and nowhere to use it (see

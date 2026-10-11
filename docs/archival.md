@@ -118,6 +118,37 @@ second, and saying both is more honest than picking one.
 
 * **A new frame in the sync protocol.** A peer has to be able to ask for a segment and be answered with the package.
   **An older peer that has never heard of archives must degrade to "I do not have that" rather than to an error.**
+  **Built, and the sentence above is half wrong** -- see the next section.
+
+## The announcement, and the requirement a new frame kind could not meet
+
+**The first half of that bullet is built; the second half is why it could not be built the way the bullet says.**
+
+`exchange.dart` reads every line through `WireFrame.parse`, which returns null for a kind this build does not know --
+and the reader of that null calls `_end('the other end sent something unreadable')`. **So an old peer does not have a
+path that says "I do not have that". The only thing it can do with a frame it cannot read is hang up**, and no amount
+of care on the sending side changes that: the requirement *"must degrade to 'I do not have that' rather than to an
+error"* is **unsatisfiable by adding a frame kind**.
+
+**So the announcement rides an optional field on `hello`, which every build already parses.**
+
+    hello { name, count, digest, token?, segments? }
+    segments: [ { digest, count, first, last } ]
+
+An older peer ignores a key it does not know, answers the handshake exactly as it always did, and **the session
+proceeds with the segments simply not announced** -- which is the required degradation, obtained without asking
+anything of the old build. The frame is byte-identical to the one the previous release sent whenever there is nothing
+to announce, which is the ordinary case.
+
+**The digest is the identity**, not the file name: `ArchiveManifest.digest` is a stable hash over the package's own
+encoded lines, while a file name is a *range* that two devices can independently produce for two different sets of
+events -- so comparing names would report a difference that is not there, or miss one that is.
+
+**What this gives a reader today**: sync two devices and the outcome says how many segments the other one holds that
+this one has not, and the screen says so. **What it does not do yet is move one across**, and that is now the only
+thing this line owes -- the ask, and it can be gated on this announcement, so the frame for it is only ever sent to a
+peer that has proved it can read it.
+
 * **A package must be immutable once written.** That is the whole of its value: it is the thing a reader can trust in
   five years. A rewritten archive is not an archive.
 * **The marker event has to be written before the package is considered real**, in that order, so a crash between the

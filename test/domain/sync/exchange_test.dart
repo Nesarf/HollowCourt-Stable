@@ -144,6 +144,9 @@ Future<(ExchangeOutcome, ExchangeOutcome)> _syncBoth({
   /// gate lives on the sealed path -- the digits come from the handshake -- so the tests for it turn sealing on,
   /// and the gate tests would otherwise pass a gate that was never called.
   bool seal = false,
+  /// **Each side's announced history**, so a test can watch the segments travel rather than assume them.
+  Iterable<SegmentClaim> leftSegments = const [],
+  Iterable<SegmentClaim> rightSegments = const [],
 }) async {
   final results = await Future.wait([
     runExchange(
@@ -157,6 +160,7 @@ Future<(ExchangeOutcome, ExchangeOutcome)> _syncBoth({
       requestKinds: requestKinds,
       refuseRequest: initiatorRefuses,
       timeout: timeout,
+      segments: leftSegments,
     ),
     runExchange(
       seal: seal,
@@ -169,6 +173,7 @@ Future<(ExchangeOutcome, ExchangeOutcome)> _syncBoth({
       requestKinds: requestKinds,
       refuseRequest: responderRefuses,
       timeout: timeout,
+      segments: rightSegments,
     ),
   ]);
   return (results[0], results[1]);
@@ -535,7 +540,7 @@ void main() {
       );
 
       link.a.sendLine(
-        const HelloFrame(name: 'left', digest: ClockDigest.fromSummary(count: 9, digest: 9))
+        HelloFrame(name: 'left', digest: ClockDigest.fromSummary(count: 9, digest: 9))
             .encode(),
       );
       link.a.sendLine(EventsFrame([on(at(7))]).encode());
@@ -719,4 +724,78 @@ void main() {
     });
   });
 
+
+  group('the history a peer holds that its log does not', () {
+    test('**a segment this device has not got comes back on the outcome**', () async {
+      // `docs/archival.md`: an archive is a move, so a device's log and its history are different lengths and two
+      // devices can agree completely about the log and not hold the same history. This is the half that tells them.
+      final (:a, :b) = _pair();
+      final (left, right) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([on(at(1000))]),
+        right: _Cellar([on(at(2000))]),
+        rightSegments: [
+          const SegmentClaim(digest: 'theirs', count: 12, first: 'a', last: 'b'),
+        ],
+      );
+
+      expect(left.succeeded, isTrue);
+      expect(right.succeeded, isTrue);
+      expect([for (final segment in left.peerSegments) segment.digest], ['theirs']);
+      expect(left.peerSegments.single.count, 12);
+    });
+
+    test('**a segment both devices hold is not reported**', () async {
+      // By digest, not by file name: a name is a *range*, and two devices can independently produce the same range
+      // name for two different sets of events -- so comparing names would report a difference that is not there.
+      const ours = SegmentClaim(digest: 'shared', count: 5, first: 'a', last: 'b');
+      final (:a, :b) = _pair();
+      final (left, right) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([on(at(1000))]),
+        right: _Cellar([on(at(2000))]),
+        leftSegments: const [ours],
+        rightSegments: const [ours],
+      );
+
+      expect(left.peerSegments, isEmpty);
+      expect(right.peerSegments, isEmpty);
+    });
+
+    test('**a peer that announces nothing leaves the outcome empty, and that is not a claim about it**', () async {
+      // Every build before this one announces nothing, so empty means *nothing was said* rather than *the peer has
+      // nothing*. Reported as empty, which is the honest reading and the one a screen must not overstate.
+      final (:a, :b) = _pair();
+      final (left, _) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([on(at(1000))]),
+        right: _Cellar([on(at(2000))]),
+      );
+
+      expect(left.peerSegments, isEmpty);
+    });
+
+    test('**and the already-in-sync path carries them too**', () async {
+      // The shortest path in the protocol -- two devices that agree end after one frame each -- and it is exactly
+      // where a reader is most likely to look: nothing moved, and the history still differs. A version of this that
+      // only reported segments on the long path would say nothing on the sync that took no time at all.
+      final event = on(at(1000));
+      final (:a, :b) = _pair();
+      final (left, _) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([event]),
+        right: _Cellar([event]),
+        rightSegments: [
+          const SegmentClaim(digest: 'theirs', count: 3, first: 'a', last: 'b'),
+        ],
+      );
+
+      expect(left.merged, 0, reason: 'nothing moved, which is what makes this the short path');
+      expect([for (final segment in left.peerSegments) segment.digest], ['theirs']);
+    });
+  });
 }

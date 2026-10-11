@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../data/archive_package.dart';
+import '../domain/sync/wire.dart';
 
 /// Where a reader's archives live: **in their own documents directory, beside `.courtpack` files.**
 ///
@@ -113,6 +114,33 @@ class ArchiveSelection extends Notifier<Set<String>> {
 
   void clear() => state = const {};
 }
+
+/// **The segments the reader is reading, named the way the sync protocol names them.**
+///
+/// `docs/archival.md`: an archive is a move rather than a deletion, so a device that has archived 2015-2020 holds a
+/// log starting in 2021 **and a file starting in 2015**. That means two devices can agree completely about the log
+/// and not hold the same history -- and the only way for either to know is for each to say what it holds.
+///
+/// **By digest, not by file name.** `ArchiveManifest.digest` is a stable hash over the package's own encoded lines,
+/// which `archive_package.dart` already verifies on every read; a file name is a *range*, and two devices can
+/// independently produce the same range name for two different sets of events.
+///
+/// **Empty when the reader has ticked nothing**, which is the ordinary case, and empty is what every build before
+/// this one announces -- which is what makes the degradation automatic rather than negotiated.
+final attachedSegmentsProvider = Provider<List<SegmentClaim>>((ref) {
+  final entries = ref.watch(archiveCatalogProvider).value ?? const <ArchiveEntry>[];
+  final selected = ref.watch(archiveSelectionProvider);
+  return [
+    for (final entry in entries)
+      if (entry.isUsable && selected.contains(entry.fileName))
+        SegmentClaim(
+          digest: entry.package!.manifest.digest,
+          count: entry.count ?? entry.package!.events.length,
+          first: entry.package!.manifest.firstClock,
+          last: entry.package!.manifest.lastClock,
+        ),
+  ];
+});
 
 final archiveSelectionProvider = NotifierProvider<ArchiveSelection, Set<String>>(
   ArchiveSelection.new,

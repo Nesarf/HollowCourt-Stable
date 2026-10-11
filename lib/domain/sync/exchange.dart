@@ -100,6 +100,7 @@ final class ExchangeOutcome {
     this.peerReason = '',
     this.peerIdentity = '',
     this.peerAddress = '',
+    this.peerSegments = const [],
     this.failure,
   });
 
@@ -123,6 +124,18 @@ final class ExchangeOutcome {
   ///
   /// Empty on the paths that never had a socket (a test's canned outcome) and on failures.
   final String peerAddress;
+
+  /// **The segments of history the peer announced that this device has not got.**
+  ///
+  /// On the outcome so a caller can *say* it, which is the whole of what this round built: two devices can agree
+  /// completely about the log and still not hold the same history, and **until a peer announced its segments there
+  /// was no way for either side to know.** Moving one across the wire is the next step; telling the reader that the
+  /// other device has more history than this one is the step that has to exist first, because it is the one that
+  /// needs nothing of an older build.
+  ///
+  /// A peer whose build predates segments announces none, so this is empty -- and empty means *nothing was said*,
+  /// not *the peer has nothing*. The two are the same on this frame and a caller must not report the second.
+  final List<SegmentClaim> peerSegments;
 
   /// How many of the peer's events were new to this cellar.
   final int merged;
@@ -177,6 +190,11 @@ Future<ExchangeOutcome> runExchange({
   String token = '',
   String expectedToken = '',
   Duration timeout = const Duration(seconds: 30),
+  /// **The segments of history this device holds that its log does not** -- the archives its reader has attached.
+  ///
+  /// Passed in rather than reached for, for the reason `SyncSource` is: the exchange knows about frames and cannot
+  /// know which files a reader has ticked. Empty is the ordinary answer and the one every existing caller gives.
+  Iterable<SegmentClaim> segments = const [],
   /// **The reader's confirmation, when the device is being added by comparing screens.**
   ///
   /// Called with the six digits derived from this handshake (`short_code.dart`) **after** the channel is
@@ -332,7 +350,7 @@ Future<ExchangeOutcome> runExchange({
 
     if (role == ExchangeRole.initiator) {
       connection.sendLine(
-        HelloFrame(name: localName, digest: mine, token: token).encode(),
+        HelloFrame(name: localName, digest: mine, token: token, segments: segments).encode(),
       );
     }
 
@@ -371,7 +389,9 @@ Future<ExchangeOutcome> runExchange({
       if (!provedByKey && expectedToken.isNotEmpty && greeting.token != expectedToken) {
         return await fail('the pairing code did not match');
       }
-      connection.sendLine(HelloFrame(name: localName, digest: mine).encode());
+      connection.sendLine(
+        HelloFrame(name: localName, digest: mine, segments: segments).encode(),
+      );
     }
 
     // **The request, and the answer to it, before anything of ours moves.**
@@ -412,6 +432,17 @@ Future<ExchangeOutcome> runExchange({
           return await fail('对方没有回答这次请求 —— 它没有说同意，也没有说不同意');
     }
 
+    // **What the peer holds that this device has not**, computed once and carried on every outcome below.
+    //
+    // The comparison is by digest, because a segment's digest is a hash over its own encoded lines -- a file name is
+    // a range two devices can independently produce for two different sets of events, and comparing those would report
+    // a difference that is not there or miss one that is.
+    final heldDigests = {for (final segment in segments) segment.digest};
+    final peerOnly = [
+      for (final segment in greeting.segments)
+        if (!heldDigests.contains(segment.digest)) segment,
+    ];
+
     if (mine.likelyInSyncWith(greeting.digest)) {
       // The case ClockDigest exists for: two devices that already agree, one frame each.
       connection.sendLine(const ByeFrame(reason: 'already in sync').encode());
@@ -428,6 +459,7 @@ Future<ExchangeOutcome> runExchange({
         peerIdentity: peerIdentity,
         peerName: peerName,
         peerReason: 'already in sync',
+        peerSegments: peerOnly,
       );
     }
 
@@ -522,6 +554,7 @@ Future<ExchangeOutcome> runExchange({
        sent: sent,
       peerName: peerName,
       peerReason: peerReason,
+      peerSegments: peerOnly,
     );
   } on Object catch (error) {
     // Nothing that arrives over a network is allowed to reach the caller as an exception: the

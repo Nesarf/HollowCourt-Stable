@@ -35,6 +35,7 @@ import 'package:hollow_court/data/sync/sync_service.dart';
 import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/sync/device_identity.dart';
 import 'package:hollow_court/domain/sync/exchange.dart';
+import 'package:hollow_court/domain/sync/wire.dart';
 import 'package:hollow_court/domain/sync/pairing.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:hollow_court/ui/preferences_providers.dart';
@@ -235,6 +236,7 @@ final class _LoopbackSync implements SyncService {
     DeviceIdentity? identity,
     String expectedIdentity = '',
     Future<bool> Function(String shortCode)? confirmComparison,
+    Iterable<SegmentClaim> segments = const [],
   }) async {
     final waiting = _hosting;
     if (waiting == null) {
@@ -262,6 +264,7 @@ final class _LoopbackSync implements SyncService {
     DeviceIdentity? identity,
     String expectedIdentity = '',
     Future<bool> Function(String shortCode)? confirmComparison,
+    Iterable<SegmentClaim> segments = const [],
   }) async {
     // **A device that is merely reachable, rather than showing a code.** This is the §10.3.2 tap: no token travels,
     // and what stands behind the connection is the comparison gate both ends were handed.
@@ -327,6 +330,7 @@ final class _LoopbackSync implements SyncService {
   Future<ExchangeOutcome> awaitRequest({
     DeviceIdentity? identity,
     Future<bool> Function(String shortCode)? confirmComparison,
+    Iterable<SegmentClaim> segments = const [],
   }) async {
     final door = _door;
     if (door == null) {

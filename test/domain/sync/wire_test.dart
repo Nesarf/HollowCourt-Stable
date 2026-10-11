@@ -21,7 +21,7 @@ void main() {
       // the reader would see half a frame followed by nonsense -- so this is the property the
       // format rests on, and it is asserted rather than assumed.
       final frames = <WireFrame>[
-        const HelloFrame(name: 'cellar', digest: ClockDigest.fromSummary(count: 0, digest: 0)),
+        HelloFrame(name: 'cellar', digest: ClockDigest.fromSummary(count: 0, digest: 0)),
         ClocksFrame([at(1), at(2)]),
         EventsFrame([on(at(3))]),
         const ByeFrame(reason: 'done'),
@@ -42,7 +42,7 @@ void main() {
       // contain whatever breaks a hand-rolled format. JSON escapes it, and this proves the
       // escaping rather than trusting it.
       const nasty = 'line one\nline two\t"quoted" \\backslash\\ 书架';
-      final frame = const HelloFrame(
+      final frame = HelloFrame(
         name: nasty,
         digest: ClockDigest.fromSummary(count: 1, digest: 9),
       );
@@ -69,7 +69,7 @@ void main() {
 
     test('a hello from a connecting side carries the token it was given', () {
       final back = WireFrame.parse(
-        const HelloFrame(
+        HelloFrame(
           name: 'phone',
           digest: ClockDigest.fromSummary(count: 2, digest: 7),
           token: 'k7fq2m',
@@ -128,7 +128,7 @@ void main() {
       // parser case fails here instead of failing on somebody's phone.
       final samples = <WireKind, WireFrame>{
         WireKind.hello:
-            const HelloFrame(name: 'n', digest: ClockDigest.fromSummary(count: 0, digest: 0)),
+            HelloFrame(name: 'n', digest: ClockDigest.fromSummary(count: 0, digest: 0)),
         WireKind.clocks: ClocksFrame([at(1)]),
         WireKind.events: EventsFrame([on(at(1))]),
         WireKind.bye: const ByeFrame(reason: 'r'),
