@@ -169,8 +169,67 @@ call site changed.
 
 **What this gives a reader today**: sync two devices and the outcome says how many segments the other one holds that
 this one has not, and the screen says so. **What it does not do yet is move one across**, and that is now the only
-thing this line owes -- the ask, and it can be gated on this announcement, so the frame for it is only ever sent to a
-peer that has proved it can read it.
+thing this line owes.
+
+## The ask: the shape, and the two traps found before writing it
+
+**Wanted, so the next attempt is short rather than clever.** Nothing below is built.
+
+### One frame, one round, one direction at a time
+
+    SegmentWantFrame { digests: [ ... ] }        // possibly empty
+
+    initiator  ->  want                        (what it lacks of the responder's)
+    responder  ->  events for each, in order   (`count` per digest is already known from the hello)
+    responder  ->  want                        (what it lacks of the initiator's)
+    initiator  ->  events for each, in order
+
+**One frame per round rather than one per segment**, because a round with a variable number of request/answer pairs
+needs an end marker and a sentinel is where protocol bugs live. **A list plus a known count per entry has no ambiguity
+in it**: the receiver reads exactly the announced number of events for each digest and then knows it is done.
+
+**Both directions, in a fixed order, and never both at once.** At every moment exactly one side is sending, so the
+deadlock the exchange's own comment records cannot form. The order is determined by role, so neither has to negotiate.
+
+### Trap one: `bye` stops meaning what it says
+
+The exchange sends its bye **before awaiting anything**, and the comment on it is explicit: *"`bye` means 'I have
+nothing more to send', which became true the moment the last event frame left."* **With segments that sentence is
+false** -- a segment *is* something more to send, so the round has to be finished before the bye goes out. Get it wrong
+in the other direction and two peers each wait for the other's bye on a connection where both still had something to
+say. **This is the one part of the change that must not be rushed**, and it is the part with a test that already
+catches it.
+
+### Trap two: the round after the events phase is skipped exactly when it is wanted
+
+`runExchange` returns early when `mine.likelyInSyncWith(greeting.digest)` -- two devices that agree about the log send
+one frame each and a bye. **A segment round placed after the events phase therefore never runs for them**, and that is
+not an edge case: **it is every retry**, and every reader who attaches a package *after* the sync that moved their
+log. The first sync takes the long path and could carry the segment; the second one, the one where the reader is
+wondering why the chart is short, does not.
+
+**So the round belongs directly after the consent gate**, before the in-sync return, and gated on *either side having
+announced anything* -- which is what keeps the one-frame case a one-frame case for every reader who has no archives.
+
+### What serving needs, and the one decision left open
+
+The responder has to read a package off disk to answer, and `runExchange` is in `lib/domain/` where file I/O does not
+belong. So the responder needs a lookup passed in -- `Future<List<Event>> Function(ArchiveManifest)` -- exactly the way
+`SyncSource` is passed in, and for the same reason: **the exchange knows about frames and cannot know which files a
+reader has ticked.**
+
+**The open decision is what happens when the responder cannot serve one.** The file may have been deleted, or moved,
+between the hello and the ask. Three candidates, and none is obviously right:
+
+1. **A denial frame**, so the asker is told rather than left to time out. One more frame kind, and the honest one.
+2. **An empty events frame**, reusing what exists -- and ambiguous with a segment whose manifest says `count: 0`, which
+   is legal.
+3. **Nothing**, letting the asker's deadline report it -- the worst of the three, because a missing file on one side
+   becomes a failed sync on both.
+
+**A denial frame is the right answer and it is not built**, and the reason to write the choice down rather than pick it
+in a hurry is that it decides what a reader sees: *"the other device no longer has that segment"* is a sentence, where a
+timeout is an error.
 
 * **A package must be immutable once written.** That is the whole of its value: it is the thing a reader can trust in
   five years. A rewritten archive is not an archive.
