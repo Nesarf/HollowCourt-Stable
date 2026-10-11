@@ -2,6 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:hollow_court/domain/sync/pairing.dart';
 import 'package:hollow_court/domain/archive/archive_manifest.dart';
+import 'package:hollow_court/domain/events/event.dart';
+import 'package:hollow_court/domain/events/hlc.dart';
+import 'package:hollow_court/domain/sync/exchange.dart';
 import 'package:hollow_court/domain/sync/wire.dart';
 
 /// **The segment announcement, and the two compatibility claims it rests on.**
@@ -166,6 +169,75 @@ void main() {
 
       expect(readSegmentClaim(claimJson('')), isNull);
       expect(readSegmentClaim(claimJson('abc')), isNotNull);
+    });
+  });
+
+  group('the two frames of the round', () {
+    test('**a want survives the wire, and keeps its order**', () {
+      // **Ordered rather than a set**, because the answering side serves them in this order and the asking side reads
+      // a known count for each: a set would leave the sequence of a multi-segment transfer undefined, and two devices
+      // would then have to agree on an order that neither stated.
+      final sent = SegmentWantFrame(['b', 'a', 'c']);
+
+      final read = WireFrame.parse(sent.encode());
+
+      expect(read, isA<SegmentWantFrame>());
+      expect((read! as SegmentWantFrame).digests, ['b', 'a', 'c']);
+    });
+
+    test('an empty want is legal, and is how the turn is handed over', () {
+      // A side with nothing to ask for still sends its list -- that is what makes the two directions a fixed
+      // sequence rather than a negotiation, and what removes the need for a sentinel.
+      final read = WireFrame.parse(SegmentWantFrame(const []).encode());
+
+      expect((read! as SegmentWantFrame).digests, isEmpty);
+    });
+
+    test('**a denial carries its digest and its reason**', () {
+      // The reason travels, the rule `AnswerFrame` already keeps: "the other device no longer has that segment" is a
+      // sentence a reader can act on, and a bare denial is one they cannot.
+      final read = WireFrame.parse(
+        const SegmentDeniedFrame(digest: 'abc', reason: 'moved').encode(),
+      );
+
+      expect(read, isA<SegmentDeniedFrame>());
+      expect((read! as SegmentDeniedFrame).digest, 'abc');
+      expect((read as SegmentDeniedFrame).reason, 'moved');
+    });
+
+    test('a want without a list, and a denial without a digest or a reason, are refused', () {
+      // A malformed frame of a kind this build knows is drift, and `WireFrame.parse` returns null for it -- the rule
+      // every other frame in this file keeps.
+      expect(WireFrame.parse('{"kind":"want"}'), isNull);
+      expect(WireFrame.parse('{"kind":"denied","reason":"x"}'), isNull);
+      expect(WireFrame.parse('{"kind":"denied","digest":"a"}'), isNull);
+    });
+
+    test('**an unreadable digest in a want is dropped rather than asked for**', () {
+      // The list is what will be asked for by name, and an entry that is not a non-empty string names nothing.
+      final read = WireFrame.parse('{"kind":"want","digests":["a","",7,null,"b"]}');
+
+      expect((read! as SegmentWantFrame).digests, ['a', 'b']);
+    });
+  });
+
+  group('what arrived is checked before it is written', () {
+    test('**a transfer whose events do not hash to the announced digest is refused**', () {
+      // The same rule `ArchivePackage.read` keeps on the way back in, applied *before* the file exists at all:
+      // `digestOf` is a hash over the package's own encoded lines, so this catches a truncated transfer and a peer
+      // that sent something other than what it announced.
+      final events = [Event(hlc: Hlc(physicalMillis: 1, counter: 0, nodeId: 'x'), type: 'a', data: const {})];
+      final intact = ReceivedSegment(
+        manifest: claim(ArchiveManifest.digestOf(events), count: 1),
+        events: events,
+      );
+      final damaged = ReceivedSegment(
+        manifest: claim('something else', count: 1),
+        events: events,
+      );
+
+      expect(intact.isIntact, isTrue);
+      expect(damaged.isIntact, isFalse);
     });
   });
 }

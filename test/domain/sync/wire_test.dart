@@ -134,6 +134,8 @@ void main() {
         WireKind.bye: const ByeFrame(reason: 'r'),
         WireKind.request: const RequestFrame(kinds: {SyncKind.stock}),
         WireKind.answer: const AnswerFrame.refused('不想给'),
+        WireKind.want: SegmentWantFrame(['a', 'b']),
+        WireKind.denied: const SegmentDeniedFrame(digest: 'a', reason: '搬走了'),
       };
 
       expect(samples.length, WireKind.values.length);

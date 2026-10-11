@@ -18,6 +18,7 @@ import '../domain/sync/exchange.dart';
 import '../domain/sync/pairing.dart';
 import '../domain/sync/lan_address.dart';
 import '../domain/sync/scope.dart';
+import '../data/archive_package.dart';
 import 'archive_providers.dart';
 import 'l10n/copy_resolution.dart';
 import 'l10n/dual_copy.dart';
@@ -305,7 +306,9 @@ final class SyncController extends Notifier<SyncState> {
       expectedIdentity: key,
       confirmComparison: key.isEmpty ? _askToCompare : null,
       segments: ref.read(attachedSegmentsProvider),
+      serveSegment: segmentServer(ref),
     );
+    await _receive(outcome.received);
     await _remember(
       outcome,
       address: '${device.address}:${device.port}',
@@ -470,10 +473,12 @@ final class SyncController extends Notifier<SyncState> {
     final outcome = await service.awaitPeer(
       confirmComparison: compare,
       segments: ref.read(attachedSegmentsProvider),
+      serveSegment: segmentServer(ref),
     );
     state = state.comparingCode == null
         ? state
         : SyncState(phase: SyncPhase.working, scope: _scope);
+    await _receive(outcome.received);
     await _remember(outcome, address: null);
     state = SyncState(phase: SyncPhase.done, outcome: outcome, scope: _scope);
   }
@@ -495,6 +500,7 @@ final class SyncController extends Notifier<SyncState> {
       identity: stored?.identity,
       confirmComparison: compare,
       segments: ref.read(attachedSegmentsProvider),
+      serveSegment: segmentServer(ref),
     );
     await _remember(
       outcome,
@@ -529,7 +535,9 @@ final class SyncController extends Notifier<SyncState> {
       identity: stored?.identity,
       expectedIdentity: device.publicKey,
       segments: ref.read(attachedSegmentsProvider),
+      serveSegment: segmentServer(ref),
     );
+    await _receive(outcome.received);
     await _remember(outcome, address: address, fallbackName: device.name);
     state = SyncState(phase: SyncPhase.done, outcome: outcome, scope: _scope);
   }
@@ -547,6 +555,40 @@ final class SyncController extends Notifier<SyncState> {
   /// Null is not fatal: a device with no identity yet syncs exactly as it did before this feature --
   /// encrypted, authenticated by the code, unable to be recognised next time. Worse, and working.
   StoredSyncIdentity? _storedIdentity() => ref.read(syncIdentityProvider).value;
+
+  /// **Writes down every segment that arrived, and refreshes the list.**
+  ///
+  /// The exchange hands these over rather than writing them, because `lib/domain/sync/` may not reach `Documents/`.
+  /// What is written is **the sender's own manifest**, unchanged: `createdMillis` and `nodeId` say when the package
+  /// was made and which device made it, and a receiver that reconstructed them would be writing "made here, just
+  /// now" about somebody else's file.
+  ///
+  /// **Nothing is ticked.** *"No package is read unless the reader says so"* is the promise the whole archive design
+  /// rests on, and a file that arrived over a network is exactly the file a reader has not yet said anything about.
+  /// It appears in 设置 and waits.
+  ///
+  /// **A damaged transfer is refused rather than written**, which is the same rule `ArchivePackage.read` keeps on the
+  /// way back in -- and refusing it here means the bad file never exists at all. `digestOf` is a hash over the
+  /// package's own encoded lines, so this catches a truncated transfer and a peer that sent something other than what
+  /// it announced.
+  Future<int> _receive(List<ReceivedSegment> segments) async {
+    if (segments.isEmpty) return 0;
+    final directory = await ref.read(archivesDirectoryProvider.future);
+    var written = 0;
+    for (final segment in segments) {
+      if (!segment.isIntact) continue;
+      await ArchivePackage(
+        first: segment.manifest.firstClock,
+        last: segment.manifest.lastClock,
+        events: segment.events,
+        manifest: segment.manifest,
+      ).writeTo(directory);
+      written++;
+    }
+    // The list has to be re-read: packages that were written a moment ago are not in the catalog this screen holds.
+    ref.invalidate(archiveCatalogProvider);
+    return written;
+  }
 
   /// Writes down who the peer turned out to be, so the next sync needs no code.
   Future<void> _remember(

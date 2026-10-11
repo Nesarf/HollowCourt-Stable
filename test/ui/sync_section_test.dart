@@ -80,6 +80,7 @@ final class _FakeSync implements SyncService {
     String expectedIdentity = '',
     Future<bool> Function(String shortCode)? confirmComparison,
     Iterable<ArchiveManifest> segments = const [],
+    Future<List<Event>?> Function(ArchiveManifest)? serveSegment,
   }) {
     // **This fake never runs an exchange, so it cannot honour a gate** -- and the parameter is named here rather
     // than ignored silently, because a fake that accepts a security parameter and drops it is a test that will
@@ -99,6 +100,7 @@ final class _FakeSync implements SyncService {
     String expectedIdentity = '',
     Future<bool> Function(String shortCode)? confirmComparison,
     Iterable<ArchiveManifest> segments = const [],
+    Future<List<Event>?> Function(ArchiveManifest)? serveSegment,
   }) async {
     assert(confirmComparison == null, 'this fake cannot answer a comparison');
     calls.add('join');
@@ -153,6 +155,7 @@ final class _FakeSync implements SyncService {
     DeviceIdentity? identity,
     Future<bool> Function(String shortCode)? confirmComparison,
     Iterable<ArchiveManifest> segments = const [],
+    Future<List<Event>?> Function(ArchiveManifest)? serveSegment,
   }) {
     // The listener is reachable by anybody, so the gate is not optional here: it is the proof this connection
     // otherwise does not have. A fake that accepted a null gate would hide exactly the bug this records.

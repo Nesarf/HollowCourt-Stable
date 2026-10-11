@@ -102,6 +102,8 @@ final class ExchangeOutcome {
     this.peerIdentity = '',
     this.peerAddress = '',
     this.peerSegments = const [],
+    this.received = const [],
+    this.deniedSegments = const [],
     this.failure,
   });
 
@@ -137,6 +139,20 @@ final class ExchangeOutcome {
   /// A peer whose build predates segments announces none, so this is empty -- and empty means *nothing was said*,
   /// not *the peer has nothing*. The two are the same on this frame and a caller must not report the second.
   final List<ArchiveManifest> peerSegments;
+
+  /// **The segments that arrived, to be written down by the caller.**
+  ///
+  /// Empty on every path that moved none, which is every sync with a peer that announced nothing. The exchange does
+  /// not write them: `lib/domain/sync/` may not reach `Documents/`, and where a reader keeps their archives is not
+  /// something a protocol knows.
+  final List<ReceivedSegment> received;
+
+  /// **The digests the peer said it could not serve**, in the order they were asked for.
+  ///
+  /// Not a failure and not silence: the file may have been moved between the hello that announced it and the ask that
+  /// wanted it, and *"the other device no longer has that segment"* is a sentence a reader can act on where a timeout
+  /// is an error. See `SegmentDeniedFrame`.
+  final List<String> deniedSegments;
 
   /// How many of the peer's events were new to this cellar.
   final int merged;
@@ -196,6 +212,13 @@ Future<ExchangeOutcome> runExchange({
   /// Passed in rather than reached for, for the reason `SyncSource` is: the exchange knows about frames and cannot
   /// know which files a reader has ticked. Empty is the ordinary answer and the one every existing caller gives.
   Iterable<ArchiveManifest> segments = const [],
+  /// **How to put one of this device's segments on the wire**, or null when this caller cannot serve any.
+  ///
+  /// A callback rather than a directory, for the reason `SyncSource` is a callback: **the exchange knows about frames
+  /// and cannot know which files a reader has ticked**, and the answer lives in `Documents/` where `lib/domain/` may
+  /// not reach. Returning null means *this one cannot be served* -- the file was moved, deleted or is unreadable --
+  /// and it is answered with a [SegmentDeniedFrame] rather than with silence.
+  Future<List<Event>?> Function(ArchiveManifest segment)? serveSegment,
   /// **The reader's confirmation, when the device is being added by comparing screens.**
   ///
   /// Called with the six digits derived from this handshake (`short_code.dart`) **after** the channel is
@@ -438,11 +461,48 @@ Future<ExchangeOutcome> runExchange({
     // The comparison is by digest, because a segment's digest is a hash over its own encoded lines -- a file name is
     // a range two devices can independently produce for two different sets of events, and comparing those would report
     // a difference that is not there or miss one that is.
+    final received = <ReceivedSegment>[];
+    final denied = <String>[];
     final heldDigests = {for (final segment in segments) segment.digest};
     final peerOnly = [
       for (final segment in greeting.segments)
         if (!heldDigests.contains(segment.digest)) segment,
     ];
+
+    // **The segment round, and it is here rather than after the events on purpose.**
+    //
+    // `docs/archival.md` records the trap: `likelyInSyncWith` returns early a few lines below, so a round placed
+    // after the events phase would be **skipped exactly for the sync that wants it** -- every retry, and every reader
+    // who attached a package *after* the sync that moved their log. The first sync takes the long path and could
+    // carry a segment; the second one, where the reader is wondering why the chart is short, would not.
+    //
+    // **Gated on either side having announced anything**, so a reader with no archives pays nothing at all: two
+    // devices that announce nothing here go straight on to the one-frame-each case, exactly as before.
+    //
+    // **And it is before the bye, not after.** `bye` means "I have nothing more to send" -- and a segment *is*
+    // something more to send. The comment on the bye below says its placement is the whole difference between a sync
+    // and a hang; putting the round on the wrong side of it would make that sentence false and hang two peers that
+    // each still had something to say.
+    if (segments.isNotEmpty || greeting.segments.isNotEmpty) {
+      try {
+        await _moveSegments(
+          role: role,
+          inbox: inbox,
+          connection: connection,
+          timeout: timeout,
+          mine: segments.toList(),
+          theirs: peerOnly,
+          received: received,
+          denied: denied,
+          serveSegment: serveSegment,
+        );
+      } on TimeoutException {
+        // **A peer that stops answering during the rounds is reported, not guessed at.** The clock and event phases
+        // below say the same thing in their own words; this one names the phase, because "the segment did not
+        // arrive" and "the events did not arrive" are different sentences to a reader.
+        return await fail('对方在搬归档段的时候没有回答');
+      }
+    }
 
     if (mine.likelyInSyncWith(greeting.digest)) {
       // The case ClockDigest exists for: two devices that already agree, one frame each.
@@ -461,6 +521,8 @@ Future<ExchangeOutcome> runExchange({
         peerName: peerName,
         peerReason: 'already in sync',
         peerSegments: peerOnly,
+        received: received,
+        deniedSegments: denied,
       );
     }
 
@@ -556,6 +618,8 @@ Future<ExchangeOutcome> runExchange({
       peerName: peerName,
       peerReason: peerReason,
       peerSegments: peerOnly,
+      received: received,
+      deniedSegments: denied,
     );
   } on Object catch (error) {
     // Nothing that arrives over a network is allowed to reach the caller as an exception: the
@@ -578,6 +642,134 @@ Future<ExchangeOutcome> runExchange({
       peerReason: peerReason,
       failure: '$error',
     );
+  }
+}
+
+/// **One segment that arrived over the wire**, waiting to be written down.
+///
+/// Carried on the outcome rather than written by the exchange, and that is the layering rule rather than a preference:
+/// `lib/domain/sync/` may not touch `Documents/`, and the exchange has no idea where a reader keeps their archives.
+/// **A caller that is handed this writes it as a package of its own** -- unticked, because *"no package is read unless
+/// the reader says so"* is the promise the whole archive design rests on, and a file that arrived over a network is
+/// exactly the file a reader has not yet said anything about.
+final class ReceivedSegment {
+  const ReceivedSegment({required this.manifest, required this.events});
+
+  /// **The sender's own manifest, unchanged.** Not reconstructed: `createdMillis` and `nodeId` say when the package
+  /// was made and which device made it, and a receiver that invented them would be writing "made here, just now"
+  /// about somebody else's file.
+  final ArchiveManifest manifest;
+
+  final List<Event> events;
+
+  /// Whether what arrived is what was announced.
+  ///
+  /// **Checked here because this is the only place both halves exist.** `ArchiveManifest.digest` is a hash over the
+  /// package's own encoded lines -- the same thing `ArchivePackage.read` verifies -- so a mismatch means the transfer
+  /// was damaged or the peer sent something other than what it announced. **`archive_package.dart` refuses such a
+  /// file on read; refusing it here means it is never written at all.**
+  bool get isIntact => ArchiveManifest.digestOf(events) == manifest.digest;
+
+  @override
+  String toString() => 'ReceivedSegment(${manifest.digest}, ${events.length} events)';
+}
+
+/// **The two directions of the segment round**, in the order `docs/archival.md` fixes.
+///
+///     initiator  ->  want                        (what it lacks of the responder's)
+///     responder  ->  events or a denial, per digest, in the order asked
+///     responder  ->  want                        (what it lacks of the initiator's)
+///     initiator  ->  events or a denial, per digest, in the order asked
+///
+/// **A fixed sequence by role rather than a negotiation**, so that at every moment exactly one side is sending and the
+/// deadlock `exchange.dart` records cannot form. Each side sends its list whether or not it has one, which is what
+/// makes the turn unambiguous without a sentinel.
+///
+/// **The asking side knows every count already**, from the hello, so it reads exactly that many events per digest and
+/// needs no end marker. A denial for a digest ends that digest early and is recorded rather than treated as a fault:
+/// the file may simply have been moved since it was announced.
+Future<void> _moveSegments({
+  required ExchangeRole role,
+  required _Inbox inbox,
+  required WireChannel connection,
+  required Duration timeout,
+  required List<ArchiveManifest> mine,
+  required List<ArchiveManifest> theirs,
+  required List<ReceivedSegment> received,
+  required List<String> denied,
+  required Future<List<Event>?> Function(ArchiveManifest segment)? serveSegment,
+}) async {
+  final initiator = role == ExchangeRole.initiator;
+
+  Future<void> ask(List<ArchiveManifest> wanted) async {
+    connection.sendLine(SegmentWantFrame([for (final s in wanted) s.digest]).encode());
+  }
+
+  /// Reads the answers to [wanted] and records them.
+  Future<void> collect(List<ArchiveManifest> wanted) async {
+    for (final segment in wanted) {
+      final events = <Event>[];
+      var deniedNow = false;
+      // **Bounded by the announced count**, which is what removes the end marker: the answer is exactly this many
+      // events, however many frames they arrive in. A denial ends it early.
+      while (events.length < segment.count && !deniedNow) {
+        final frame = await inbox.next(timeout);
+        if (frame is SegmentDeniedFrame) {
+          if (frame.digest == segment.digest) deniedNow = true;
+          continue;
+        }
+        if (frame is EventsFrame) {
+          events.addAll(frame.events);
+          continue;
+        }
+        throw TimeoutException('a ${frame.kind.wire} frame arrived where segment events were due');
+      }
+      if (deniedNow) {
+        denied.add(segment.digest);
+        continue;
+      }
+      received.add(ReceivedSegment(manifest: segment, events: events));
+    }
+  }
+
+  /// Answers the peer's list, one digest at a time, in the order asked.
+  Future<void> serve(SegmentWantFrame want) async {
+    for (final digest in want.digests) {
+      final segment = [for (final s in mine) if (s.digest == digest) s].firstOrNull;
+      final events = segment == null || serveSegment == null
+          ? null
+          : await serveSegment(segment);
+      if (events == null) {
+        connection.sendLine(
+          SegmentDeniedFrame(
+            digest: digest,
+            reason: '这一段现在拿不出来了 —— 它在对方那边可能已经被移走或删掉',
+          ).encode(),
+        );
+        continue;
+      }
+      for (final chunk in _chunks(events)) {
+        connection.sendLine(EventsFrame(chunk).encode());
+      }
+    }
+  }
+
+  Future<void> wantThenServe() async {
+    final asked = await inbox.next(timeout);
+    if (asked is! SegmentWantFrame) {
+      throw TimeoutException('a ${asked.kind.wire} frame arrived where a segment list was due');
+    }
+    await serve(asked);
+  }
+
+  if (initiator) {
+    await ask(theirs);
+    await collect(theirs);
+    await wantThenServe();
+  } else {
+    await wantThenServe();
+    await ask(theirs);
+    await collect(theirs);
   }
 }
 

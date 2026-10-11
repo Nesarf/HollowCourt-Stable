@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../data/archive_package.dart';
+import '../domain/events/event.dart';
 
 /// Where a reader's archives live: **in their own documents directory, beside `.courtpack` files.**
 ///
@@ -138,6 +139,30 @@ final attachedSegmentsProvider = Provider<List<ArchiveManifest>>((ref) {
         entry.package!.manifest,
   ];
 });
+
+/// **How to put one of this device's segments on the wire**, by digest.
+///
+/// The counterpart of [attachedSegmentsProvider], and it exists because **a device may only announce what it can hand
+/// over.** An announcement is an offer: a peer that asks for a segment this device then cannot produce gets a denial
+/// with a reason, and *"the other device no longer has that"* would be a lie about a file sitting right there.
+///
+/// **The events are already in memory.** `archiveCatalogProvider` has read and verified every package it lists, so
+/// this is a lookup rather than a second read -- and the digest it matches on is the one the package's own manifest
+/// carries, which is the same value that was announced.
+///
+/// Null for a digest that is not in the catalog: the file was moved or deleted after it was announced, which is the
+/// case `SegmentDeniedFrame` exists for.
+Future<List<Event>?> Function(ArchiveManifest segment) segmentServer(Ref ref) {
+  return (segment) async {
+    final entries = ref.read(archiveCatalogProvider).value ?? const <ArchiveEntry>[];
+    for (final entry in entries) {
+      if (entry.isUsable && entry.package!.manifest.digest == segment.digest) {
+        return entry.package!.events;
+      }
+    }
+    return null;
+  };
+}
 
 final archiveSelectionProvider = NotifierProvider<ArchiveSelection, Set<String>>(
   ArchiveSelection.new,

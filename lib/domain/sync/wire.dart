@@ -74,7 +74,13 @@ enum WireKind {
 
   /// **The answer to a [RequestFrame]** -- approval, or a refusal that says
   /// why. See [AnswerFrame] for why the reason is not optional on the wire.
-  answer('answer');
+  answer('answer'),
+
+  /// **A list of segments one device is asking another for**, by digest. See [SegmentWantFrame].
+  want('want'),
+
+  /// **One segment the other end cannot serve**, with the reason. See [SegmentDeniedFrame].
+  denied('denied');
 
   const WireKind(this.wire);
 
@@ -162,6 +168,8 @@ sealed class WireFrame {
         WireKind.bye => ByeFrame._fromJson(decoded),
         WireKind.request => RequestFrame._fromJson(decoded),
         WireKind.answer => AnswerFrame._fromJson(decoded),
+        WireKind.want => SegmentWantFrame._fromJson(decoded),
+        WireKind.denied => SegmentDeniedFrame._fromJson(decoded),
       };
     } on FormatException {
       // A well-named frame with an unreadable body is still unreadable. Caught here rather than
@@ -437,5 +445,84 @@ final class AnswerFrame extends WireFrame {
       throw FormatException('answer refuses without a reason: $json');
     }
     return approved ? const AnswerFrame.approved() : AnswerFrame.refused(reason as String);
+  }
+}
+
+/// **What one device is asking another for: the segments it holds and this one has not.**
+///
+/// `docs/archival.md`. The digests are the ones the *answerer* announced in its hello, so both ends already know
+/// `count`, `first` and `last` for every one of them -- **which is why this frame carries nothing but the list**: the
+/// receiver of an ask reads exactly as many events per digest as it was already told, and no length prefix, sentinel
+/// or end marker is needed anywhere.
+///
+/// **A list rather than one frame per segment.** A variable number of request/answer pairs needs a way to say the
+/// sequence has ended, and a sentinel is where protocol bugs live; a list has no ambiguity in it at all.
+///
+/// **An empty list is legal and means "I want nothing of yours".** It is how the turn is handed over: the asking side
+/// sends its list whether or not it has one, and the answering side replies with its own. That is what makes the two
+/// directions a fixed sequence rather than a negotiation -- **at every moment exactly one side is sending**, so the
+/// deadlock `exchange.dart` records cannot form.
+final class SegmentWantFrame extends WireFrame {
+  SegmentWantFrame(Iterable<String> digests) : digests = List.unmodifiable(digests);
+
+  @override
+  WireKind get kind => WireKind.want;
+
+  /// The digests being asked for, in the order the answers will arrive.
+  ///
+  /// **Ordered rather than a set**, because the answering side serves them in this order and the asking side reads a
+  /// known count for each: a set would leave the *sequence* of a multi-segment transfer undefined, and two devices
+  /// would then have to agree on an order that neither stated.
+  final List<String> digests;
+
+  @override
+  Map<String, Object?> _toJson() => {'kind': kind.wire, 'digests': digests};
+
+  static SegmentWantFrame _fromJson(Map<String, Object?> json) {
+    final raw = json['digests'];
+    if (raw is! List) throw FormatException('want without a digest list: $json');
+    return SegmentWantFrame([
+      for (final entry in raw)
+        if (entry is String && entry.isNotEmpty) entry,
+    ]);
+  }
+}
+
+/// **One segment the other end cannot serve**, and why.
+///
+/// **This frame exists because silence is the worst of the three answers.** A package can be moved or deleted between
+/// the hello that announced it and the ask that wants it, and a responder with nothing to send would otherwise leave
+/// the asker waiting for events that are never coming -- **turning a missing file on one side into a failed sync on
+/// both.** `docs/archival.md` records the alternatives and why they were not taken: an empty events frame is
+/// ambiguous with a segment whose manifest legally says `count: 0`.
+///
+/// **The reason travels**, the rule `AnswerFrame` already keeps: *"the other device no longer has that segment"* is a
+/// sentence a reader can act on, and a bare denial is one they cannot.
+final class SegmentDeniedFrame extends WireFrame {
+  const SegmentDeniedFrame({required this.digest, required this.reason});
+
+  @override
+  WireKind get kind => WireKind.denied;
+
+  /// Which one, so that a denial in the middle of a batch is attributable.
+  final String digest;
+
+  final String reason;
+
+  @override
+  Map<String, Object?> _toJson() => {
+    'kind': kind.wire,
+    'digest': digest,
+    'reason': reason,
+  };
+
+  static SegmentDeniedFrame _fromJson(Map<String, Object?> json) {
+    final digest = json['digest'];
+    final reason = json['reason'];
+    if (digest is! String || digest.isEmpty) {
+      throw FormatException('denied without a digest: $json');
+    }
+    if (reason is! String) throw FormatException('denied without a reason: $json');
+    return SegmentDeniedFrame(digest: digest, reason: reason);
   }
 }

@@ -9,6 +9,7 @@ import '../../domain/sync/exchange.dart';
 import '../../domain/sync/lan_address.dart';
 import '../../domain/sync/pairing.dart';
 import '../../domain/archive/archive_manifest.dart';
+import '../../domain/events/event.dart';
 import '../../domain/sync/wire.dart';
 
 /// The socket half of a sync, and the only file in the project that knows a connection is TCP.
@@ -273,6 +274,8 @@ Future<ExchangeOutcome> syncWithTicket({
   Duration timeout = const Duration(seconds: 30),
   /// The history this device holds that its log does not; see `runExchange`.
   Iterable<ArchiveManifest> segments = const [],
+  /// **How to put one of this device's segments on the wire**; see `runExchange`.
+  Future<List<Event>?> Function(ArchiveManifest segment)? serveSegment,
 }) async {
   // **An address, never a name.** `Socket.connect` takes a `String` and resolves it if it is a hostname,
   // which means a pairing code carrying a name would send this process to a name service -- and a name
@@ -314,6 +317,7 @@ Future<ExchangeOutcome> syncWithTicket({
     confirmComparison: confirmComparison,
     timeout: timeout,
     segments: segments,
+    serveSegment: serveSegment,
   );
 }
 
@@ -335,6 +339,8 @@ Future<ExchangeOutcome> acceptForSync({
   Future<bool> Function(String shortCode)? confirmComparison,
   Duration timeout = const Duration(seconds: 30),
   Iterable<ArchiveManifest> segments = const [],
+  /// **How to put one of this device's segments on the wire**; see `runExchange`.
+  Future<List<Event>?> Function(ArchiveManifest segment)? serveSegment,
 }) async {
   final Socket socket;
   try {
@@ -378,6 +384,8 @@ Future<ExchangeOutcome> runAccepted({
   Future<bool> Function(String shortCode)? confirmComparison,
   Duration timeout = const Duration(seconds: 30),
   Iterable<ArchiveManifest> segments = const [],
+  /// **How to put one of this device's segments on the wire**; see `runExchange`.
+  Future<List<Event>?> Function(ArchiveManifest segment)? serveSegment,
 }) async {
   // **Read before the exchange, because the exchange closes the socket.** `Socket.remoteAddress` on a closed
   // socket throws `SocketException: Socket has been closed` -- which turned two existing tests into errors the
@@ -400,6 +408,7 @@ Future<ExchangeOutcome> runAccepted({
     confirmComparison: confirmComparison,
     timeout: timeout,
     segments: segments,
+    serveSegment: serveSegment,
   );
   // **The address comes from the socket, and only the socket knows it.** This is what a device that accepted a
   // tap remembers, and without it the peer is remembered with a key and nowhere to use it (see

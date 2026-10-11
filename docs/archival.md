@@ -171,9 +171,10 @@ call site changed.
 this one has not, and the screen says so. **What it does not do yet is move one across**, and that is now the only
 thing this line owes.
 
-## The ask: the shape, and the two traps found before writing it
+## The ask: built, and the two traps it had to get past
 
-**Wanted, so the next attempt is short rather than clever.** Nothing below is built.
+**Built 2026-10-11, in the shape below.** The traps are kept because they are what the change had to be arranged
+around, and the arrangement is not obvious from the code alone.
 
 ### One frame, one round, one direction at a time
 
@@ -211,25 +212,30 @@ wondering why the chart is short, does not.
 **So the round belongs directly after the consent gate**, before the in-sync return, and gated on *either side having
 announced anything* -- which is what keeps the one-frame case a one-frame case for every reader who has no archives.
 
-### What serving needs, and the one decision left open
+### What serving needs, and the answer that was chosen
 
-The responder has to read a package off disk to answer, and `runExchange` is in `lib/domain/` where file I/O does not
-belong. So the responder needs a lookup passed in -- `Future<List<Event>> Function(ArchiveManifest)` -- exactly the way
-`SyncSource` is passed in, and for the same reason: **the exchange knows about frames and cannot know which files a
-reader has ticked.**
+The responder reads a package to answer, and `runExchange` is in `lib/domain/` where file I/O does not belong. So the
+lookup is **passed in** -- `Future<List<Event>?> Function(ArchiveManifest)` -- exactly the way `SyncSource` is, and for
+the same reason: **the exchange knows about frames and cannot know which files a reader has ticked.** The UI supplies
+it from `archiveCatalogProvider`, whose packages are already read and verified, so serving is a lookup rather than a
+second read.
 
-**The open decision is what happens when the responder cannot serve one.** The file may have been deleted, or moved,
-between the hello and the ask. Three candidates, and none is obviously right:
+**The open question was what a responder says when it can no longer serve one**, and the answer is a denial frame. The
+file may have been moved or deleted between the hello that announced it and the ask that wanted it, and:
 
-1. **A denial frame**, so the asker is told rather than left to time out. One more frame kind, and the honest one.
-2. **An empty events frame**, reusing what exists -- and ambiguous with a segment whose manifest says `count: 0`, which
-   is legal.
-3. **Nothing**, letting the asker's deadline report it -- the worst of the three, because a missing file on one side
-   becomes a failed sync on both.
+1. **A denial frame** -- taken. `SegmentDeniedFrame { digest, reason }`, and **the reason travels**, the rule
+   `AnswerFrame` already keeps: *"the other device no longer has that segment"* is a sentence a reader can act on where
+   a timeout is an error.
+2. An empty events frame -- rejected, because it is ambiguous with a segment whose manifest legally says `count: 0`.
+3. Silence -- rejected as the worst of the three: it turns a missing file on one side into a failed sync on both.
 
-**A denial frame is the right answer and it is not built**, and the reason to write the choice down rather than pick it
-in a hurry is that it decides what a reader sees: *"the other device no longer has that segment"* is a sentence, where a
-timeout is an error.
+**Receiving writes the file, and writes it unticked.** The exchange hands the segments over on the outcome rather than
+writing them, because `lib/domain/sync/` may not reach `Documents/`. What is written is **the sender's own manifest,
+unchanged**, and `ReceivedSegment.isIntact` checks the arrived events against the announced digest *before the file
+exists* -- the same rule `ArchivePackage.read` keeps on the way back in, so a damaged transfer never becomes a file
+that looks like an archive. **A package that arrives is not ticked**: *"no package is read unless the reader says so"*
+is the promise this whole design rests on, and a file that came over a network is exactly the file a reader has not
+yet said anything about.
 
 * **A package must be immutable once written.** That is the whole of its value: it is the thing a reader can trust in
   five years. A rewritten archive is not an archive.

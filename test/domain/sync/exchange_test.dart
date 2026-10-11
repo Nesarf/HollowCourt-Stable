@@ -170,6 +170,8 @@ Future<(ExchangeOutcome, ExchangeOutcome)> _syncBoth({
   /// **Each side's announced history**, so a test can watch the segments travel rather than assume them.
   Iterable<ArchiveManifest> leftSegments = const [],
   Iterable<ArchiveManifest> rightSegments = const [],
+  Future<List<Event>?> Function(ArchiveManifest)? leftServes,
+  Future<List<Event>?> Function(ArchiveManifest)? rightServes,
 }) async {
   final results = await Future.wait([
     runExchange(
@@ -184,6 +186,7 @@ Future<(ExchangeOutcome, ExchangeOutcome)> _syncBoth({
       refuseRequest: initiatorRefuses,
       timeout: timeout,
       segments: leftSegments,
+      serveSegment: leftServes,
     ),
     runExchange(
       seal: seal,
@@ -197,6 +200,7 @@ Future<(ExchangeOutcome, ExchangeOutcome)> _syncBoth({
       refuseRequest: responderRefuses,
       timeout: timeout,
       segments: rightSegments,
+      serveSegment: rightServes,
     ),
   ]);
   return (results[0], results[1]);
@@ -819,6 +823,160 @@ void main() {
 
       expect(left.merged, 0, reason: 'nothing moved, which is what makes this the short path');
       expect([for (final segment in left.peerSegments) segment.digest], ['theirs']);
+    });
+  });
+
+  group('moving a segment across', () {
+    /// One package's worth of events, and the manifest that describes exactly them.
+    ///
+    /// **The digest is computed from the events rather than made up**, because `ReceivedSegment.isIntact` checks it
+    /// and a fixture with a fake digest would test the transfer with a corrupt package.
+    (ArchiveManifest, List<Event>) package_(String tag, int count) {
+      final events = [for (var i = 0; i < count; i++) on(at(900000 + i))];
+      return (
+        ArchiveManifest(
+          format: ArchiveManifest.formatVersion,
+          createdMillis: 5000,
+          firstClock: events.first.hlc.toString(),
+          lastClock: events.last.hlc.toString(),
+          count: events.length,
+          nodeId: tag,
+          digest: ArchiveManifest.digestOf(events),
+        ),
+        events,
+      );
+    }
+
+    test('**a device that holds a segment and one that does not end up with the same history**', () async {
+      // `docs/archival.md`: an archive is a move, so two devices can agree completely about the log and not hold the
+      // same history. This is the round that closes that, and it is the whole point of the section.
+      final (manifest, events) = package_('theirs', 4);
+      final (:a, :b) = _pair();
+      final (left, right) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([on(at(1000))]),
+        right: _Cellar([on(at(2000))]),
+        rightSegments: [manifest],
+        rightServes: (segment) async => segment.digest == manifest.digest ? events : null,
+      );
+
+      expect(left.succeeded, isTrue);
+      expect(right.succeeded, isTrue);
+      expect(left.received, hasLength(1));
+      expect(left.received.single.events, hasLength(4));
+      // **The sender's own manifest, unchanged** -- including the two fields a summary could not carry, which is the
+      // correction that made this round possible at all.
+      expect(left.received.single.manifest, manifest);
+      expect(left.received.single.manifest.nodeId, 'theirs');
+      expect(left.received.single.manifest.createdMillis, 5000);
+      expect(left.received.single.isIntact, isTrue);
+    });
+
+    test('**both directions move, in one sync**', () async {
+      // The fixed sequence by role exists so that a reader does not have to sync twice to get both. Each side asks
+      // for what it lacks and each side serves.
+      final (leftManifest, leftEvents) = package_('left', 2);
+      final (rightManifest, rightEvents) = package_('right', 3);
+      final (:a, :b) = _pair();
+      final (left, right) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([on(at(1000))]),
+        right: _Cellar([on(at(2000))]),
+        leftSegments: [leftManifest],
+        rightSegments: [rightManifest],
+        leftServes: (segment) async => segment.digest == leftManifest.digest ? leftEvents : null,
+        rightServes: (segment) async => segment.digest == rightManifest.digest ? rightEvents : null,
+      );
+
+      expect(left.received.map((r) => r.manifest.digest), [rightManifest.digest]);
+      expect(right.received.map((r) => r.manifest.digest), [leftManifest.digest]);
+    });
+
+    test('**a segment both devices hold is not asked for and not sent**', () async {
+      final (manifest, events) = package_('shared', 2);
+      var served = 0;
+      final (:a, :b) = _pair();
+      final (left, right) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([on(at(1000))]),
+        right: _Cellar([on(at(2000))]),
+        leftSegments: [manifest],
+        rightSegments: [manifest],
+        leftServes: (segment) async {
+          served++;
+          return events;
+        },
+        rightServes: (segment) async {
+          served++;
+          return events;
+        },
+      );
+
+      expect(left.received, isEmpty);
+      expect(right.received, isEmpty);
+      expect(served, 0, reason: 'nothing was asked for, so nothing was read off disk');
+    });
+
+    test('**a segment the peer can no longer serve is reported, not awaited**', () async {
+      // The file was moved or deleted between the hello that announced it and the ask that wanted it. **Silence would
+      // be the worst answer**: it leaves the asker waiting for events that are never coming, and turns a missing file
+      // on one side into a failed sync on both.
+      final (manifest, _) = package_('gone', 2);
+      final (:a, :b) = _pair();
+      final (left, right) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([on(at(1000))]),
+        right: _Cellar([on(at(2000))]),
+        rightSegments: [manifest],
+        // Announced but unservable, which is the state a caller that cannot read its own directory would be in.
+        rightServes: (segment) async => null,
+      );
+
+      expect(left.succeeded, isTrue, reason: 'a segment that cannot be served is not a failed sync');
+      expect(left.received, isEmpty);
+      expect(left.deniedSegments, [manifest.digest]);
+    });
+
+    test('**a peer with no archives costs the one-frame path nothing**', () async {
+      // The gate. A reader whose history fits in their log must not pay a round trip for a feature they do not use,
+      // and two devices that announce nothing go straight on to the case `ClockDigest` exists for.
+      final event = on(at(1000));
+      final (:a, :b) = _pair();
+      final (left, _) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([event]),
+        right: _Cellar([event]),
+      );
+
+      expect(left.succeeded, isTrue);
+      expect(left.merged, 0);
+      expect(left.received, isEmpty);
+      expect(left.peerReason, 'already in sync');
+    });
+
+    test('**the round happens even when the logs already agree**', () async {
+      // **The trap `docs/archival.md` records.** `runExchange` returns early when the two logs are in sync, so a
+      // round placed after the events phase would be skipped for exactly the sync that wants it -- **every retry, and
+      // every reader who attached a package after the sync that moved their log.**
+      final (manifest, events) = package_('theirs', 2);
+      final event = on(at(1000));
+      final (:a, :b) = _pair();
+      final (left, _) = await _syncBoth(
+        a: a,
+        b: b,
+        left: _Cellar([event]),
+        right: _Cellar([event]),
+        rightSegments: [manifest],
+        rightServes: (segment) async => events,
+      );
+
+      expect(left.peerReason, 'already in sync', reason: 'the logs agreed, which is the short path');
+      expect(left.received, hasLength(1), reason: 'and the history still differed');
     });
   });
 }
