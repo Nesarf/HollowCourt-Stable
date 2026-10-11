@@ -2,12 +2,11 @@
 
 Written 2026-10-08, from the owner's question about **managing many ingredients and many recipes** -- *"原料和配方都很多的时候，如何提升管理效率"* -- and their observation that this is **仓库管理的逻辑**.
 
-**This was a design note rather than a record. ①, ②, ③ and ④ are now built** -- the 原料 tab draws the reader's side
-and the library's as two headed lists cut again into four demand classes, a held ingredient shows the shelf its bottle
-stands on, the bar is back with named shelves and bottles coloured by kind, and the cellar page carries a
-running-low section beside the shopping list. The tests that hold them are named in the sections above. **⑤ is still
-unbuilt**, and `docs/ingredient-gap.md`'s rule applies to everything below that is written in the present tense about
-it: nothing there is a claim about what the code does.
+**This was a design note rather than a record. All five stages are now answered** -- ①, ②, ③ and ④ are built, and ⑤ is
+measured and declined with the number that declined it. The 原料 tab draws the reader's side and the library's as two
+headed lists cut again into four demand classes, a held ingredient shows the shelf its bottle stands on, the bar is
+back with named shelves and bottles coloured by kind, and the cellar page carries a running-low section beside the
+shopping list. `docs/query-cost.md` is ⑤'s answer.
 
 ## The finding, and it is not about speed
 
@@ -161,8 +160,28 @@ the same place -- a list a reader cannot argue with is a list they will stop rea
 
 **⑤ And a database, if ever, last.** The review already said it and the numbers agree: the log is **1.6 KB after three
 weeks**, the seed is 253 KB and never changes, and what a database would eventually fix is *query* cost -- which is
-measurable, and `docs/log-compaction.md` records the shape: a cache that can be deleted and rebuilt, or it is not a
-cache.
+measurable.
+
+**Measured, and the answer is no.** `docs/query-cost.md` is the measurement and `tool/query_cost.dart` is how to take
+it again. **Rebuilding every fold in the application from scratch costs 0.36 ms** at the size this cellar actually is,
+and the cost is linear -- **2.7 µs per event for all eight folds** -- so a cellar of five thousand bottles poured from
+four times each is 36,254 events and 46 ms, paid once per write rather than per frame. A database would be a *second*
+store of the same facts, which every design decision in this project has refused, traded for a number that does not
+exist yet.
+
+**The one real inefficiency is real and was left alone on purpose.** Nine tenths of a fold is its sort, and each of
+the eight sorts the same list, so `Cellar.of` sorts it eight times over. Removing that is a threefold saving **at the
+size where the saving does not matter**, and it would replace a fold's own invariant with a caller's promise -- the
+sort is what makes a merged log's writes apply in clock order however the arrivals landed, which is the rule that lets
+two devices agree. **An invariant that costs nothing today and cannot be re-derived once it is gone is worth more than
+a factor that only appears at a size nobody reaches.** `docs/query-cost.md` argues it at length.
+
+**[A wrong citation, corrected here.]** This section used to end *"and `docs/log-compaction.md` records the shape: a
+cache that can be deleted and rebuilt, or it is not a cache."* **`log-compaction.md` does not say that, and does not
+say anything about caches** -- it is about deletion, and its answer went to `docs/archival.md`. The sentence was
+written here and cited elsewhere, which is the failure worth naming: **a note that attributes its own reasoning to a
+document that never made it cannot be checked against that document**, and the reader who follows the citation finds
+nothing and assumes they missed it.
 
 ## Why ① is first
 
