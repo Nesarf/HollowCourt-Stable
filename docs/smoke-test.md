@@ -77,8 +77,21 @@ Two details make it faithful rather than approximate:
   absent -- including the whole navigation bar, which then looked like a missing bar rather than a bad
   measurement. **A capture that is one and a quarter times too small is indistinguishable from an interface
   with pieces missing.**
-* **`GetClientRect`, not `GetWindowRect`**, for the bitmap size, so the frame is the interface rather than the
-  interface plus its title bar.
+* **`GetWindowRect` for the bitmap size, *not* `GetClientRect`**, and this one is written the way round it is
+  because the other way is what the third attempt did. **`PrintWindow` renders the whole window, title bar
+  included** -- so sizing the bitmap from the *client* area renders a window-height picture into a client-height
+  bitmap, and the bottom of the interface is cut off by exactly the height of the title bar. What that produced was
+  a navigation bar with its glyphs visible and **its labels and selection indicator missing**, which reads as a
+  layout defect and is an off-by-one-chrome.
+
+  **The tell is inside the picture**: a capture that was supposed to be the client area and has a title bar across
+  the top of it is telling you what size it should have been. That is how the third wrong answer was caught, after
+  the first two were caught by not trusting the result.
+
+* **And the corrected frame shows what was always there**: five glyphs, the selected one solid with a small gold
+  indicator under its label, and 酒窖 / 配方 / 原料 legible at 11 points in the theme's own `label` role. **The bar
+  was never broken; the instrument was wrong three times in three different ways**, and every one of them would
+  have been recorded as a defect in the interface by anything less suspicious than a measurement.
 
 ```powershell
 # The two lines that matter, in order.
