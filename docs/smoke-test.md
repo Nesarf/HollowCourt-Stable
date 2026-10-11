@@ -58,3 +58,39 @@ bash tool/smoke_persistence.sh
 not work: `shared.sh` reaches for `cache/dart-sdk/bin/dart`, which is a Windows binary and absent on the Linux side --
 its symptom was `Unable to 'pub upgrade' flutter tool`, retried nine times. **The Linux SDK is at `/opt/flutter`, and
 that is what has to be named.**
+
+## Looking at the Windows window without photographing somebody's desktop
+
+Written 2026-10-11, after an attempt that got it wrong twice.
+
+**`CopyFromScreen` is the wrong tool and it is not a small wrongness.** It copies what is *on the screen* in
+the window's rectangle, so it captured a frame of whatever application happened to be on top -- on somebody
+else's machine. `SetForegroundWindow` does not fix it: a background process is refused that call by Windows,
+silently, and the capture succeeds anyway with the wrong contents in it.
+
+**`PrintWindow` with `PW_RENDERFULLCONTENT` renders the window's own surface** and cannot reach the desktop.
+Two details make it faithful rather than approximate:
+
+* **`SetProcessDPIAware()` before measuring anything.** This machine runs at **125%**, and without it
+  `GetWindowRect` answered `1280x720` for a window whose client area is **`1582x853` physical**. Rendering the
+  larger window into the smaller bitmap produced two frames in which the bottom of the interface was simply
+  absent -- including the whole navigation bar, which then looked like a missing bar rather than a bad
+  measurement. **A capture that is one and a quarter times too small is indistinguishable from an interface
+  with pieces missing.**
+* **`GetClientRect`, not `GetWindowRect`**, for the bitmap size, so the frame is the interface rather than the
+  interface plus its title bar.
+
+```powershell
+# The two lines that matter, in order.
+[void][C]::SetProcessDPIAware()
+[void][C]::GetClientRect($p.MainWindowHandle, [ref]$r)   # then size the bitmap from $r
+```
+
+**Let the window settle before capturing.** A resize followed by a capture a second later returned a frame
+from before the resize had been drawn, stretched to the new size -- which reads as a layout defect and is a
+race.
+
+And the rule that made the third attempt worth doing: **when the tool cannot be trusted, say the result is
+unresolved rather than reading it as a finding.** The first two frames were recorded as *the bar did not
+appear, and the instrument cannot tell "missing" from "not rendered"* -- which is what it was -- instead of as
+a bug in the bar, and the difference is that one of those sentences sends somebody to fix the wrong file.
