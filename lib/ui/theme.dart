@@ -4378,15 +4378,20 @@ https://piapro.jp/license/pcl/summary
     Translated.authored('Brazen Bell'),
     also: {'ja': '銅鳴', 'zh-HK': '銅鳴', 'zh-TW': '銅鳴'});
 
-  /// **Scheduled for removal, and kept until `CL` exists.** See `docs/memo-themes.md`: its `#F4F1E9` and the
-  /// planned 宇宙拿铁's `FFF8E7` are under 1% apart in every channel, so two light worlds cannot both ship. It stays
-  /// until the world that replaces it is built, because removing it now would leave this application with **no light
-  /// theme at all** -- a worse state than a duplicate, and it is also the only world the light-mode contrast rules
-  /// are exercised against.
-  static const themeWhiteCourt = CopyLine.withLanguages(
-    Translated.authored('白庭'),
-    Translated.authored('White Court'),
-    also: {'ja': '白の庭', 'zh-HK': '白庭', 'zh-TW': '白庭'});
+  /// **The one light world.**
+  ///
+  /// **[A defect found 2026-10-11, and this line is the fix.]** `display_section.dart`'s label switch matched
+  /// `'whiteCourt'` while the palette value's own `name` is **`cosmicLatte`** -- so this theme fell through to the
+  /// fallback and its chip in 设置 read **`cosmicLatte`**: a camelCase id, in no language, with no case to it. The
+  /// comment that used to sit here describes a *different* world that was scheduled for removal, which is how the
+  /// two came apart: the constant kept its old name after the palette value was renamed under it.
+  ///
+  /// **A test now refuses the fallback for any theme this build ships** -- see `theme_label_test.dart`. The fallback
+  /// itself stays, because a setting written by a build that carried a world this one does not still has to open.
+  static const themeCosmicLatte = CopyLine.withLanguages(
+    Translated.authored('宇宙拿铁'),
+    Translated.authored('Cosmic Latte'),
+    also: {'ja': 'コズミックラテ', 'zh-HK': '宇宙拿鐵', 'zh-TW': '宇宙拿鐵'});
 
   static const themeWinter = CopyLine.withLanguages(
     Translated.authored('群青'),
@@ -4845,6 +4850,31 @@ https://piapro.jp/license/pcl/summary
       'This build has no seed data. From the repository root, run:\n'
       'dart run tools/build_seed.dart',
     ), also: {'ja': 'このビルドにはレシピライブラリが入っていません。再インストールすると復旧します。', 'zh-HK': '這份構建裏沒有種子數據。在倉庫根目錄運行：\n', 'zh-TW': '這份構建裡沒有種子資料。在倉庫根目錄執行：\n'});
+
+  /// **What [value] is called, in every language this build speaks.**
+  ///
+  /// **Lives beside the palette rather than beside the picker**, which is the move that makes it testable: it was a
+  /// private function in `display_section.dart`, so the only way to ask what a world is called was to pump a screen.
+  /// `theme_label_test.dart` walks `HollowPalette.all` through this and refuses the fallback for any of them.
+  ///
+  /// **The fallback is the id and it is deliberate** -- a setting written by a build that carried a world this one
+  /// does not still has to open -- but it is also how a shipped world can go unnamed for ten days without anything
+  /// failing, which is exactly what happened to `cosmicLatte`.
+  static CopyLine themeLabelFor(HollowPaletteValue value) => switch (value.name) {
+    // **Keyed on the value's own `name`, and that is what was wrong.** This said `'whiteCourt'` while the palette
+    // value is named `cosmicLatte`, so the light world fell through to the id fallback below and its chip read
+    // `cosmicLatte`. The name here has to be the string `HollowPaletteValue.name` actually carries.
+    'cosmicLatte' => Copy.themeCosmicLatte,
+    'winter' => Copy.themeWinter,
+    'eternalDiva' => Copy.themeEternalDiva,
+    'honeyed' => Copy.themeAmber,
+    'wine' => Copy.themeWine,
+    _ => CopyLine.withLanguages(
+        Translated.authored(value.name),
+        Translated.authored(value.name),
+        also: const {},
+      ),  };
+
 
   static String withCount(String template, int count) =>
       template.replaceFirst('{count}', '$count');

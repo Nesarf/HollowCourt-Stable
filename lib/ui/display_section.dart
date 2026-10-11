@@ -50,7 +50,7 @@ class DisplaySection extends ConsumerWidget {
         DualCopyText(Copy.displayTheme, style: HollowType.caption),
         const SizedBox(height: 8),
         // **Named by what they look like rather than by their ids.** A reader is choosing a mood, so the chips
-        // say 琥珀庭 / 白庭 / 冬庭 -- and each chip carries a swatch of the world it offers, which is the only
+        // say 銅鳴 / 宇宙拿铁 / 群青 -- and each chip carries a swatch of the world it offers, which is the only
         // honest way to label
         // a colour scheme. This is the one place in the interface where a palette other than the
         // current one is drawn.
@@ -62,7 +62,7 @@ class DisplaySection extends ConsumerWidget {
               ChoiceChip(
                 key: ValueKey('theme-${value.name}'),
                 label: Text(
-                  _themeLabel(value).textFor(locale.primaryTag),
+                  Copy.themeLabelFor(value).textFor(locale.primaryTag),
                   style: HollowType.caption,
                 ),
                 selected: settings.theme.name == value.name,
@@ -77,26 +77,22 @@ class DisplaySection extends ConsumerWidget {
     );
   }
 
-  /// **Four worlds now, and the switch is written so a fifth cannot lie about itself.**
+  /// **Five worlds, and the switch is written so a sixth cannot lie about itself.**
   ///
-  /// The note above records the fault this shape causes: while the four deleted themes were still listed, every
-  /// chip read 琥珀庭 including the ones it was not describing. Adding a fifth theme repeated it in the other
-  /// direction -- the new world fell through to the default and called itself 琥珀庭 -- so the fallback is now the
-  /// theme's own stored name rather than another world's label. A reader seeing `eternalDiva` on a chip knows
-  /// something is wrong with the build; a reader seeing 琥珀庭 on a teal world knows nothing and trusts it.
-  static CopyLine _themeLabel(HollowPaletteValue value) => switch (value.name) {
-    'whiteCourt' => Copy.themeWhiteCourt,
-    'winter' => Copy.themeWinter,
-    'eternalDiva' => Copy.themeEternalDiva,
-    'honeyed' => Copy.themeAmber,
-    'wine' => Copy.themeWine,
-    _ => CopyLine.withLanguages(
-        Translated.authored(value.name),
-        Translated.authored(value.name),
-        also: const {},
-      ),
-  };
-
+  /// **The fallback is the id, and it has a history.** The first version returned one fixed name for anything it did
+  /// not recognise, so a new world called itself an old one's name -- a chip that lied rather than a chip that was
+  /// missing. The second returned the id, which is honest and useless. **The third is what is here**, and it is the
+  /// one that matters because of a defect found on 2026-10-11:
+  ///
+  /// `docs/memo-themes.md` settled on **2026-10-01** that 白庭 was deleted and `CL` took its place. The palette value
+  /// was renamed to `cosmicLatte`; **`Copy.themeWhiteCourt` was not touched**, and this switch kept matching
+  /// `'whiteCourt'`. So for ten days the light world fell through to the id fallback and its chip in 设置 read
+  /// **`cosmicLatte`** -- a camelCase key, in no language, with no case to it. **A copy line outlived the theme it
+  /// named**, which is the failure mode a switch keyed on strings cannot see.
+  ///
+  /// `theme_label_test.dart` is the guard, and it is deliberately not a list of names: **it walks `HollowPalette.all`
+  /// and refuses the fallback for every one of them**, so a world added tomorrow fails the test rather than shipping
+  /// an id.
   static CopyLine _label(TextSize size) => switch (size) {
     TextSize.small => Copy.textSizeSmall,
     TextSize.standard => Copy.textSizeStandard,
