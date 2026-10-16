@@ -201,3 +201,137 @@ description**, and renaming either would lose the choice of every reader who mad
 3. **A world's identifier never changes.** A world may be added or removed; an identifier may not be rewritten.
 4. **A theme this build does not carry falls back to the default**, because a setting written by a newer build still
    has to open.
+
+---
+
+## The colours two of them were supposed to be built from, and were not (2026-10-11)
+
+**The owner reported it as a suspicion and the record confirms it**: *「群青主题貌似没用群青色构建......以及铜鸣也是」*.
+
+**A world was retitled and the thing under the name was never recoloured.** That is the same fault as
+`Copy.themeAmber` -- the label moved and the value did not -- and this one is worse because it is invisible: a chip
+called 群青 over a near-black ground looks like a theme, not like a mistake.
+
+| World | What the record says it is built from | What it is actually built from |
+| --- | --- | --- |
+| **群青** (`winter`) | **`#1B2A6B`**, a deep ultramarine, from the owner's note of 2026-10-01 | **`#0D1418`** -- which is 冬庭's near-black, 87 RGB units away from the colour it is named after |
+| **酒红** (`wine`) | **`#5C1F2B`**, the candidate measured against the palette floor | `#3A1219` |
+| **橡木桶** (oak barrel) | **`#3E2A18`**, the third candidate of the same note | **nothing carries it.** No world was built for it |
+| **銅鳴** (`honeyed`) | the copper family below | `#16110A` with a gold accent -- the colours of 琥珀庭, which is what this world used to be called |
+
+### The copper family, put here so it cannot be lost a second time
+
+**Given by the owner on 2026-10-11 and recorded verbatim**, because the three colours above survived only as a
+sentence in a conversation, and one of them (`#1B2A6B`) is the only reason the discrepancy could be proved at all.
+**A palette that lives in chat is a palette that gets lost between two sessions.**
+
+| Name | What it is | Hex | RGB | Pantone |
+| --- | --- | --- | --- | --- |
+| 红铜 (Red Copper) | 纯铜新切面，偏鲜艳的红橙金属调 | `#C45A34` | 196, 90, 52 | 18-1442 TPG (Bossa Nova) |
+| 紫铜 (Purple Copper) | 纯铜自然氧化层，深沉、带紫感的暗红色 | `#8B3A3A` | 139, 58, 58 | 19-1540 TPG (Etruscan Red) |
+| 铜 (Copper) | 标准金属铜色，温暖的经典工业质感 | `#B87333` | 184, 115, 51 | 16-1325 TPG (Copper) |
+| 亮铜 (Bright Brass) | 抛光黄铜色，明亮偏金黄的高光色调 | `#E1B16C` | 225, 177, 108 | 14-1041 TPG (Golden Rod) |
+| 古铜 (Bronze) | 青铜或做旧硫化铜，沉稳的黑褐金属色 | `#755A3F` | 117, 90, 63 | 18-1124 TPG (Bronze) |
+| 白铜 (Cupronickel) | 铜镍合金，带有一丝温润暖调的银白色 | `#DDDDDD` | 221, 221, 221 | 12-0000 TPG (White Swan) |
+| 铜绿 (Verdigris) | 氢氧化铜/碱式碳酸铜，复古的粉质青绿色 | `#43B3AE` | 67, 179, 174 | 16-5121 TPG (Verdigris) |
+| 铜蓝 (Covellite) | 硫化铜矿物色，深邃、神秘的暗靛蓝色 | `#1A2F4C` | 26, 47, 76 | 19-3939 TPG (Blueprint) |
+
+**The last row is worth noticing on its own**: 铜蓝's Pantone is **19-3939**, and `3939` is the build number the
+project already assigns to 永遠の歌姫, whose accent is `#39C5BB`. Two different things carrying the same number is a
+coincidence unless somebody says otherwise, and this note says it is one.
+
+### What is not decided, and it is a design decision rather than a transcription
+
+**Which swatch is the ground and which are the accents.** A world needs a ground, a surface, a raised surface, a line,
+a hairline, an accent and a secondary accent, and the copper family is eight colours for seven roles. **The candidate
+reading, offered rather than applied**: 古铜 `#755A3F` or a darkened 铜 `#B87333` as the ground, 铜绿 `#43B3AE` as the
+accent (it is the one colour in the family that is not orange, and an accent has to be findable), 亮铜 `#E1B16C` as
+the secondary. **That is a proposal, not a decision, and it is not in the code.**
+
+
+### The copper build, second attempt: what it cost to brighten (2026-10-11)
+
+The owner's decision was to brighten rather than to relax a floor. Two colours were lifted and a third followed, and
+**the world still failed four floors**, so it was withdrawn a second time and the numbers are here rather than in a
+branch.
+
+| Role | Given | Lifted to | Result |
+| --- | --- | --- | --- |
+| `line` | 紫铜 `#8B3A3A` | `#CE6B69` | clears 3.0 on all three surfaces |
+| `absent` | 铜蓝 `#1A2F4C` | `#6289C0` | clears 3.0 |
+| `rose` | 红铜 `#C45A34` | `#DC7A4C` | 3.86 on the ground, then 4.47 on the surface, then **4.00 on `surfaceRaised`**, floor 4.5 |
+
+**The third one is the finding.** 红铜 is not only a fill: it is drawn **as text** on all three surfaces, and
+`theme_palette_test` holds an accent used as text to 4.5:1 against the *lightest* one. A colour that clears it there
+needs a luminance of **0.341 or above** -- and at that point it is no longer 红铜, it is a salmon. **Three of the eight
+cannot be used at the values they were given, and lifting them far enough to pass stops them being the colours that
+were named.**
+
+**And the fourth failure is not about contrast at all.** `materials_test` refuses a colour nudge that would quietly
+merge two rooms: a copper ground of `#2B1A0F` sits close to 酒红's `#3A1219`, because **both are warm near-black
+browns** -- the exact collision `docs/memo-themes.md` predicted at line 82 when it called 橡木桶 *"the third
+brown-leaning world"* and said it would have to be separated as carefully as 白庭 and `CL`. **That prediction was
+about the colour family and it holds for 銅鳴 too.**
+
+**So the honest shape of the remaining decision is larger than which swatch is the ground.** Either the copper world
+takes a ground that is not brown at all (铜蓝 `#1A2F4C` is the family's only candidate, and it is blueprint blue
+rather than copper), or 酒红 or 銅鳴 is moved, or the family's three unusable values are replaced.
+
+### The distance that blocked the copper ground, and the direction that solves it (2026-10-11)
+
+The pair 銅鳴 / 酒红 was put on screen side by side to look at, and **the two are plainly different rooms**: one is a
+near-black amber hall with a gold accent, the other is red with a rose accent. **They do not look alike.** So
+`materials_test` is not measuring what a reader sees -- **it is measuring RGB distance between grounds**, and that
+changes what the copper ground has to be.
+
+| Ground | Distance from 酒红's `#3A1219` |
+| --- | --- |
+| 銅鳴 as shipped, `#16110A` | **38.6** (passes) |
+| the first copper attempt, `#2B1A0F` | **20.4** (refused) |
+| 古铜 `#755A3F` darkened to `#4A3524` | **40.5** |
+| a saturated copper, `#5A3210` | **46.3** |
+
+**What separates them is the blue channel, and that is the whole finding.** 酒红's ground has blue at 25; the shipped
+銅鳴 has 10, and the refused copper had 15 -- so the attempt made the ground *less* distinguishable, because a
+near-black copper and a near-black wine both sit at low blue with a warm cast. **A copper ground has to be orange
+rather than brown**: `#5A3210` is (90, 50, 16), which is a copper at full chroma rather than at a fifth of it, and it
+is nearly as far from 酒红 as the shipped amber is.
+
+**And it is not free.** A ground of `#5A3210` sits at a luminance of 0.045, so ink has to clear 4.5:1 above it -- **a
+luminance of 0.378 or more**, which 亮铜 `#E1B16C` (0.487) and 白铜 `#DDDDDD` (0.723) both do and 红铜 and 紫铜 do
+not. `surfaceRaised` is the binding surface, as it was for 群青, and that is where the next attempt has to be checked
+first rather than last.
+
+**So the third remaining decision is now a smaller one than it was**: the ground does not have to stop being copper,
+it has to stop being *dark* copper. The two colours that cannot be lifted far enough to be used as text -- 红铜 and
+紫铜 -- still have to be dealt with, and the cheapest answer is to give them roles that are fills rather than text.
+
+### The constraint was the wrong one, and the copper build failed on the right one (2026-10-11)
+
+The third copper attempt cleared **every contrast floor on the first run** -- ink, secondary text, caption text, the
+accent-as-text rule on the lightest surface, the separator rule, the decoration rule, and the five text roles. That is
+the first time any copper build has done that, and the nine-family scheme with its four steps per family is why.
+
+**It failed on one thing, and the thing is not what three attempts of reasoning had been about.**
+
+    cellar and bar drifted into each other: hue 20.3 degrees, lightness 0.012 apart
+
+`materials_test` does not measure RGB distance between themes at all. It measures **the app's own rooms against each
+other**, and a room is apart from another when
+
+    hue gap >= 25 degrees  OR  lightness gap >= 0.06
+
+**Everything reasoned about in this document until now -- "the copper ground has to be far from 酒红's", the blue
+channel, the 20.4 that was refused -- was the wrong constraint.** The one that binds is that the cellar and the bar
+must be different rooms *within one palette*.
+
+**And the fault is a sentence written into the file as though it were correct**: *the surfaces are the ground lifted
+rather than another family's step, because a raised surface is the same room seen closer*. It is the same hue by
+construction, eleven thousandths of lightness away, and it is exactly what the rule exists to refuse. **A comment that
+argues for the thing a test forbids is worse than no comment**, and this one was written by the same person who had
+just spent two attempts failing on a constraint that did not exist.
+
+**So the remaining shape is smaller and clearer than it was**: the copper ground can stay, the nine families can stay,
+and `surface` and `surfaceRaised` have to come from **a different hue family** -- which is precisely what the other
+eight families are for, and what *「八个交错起来」* meant all along. 古铜 is ten degrees from 铜 and will not do it;
+铜紫 and 铜蓝 are a hundred and more, and will.

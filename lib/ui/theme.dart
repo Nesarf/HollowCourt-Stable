@@ -367,6 +367,21 @@ final class HollowPaletteValue {
   ///
   /// The home world, and the one the name describes -- a honeyed court in a hollow. Its ground is nearly black so
   /// the amber reads as light *in* the room rather than paint on it, and the one saturated colour is the honey.
+  ///
+  /// **[Still amber, and that is now a known discrepancy rather than an oversight.]** The world was retitled to 銅鳴
+  /// and its values were never changed, so a chip called *copper* sits over a palette that says *amber* -- the same
+  /// fault as `Copy.themeAmber`, with the label moved and the value left behind. `docs/memo-themes.md` records the
+  /// eight copper colours the owner gave on 2026-10-11, and **a copper build was written and then withdrawn the same
+  /// day**: three of the roles the family would fill failed the readability floors that were already in force.
+  ///
+  ///     紫铜 #8B3A3A as `line`        2.20:1 against the surface, floor 3.0
+  ///     铜蓝 #1A2F4C as `absent`      1.24:1, floor 3.0
+  ///     红铜 #C45A34 under `onAccent` 3.94:1, floor 4.5
+  ///
+  /// **The family has one dark colour and one mid-dark one, and both roles want more contrast than either can give**
+  /// -- so filling them means brightening two of the eight or relaxing two floors, and **that is a decision about the
+  /// palette rather than a transcription of it**. It is left here with the numbers attached rather than forced,
+  /// because a theme whose separator cannot be seen is worse than a theme with the wrong name on it.
   static const HollowPaletteValue honeyed = HollowPaletteValue(
     name: 'honeyed',
     ornament: Ornament.halo,
@@ -433,27 +448,44 @@ final class HollowPaletteValue {
   ///
   /// The third world exists to prove the first two are choices rather than defaults: it is as dark as the honeyed
   /// court and shares none of its warmth, which is the test of whether a palette is a *world* or a shade.
+  /// **群青 Ultramarine: the blue the world is named for, and it was never built until 2026-10-11.**
+  ///
+  /// **The world has been called 群青 since the retitling and its ground was `#0D1418`** -- 冬庭's near-black, 87 RGB
+  /// units from the colour the name describes. `docs/memo-themes.md` has carried **`#1B2A6B`** since 2026-10-01 as the
+  /// candidate the owner chose, measured against the palette floor and further from its nearest neighbour than any two
+  /// shipping worlds are from each other. **The name moved and the value did not**, which is the fault this file keeps
+  /// finding in itself.
+  ///
+  /// **And this world has been blue once before.** The comment in `theme_palette_test.dart` that argues the
+  /// secondary-text floor down to 3.0 does it by measuring *群青's ground `#4B64A1`* -- a mid-toned blue this
+  /// repository no longer carries. That build is not in the design record, and the values here are derived rather
+  /// than inherited from it.
+  ///
+  /// **The one thing that build establishes and this one has to respect**: a mid-toned ground leaves no room for a
+  /// hierarchy. `#4B64A1` forced ink to a luminance of 0.873 or above, with pure white at 1.0 -- a band of thirteen
+  /// percent, which is one legible weight rather than three. **`#1B2A6B` sits at 0.029, so the band is wide** and the
+  /// five text roles are a measurement rather than a squeeze.
+  ///
+  /// `#8FBAC6` was the accent and is now the **line**: it clears 3:1 on all three surfaces, which is what a separator
+  /// needs, and the accent moves to a colder blue so that the accent and the ground are not the same hue.
   static const HollowPaletteValue winter = HollowPaletteValue(
     name: 'winter',
     ornament: Ornament.snowCrystal,
     texture: GroundTexture.frost,
-    ground: Color(0xFF0D1418),
-    surface: Color(0xFF141D22),
-    surfaceRaised: Color(0xFF1D282E),
-    line: Color(0xFF677981),
-    ink: Color(0xFFE6F1F5),
-    inkSoft: Color(0xFFA9C0C9),
-    inkFaint: Color(0xFF80959E),
-    // **Raised on the same day and for the same reason as the honeyed court's**: 4.02:1 on `surfaceRaised` is
-    // under the floor for caption text, and this is the rose that clears it without leaving its hue.
-    rose: Color(0xFFC47A8E),
-    gold: Color(0xFF8FBAC6),
-    absent: Color(0xFF84959C),
-    onAccent: Color(0xFF0A1014),
-    hairline: Color(0xFF24333A),
-    // **winter's own text group.** The values are checked against this world's `surface` by
-    // `theme_contrast_test`, so these are a measurement rather than a preference.
-    text: TextColours(title: Color(0xFFEDF6FA), body: Color(0xFFD6E6EC), caption: Color(0xFFA9C0C9), label: Color(0xFFBCD2DA), faint: Color(0xFF80959E)),
+    ground: Color(0xFF1B2A6B),
+    surface: Color(0xFF24367E),
+    surfaceRaised: Color(0xFF2E4292),
+    line: Color(0xFF9FB6E8),
+    ink: Color(0xFFE8EEF8),
+    inkSoft: Color(0xFFB8C6E4),
+    inkFaint: Color(0xFF9AAAD0),
+    rose: Color(0xFFC9D6F2),
+    gold: Color(0xFF7FD4E8),
+    absent: Color(0xFF8B9AD0),
+    onAccent: Color(0xFF0A1030),
+    hairline: Color(0xFF33447F),
+    // **群青's own text group**, measured against this world's surface and ground rather than chosen.
+    text: TextColours(title: Color(0xFFE8EEF8), body: Color(0xFFD7E0F2), caption: Color(0xFFB8C6E4), label: Color(0xFFC9D6F2), faint: Color(0xFF9AAAD0)),
   );
 
   /// **永遠の歌姫: the fourth world, and the first one that is homage rather than a place.**
