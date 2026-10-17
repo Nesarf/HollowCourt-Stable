@@ -386,24 +386,29 @@ final class HollowPaletteValue {
     name: 'honeyed',
     ornament: Ornament.halo,
     texture: GroundTexture.lattice,
-    ground: Color(0xFF16110A),
-    surface: Color(0xFF1F1810),
-    surfaceRaised: Color(0xFF2B2116),
-    line: Color(0xFF817158),
-    ink: Color(0xFFF4E8CE),
-    inkSoft: Color(0xFFC7B392),
-    inkFaint: Color(0xFF9D8C6A),
-    // **Raised by ten percent of the way to white on 2026-09-30 to clear the text floor.** It sat at 3.98:1 on
-    // `surfaceRaised`, where it is drawn as caption text in warnings and totals across the interface -- just under
-    // the 4.5:1 that `theme_palette_test.dart` now asserts for an accent used as text. The hue is unchanged.
-    rose: Color(0xFFCA7279),
-    gold: Color(0xFFE2A63E),
-    absent: Color(0xFF988D7B),
-    onAccent: Color(0xFF1A1208),
-    hairline: Color(0xFF382C1D),
-    // **honeyed's own text group.** The values are checked against this world's `surface` by
-    // `theme_contrast_test`, so these are a measurement rather than a preference.
-    text: TextColours(title: Color(0xFFF7EEDB), body: Color(0xFFEADCC0), caption: Color(0xFFC9B694), label: Color(0xFFD8C6A2), faint: Color(0xFF9D8C6A)),
+    // 铜, dark step. The world's only strongly chromatic surface, and it is the one the eye reads as *copper*.
+    ground: Color(0xFF3E2016),
+    // **The surfaces are deliberately near-neutral and are the one place this palette gives up its colour.**
+    // `lib/ui/materials.dart` builds every room as `Color.lerp(theme.surface, roomHue, 0.30..0.38)`, so the theme's
+    // surface is more than half of every room. A saturated copper here pulls cellar, bar, recipes, journal and
+    // settings all toward orange and `materials_test` refuses it -- bar's slate at 210 degrees collapsed to 20
+    // degrees from the cellar's amber on the first attempt. **A dark warm grey lets the five hues through.**
+    surface: Color(0xFF3A312A),
+    surfaceRaised: Color(0xFF4A4038),
+    // PG7, the pigment green: the separator is the one role a colour has to be *seen* in.
+    line: Color(0xFF31C69B),
+    ink: Color(0xFFFFFFFF),
+    inkSoft: Color(0xFFFFE2C7),
+    inkFaint: Color(0xFF3CA9E0),
+    // Cu2O's highlight rather than its bright: an accent is drawn as text as well as as a fill.
+    rose: Color(0xFFFFD4BE),
+    // PY184 bismuth vanadate -- the accent, and the only one of the nine that is not a red, a green or a blue.
+    gold: Color(0xFFE8C34C),
+    // PV23 dioxazine violet.
+    absent: Color(0xFFBB89E9),
+    onAccent: Color(0xFF1A0E08),
+    hairline: Color(0xFF22162F),
+    text: TextColours(title: Color(0xFFFFFFFF), body: Color(0xFFFFE2C7), caption: Color(0xFF31C69B), label: Color(0xFFE7D3AA), faint: Color(0xFF3CA9E0)),
   );
 
   /// **宇宙拿铁 Cosmic Latte: the same court at noon, in the colour of the sky averaged over all light.**

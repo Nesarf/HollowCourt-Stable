@@ -170,10 +170,10 @@ stable and ugly on purpose; the constant is for Dart; the label is prose in five
 
 | Identifier | Named | Accent | Light? | Told apart by |
 | --- | --- | --- | --- | --- |
-| `honeyed` | 銅鳴 / Brazen Bell | `#E2A63E` | no | the world the application was designed around |
+| `honeyed` | 銅鳴 / Brazen Bell | `#E8C34C` | no | **built out of copper on 2026-10-11** from nine families with pigment identities; its surfaces are a deliberate near-neutral so the five rooms keep their hues |
 | `cosmicLatte` | 宇宙拿铁 / Cosmic Latte | `#876A29` | **yes** | the only light room |
-| `winter` | 群青 / Ultramarine | `#8FBAC6` | no | a cool ground, a frost texture |
-| `wine` | 酒红 / Wine Red | `#D69B63` | no | **the first whose ground is a colour rather than a near-black** |
+| `winter` | 群青 / Ultramarine | `#7FD4E8` | no | **built out of ultramarine on 2026-10-11**; ground `#1B2A6B`, the colour the name has meant since 2026-10-01 |
+| `wine` | 酒红 / Wine Red | `#D69B63` | no | **the first whose ground is a colour rather than a near-black**; still `#3A1219`, and the record candidate `#5C1F2B` was never applied |
 | `eternalDiva` | 永遠の歌姫 / The Eternal Diva | `#39C5BB` | no | the only one carrying artwork, and no voice is written for it |
 
 ### What was retired, and the two things it left behind
@@ -335,3 +335,24 @@ just spent two attempts failing on a constraint that did not exist.
 and `surface` and `surfaceRaised` have to come from **a different hue family** -- which is precisely what the other
 eight families are for, and what *「八个交错起来」* meant all along. 古铜 is ten degrees from 铜 and will not do it;
 铜紫 and 铜蓝 are a hundred and more, and will.
+
+### A constraint that was invented here, and three builds that paid for it (2026-10-11)
+
+**The owner asked the question that should have been asked three attempts earlier: *「我有说过每个主题之间的底色要隔得远么？」* They had not, and nothing in this repository asks for it.**
+
+`test/ui/theme_palette_test.dart` checks two things about worlds against each other, and neither is a ground colour distance:
+
+    'two worlds are drawing the same ground'      -- the texture must differ
+    'two worlds are drawing the same instrument'  -- the ornament must differ
+
+**There is no assertion anywhere about how far apart two themes' grounds are.** `materials_test`'s `_distance` exists, and it measures **rooms inside one palette**, which is where the `20.3 degrees` failures actually came from -- cellar against bar, not 銅鳴 against 酒紅.
+
+**So the number this document insists on repeatedly -- "27.1 from 酒红's ground against 20.4 refused" -- was derived from nothing.** It was inferred from three failures that were all about rooms, and then treated as a requirement. A copper build was **withdrawn on the strength of it**, and two later attempts were designed around it. That is a longer and more expensive version of the mistake this file already records twice: a claim that was never checked, written down as though it had been.
+
+**What is true, and is only now separated out:**
+
+* A world's ground has to be **internally** usable -- dark enough to leave room for five text weights. That is real, asserted, and it is what refused the very first eight-colour attempt.
+* The app's **five rooms** have to differ in hue or lightness, and a strongly chromatic theme `surface` collapses them toward its own hue. **That is real, asserted, and it is what every `materials_test` failure was actually about.**
+* The distance between two worlds' grounds is **a design preference nobody has stated**, and the shipped palette's closest pair is 5 RGB units apart and works.
+
+**Kept rather than deleted**: the measurements are correct arithmetic about the wrong question, and the next person to reason about themes should see that this exact mistake was made here at length.
