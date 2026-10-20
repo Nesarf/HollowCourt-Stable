@@ -8,7 +8,7 @@ import 'package:hollow_court/domain/events/event.dart';
 import 'package:hollow_court/domain/events/hlc.dart';
 import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
-import 'package:hollow_court/ui/cellar_page.dart';
+import 'package:hollow_court/ui/journal_page.dart';
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/ui/theme.dart';
 import '../support/open_logs.dart';
@@ -80,7 +80,7 @@ Future<void> _pump(WidgetTester tester, Cellar cellar) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [cellarProvider.overrideWith(() => _Seeded(cellar))],
-      child: const MaterialApp(home: Scaffold(body: CellarPage())),
+      child: const MaterialApp(home: Scaffold(body: JournalPage())),
     ),
   );
   await tester.pump();
@@ -93,10 +93,10 @@ void main() {
   testWidgets('a fresh cellar says there is nothing to count', (tester) async {
     await _pump(tester, await _cellar(tester, const []));
 
-    expect(find.text(Copy.cellarStats.primary.text), findsOneWidget);
-    expect(find.text(Copy.cellarStatsEmpty.primary.text), findsOneWidget);
+    expect(find.text(Copy.journalStats.primary.text), findsOneWidget);
+    expect(find.text(Copy.journalStatsEmpty.primary.text), findsOneWidget);
     // And the value has no prices to add, which the page says rather than showing zero.
-    expect(find.text(Copy.cellarNoPrices.primary.text), findsOneWidget);
+    expect(find.text(Copy.journalNoPrices.primary.text), findsOneWidget);
   });
 
   testWidgets('the value and the unpriced count appear together', (tester) async {
@@ -116,8 +116,8 @@ void main() {
     // checking only the digits would pass for a screen that had lost the currency, which is
     // the failure `money_text.dart` exists to prevent.
     expect(find.text('32.00 CNY'), findsOneWidget);
-    expect(find.textContaining(Copy.cellarUnpriced), findsOneWidget);
-    expect(find.text(Copy.cellarNoPrices.primary.text), findsNothing);
+    expect(find.textContaining(Copy.journalUnpriced), findsOneWidget);
+    expect(find.text(Copy.journalNoPrices.primary.text), findsNothing);
   });
 
   testWidgets('a cellar drunk dry shows its statistics and not the empty line',
@@ -133,15 +133,15 @@ void main() {
       ]),
     );
 
-    expect(find.text(Copy.cellarStatsEmpty.primary.text), findsNothing);
+    expect(find.text(Copy.journalStatsEmpty.primary.text), findsNothing);
 
     // The counts: one bottle, none standing, one empty, and the most-poured sku named.
-    final stats = find.textContaining(Copy.cellarStatsBottles);
+    final stats = find.textContaining(Copy.journalStatsBottles);
     expect(stats, findsWidgets);
-    expect(find.textContaining('0 ${Copy.cellarStatsStanding}'), findsOneWidget);
-    expect(find.textContaining('1 ${Copy.cellarStatsEmptyBottles}'), findsOneWidget);
+    expect(find.textContaining('0 ${Copy.journalStatsStanding}'), findsOneWidget);
+    expect(find.textContaining('1 ${Copy.journalStatsEmptyBottles}'), findsOneWidget);
     expect(
-      find.textContaining('${Copy.cellarStatsMostPoured} gin'),
+      find.textContaining('${Copy.journalStatsMostPoured} gin'),
       findsOneWidget,
     );
   });
@@ -156,12 +156,12 @@ void main() {
       ]),
     );
 
-    expect(find.text(Copy.cellarConsumption.primary.text), findsOneWidget);
-    expect(find.text(Copy.cellarConsumptionEmpty.primary.text), findsNothing);
+    expect(find.text(Copy.journalConsumption.primary.text), findsOneWidget);
+    expect(find.text(Copy.journalConsumptionEmpty.primary.text), findsNothing);
     // The two columns are named beside the chart, so a person does not have to guess which
     // bar is which.
-    expect(find.textContaining(Copy.cellarDrunk.primary.text), findsWidgets);
-    expect(find.textContaining(Copy.cellarDiscarded.primary.text), findsWidgets);
+    expect(find.textContaining(Copy.journalDrunk.primary.text), findsWidgets);
+    expect(find.textContaining(Copy.journalDiscarded.primary.text), findsWidgets);
   });
 
   testWidgets('the settings are not on this tab any more, and what is stays', (tester) async {
@@ -179,6 +179,6 @@ void main() {
     expect(find.text(Copy.settingsTitle.primary.text), findsNothing);
     expect(find.text(Copy.settingsUnits.primary.text), findsNothing);
     expect(find.text(Copy.settingsMoney.primary.text), findsNothing);
-    expect(find.text(Copy.cellarConsumption.primary.text), findsOneWidget);
+    expect(find.text(Copy.journalConsumption.primary.text), findsOneWidget);
   });
 }

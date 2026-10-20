@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 ///
 /// ## Why a bottle had no colour, and why it has this one
 ///
-/// `bar_page.dart`'s `_Bottle` was drawn in one grey, and the paragraph above it said why -- correctly:
+/// `shelf_section.dart`'s `_Bottle` was drawn in one grey, and the paragraph above it said why -- correctly:
 ///
 /// > *Deliberately not a `LiquidSwatch`: that widget draws a drink in a glass from section 12.1's colour string,
 /// > which is a fact about a recipe. A bottle on a shelf is a fact about a container, and painting the drink inside

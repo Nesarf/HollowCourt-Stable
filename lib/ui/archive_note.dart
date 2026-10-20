@@ -40,7 +40,7 @@ class ArchivedHistoryNote extends ConsumerWidget {
 
     final packages = ref.watch(archiveSelectionProvider).length;
     final text = ref
-        .copy(Copy.cellarReadsArchives)
+        .copy(Copy.journalReadsArchives)
         .replaceFirst('{packages}', '$packages')
         .replaceFirst('{events}', '${cellar.archivedEvents}');
 

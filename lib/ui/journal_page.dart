@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'archive_note.dart';
-import 'bar_page.dart';
+import 'shelf_section.dart';
 import 'cashflow_section.dart';
 import '../domain/consumption/consumption.dart';
 import '../domain/pricing/cellar_value.dart';
@@ -92,7 +92,7 @@ class _ShoppingRows extends ConsumerWidget {
                   )
                 else
                   Text(
-                    '${Copy.cellarShoppingNeededBy} ${entry.neededBy}',
+                    '${Copy.journalShoppingNeededBy} ${entry.neededBy}',
                     style: HollowType.caption.copyWith(color: HollowPalette.text.faint),
                   ),
               ],
@@ -147,29 +147,29 @@ class _StatsRows extends StatelessWidget {
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       _row(
-        '${stats.bottles} ${Copy.cellarStatsBottles}',
-        '${stats.standing} ${Copy.cellarStatsStanding} · '
-            '${stats.emptyBottles} ${Copy.cellarStatsEmptyBottles}',
+        '${stats.bottles} ${Copy.journalStatsBottles}',
+        '${stats.standing} ${Copy.journalStatsStanding} · '
+            '${stats.emptyBottles} ${Copy.journalStatsEmptyBottles}',
       ),
       _row(
-        '${Copy.cellarStatsOnHand} ${volumeText(stats.onHand, unit)}',
+        '${Copy.journalStatsOnHand} ${volumeText(stats.onHand, unit)}',
         '${stats.distinctSkus} sku',
       ),
       _row(
-        '${Copy.cellarStatsDrunk} ${volumeText(stats.drunk, unit)}',
-        '${Copy.cellarStatsDiscarded} '
+        '${Copy.journalStatsDrunk} ${volumeText(stats.drunk, unit)}',
+        '${Copy.journalStatsDiscarded} '
             '${volumeText(stats.discarded, unit)} · ${stats.pours}',
       ),
       if (stats.mostPouredSku != null)
         _row(
-          '${Copy.cellarStatsMostPoured} ${stats.mostPouredSku}',
+          '${Copy.journalStatsMostPoured} ${stats.mostPouredSku}',
           volumeText(stats.mostPoured, unit),
         ),
       // Named rather than folded into the counts, because a bottle that is emptier than it
       // was ever full is a defect and not a statistic.
       if (stats.overdrawn > 0)
         Text(
-          '${Copy.cellarStatsOverdrawn}: ${stats.overdrawn}',
+          '${Copy.journalStatsOverdrawn}: ${stats.overdrawn}',
           style: HollowType.caption.copyWith(color: HollowPalette.rose),
         ),
     ],
@@ -189,8 +189,8 @@ class _StatsRows extends StatelessWidget {
   );
 }
 
-class CellarPage extends ConsumerWidget {
-  const CellarPage({super.key});
+class JournalPage extends ConsumerWidget {
+  const JournalPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -201,7 +201,7 @@ class CellarPage extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(
           child: Text(
-            '${ref.copy(Copy.cellarTitle)}: $error',
+            '${ref.copy(Copy.journalTitle)}: $error',
             style: HollowType.body,
           ),
         ),
@@ -259,7 +259,7 @@ class CellarPage extends ConsumerWidget {
           return ListView(
             padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
             children: [
-              DualCopyText(Copy.cellarTitle, style: HollowType.display),
+              DualCopyText(Copy.journalTitle, style: HollowType.display),
               const SizedBox(height: 10),
               // **Under the title, above everything it qualifies.** Five readings on this page are folded from the
               // merged history -- the value, the curve, the statistics, the money windows and the running-low
@@ -267,7 +267,7 @@ class CellarPage extends ConsumerWidget {
               // when no package is attached, which is the ordinary case.
               const ArchivedHistoryNote(),
               const SizedBox(height: 10),
-              DualCopyText(Copy.cellarValue, style: HollowType.caption),
+              DualCopyText(Copy.journalValue, style: HollowType.caption),
               const SizedBox(height: 6),
               Text(
                 value.isKnown ? moneyText(value.total!) : '—',
@@ -278,28 +278,28 @@ class CellarPage extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               if (!value.isKnown)
-                DualCopyText(Copy.cellarNoPrices, style: HollowType.body)
+                DualCopyText(Copy.journalNoPrices, style: HollowType.body)
               else if (!value.isComplete)
-                // Single-line, and interpolated: `Copy.cellarUnpriced` is a `String` for
+                // Single-line, and interpolated: `Copy.journalUnpriced` is a `String` for
                 // that reason, exactly like `Copy.stockBottles`.
                 Text(
-                  '${value.unpriced} ${Copy.cellarUnpriced}',
+                  '${value.unpriced} ${Copy.journalUnpriced}',
                   style: HollowType.caption.copyWith(color: HollowPalette.rose),
                 )
               else
                 Text(
-                  '${value.priced} ${Copy.cellarPriced}',
+                  '${value.priced} ${Copy.journalPriced}',
                   style: HollowType.caption,
                 ),
 
               DualCopyText(
-                Copy.cellarConsumption,
+                Copy.journalConsumption,
                 style: HollowType.heading,
               ),
               const SizedBox(height: 8),
               if (curve.isEmpty)
                 DualCopyText(
-                  Copy.cellarConsumptionEmpty,
+                  Copy.journalConsumptionEmpty,
                   style: HollowType.caption,
                 )
               else ...[
@@ -310,13 +310,13 @@ class CellarPage extends ConsumerWidget {
                 Row(
                   children: [
                     Text(
-                      '${ref.copy(Copy.cellarDrunk)} '
+                      '${ref.copy(Copy.journalDrunk)} '
                       '${curve.drunkTotal.microlitres ~/ 1000} ml',
                       style: HollowType.caption,
                     ),
                     const SizedBox(width: 16),
                     Text(
-                      '${ref.copy(Copy.cellarDiscarded)} '
+                      '${ref.copy(Copy.journalDiscarded)} '
                       '${curve.discardedTotal.microlitres ~/ 1000} ml',
                       style: HollowType.caption.copyWith(
                         color: HollowPalette.text.faint,
@@ -341,7 +341,7 @@ class CellarPage extends ConsumerWidget {
               // -- after the numbers, before the tools -- because that is where a reader looking at their money
               // already is.
               const SizedBox(height: 28),
-              if (shelfPlacementIsShown) const BarShelfSection(),
+              if (shelfPlacementIsShown) const ShelfSection(),
               const CashflowSection(),
               const SizedBox(height: 28),
               // **Above the shopping list, and the order is the argument.** The two answer different questions --
@@ -364,7 +364,7 @@ class CellarPage extends ConsumerWidget {
                 events: state.events,
               ),
               const SizedBox(height: 28),
-              DualCopyText(Copy.cellarShopping, style: HollowType.heading),
+              DualCopyText(Copy.journalShopping, style: HollowType.heading),
               const SizedBox(height: 8),
               if (shopping == null)
                 const SizedBox.shrink()
@@ -375,7 +375,7 @@ class CellarPage extends ConsumerWidget {
                     const Prism(size: 14, facet: false),
                     const SizedBox(height: 6),
                     DualCopyText(
-                      Copy.cellarShoppingNoPlans,
+                      Copy.journalShoppingNoPlans,
                       style: HollowType.caption,
                     ),
                   ],
@@ -384,7 +384,7 @@ class CellarPage extends ConsumerWidget {
                 // **An empty list is two readings**, and the screen says which: no plan yet,
                 // or a plan the shelf already covers. `hasPlans` is what tells them apart.
                 DualCopyText(
-                  Copy.cellarShoppingNothing,
+                  Copy.journalShoppingNothing,
                   style: HollowType.caption,
                 )
               else
@@ -405,17 +405,17 @@ class CellarPage extends ConsumerWidget {
               if (shopping != null && shopping.missingRecipes.isNotEmpty) ...[
                 const SizedBox(height: 6),
                 Text(
-                  '${Copy.cellarShoppingOrphaned}: '
+                  '${Copy.journalShoppingOrphaned}: '
                   '${shopping.missingRecipes.length}',
                   style: HollowType.caption.copyWith(color: HollowPalette.rose),
                 ),
               ],
               const SizedBox(height: 28),
-              DualCopyText(Copy.cellarStats, style: HollowType.heading),
+              DualCopyText(Copy.journalStats, style: HollowType.heading),
               const SizedBox(height: 8),
               if (stats.isEmpty)
                 DualCopyText(
-                  Copy.cellarStatsEmpty,
+                  Copy.journalStatsEmpty,
                   style: HollowType.caption,
                 )
               else

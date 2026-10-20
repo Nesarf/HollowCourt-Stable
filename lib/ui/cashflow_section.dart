@@ -46,7 +46,7 @@ class CashflowSection extends ConsumerWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DualCopyText(Copy.cellarCashflow, style: HollowType.heading),
+          DualCopyText(Copy.journalCashflow, style: HollowType.heading),
           const SizedBox(height: 8),
           Text('…', style: HollowType.body.copyWith(color: HollowPalette.text.faint)),
         ],
@@ -74,7 +74,7 @@ class CashflowSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DualCopyText(Copy.cellarCashflow, style: HollowType.heading),
+        DualCopyText(Copy.journalCashflow, style: HollowType.heading),
         const SizedBox(height: 8),
         for (final cashflow in folded) _window(cashflow),
         const SizedBox(height: 20),

@@ -16,7 +16,7 @@ import 'theme.dart';
 ///
 /// The owner's instruction on 2026-09-30 was 吧台先卸掉 -- take the bar off first -- and the reading
 /// confirmed with them was: hide it from the interface, keep the code, and correct the record. So this
-/// is `false`, `CellarPage` consults it at the one place it used to draw `BarShelfSection`, and nothing
+/// is `false`, `JournalPage` consults it at the one place it used to draw `ShelfSection`, and nothing
 /// else about the feature changed. **Setting it back to `true` is the whole of bringing it back**, which
 /// is the property that makes hiding different from deleting.
 ///
@@ -50,14 +50,14 @@ const bool shelfPlacementIsShown = true;
 /// shelf that nobody can pour, so a placement whose bottle has no remaining volume
 /// is counted and named instead of drawn -- the same reason `library.dart` refuses
 /// to call an empty shelf a bare cellar.
-class BarShelfSection extends ConsumerStatefulWidget {
-  const BarShelfSection({super.key});
+class ShelfSection extends ConsumerStatefulWidget {
+  const ShelfSection({super.key});
 
   @override
-  ConsumerState<BarShelfSection> createState() => _BarShelfSectionState();
+  ConsumerState<ShelfSection> createState() => _ShelfSectionState();
 }
 
-class _BarShelfSectionState extends ConsumerState<BarShelfSection> {
+class _ShelfSectionState extends ConsumerState<ShelfSection> {
   /// Which shelf the reader is looking at, or null for *whichever comes first*.
   ///
   /// **Null rather than a default id**, because the first shelf may be one they have not named yet and the list is

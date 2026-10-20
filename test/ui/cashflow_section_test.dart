@@ -162,7 +162,7 @@ void main() {
     testWidgets('**the four windows are labelled and the income gap is named**', (tester) async {
       await _pumpSection(tester);
 
-      expect(find.text(Copy.cellarCashflow.primary.text), findsOneWidget);
+      expect(find.text(Copy.journalCashflow.primary.text), findsOneWidget);
       for (final label in [
         Copy.cashflowToday,
         Copy.cashflowWeek,

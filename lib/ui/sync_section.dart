@@ -735,7 +735,7 @@ class _SyncSectionState extends ConsumerState<SyncSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DualCopyText(Copy.cellarSync, style: HollowType.heading),
+        DualCopyText(Copy.journalSync, style: HollowType.heading),
         const SizedBox(height: 8),
         DualCopyText(Copy.syncHint, style: HollowType.caption),
         if (identityWriteFailure != null) ...[
@@ -1268,8 +1268,8 @@ class LinkRow extends ConsumerWidget {
       return Padding(
         padding: const EdgeInsets.only(bottom: 8),
         // **A `Text`, because the line is interpolated.** `DualCopyText` takes a `CopyLine`, and a line that names the
-        // chosen mode cannot be one -- the same reason `Copy.cellarUnpriced` is a `String` and is rendered this way in
-        // `cellar_page.dart`.
+        // chosen mode cannot be one -- the same reason `Copy.journalUnpriced` is a `String` and is rendered this way in
+        // `journal_page.dart`.
         child: Text(
           Copy.syncLinkRestricted(SyncLinkLabel.of(chosen, ref)),
           style: HollowType.caption,

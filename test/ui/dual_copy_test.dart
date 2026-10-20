@@ -175,7 +175,7 @@ void main() {
       'barTitle': Copy.barTitle,
       'barShelfMain': Copy.barShelfMain,
       'barInTheBox': Copy.barInTheBox,
-      'cellarTitle': Copy.cellarTitle,
+      'cellarTitle': Copy.journalTitle,
       'noLibrary': Copy.noLibrary,
       'noLibraryHint': Copy.noLibraryHint,
     };

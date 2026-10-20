@@ -113,9 +113,9 @@ void main() {
         Copy.appTitle,
         Copy.appSubtitle,
         Copy.tabStock.textFor('zh-Hans'),
-        Copy.tabBar.textFor('zh-Hans'),
+        Copy.tabIngredients.textFor('zh-Hans'),
         Copy.tabRecipes.textFor('zh-Hans'),
-        Copy.tabCellar.textFor('zh-Hans'),
+        Copy.tabJournal.textFor('zh-Hans'),
         Copy.tabSettings.textFor('zh-Hans'),
       ]) {
         expect(line.trim(), isNotEmpty);
@@ -150,9 +150,9 @@ void main() {
       expect(
         [
           Copy.tabStock.textFor('zh-Hans'),
-          Copy.tabBar.textFor('zh-Hans'),
+          Copy.tabIngredients.textFor('zh-Hans'),
           Copy.tabRecipes.textFor('zh-Hans'),
-          Copy.tabCellar.textFor('zh-Hans'),
+          Copy.tabJournal.textFor('zh-Hans'),
           Copy.tabSettings.textFor('zh-Hans'),
         ],
         hasLength(5),
@@ -203,7 +203,7 @@ void main() {
         Copy.barTitle,
         Copy.barShelfMain,
         Copy.barInTheBox,
-        Copy.cellarTitle,
+        Copy.journalTitle,
         Copy.noLibrary,
         Copy.noLibraryHint,
       ];
@@ -212,9 +212,9 @@ void main() {
         Copy.appTitle,
         Copy.appSubtitle,
         Copy.tabStock.textFor('zh-Hans'),
-        Copy.tabBar.textFor('zh-Hans'),
+        Copy.tabIngredients.textFor('zh-Hans'),
         Copy.tabRecipes.textFor('zh-Hans'),
-        Copy.tabCellar.textFor('zh-Hans'),
+        Copy.tabJournal.textFor('zh-Hans'),
         Copy.tabSettings.textFor('zh-Hans'),
         Copy.stockIngredient,
         Copy.stockIngredientHint,

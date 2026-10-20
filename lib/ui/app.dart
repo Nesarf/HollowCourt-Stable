@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'l10n/dual_copy_text.dart';
-import 'cellar_page.dart';
+import 'journal_page.dart';
 import 'library.dart';
 import 'recipes_page.dart';
 import 'display_providers.dart';
@@ -188,7 +188,7 @@ class _ShellState extends ConsumerState<_Shell> {
                     // shopping list, devices and sync. Only the value exists, so the page
                     // shows the value and keeps the sentence naming the rest -- replacing
                     // the placeholder outright would claim six features and ship one.
-                    const CellarPage(),
+                    const JournalPage(),
                     // Section 12.3's fifth tab, asked for by the owner: the application's own
                     // settings, which were a section at the bottom of 记录. Devices and sync stay
                     // there -- see `SettingsPage` for where the line is and why.
@@ -222,7 +222,7 @@ class _ShellState extends ConsumerState<_Shell> {
           Copy.tabStock.textFor(locale.primaryTag),
           Copy.tabRecipes.textFor(locale.primaryTag),
           Copy.tabIngredients.textFor(locale.primaryTag),
-          Copy.tabCellar.textFor(locale.primaryTag),
+          Copy.tabJournal.textFor(locale.primaryTag),
           Copy.tabSettings.textFor(locale.primaryTag),
         ]),
         ),

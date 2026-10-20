@@ -194,7 +194,7 @@ class _ThresholdSheet extends ConsumerStatefulWidget {
 /// with -- handing three strings down from the caller would have put the resolution of a sheet's own labels in the
 /// section that opened it.
 class _ThresholdSheetState extends ConsumerState<_ThresholdSheet> {
-  // **The controllers belong to this widget**, the fault `bar_page.dart` records: creating them in the caller and
+  // **The controllers belong to this widget**, the fault `shelf_section.dart` records: creating them in the caller and
   // disposing them when the sheet's future completes disposes them while the route is still popping.
   late final _percent = TextEditingController(text: '${widget.initial.fillPercent}');
   late final _ml = TextEditingController(text: '${widget.initial.millilitres}');

@@ -11,7 +11,7 @@ import 'package:hollow_court/domain/events/shelf.dart';
 import 'package:hollow_court/domain/events/stock.dart';
 import 'package:hollow_court/domain/units/quantity.dart';
 import 'package:hollow_court/domain/events/shelf_authoring.dart';
-import 'package:hollow_court/ui/bar_page.dart';
+import 'package:hollow_court/ui/shelf_section.dart';
 import 'package:hollow_court/ui/library.dart';
 import 'package:hollow_court/ui/theme.dart';
 import '../support/open_logs.dart';
@@ -167,7 +167,7 @@ Future<void> _pumpBar(WidgetTester tester, Cellar cellar) async {
           return _notifier;
         }),
       ],
-      child: const MaterialApp(home: Scaffold(body: BarShelfSection())),
+      child: const MaterialApp(home: Scaffold(body: ShelfSection())),
     ),
   );
   await tester.pump();

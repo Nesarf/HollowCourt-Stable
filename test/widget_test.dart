@@ -41,7 +41,7 @@ void main() {
     for (final label in [
       Copy.tabStock.textFor('zh-Hans'),
       Copy.tabRecipes.textFor('zh-Hans'),
-      Copy.tabCellar.textFor('zh-Hans'),
+      Copy.tabJournal.textFor('zh-Hans'),
       Copy.tabIngredients.textFor('zh-Hans'),
       Copy.tabSettings.textFor('zh-Hans'),
     ]) {

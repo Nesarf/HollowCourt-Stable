@@ -8,7 +8,7 @@ import 'hlc.dart';
 /// **A shelf already existed as a key and had no name.** `shelf.dart` carries *placements* -- which bottle stands
 /// where -- and `shelfId` has been a string in them since the first version. `shelf_test` places bottles on
 /// `'fridge'`, `SyncScope.shelf('back')` scopes a share by one. **And the interface has only ever written `'bar'`**,
-/// deliberately: `bar_page.dart` says a shelf picker over one shelf would be furniture, and section 12.3's chooser
+/// deliberately: `shelf_section.dart` says a shelf picker over one shelf would be furniture, and section 12.3's chooser
 /// was left for later. This is that later.
 ///
 /// **So this family does not invent shelves, it names them.** The key stays whatever the placements already use; what

@@ -37,7 +37,7 @@ class AdaptersSection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DualCopyText(Copy.cellarAdapters, style: HollowType.heading),
+        DualCopyText(Copy.journalAdapters, style: HollowType.heading),
         const SizedBox(height: 10),
         // A rule between one adapter and the next: four switches stacked with only spacing between them read
         // as one block, which is what the reader's "the separation between options is not obvious" was about.

@@ -961,17 +961,12 @@ abstract final class Copy {
     Translated.authored('Cellar'),
     also: {'zh-HK': '酒窖', 'zh-TW': '酒窖', 'ja': '酒蔵'},
   );
-  static const tabBar = CopyLine.withLanguages(
-    Translated.authored('吧台'),
-    Translated.authored('Bar'),
-    also: {'zh-HK': '吧枱', 'zh-TW': '吧檯', 'ja': 'バー'},
-  );
   static const tabRecipes = CopyLine.withLanguages(
     Translated.authored('配方'),
     Translated.authored('Recipes'),
     also: {'zh-HK': '配方', 'zh-TW': '配方', 'ja': 'レシピ'},
   );
-  static const tabCellar = CopyLine.withLanguages(
+  static const tabJournal = CopyLine.withLanguages(
     Translated.authored('记录'),
     Translated.authored('Journal'),
     also: {'zh-HK': '記錄', 'zh-TW': '記錄', 'ja': '記録'},
@@ -1129,8 +1124,8 @@ abstract final class Copy {
     Translated.authored('还没有记过价格。'),
     Translated.authored('No price recorded yet.'), also: {'ja': 'まだ価格を記録していません。', 'zh-HK': '還沒有記過價格。', 'zh-TW': '還沒有記過價格。'},
       voices: {
-        Voice.heiress: '价钱嘛……你还没告诉过我，所以我也不打算瞎猜。',
-        Voice.heiressJa: '値段？まだ教えてもらってないんだから、私だって当てずっぽうは言わないわ。',
+        Voice.heiress: '哼，价钱？你都没告诉过本小姐，怎么记。……又不是替你猜。',
+        Voice.heiressJa: '値段？……まだ伺っておりませんもの。わたくし、当てずっぽうは申しませんことよ。',
         Voice.minister:
             'No figure has been supplied, and it would not be appropriate to conjecture one.',
       },);
@@ -1171,12 +1166,12 @@ abstract final class Copy {
   );
 
   /// Section 7's `Total cellar value`, on section 12.3's Cellar tab.
-  static const cellarValue = CopyLine.withLanguages(
+  static const journalValue = CopyLine.withLanguages(
     Translated.authored('酒窖价值'),
     Translated.authored('Cellar value'), also: {'ja': '酒蔵の評価額', 'zh-HK': '酒窖價值', 'zh-TW': '酒窖價值'});
 
   /// **Shown when nothing can be valued**, and it is not the same as a value of zero.
-  static const cellarNoPrices = CopyLine.withLanguages(
+  static const journalNoPrices = CopyLine.withLanguages(
     Translated.authored('还没有一瓶记过价格，所以这个数还算不出来。'),
     Translated.authored('No bottle has a price recorded, so this figure cannot be worked out yet.'), also: {'ja': '価格を記録した瓶がまだ無いので、この数字は出せません。', 'zh-HK': '還沒有一瓶記過價格，所以這個數還算不出來。', 'zh-TW': '還沒有一瓶記過價格，所以這個數還算不出來。'},
     voices: {
@@ -1190,19 +1185,19 @@ abstract final class Copy {
   /// **Single-line: it is interpolated into a count**, like [stockBottles]. The two
   /// halves are separate constants rather than one template because a `CopyLine` cannot
   /// go inside a string, which is section 12.4's composition wall.
-  static const cellarUnpriced = '瓶还没有价格，所以上面的数偏低';
+  static const journalUnpriced = '瓶还没有价格，所以上面的数偏低';
 
-  static const cellarPriced = '瓶已计入';
+  static const journalPriced = '瓶已计入';
 
   /// Section 11's adapter layer, as section 12.3's Cellar tab lists it under "devices".
-  static const cellarAdapters = CopyLine.withLanguages(
+  static const journalAdapters = CopyLine.withLanguages(
     Translated.authored('网络适配器'),
     Translated.authored('Network adapters'), also: {'ja': 'ネットワーク連携', 'zh-HK': '網絡適配器', 'zh-TW': '網路介面卡'});
 
   // ---- Section 12.3's other half of "devices and sync": the sync itself. ----
 
   /// The heading for the half of this tab that is about two cellars rather than one.
-  static const cellarSync = CopyLine.withLanguages(
+  static const journalSync = CopyLine.withLanguages(
     Translated.authored('设备同步'),
     Translated.authored('Sync between devices'), also: {'ja': '端末間の同期', 'zh-HK': '設備同步', 'zh-TW': '裝置同步'});
 
@@ -1237,8 +1232,8 @@ abstract final class Copy {
     also: {'zh-HK': '正在等待對方輸入這串碼…', 'zh-TW': '正在等待對方輸入這串碼…', 'ja': '相手を待っています…'},
   
       voices: {
-        Voice.heiress: '在等那边把码敲进去……你念，我看着。',
-        Voice.heiressJa: 'あちらが打ち込むのを待っているわ……読んで、私が見ているから。',
+        Voice.heiress: '在等那边敲进去。……你念。急的又不是本小姐。',
+        Voice.heiressJa: 'あちらが打ち込むのを待っておりますの……お読みなさいませ。べ、別に待っているわけでは……',
         Voice.minister:
             'We are awaiting the entry of this code on the other device.',
       },);
@@ -1383,10 +1378,10 @@ abstract final class Copy {
     also: {'zh-HK': '檢查 USB 連接', 'zh-TW': '檢查 USB 連線', 'ja': 'ケーブルを確認'},
   
       voices: {
-        Voice.heiress: 'USB 有没有接上，我看一眼。',
-        Voice.heiressJa: 'USB が繋がっているか、見てくるわ。',
+        Voice.heiress: 'USB 接上没有，本小姐看一眼。……就一眼。顺路而已。',
+        Voice.heiressJa: 'USB が繋がっておりますか、見てまいります。……一目だけですわ。',
         Voice.minister:
-            'Check the USB connection.',
+            'It would be advisable to verify the USB connection.',
       },);
 
   static const usbForward = CopyLine.withLanguages(
@@ -1565,8 +1560,8 @@ abstract final class Copy {
     },
   
       voices: {
-        Voice.heiress: '你挑哪一条，我就只走那一条。别的链路我不会替你偷偷试。',
-        Voice.heiressJa: '選んだ一本だけを使うのよ。他に落ちるなんてことはないわ。',
+        Voice.heiress: '你挑哪条，我就只走哪条——别的链路我不会偷偷替你试。哼，这是为了我自己省事。',
+        Voice.heiressJa: 'お選びになった一本だけを使いますの。他に落ちるなどということはございませんのよ。……わたくしの手間が省けるだけですわ。',
         Voice.minister:
             'The link selected is the only link used; there is no fallback to another.',
       },);
@@ -1587,8 +1582,8 @@ abstract final class Copy {
     },
   
       voices: {
-        Voice.heiress: '隧道挡得住广播。两边想见上，只能靠配对码，或者你我本来就认得。所以附近那栏，你不会看到任何东西。',
-        Voice.heiressJa: 'トンネルはブロードキャストを通さないの。だから両端はペアリングコードか、以前に会ったという事実だけが頼りよ。近くの機器の一覧は空になるわ。',
+        Voice.heiress: '广播过不去隧道。要能见上，只能靠配对码——或者本来就认得。……所以附近那栏空的，别怪我没说。',
+        Voice.heiressJa: 'トンネルはブロードキャストを通しませんの。ですから両端はペアリングコードか、以前にお会いしたという事実だけが頼りですわ。近くの機器の一覧は空になりますのよ。……申し上げましたわね。',
         Voice.minister:
             'A broadcast will not cross a tunnel; the two ends must therefore rely on a pairing code or on a previous acquaintance. The list of nearby devices will be empty.',
       },);
@@ -1599,8 +1594,8 @@ abstract final class Copy {
     also: {'zh-HK': '不限，哪條鏈路都可以', 'zh-TW': '不限，哪條鏈路都可以', 'ja': 'どの回線でもよい'},
   
       voices: {
-        Voice.heiress: '哪条链路都行，我不挑。',
-        Voice.heiressJa: 'どの経路でも構わないわ。',
+        Voice.heiress: '哪条链路都行。这种小事别问我。……我又不是挑不了。',
+        Voice.heiressJa: 'どの経路でも構いませんわ。こんなこと、わたくしに訊かないでくださいませ。',
         Voice.minister:
             'No restriction; any link will serve.',
       },);
@@ -1620,8 +1615,8 @@ abstract final class Copy {
     also: {'zh-HK': '這台機器現在沒有區域網地址。', 'zh-TW': '這台機器現在沒有區域網地址。', 'ja': 'この端末には今、LANアドレスがありません。'},
   
       voices: {
-        Voice.heiress: '这台机器现在没有局域网地址。先接上网，我再替你找。',
-        Voice.heiressJa: 'この機械、今は LAN の住所も持っていないわ。先に繋いでちょうだい。探すのは私がやるから。',
+        Voice.heiress: '它连局域网地址都没有。……接上网再说。找是我来找，反正闲着。',
+        Voice.heiressJa: 'この機械、LAN の住所も持っておりませんの。……先に繋いでくださいませ。探すのはわたくしが。暇ですもの。',
         Voice.minister:
             'This machine is not, at present, in possession of a LAN address.',
       },);
@@ -1751,8 +1746,8 @@ abstract final class Copy {
     },
   
       voices: {
-        Voice.heiress: '没见过。这台机器不认识它。',
-        Voice.heiressJa: '初対面よ。この機械は相手を知らないわ。',
+        Voice.heiress: '陌生。……本小姐不认识它。才不是忘了。',
+        Voice.heiressJa: '初対面ですわ。……存じ上げませんもの。忘れたのではありませんことよ。',
         Voice.minister:
             'Unknown -- no prior acquaintance with this machine is recorded.',
       },);
@@ -1868,10 +1863,10 @@ abstract final class Copy {
     },
   
       voices: {
-        Voice.heiress: '看看外面连不连得进这台机器。',
-        Voice.heiressJa: 'この機械に外から届くかどうか、確かめてみるわ。',
+        Voice.heiress: '外面连不连得进来。……这种事还要我亲自看。哼。',
+        Voice.heiressJa: '外から届くかどうか、確かめてまいりますの。……こんなこと、わたくしがしなくてはなりませんの？',
         Voice.minister:
-            'Establish whether this machine can be reached.',
+            'It would be advisable to establish whether this machine can be reached.',
       },);
 
   static const firewallChecking = CopyLine.withLanguages(
@@ -2024,8 +2019,8 @@ abstract final class Copy {
     },
   
       voices: {
-        Voice.heiress: '管着这个程序的入站规则。',
-        Voice.heiressJa: 'このアプリに効いている受信の規則よ。',
+        Voice.heiress: '管着这程序的入站规则。就这几条，记着。……不是我要你记的。',
+        Voice.heiressJa: 'このアプリに効いております受信の規則ですわ。……これだけですの。',
         Voice.minister:
             'Inbound rules applying to this program.',
       },);
@@ -2081,8 +2076,8 @@ abstract final class Copy {
       'ja': '自分で決めるトークン（空欄でも可）',
     },
       voices: {
-        Voice.heiress: '令牌自己写一个（留空也行）。',
-        Voice.heiressJa: 'トークンは自分で決めていいの（空でも構わないわ）。',
+        Voice.heiress: '令牌你自己想一个。空着我也没意见。……随便你。',
+        Voice.heiressJa: 'トークンはご自分でお決めなさいませ。空でも構いませんのよ。……ご随意に。',
         Voice.minister:
             'A token of your own choosing, which may be left empty.',
       },);
@@ -2591,8 +2586,8 @@ abstract final class Copy {
     Translated.authored('Check digit is wrong; the last digit should be '),
     also: {'ja': 'チェックデジットが違います。最後は ', 'zh-HK': '校驗位不對，最後一位應為 ', 'zh-TW': '校驗位不對，最後一位應為 '},
       voices: {
-        Voice.heiress: '最后一位算错了。应该是 ',
-        Voice.heiressJa: '最後の一桁が違うわ。正しくは ',
+        Voice.heiress: '最后一位错了。……又不是我算的。应该是 ',
+        Voice.heiressJa: '最後の一桁が違いますの。……わたくしが数えたのではありませんわ。正しくは ',
         Voice.minister:
             'The check digit is not correct. It should read ',
       },);
@@ -2707,8 +2702,8 @@ abstract final class Copy {
     Translated.authored('容量要是一个正数。'),
     Translated.authored('The volume has to be a positive number.'), also: {'ja': '容量は正の数で入力してください。', 'zh-HK': '容量要是一個正數。', 'zh-TW': '容量要是一個正數。'},
       voices: {
-        Voice.heiress: '容量得写个正数——零和负数我不收。',
-        Voice.heiressJa: '容量は正の数にして。ゼロやマイナスは受け取らないわ。',
+        Voice.heiress: '容量写个正数。零和负数我不收。……这是规矩，不是针对你。',
+        Voice.heiressJa: '容量は正の数で。ゼロやマイナスはお受け取りいたしませんの。……規則ですわ、あなたのためではありませんのよ。',
         Voice.minister:
             'A positive figure would be required for the volume.',
       },);
@@ -3048,7 +3043,7 @@ abstract final class Copy {
   /// **Placeholders rather than an interpolated string**, so the numbers go where each language wants them -- the
   /// lesson `archiveAttached` did not learn for a fortnight, when it resolved `.textFor('zh-Hans')` and showed a
   /// Chinese sentence in an English interface.
-  static const cellarReadsArchives = CopyLine.withLanguages(
+  static const journalReadsArchives = CopyLine.withLanguages(
     Translated.authored('这一页的读数含你附加的 {packages} 个包 —— {events} 条更早的记录。在设置里可以改。'),
     Translated.authored(
       'The readings here include {packages} attached packages -- {events} earlier events. '
@@ -3753,8 +3748,8 @@ abstract final class Copy {
     Translated.authored('这层架子还空着。'),
     Translated.authored('Nothing stands on this shelf yet.'), also: {'ja': 'この段はまだ空いています。', 'zh-HK': '這層架子還空着。', 'zh-TW': '這層架子還空著。'},
       voices: {
-        Voice.heiress: '这一层还空着。摆什么，你自己挑。',
-        Voice.heiressJa: 'この段はまだ空いているわ。何を置くかは、あなたが決めなさい。',
+        Voice.heiress: '空着呢。摆什么随你。……反正我也没打算看。',
+        Voice.heiressJa: 'この段は空いておりますの。何を置くかはご自由に。……わたくし、見てもおりませんことよ。',
         Voice.minister:
             'The shelf in question is at present unoccupied; the selection is a matter for you.',
       },);
@@ -3765,8 +3760,8 @@ abstract final class Copy {
       'the box.',
     ), also: {'ja': '棚には物がありますが、位置がまだ記録されていません。', 'zh-HK': '架上有東西，但還沒記下位置。', 'zh-TW': '架上有東西，但還沒記下位置。'},
       voices: {
-        Voice.heiress: '东西是有的——就是谁在哪儿，你还没告诉我。',
-        Voice.heiressJa: '物はあるのよ。ただ、どれがどこにあるか、まだ教えてもらっていないだけ。',
+        Voice.heiress: '东西在。……在哪儿，你还没说。哼，还要我问吗。',
+        Voice.heiressJa: '物はございますの。……どれがどこか、まだ伺っておりませんもの。',
         Voice.minister:
             'Stock is held, although no position has been recorded for it.',
       },);
@@ -3777,13 +3772,13 @@ abstract final class Copy {
       'somebody moves the bottle or clears it.',
     ), also: {'ja': '位置は残っていますが、瓶はもう空です。', 'zh-HK': '位置還記着，瓶子已經空了。', 'zh-TW': '位置還記著，瓶子已經空了。'},
       voices: {
-        Voice.heiress: '位置还给你留着，瓶子却空了。等你有新的一瓶，它还在那儿。',
-        Voice.heiressJa: '場所は残してあるのに、瓶はもう空よ。次のが来たら、そこに戻してあげる。',
+        Voice.heiress: '位置我留着。……瓶子空了。下一瓶来的时候它还在这儿。哼，可不是替你留的。',
+        Voice.heiressJa: '場所は残してございますの。……瓶は空きましたわね。次のが来たら、そこにお戻しします。あなたのためではありませんことよ。',
         Voice.minister:
             'A position has been retained for a bottle which is no longer there.',
       },);
 
-  static const cellarTitle = CopyLine.withLanguages(
+  static const journalTitle = CopyLine.withLanguages(
     Translated.authored('记录'),
     Translated.authored('Journal'), also: {'ja': '記録', 'zh-HK': '記錄', 'zh-TW': '記錄'});
   /// Retired with [cellarNotYetHint]'s subject: 「还没有什么可记的。」 was what the tab said while it
@@ -3803,32 +3798,32 @@ abstract final class Copy {
   static const recipeNotPlanned = '加入计划';
 
   // The shopping list, derived from the plan marks.
-  static const cellarShopping = CopyLine.withLanguages(
+  static const journalShopping = CopyLine.withLanguages(
     Translated.authored('要买什么'),
     Translated.authored('What to buy'), also: {'ja': '買うもの', 'zh-HK': '要買什麼', 'zh-TW': '要買什麼'});
-  static const cellarShoppingNoPlans = CopyLine.withLanguages(
+  static const journalShoppingNoPlans = CopyLine.withLanguages(
     Translated.authored('还没有计划做的配方。'),
     Translated.authored(
       'No recipe is on the plan yet. Mark one on the Recipes tab and its missing '
       'ingredients appear here.',
     ), also: {'ja': '作る予定のレシピはまだありません。', 'zh-HK': '還沒有計劃做的配方。', 'zh-TW': '還沒有計劃做的配方。'},
       voices: {
-        Voice.heiress: '你还没挑要做什么。挑一个，缺点儿什么我替你算。',
-        Voice.heiressJa: 'まだ何を作るか決めていないのね。決めたら、足りないものを数えてあげる。',
+        Voice.heiress: '挑一个。……缺什么，我算给你。随便你挑哪个。',
+        Voice.heiressJa: 'まだお決めになっておりませんの？……お決めになったら、足りないものを数えて差し上げますわ。',
         Voice.minister:
             'No recipe has as yet been selected for the plan.',
       },);
-  static const cellarShoppingNothing = CopyLine.withLanguages(
+  static const journalShoppingNothing = CopyLine.withLanguages(
     Translated.authored('计划里的东西架上都有。'),
     Translated.authored('Everything the plan needs is already on the shelf.'), also: {'ja': '予定しているものは棚にそろっています。', 'zh-HK': '計劃裏的東西架上都有。', 'zh-TW': '計劃裡的東西架上都有。'},
       voices: {
-        Voice.heiress: '清单上的东西，我早都备齐了——不用你再吩咐。',
-        Voice.heiressJa: 'リストのものなら、もう全部そろえてあるわ。指示されなくてもね。',
+        Voice.heiress: '清单上的东西，本小姐早就备齐了。……才不是听你吩咐才备的。',
+        Voice.heiressJa: 'リストのものなら、もう全部そろえてございますわ。……ご指示などなくても、ですわ。',
         Voice.minister:
             'The requirements of the plan are, so far as can be established, already met.',
       },);
-  static const cellarShoppingNeededBy = '计划中的';
-  static const cellarShoppingOrphaned = '计划里已经不存在的配方';
+  static const journalShoppingNeededBy = '计划中的';
+  static const journalShoppingOrphaned = '计划里已经不存在的配方';
 
   // What the shopping list costs, priced from the reader's own receipts rather than from a price source.
   //
@@ -3879,26 +3874,26 @@ abstract final class Copy {
       },);
 
   // Section 12.3's statistics, on the Cellar tab.
-  static const cellarStats = CopyLine.withLanguages(
+  static const journalStats = CopyLine.withLanguages(
     Translated.authored('统计'),
     Translated.authored('Statistics'), also: {'ja': '統計', 'zh-HK': '統計', 'zh-TW': '統計'});
-  static const cellarStatsEmpty = CopyLine.withLanguages(
+  static const journalStatsEmpty = CopyLine.withLanguages(
     Translated.authored('还没有可统计的。'),
     Translated.authored('Nothing to count yet.'), also: {'ja': 'まだ集計できるものがありません。', 'zh-HK': '還沒有可統計的。', 'zh-TW': '還沒有可統計的。'},
       voices: {
-        Voice.heiress: '要统计什么？桌上还什么都没有呢。',
-        Voice.heiressJa: '集計するものなんて、まだ何も並んでいないわ。',
+        Voice.heiress: '桌上空成这样，统计什么。……别以为我想数。',
+        Voice.heiressJa: '集計？……何も並んでおりませんわ。空気を数えろと仰るのですの？',
         Voice.minister:
             'There is at present no material on which a figure could be based.',
       },);
-  static const cellarStatsBottles = '瓶';
-  static const cellarStatsStanding = '还有剩';
-  static const cellarStatsEmptyBottles = '已空';
-  static const cellarStatsOnHand = '在手';
-  static const cellarStatsDrunk = '倒入杯中';
-  static const cellarStatsDiscarded = '倒掉';
-  static const cellarStatsMostPoured = '倒得最多';
-  static const cellarStatsOverdrawn = '记录超支';
+  static const journalStatsBottles = '瓶';
+  static const journalStatsStanding = '还有剩';
+  static const journalStatsEmptyBottles = '已空';
+  static const journalStatsOnHand = '在手';
+  static const journalStatsDrunk = '倒入杯中';
+  static const journalStatsDiscarded = '倒掉';
+  static const journalStatsMostPoured = '倒得最多';
+  static const journalStatsOverdrawn = '记录超支';
 
   // The takings over the bar's four windows, on the 记录 tab above the statistics.
   //
@@ -3907,7 +3902,7 @@ abstract final class Copy {
   // `docs/TODO.md` section 十 recorded why: the feature's problem was never its behaviour but where it belonged.
   // The assistant placed it on 2026-09-30 by the screen's own logic -- 记录 is the page whose headline facts are
   // already the reader's money, and the shelf that used to occupy this slot is off the interface.
-  static const cellarCashflow = CopyLine.withLanguages(
+  static const journalCashflow = CopyLine.withLanguages(
     Translated.authored('收支'),
     Translated.authored('Takings'), also: {'ja': '収支', 'zh-HK': '收支', 'zh-TW': '收支'});
 
@@ -4150,8 +4145,8 @@ abstract final class Copy {
     Translated.authored('没能记下，再试一次。'),
     Translated.authored('That could not be recorded. Try again.'), also: {'ja': '記録できませんでした。もう一度お試しください。', 'zh-HK': '沒能記下，再試一次。', 'zh-TW': '沒能記下，再試一次。'},
       voices: {
-        Voice.heiress: '……没写进去。再来一次，这次我盯着。',
-        Voice.heiressJa: '……書き込めなかったの。もう一度やって。今度は私が見ているから。',
+        Voice.heiress: '……没写进去。重来。……才、才不是在盯着你。',
+        Voice.heiressJa: '……書き込めませんでしたの。もう一度。……べ、別に見てなどおりませんわ。',
         Voice.minister:
             'The entry was not, on this occasion, recorded. A further attempt would be advisable.',
       },);
@@ -4715,8 +4710,8 @@ https://piapro.jp/license/pcl/summary
     Translated.authored('日志干净，没有发现问题。'),
     Translated.authored('The log is clean. Nothing was found.'), also: {'ja': 'ログは綺麗で、問題は見つかりませんでした。', 'zh-HK': '日誌乾淨，沒有發現問題。', 'zh-TW': '日誌乾淨，沒有發現問題。'},
       voices: {
-        Voice.heiress: '我逐条看过来了——没有一处不对。不必谢我。',
-        Voice.heiressJa: '一本ずつ見てきたわ。おかしなところは一箇所もない。礼なんていいのよ。',
+        Voice.heiress: '本、本小姐才不是担心你才逐条看的。……只是刚好顺手而已。',
+        Voice.heiressJa: '一、一本ずつ見てございますの。……おかしなところなど一箇所も。礼は結構ですわ。',
         Voice.minister:
             'The log has been examined in full and no irregularity has been identified.',
       },);
@@ -4725,8 +4720,8 @@ https://piapro.jp/license/pcl/summary
     Translated.authored('发现了问题，逐条列在下面。'),
     Translated.authored('Something was found, listed below.'), also: {'ja': '問題が見つかりました。以下に一件ずつ挙げます。', 'zh-HK': '發現了問題，逐條列在下面。', 'zh-TW': '發現了問題，逐條列在下面。'},
       voices: {
-        Voice.heiress: '有几处不对。都写在下面了，别想蒙混过去。',
-        Voice.heiressJa: 'おかしなところがあるわ。下に全部書いてあるから、見てちょうだい。',
+        Voice.heiress: '有几处不对。都列在下面了。……又不是特意替你找的。',
+        Voice.heiressJa: 'おかしなところがございますの。下に全部書きました。……わたくしが探したのではございませんことよ。',
         Voice.minister:
             'Certain irregularities have been identified and are set out below.',
       },);
@@ -4752,8 +4747,8 @@ https://piapro.jp/license/pcl/summary
     Translated.authored('还没有日志可查。'),
     Translated.authored('There is no log to check yet.'), also: {'ja': 'まだ調べるログがありません。', 'zh-HK': '還沒有日誌可查。', 'zh-TW': '還沒有日誌可查。'},
       voices: {
-        Voice.heiress: '查什么？你还什么都没记呢。',
-        Voice.heiressJa: '調べるって言われても、まだ何も記録していないじゃない。',
+        Voice.heiress: '查什么。你一个字都没记过。……哼，本小姐白跑一趟。',
+        Voice.heiressJa: '調べろと？……まだ何も記録しておりませんもの。空振りですわ。',
         Voice.minister:
             'There is at present no record for which an examination could be undertaken.',
       },);
@@ -4869,22 +4864,22 @@ https://piapro.jp/license/pcl/summary
     Translated.authored('not shipped in this build'), also: {'ja': 'このビルドでは不明', 'zh-HK': '這個構建不認識', 'zh-TW': '這個構建不認識'});
 
   // Section 12.3's consumption curve, on the Cellar tab.
-  static const cellarConsumption = CopyLine.withLanguages(
+  static const journalConsumption = CopyLine.withLanguages(
     Translated.authored('消耗'),
     Translated.authored('Consumption'), also: {'ja': '消費', 'zh-HK': '消耗', 'zh-TW': '消耗'});
-  static const cellarConsumptionEmpty = CopyLine.withLanguages(
+  static const journalConsumptionEmpty = CopyLine.withLanguages(
     Translated.authored('还没有消耗记录。'),
     Translated.authored('Nothing has been poured yet.'), also: {'ja': 'まだ消費の記録がありません。', 'zh-HK': '還沒有消耗記錄。', 'zh-TW': '還沒有消耗記錄。'},
       voices: {
-        Voice.heiress: '一滴都没倒出去过。杯子都还是干的。',
-        Voice.heiressJa: 'まだ一滴も注いでいないの。グラスは乾いたままよ。',
+        Voice.heiress: '一滴都没倒出去。……杯子本小姐擦过了，又不是替你擦的。',
+        Voice.heiressJa: '一滴も注いでおりませんの。……グラスはわたくしが拭きましたのよ。あなたのためではありませんわ。',
         Voice.minister:
             'No measure has been dispensed, and the record consequently shows nothing.',
       },);
-  static const cellarDrunk = CopyLine.withLanguages(
+  static const journalDrunk = CopyLine.withLanguages(
     Translated.authored('倒入杯中'),
     Translated.authored('Poured into drinks'), also: {'ja': 'グラスに注いだ', 'zh-HK': '倒入杯中', 'zh-TW': '倒入杯中'});
-  static const cellarDiscarded = CopyLine.withLanguages(
+  static const journalDiscarded = CopyLine.withLanguages(
     Translated.authored('倒掉'),
     Translated.authored('Discarded'), also: {'ja': '捨てた', 'zh-HK': '倒掉', 'zh-TW': '倒掉'});
 
