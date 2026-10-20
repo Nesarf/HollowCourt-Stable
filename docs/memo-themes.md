@@ -269,6 +269,32 @@ colour: lifting 紫铜 far enough needs `#B37F7F` (35% toward white) and 铜蓝 
 grey rose and a grey blue. **`tool/copper_check.dart` measures the nine families, not these three roles, so this cell
 had never been read again.**
 
+**And the "cheapest answer" has nowhere to land, which the same measurement now shows (2026-10-21).** The line above
+that says giving these three colours fill roles is cheapest was written before anything was measured against a role
+table. Measured against the nine roles and the three surfaces this world actually draws:
+
+| Colour | on `ground` | worst of the three | `hairline` (must be **under** 1.8) | `line`/`absent` (3.0) | accent as text (4.5) |
+| --- | --- | --- | --- | --- | --- |
+| 紫铜 `#8B3A3A` | 1.94 | 1.33 | over by 0.14 | no | no |
+| 铜蓝 `#1A2F4C` | 1.09 | 1.06 | **fits** | no | no |
+| 铜紫 `#70459B` | 2.12 | 1.45 | over by 0.32 | no | no |
+| 古铜 `#755A3F` | 2.31 | 1.58 | over by 0.51 | no | no |
+| 红铜 `#C45A34` | 3.41 | 2.33 | over by 1.61 | no | no |
+| 铜 `#B87333` | 3.89 | 2.66 | over by 2.09 | no | no |
+| 铜绿 `#43B3AE` | 5.83 | 3.99 | over by 4.03 | **fits** | no |
+| 亮铜 `#E1B16C` | 7.52 | 5.14 | over by 5.72 | **fits** | **fits** |
+| 白铜 `#DDDDDD` | 10.87 | 7.43 | over by 9.07 | **fits** | **fits** |
+
+**Six of the eight have no seat at all.** `hairline` is the only role that wants a dark colour, it takes exactly one
+value, and 铜蓝 already holds it. The five other dark values are not dark enough for that role either -- its ceiling
+is 1.8, because decoration must not compete with text, so 紫铜 at 1.94 is over it as well. On the bright side 亮铜,
+白铜 and 铜绿 fill at most three of the four accent seats, and 铜绿 cannot be an accent drawn as text (3.99).
+
+**So "use all eight" is not a choice this palette can express at nine roles.** Either the palette grows two or three
+roles that are fills and never text, or the world keeps the three values that fit and the rest stay in this memo as
+readings. The shipped palette is the second option, and now with the table that says why.
+
+
 **The third one is the finding.** 红铜 is not only a fill: it is drawn **as text** on all three surfaces, and
 `theme_palette_test` holds an accent used as text to 4.5:1 against the *lightest* one. A colour that clears it there
 needs a luminance of **0.341 or above** -- and at that point it is no longer 红铜, it is a salmon. **Three of the eight
