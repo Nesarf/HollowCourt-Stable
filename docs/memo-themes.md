@@ -294,6 +294,15 @@ is 1.8, because decoration must not compete with text, so 紫铜 at 1.94 is over
 roles that are fills and never text, or the world keeps the three values that fit and the rest stay in this memo as
 readings. The shipped palette is the second option, and now with the table that says why.
 
+**Why the palette is not growing roles for them (2026-10-21).** Two fill-only roles would give the six dark values a
+seat, and that is the option being declined, for a reason about roles rather than about colours: **a role with no
+consumer is a value nobody draws.** No screen in `lib/ui` asks for a fourth fill today -- the three accents and the
+hairline are what is actually used. Growing `HollowPaletteValue` to hold two more colours would put two dead values
+into all five worlds, and their only justification would be that an eight-colour swatch list exists. If a screen ever
+needs a fourth fill, the role gets added then, with a consumer and a floor to meet. Until then the three values that
+fit are the world's colours, and `tool/copper_check.dart` keeps the arithmetic for whoever asks again.
+
+
 
 **The third one is the finding.** 红铜 is not only a fill: it is drawn **as text** on all three surfaces, and
 `theme_palette_test` holds an accent used as text to 4.5:1 against the *lightest* one. A colour that clears it there
