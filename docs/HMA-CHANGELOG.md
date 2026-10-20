@@ -19,6 +19,8 @@
 
 **不是功能更多，是自述与代码对齐了。** `hma models` 里 `local` 那一行仍然空着，那是设计里留的缝，不是欠账。
 
+**发布物**：tag `hma-0.2.0` 指向 HMA 分支的快照 `b2ee738`，资产 `hma-0.2.0.tar.gz`（178 KB，六十个条目，不含 `tool/hma-dev/`），在 `https://github.com/Nesarf/HollowCourt-Stable/releases/tag/hma-0.2.0`。**它不抢 `Latest`** —— `Latest` 仍然是产品的 `v1.0.0.3939`，与 0.1.0 那时同一条规矩（见 `docs/HMA.md` 第五节）。
+
 ## 0.1.0 —— 2026-09-27
 
 **第一次发布** ✓✓。**这一天它从零建到了一个能跑、能测、能被别人 clone 下来的东西** ✓ ——
