@@ -1159,10 +1159,9 @@ abstract final class Copy {
     Translated.authored('The price has to be a positive amount this currency can hold.'), also: {'ja': '価格は正の数で、その通貨で表せる必要があります。', 'zh-HK': '價格要是一個正數，而且這個幣種能表示出來。', 'zh-TW': '價格要是一個正數，而且這個幣種能表示出來。'},
     voices: {
       Voice.heiress: '价格得是正数，而且这个币种得表示得出来。含糊的数，本小姐不收。',
-      Voice.heiressJa: '価格は正の数であること、そしてその通貨で表せること。曖昧な数は、あたしは受け取らないわ。',
+      Voice.heiressJa: '価格は正の数であること、そしてその通貨で表せること。曖昧な数は、わたくし受け取りませんわ。',
     
-      Voice.minister:
-          'The price is required to be a positive amount, and one that this currency is able to hold.',},
+      Voice.minister: 'The price is required to be a positive amount, and one that this currency is able to hold.',},
   );
 
   /// Section 7's `Total cellar value`, on section 12.3's Cellar tab.
@@ -1176,10 +1175,9 @@ abstract final class Copy {
     Translated.authored('No bottle has a price recorded, so this figure cannot be worked out yet.'), also: {'ja': '価格を記録した瓶がまだ無いので、この数字は出せません。', 'zh-HK': '還沒有一瓶記過價格，所以這個數還算不出來。', 'zh-TW': '還沒有一瓶記過價格，所以這個數還算不出來。'},
     voices: {
       Voice.heiress: '还没有一瓶记过价格——所以这个数还算不出来。先记一瓶，它自然就有了。',
-      Voice.heiressJa: '価格を記録した瓶がまだ一本もないの——だからこの数字はまだ出せないわ。一本記録すれば、自然と出てくるのよ。',
+      Voice.heiressJa: '価格を記録した瓶がまだ一本もありませんの——だからこの数字はまだ出せませんわ。一本記録すれば、自然と出てまいりますの。',
     
-      Voice.minister:
-          'No bottle has had a price recorded against it, and this figure is therefore not one that can yet be arrived at.',},
+      Voice.minister: 'No bottle has had a price recorded against it, and this figure is therefore not one that can yet be arrived at.',},
   );
 
   /// **Single-line: it is interpolated into a count**, like [stockBottles]. The two
@@ -1209,11 +1207,10 @@ abstract final class Copy {
     Translated.authored('Show the code below to the other device, or type the one on its screen.'),
     also: {'zh-HK': '把下面這串碼給對方看，或者輸入對方螢幕上的碼。', 'zh-TW': '把下面這串碼給對方看，或者輸入對方螢幕上的碼。', 'ja': '下のコードを相手に見せるか、相手の画面のコードを入力します。'},
     voices: {
-      Voice.heiress: '把下面这串码给对方看，或者输入对方屏幕上的码——两条路，随你。哼，就是别把码念错。',
-      Voice.heiressJa: '下のコードを相手に見せるか、相手の画面のコードを入力するの——道は二つ、好きな方でいいわ。ふん、ただ読み間違えないことね。',
+      Voice.heiress: '把下面这串码给对方看，或者输入对方屏幕上的码——两条路，随你挑。只是别把码念错，念错了本小姐不猜。',
+      Voice.heiressJa: '下のコードを相手にお見せになるか、相手の画面のコードを入力なさるか——道は二つ、お好きな方で。ただ、読み違えないことですわ。',
     
-      Voice.minister:
-          'The code below may be shown to the other device, or the one on its screen may be entered; either course will serve.',},
+      Voice.minister: 'The code below may be shown to the other device, or the one on its screen may be entered; either course will serve.',},
   
   );
 
@@ -1270,11 +1267,10 @@ abstract final class Copy {
       'ja': '一方が表示し、もう一方が入力します。両方の画面が見えないときは、これだけが使えます。',
     },
     voices: {
-      Voice.heiress: '一台显示、另一台输入——只有一边看得见屏幕的时候，这是唯一走得通的办法。本小姐可没别的招给你。',
-      Voice.heiressJa: '片方で表示、もう片方で入力——画面が一つしか見えないときは、これが唯一通る道よ。あたしに他の手はないんだから。',
+      Voice.heiress: '一台显示、另一台输入——只有一边看得见屏幕的时候，这是唯一走得通的办法。本小姐没别的招给你。',
+      Voice.heiressJa: '片方で表示、もう片方で入力しますの——画面が一つしか見えないときは、これが唯一通る道ですわ。他に手はございませんの。',
     
-      Voice.minister:
-          'One screen displays it and the other enters it -- the only arrangement that commends itself when both screens cannot be seen at once.',},
+      Voice.minister: 'One screen displays it and the other enters it -- the only arrangement that commends itself when both screens cannot be seen at once.',},
   
   );
 
@@ -1289,11 +1285,10 @@ abstract final class Copy {
       'ja': '両方の画面に同じ六桁が出ます。見比べるだけです。ただし二つの画面が同時に見える必要があります。',
     },
     voices: {
-      Voice.heiress: '哼，两台各显示同一串六位数字——看一眼就行。不过话先说在前头：两块屏幕得同时看得见，本小姐可没法替你把它们并排放好。',
-      Voice.heiressJa: 'ふん、二台とも同じ六桁が出るわ——見比べるだけよ。ただし先に言っておくの：二つの画面が同時に見えること。あたしが代わりに並べてあげるわけにはいかないんだから。',
+      Voice.heiress: '两台都显示同一串六位数字，你只要看一眼。……不过两块屏幕得同时看得见，本小姐没法替你并排放好。',
+      Voice.heiressJa: '両方の画面に同じ六桁が出ますの。見比べるだけでよろしくてよ。ただし、二つの画面が同時に見えていなくてはなりませんわ。',
     
-      Voice.minister:
-          'Both screens will show the same six digits, and no more than a glance is required of you. The two screens must, however, be in view at the same time.',},
+      Voice.minister: 'Both screens will show the same six digits, and no more than a glance is required of you. The two screens must, however, be in view at the same time.',},
   
   );
 
@@ -1315,10 +1310,9 @@ abstract final class Copy {
       'ja': '二台が今回のハンドシェイクから同じ数字を導きます。間に誰もいなければ一致します。片方だけ違えば、誰かが中継しています。',
     },
     voices: {
-      Voice.heiress: '两台各自算出这串数字——握手相同才会一致。一边一样、一边不一样？那就是中间有人插了手，别信。',
-      Voice.heiressJa: '二台がそれぞれこの数字を出すの——同じ握手なら一致する。片方だけ違う？なら間に誰かが割り込んでるわ、信じないで。',
-      Voice.minister:
-          'Each machine derives the number from this handshake, and agreement is the evidence of '
+      Voice.heiress: '两台各算出这串数字——握手相同才会一致。一边一样、一边不一样？那就是中间有人接了手，别信，本小姐说到这儿。',
+      Voice.heiressJa: '二台がそれぞれこの数字を出しますの——同じ握手なら一致しますわ。片方だけ違う？なら間に誰かが割り込んでいますの。信じてはなりません。',
+      Voice.minister: 'Each machine derives the number from this handshake, and agreement is the evidence of an undisturbed meeting. Where one side differs, something has interposed itself, and the exchange should not be trusted.'
           'an uninterrupted conversation. Should one side differ, the difference is itself the '
           'finding: somebody is relaying between you.',
     },
@@ -1348,11 +1342,10 @@ abstract final class Copy {
       'ja': '一致しなければこの同期はあきらめます。やり直しはしません——六桁は一度きりで足りる数字です。',
     },
     voices: {
-      Voice.heiress: '两台指纹一样，握手却被拒了——这不是网络的事，是中间有人在转接。别继续。哼，本小姐说到这儿就够了。',
-      Voice.heiressJa: '二台の指紋が同じなのに、ハンドシェイクは拒まれた——ネットワークの問題じゃないわ、間に誰かが割り込んでいるの。続けないで。ふん、あたしはここまで言えば十分よ。',
+      Voice.heiress: '不一致就直接放弃这次同步，不会重试——六位数字只够用一次。本小姐说到这儿。',
+      Voice.heiressJa: '一致しなければ、この同期はあきらめますの。やり直しはしませんわ——六桁は一度きりで足りる数字ですの。',
     
-      Voice.minister:
-          'A difference is taken as the sync being given up rather than retried; six digits serve exactly once, and no more.',},
+      Voice.minister: 'A difference is taken as the sync being given up rather than retried; six digits serve exactly once, and no more.',},
   
   );
 
@@ -1364,10 +1357,9 @@ abstract final class Copy {
     also: {'zh-HK': '透過 USB 直連（ADB 轉發）', 'zh-TW': '透過 USB 直連（ADB 轉送）', 'ja': 'USBで直接つなぐ（ADBフォワード）'},
     voices: {
       Voice.heiress: '通过 USB 直连（ADB 转发）——线插好，本小姐替你把话说进去。',
-      Voice.heiressJa: 'USB で直結（ADB 転送）——線をつないでおきなさい、あたしが代わりに話を通してあげる。',
+      Voice.heiressJa: 'USB で直結ですわ（ADB 転送）——線をつないでおきなさいな、わたくしが代わりに話を通しますの。',
     
-      Voice.minister:
-          'Direct connection by USB (ADB forwarding).',},
+      Voice.minister: 'Direct by USB (ADB forwarding), which requires only the cable.',},
   
   );
 
@@ -1403,11 +1395,10 @@ abstract final class Copy {
       'ja': 'フォワードを設定しました。これが相手が接続するアドレスで、データはケーブル上だけを流れます：',
     },
     voices: {
-      Voice.heiress: '转发已经架好了——这串地址就是对方的连接地址，数据从你这边转过去。地址别抄错，抄错了本小姐可不负责重来。',
-      Voice.heiressJa: '転送はもう立っているわ——このアドレスが相手の接続先、データはあなたの側から転がっていくの。書き写し間違えないこと、間違えてもやり直しは手伝わないわよ。',
+      Voice.heiress: '转发已经架好了——这串地址就是对方的连接地址，数据从你这边转过去。地址别抄错，抄错了本小姐不替你重来。',
+      Voice.heiressJa: '転送はもう立っておりますわ——このアドレスが相手の接続先、データはあなたの側から転がっていきますの。書き写し間違えないこと。間違えても、やり直しは手伝いませんわよ。',
     
-      Voice.minister:
-          'The forward is established. This is the address to which the other side connects, and the datagrams are confined to the cable:',},
+      Voice.minister: 'The forward is established. This is the address to which the other side connects, and the datagrams are confined to the cable:',},
   
   );
 
@@ -1418,11 +1409,10 @@ abstract final class Copy {
     Translated.authored('Carry it on a stick (.courtpack)'),
     also: {'zh-HK': 'U 盤搬運（.courtpack）', 'zh-TW': 'U 盤搬運（.courtpack）', 'ja': 'USBメモリで運ぶ（.courtpack）'},
     voices: {
-      Voice.heiress: 'U 盘搬运（.courtpack）——没有网也行，这是那条走得通的路。',
-      Voice.heiressJa: 'USB メモリでの運搬（.courtpack）——網が無くてもいいの、これが通る道よ。',
+      Voice.heiress: 'U 盘搬运（.courtpack）——没有网也行，这是那条走得通的路，本小姐说清楚。',
+      Voice.heiressJa: 'USB メモリでの運搬ですわ（.courtpack）——網が無くてもよろしくてよ、これが通る道ですの。',
     
-      Voice.minister:
-          'Carriage by USB drive (`.courtpack`).',},
+      Voice.minister: 'Carriage on a USB drive (`.courtpack`), which serves where no network does.',},
   
   );
 
@@ -1439,11 +1429,9 @@ abstract final class Copy {
       'ja': 'ファイルに書き出し、もう一方の端末にコピーして取り込みます。ネットワークは不要——クライアント分離のあるネットワークで唯一使える手段です。バックアップではなく、信頼もされません。取り込みは常に自分のログへの併合なので、二度取り込んでも増えません。',
     },
     voices: {
-      Voice.heiress: '导出一个文件，拷到另一台再导进去——没有网也行，这也是客户端隔离的网里唯一走得通的路。但它不是备份，也不必信它：导入永远是并进你自己的日志，导两次也不会多出东西。',
-      Voice.heiressJa:
-          'ファイルに書き出して、もう一台にコピーして取り込むの——網がなくても使える。クライアント分離の網では、それが唯一通る道よ。でもバックアップではないし、信じる必要もないの。取り込みはいつも自分のログに併合されるだけだから、二度やっても増えないわ。',
-      Voice.minister:
-          'Written to a single file and carried to the other machine. It functions without a '
+      Voice.heiress: '导成一个文件，拷到另一台再导进去——没有网也行。对，这是隔离网里唯一走得通的路。不过本小姐先说清楚：它不是备份，导入永远只是并进你自己的日志，导两次也不会多出东西。',
+      Voice.heiressJa: 'ファイルに書き出して、もう一台に写して取り込みますの。網がなくても使えますわ。……クライアント分離の網では、それが唯一通る道ですの。ただし、バックアップではございません。取り込みはいつも自分の記録に併合されるだけで、二度やっても増えませんわ。',
+      Voice.minister: 'Written to a single file and carried to the other machine, and it functions without a network; in a network with client isolation this is the only course available. It is not a backup, and it is not to be trusted as one: an import is always merged into one log, and importing twice adds nothing.'
           'network, which is the only reason it works at all where clients are isolated. It is '
           'not a backup and is not to be trusted as one: an import is always merged into your '
           'own log, and performing it twice adds nothing.',
@@ -1479,10 +1467,9 @@ abstract final class Copy {
       'ja': 'まだありません。上のフォルダに .courtpack をコピーすると、ここに現れます。',
     },
     voices: {
-      Voice.heiress: '哼，还没有呢。把一个 .courtpack 拷进上面那个目录——它自己就会出现在这里，不用你催。',
-      Voice.heiressJa: 'ふん、まだ何もないわ。上のフォルダに .courtpack をコピーして——あとは勝手にここへ現れるの。急かさなくていいわよ。',
-      Voice.minister:
-          'At present, nothing. Place a `.courtpack` in the directory above and it will present '
+      Voice.heiress: '还没有。把一个 .courtpack 拷进上面那个目录——它自己就会出现在这里，不用你催。',
+      Voice.heiressJa: 'まだ何もありませんわ。上のフォルダに .courtpack を写してちょうだいな——あとは勝手にここへ現れますの。',
+      Voice.minister: 'At present, nothing. Place a .courtpack in the directory above, and it will present itself here.'
           'itself here; the arrangement requires no further instruction from you.',
     },
   );
@@ -1642,9 +1629,8 @@ abstract final class Copy {
     },
     voices: {
       Voice.heiress: '同一个网里、此刻正在报上名号的设备——名字只是自称，算数的是指纹与握手。名字看看就好。',
-      Voice.heiressJa: '同じ網の中で、いま名乗っている端末——名前は自称にすぎないの。効くのは指紋とハンドシェイクよ。名前は眺めるだけにしておいて。',
-      Voice.minister:
-          'Machines on this network that are, at this moment, announcing themselves. A name is '
+      Voice.heiressJa: '同じ網の中で、いま名乗っている端末ですわ——名前は自称にすぎませんの。効くのは指紋とハンドシェイク。名前は眺めるだけになさいな。',
+      Voice.minister: 'Machines on this network that are, at this moment, announcing themselves. A name is a claim; the fingerprint and the handshake are what count.'
           'an assertion and nothing more; what counts is the fingerprint and the handshake that '
           'follows it.',
     },
@@ -1686,11 +1672,10 @@ abstract final class Copy {
       'ja': '名前は自称にすぎません。指紋だけは勝手に名乗れないものです——確かめてから押してください。',
     },
     voices: {
-      Voice.heiress: '名字只是自称——指纹才是它唯一没法随口说出来的东西。核对指纹，不是核对名字，别搞错了。',
-      Voice.heiressJa: '名前は自称にすぎないの——指紋こそ、口から出任せにできない唯一のものよ。見るべきは指紋、名前じゃないわ。',
+      Voice.heiress: '名字只是自称——指纹才是它唯一没法随口说出来的东西。核对指纹，别核对名字，本小姐说清楚。',
+      Voice.heiressJa: '名前は自称にすぎませんの——指紋こそ、口から出任せにできない唯一のものですわ。見るべきは指紋、名前ではございませんの。',
     
-      Voice.minister:
-          'A name is a claim and nothing more. The fingerprint is the one particular in which a device cannot be inventive about itself, and we would be grateful if you would read it before pressing.',},
+      Voice.minister: 'A name is a claim and nothing more. The fingerprint is the one particular in which a device cannot be inventive about itself, and it is to be read before the button is pressed.',},
   
   );
 
@@ -1729,10 +1714,9 @@ abstract final class Copy {
     },
     voices: {
       Voice.heiress: '已记住——上次见面学过它的密钥，这次不用再对码。',
-      Voice.heiressJa: '記憶済みよ——前回会ったときに鍵を覚えたから、今度はコードを合わせなくていいの。',
+      Voice.heiressJa: '記憶済みですわ——前回お会いしたときに鍵を覚えましたから、今度はコードを合わせずに済みますの。',
     
-      Voice.minister:
-          'Remembered: the key was learned at the previous meeting.',},
+      Voice.minister: 'Remembered: the key was learned at the previous meeting, and no code is needed now.',},
   
   );
 
@@ -1768,10 +1752,9 @@ abstract final class Copy {
     },
     voices: {
       Voice.heiress: '直接用上次学到的密钥同步——不用再对数字。省下的那点功夫，你自己看着用。',
-      Voice.heiressJa: '前回覚えた鍵でそのまま同期するの——数字を照合する必要はないわ。省いた手間は、好きに使いなさい。',
+      Voice.heiressJa: '前回覚えた鍵でそのまま同期しますの——数字を照合する必要はありませんわ。省いた手間は、ご自由にお使いなさいな。',
     
-      Voice.minister:
-          'The sync proceeds on the key learned on the previous occasion; there are no digits requiring comparison.',},
+      Voice.minister: 'The sync proceeds on the key learned on the previous occasion; there are no digits requiring comparison.',},
   
   );
 
@@ -1785,10 +1768,9 @@ abstract final class Copy {
     },
     voices: {
       Voice.heiress: '两台各显示六位数字——对上了才开始同步。对不上就别往下走，没有例外。',
-      Voice.heiressJa: '二台がそれぞれ六桁の数字を出すの——一致してはじめて同期が始まるわ。合わなければ先へ進まないこと、例外はないのよ。',
+      Voice.heiressJa: '二台がそれぞれ六桁の数字を出しますの——一致してはじめて同期が始まりますわ。合わなければ先へ進まないこと、例外はございませんの。',
     
-      Voice.minister:
-          'Both devices will show six digits, and the sync commences only in the event that they agree.',},
+      Voice.minister: 'Both devices will show six digits, and the sync commences only in the event that they agree.',},
   
   );
 
@@ -1818,10 +1800,9 @@ abstract final class Copy {
     },
     voices: {
       Voice.heiress: '附近的设备现在可以点到这台机器——想连就连，本小姐不拦。',
-      Voice.heiressJa: '近くの端末から今この機械に届くわ——つなぎたければつなぎなさい、あたしは止めないの。',
+      Voice.heiressJa: '近くの端末から今この機械に届きますわ——つなぎたければおつなぎなさいな、止めはいたしませんの。',
     
-      Voice.minister:
-          'This machine is presently reachable from nearby devices.',},
+      Voice.minister: 'This machine is presently reachable from nearby devices.',},
   
   );
 
@@ -1898,10 +1879,9 @@ abstract final class Copy {
       'ja': '一言で：この端末には今、同じネットワークから届きます。',
     },
     voices: {
-      Voice.heiress: '哼。门是开着的——本小姐可没把谁拦在外面。局域网里的谁，现在都连得上。',
-      Voice.heiressJa: 'ふん。門は開いてるわ——あたしが誰かを締め出したりしてないもの。同じネットワークの誰でも、今なら届くわ。',
-      Voice.minister:
-          'The position is as follows. The machine may be reached from the network at this moment; no '
+      Voice.heiress: '门是开着的——本小姐没把谁拦在外面。局域网里的谁，现在都连得上。',
+      Voice.heiressJa: '門は開いておりますわ——わたくし、誰も締め出してはおりませんの。同じネットワークの誰でも、今なら届きますわ。',
+      Voice.minister: 'The machine may be reached from the network at this moment; nothing is being kept out.'
           'obstruction of ours stands in the way, and we would prefer it understood that none was intended.',
     },
   );
@@ -1917,10 +1897,9 @@ abstract final class Copy {
       'ja': '一言で：受信はファイアウォールに止められています——このプログラムを覆う受信規則がありません。',
     },
     voices: {
-      Voice.heiress: '哼，门房把人拦下了——不是本小姐吩咐的。这扇门压根就没给他开过。',
-      Voice.heiressJa: 'ふん、門番が人を止めてるわ——あたしが言いつけたわけじゃないの。この門、あの人には一度も開いてないだけ。',
-      Voice.minister:
-          'We have, I am afraid, a difficulty of a structural nature: inbound traffic is stopped, because no '
+      Voice.heiress: '入站被防火墙挡住了——这个程序没有任何一条入站规则覆盖它。所以它连回应都没发出去，本小姐只是替它把话说出来。',
+      Voice.heiressJa: '受信はファイアウォールに止められておりますの——このプログラムを覆う受信規則が一つもございません。だから応答も届かないのですわ。',
+      Voice.minister: 'Inbound traffic is stopped, because no inbound rule covers this program. It follows that no answer is returned, and the machine has nothing of its own to report.'
           'inbound rule has been made to cover this program. That is not so much a decision as an omission.',
     },
   );
@@ -1938,9 +1917,8 @@ abstract final class Copy {
     },
     voices: {
       Voice.heiress: '门是有的，只是没给这一种客人开——规则在，可它管不着这台机器现在待的这种网络。',
-      Voice.heiressJa: '門はあるの。ただ、今のこのお客さんには開いてないだけ——規則はあっても、この端末が今いる種別を覆ってないのよ。',
-      Voice.minister:
-          'The rule exists; the difficulty is one of scope. It does not extend to the category of network the '
+      Voice.heiressJa: '門はございますの。ただ、今のこのお客様には開いておりませんの——規則はあっても、この端末が今いる種別を覆ってはおりませんわ。',
+      Voice.minister: 'The rule exists; the difficulty is one of scope. It does not extend to the category of network the machine is presently on.'
           'machine currently finds itself in -- a distinction the firewall draws, and one we are obliged to report.',
     },
   );
@@ -1956,10 +1934,9 @@ abstract final class Copy {
       'ja': '一言で：待ち受けがループバックだけなので、同じネットワークからは永遠に届きません。',
     },
     voices: {
-      Voice.heiress: '本小姐压根没往外应声——只在自家屋里听着呢。局域网里的人，等多久都等不到。',
-      Voice.heiressJa: 'あたし、外には返事してないの——自分の部屋で聞いてるだけ。同じネットワークの人は、いつまでも待ちぼうけよ。',
-      Voice.minister:
-          'The listener is bound to loopback only. It is, if you will, answering a telephone in a room nobody '
+      Voice.heiress: '只在自家屋里应声，外面听不见——监听只绑在本机回环上。局域网里的设备，等到什么时候都连不上，本小姐说得够清楚了。',
+      Voice.heiressJa: '自分の部屋でしか返事をしておりませんの——待ち受けがループバックだけ、ですから。同じネットワークからは、いつまでお待ちになっても届きませんわ。',
+      Voice.minister: 'The listener is bound to the loopback alone, so it answers inside its own room. From the local network it will never be reached, however long the wait.'
           'else can enter -- and the network will wait for a reply that was never addressed to it.',
     },
   );
@@ -1975,10 +1952,9 @@ abstract final class Copy {
       'ja': '一言で：今この端末には LAN アドレスがなく、近くの端末は接続先すら持てません。',
     },
     voices: {
-      Voice.heiress: '连门牌号都没有，叫别人怎么找上门——这台机器现在没有局域网地址。',
-      Voice.heiressJa: '表札もないのに、どうやって訪ねて来いと——この端末には今、ネットワークの住所がないの。',
-      Voice.minister:
-          'We are, at present, without an address on the local network. A neighbour seeking us would have '
+      Voice.heiress: '连门牌号都没有，叫别人怎么找上门——这台机器现在没有局域网地址，附近的设备连地址都拿不到。',
+      Voice.heiressJa: '表札も無いのに、どう訪ねて来いと申しますの——この端末には今、ネットワークの住所がありませんの。近くの端末は接続先すら持てませんわ。',
+      Voice.minister: 'This machine has, at present, no address on the local network. A neighbour seeking it cannot even be given one to try.'
           'nothing to seek; the difficulty precedes any question of permission.',
     },
   );
@@ -1995,10 +1971,9 @@ abstract final class Copy {
       'ja': '一言で：判定できません——Windows ではないか、ファイアウォールの道具が使えません。',
     },
     voices: {
-      Voice.heiress: '查不出来就是查不出来——本小姐不会为看不见的事编一个答案。这台机器不是 Windows，要么那工具根本不在。',
-      Voice.heiressJa: '分からないものは分からないの——あたし、見えないことをでっち上げたりしないわ。Windows じゃないか、その道具がないかよ。',
-      Voice.minister:
-          'I am unable to give you a determination. This is not Windows, or the instrument in question is '
+      Voice.heiress: '查不出来就是查不出来——本小姐不为看不见的事编答案。这台机器不是 Windows，要么那工具根本不在。',
+      Voice.heiressJa: '分からないものは分からないのですわ——見えないことをでっち上げたりはしませんの。Windows ではないか、その道具が無いか、ですわ。',
+      Voice.minister: 'I am unable to give you a determination. This is not Windows, or the instrument in question is absent.'
           'unavailable; either way, an answer would be a guess wearing the clothes of a finding.',
     },
   );
@@ -2049,11 +2024,10 @@ abstract final class Copy {
       'ja': '待ち受けポートは毎回変わるので、ポートではなくプログラム単位で許可します。',
     },
     voices: {
-      Voice.heiress: '监听端口每次都不一样——所以规矩是按程序放行，不是按端口。端口变来变去，本小姐可不想每次都替你改一遍。',
-      Voice.heiressJa: '待ち受けポートは毎回変わるの——だからポート単位ではなく、プログラム単位で許可するのよ。ポートが変わるたびに、あたしが書き直してあげるわけにはいかないんだから。',
+      Voice.heiress: '监听端口每次都不一样——所以规矩是按程序放行，不是按端口。端口变来变去，本小姐不想每次都替你改一遍。',
+      Voice.heiressJa: '待ち受けポートは毎回変わりますの——だからポート単位ではなく、プログラム単位で許可しますわ。ポートが変わるたびに、わたくしが書き直すわけにはまいりませんの。',
     
-      Voice.minister:
-          'The listening port differs on each occasion, which is why the permission is extended to the program rather than to a port.',},
+      Voice.minister: 'The listening port differs on each occasion, which is why the permission is extended to the program rather than to a port.',},
   
   );
 
@@ -2097,10 +2071,9 @@ abstract final class Copy {
     // three forbids it, and where nobody reading the app would ever have seen it. Moved back here, where the note a
     // person actually reads lives.
     voices: {
-      Voice.heiress: '6 到 8 位，字符里没有 I、O、0、1——省得你看错。令牌是这串码里唯一的秘密：太短，就等于把第一次见面白白让给别人。',
-      Voice.heiressJa: '6〜8 文字で、I・O・0・1 は使わないの——見間違えないようにね。トークンはこのコードで唯一の秘密よ。短すぎたら、初対面を他人に譲るようなものよ。',
-      Voice.minister:
-          'Six to eight characters, from which I, O, zero and one have been excluded. The token '
+      Voice.heiress: '6 到 8 位，字符里没有 I、O、0、1——本小姐替你看过了，省得你认错。令牌是这串码里唯一的秘密：短了，就等于把第一次见面让给别人。',
+      Voice.heiressJa: '6〜8 文字、I・O・0・1 は使えませんの——見間違えないように。トークンはこのコードで唯一の秘密ですわ。短ければ、初対面を他人に譲るだけのことよ。',
+      Voice.minister: 'Six to eight characters, from which I, O, zero and one are excluded, that the reading not be mistaken. The token is the only secret in the code: one too brief hands the first meeting to another.'
           'is the only secret the code contains; a short one merely permits somebody else to '
           'complete the introduction on your behalf.',
     },
@@ -2145,11 +2118,10 @@ abstract final class Copy {
     Translated.authored('这不像是一个空庭的配对码。请检查有没有漏字。'),
     Translated.authored("That does not look like a Hollow Court code. Check for missing characters."), also: {'ja': '空庭のペアリングコードではないようです。抜けがないか確認してください。', 'zh-HK': '這不像是一個空庭的配對碼。請檢查有沒有漏字。', 'zh-TW': '這不像是一個空庭的配對碼。請檢查有沒有漏字。'},
     voices: {
-      Voice.heiress: '这不像是一个空庭的配对码——先检查有没有漏字。少一位都不算数。',
-      Voice.heiressJa: 'これは空庭のペアリングコードには見えないわ——まず抜けがないか確認するの。一文字足りなくても駄目よ。',
+      Voice.heiress: '这不像是一个空庭的配对码——先检查有没有漏字。少一位都不算数，本小姐不猜。',
+      Voice.heiressJa: 'これは空庭のペアリングコードには見えませんの——まず抜けがないかお確かめなさいな。一文字足りなくても駄目ですわ。',
     
-      Voice.minister:
-          'That does not present itself as a Hollow Court code. It would be advisable to establish whether any character has been omitted.',},
+      Voice.minister: 'That does not present itself as a Hollow Court code. It would be advisable to establish whether any character has been omitted.',},
   );
 
   static const syncDone = CopyLine.withLanguages(
@@ -2178,6 +2150,12 @@ abstract final class Copy {
       'zh-HK': '這台裝置沒能把自己的身分存下來——剛才記住的裝置，重啟後不會記得。',
       'zh-TW': '這台裝置沒能把自己的身分存下來——剛才記住的裝置，重啟後不會記得。',
       'ja': 'この端末は自分の身元を保存できませんでした。今覚えた端末は、再起動すると忘れます。',
+    },
+  
+    voices: {
+      Voice.heiress: '这台设备连自己的身份都没存下来。……刚才记住的那些设备，重启之后就不认得了。本小姐提醒过你。',
+      Voice.heiressJa: 'この端末は自分の身元を保存できませんでしたの。……さっき覚えた端末も、再起動すれば忘れてしまいますわ。',
+      Voice.minister: 'The device has not been able to store its own identity, and the devices just remembered will be forgotten upon restart.',
     },
   );
 
@@ -2209,11 +2187,9 @@ abstract final class Copy {
       'ja': '同じものでも呼び方がいくつもある。ここに書けば、アプリは同じものとして扱います。',
     },
     voices: {
-      Voice.heiress: '同一个东西有几种叫法，写在这里，应用就当它们是一件事——利口酒＝力娇＝力娇酒，安高天娜＝安哥斯图拉，马天尼＝马提尼，菲士＝菲兹，金酒＝琴酒，蓝柑＝蓝橙。',
-      Voice.heiressJa:
-          '同じものがいくつもの名前で呼ばれるでしょう。ここに書けば、アプリは同じ一つのこととして扱うの——利口酒＝力娇＝力娇酒、安高天娜＝安哥斯图拉、马天尼＝马提尼、菲士＝菲兹、金酒＝琴酒、蓝柑＝蓝橙。この名前たちは、あなたが実際に見る綴りそのものよ。',
-      Voice.minister:
-          'Several names for one thing, set down here, are thereafter treated as one thing: 利口酒 '
+      Voice.heiress: '同一个东西有几种叫法，写在这里，本小姐就当它们是一件事——利口酒＝力娇＝力娇酒，安高天娜＝安哥斯图拉，马天尼＝马提尼，菲士＝菲兹，金酒＝琴酒，蓝柑＝蓝橙。别问为什么，这是你写的。',
+      Voice.heiressJa: '同じものが幾つもの名前で呼ばれるでしょう。ここにお書きになれば、アプリは同じ一つのこととして扱いますの——利口酒＝力娇＝力娇酒、安高天娜＝安哥斯图拉、马天尼＝马提尼、菲士＝菲兹、金酒＝琴酒、蓝柑＝蓝橙。……決めたのはあなたですわよ。',
+      Voice.minister: 'Several names for one thing, set down here, are thereafter treated as one: 利口酒 = 力娇 = 力娇酒, 安高天娜 = 安哥斯图拉, 马天尼 = 马提尼, 菲士 = 菲兹, 金酒 = 琴酒, 蓝柑 = 蓝橙.'
           '= 力娇 = 力娇酒, and the rest of them. The application does not adjudicate which name is '
           'correct; it declines to care.',
     },
@@ -2232,11 +2208,10 @@ abstract final class Copy {
       'ja': '1行に1組：表示したい名前、「=」、そのあとに別の呼び方をカンマで区切って書きます。# で始まる行はメモです。',
     },
     voices: {
-      Voice.heiress: '一行一组——等号前是你要显示的名字，等号后是别的叫法，逗号分开。以 # 开头的行是备注，别搞错了，那不是让你写注释的地方。',
-      Voice.heiressJa: '1行に1組よ——「=」の前が表示したい名前、後ろが別の呼び方、カンマで区切るの。# で始まる行はメモよ。あたしに注釈を書けと言っているんじゃないわ。',
+      Voice.heiress: '一行一组——等号前是要显示的名字，等号后是别的叫法，逗号分开。以 # 开头的行只是备注，别当成能写注释的地方，本小姐先说清楚。',
+      Voice.heiressJa: '1行に1組ですわ——「=」の前が表示したい名前、後ろが別の呼び方、カンマ区切り。 # で始まる行はメモですの。注釈を書く場所ではございませんわ。',
     
-      Voice.minister:
-          'One group occupies one line: the name to be shown, then "=", then the other names, separated by commas. A line beginning with # is a note and nothing further.',},
+      Voice.minister: 'One group occupies one line: the name to be shown, then "=", then the other names, separated by commas. A line beginning with # is a note, and not a place for commentary.',},
   
   );
 
@@ -2270,11 +2245,10 @@ abstract final class Copy {
       'ja': '読めない行があります。先に直してください。このまま保存するとその行は黙って消えます。',
     },
     voices: {
-      Voice.heiress: '有一行读不懂，先改掉它——否则保存会悄悄丢掉那一行。本小姐可不想替你收拾这个。',
-      Voice.heiressJa: '読めない行が一行あるわ、先に直しなさい——そのまま保存すると、その行は黙って消えるのよ。あたしはその後始末を引き受ける気はないんだから。',
+      Voice.heiress: '有一行读不懂，先改掉它——否则保存会悄悄丢掉那一行。本小姐不替你收拾这个。',
+      Voice.heiressJa: '読めない行が一行ありますの。先にお直しなさいな——そのまま保存すれば、その行は黙って消えますわ。後始末は引き受けませんことよ。',
     
-      Voice.minister:
-          'A line has not been readable. It would be preferable to correct it first: a save at this juncture would drop that line without saying so.',},
+      Voice.minister: 'A line has not been readable. It is to be corrected first: a save at this juncture would drop that line without saying so.',},
   
   );
 
@@ -2321,10 +2295,9 @@ abstract final class Copy {
     also: {'zh-HK': '這台機器叫什麼，例如 NesarfDX', 'zh-TW': '這臺機器叫什麼，例如 NesarfDX', 'ja': 'この機械の名前、例：NesarfDX'},
     voices: {
       Voice.heiress: '这台机器叫什么——例如 NesarfDX。名字随你取，别太短就行。',
-      Voice.heiressJa: 'この機械の名前よ——例：NesarfDX。名前は好きにつけていいけど、短すぎないこと。',
+      Voice.heiressJa: 'この機械のお名前ですわ、例えば NesarfDX。お好きにつけてよろしくてよ、ただし短すぎないこと。',
     
-      Voice.minister:
-          'The machine, for instance NesarfDX',},
+      Voice.minister: 'What this machine is called, for instance NesarfDX',},
   
   );
   static const namesCellar = CopyLine.withLanguages(
@@ -2347,10 +2320,9 @@ abstract final class Copy {
     also: {'zh-HK': '你自己的酒窖叫什麼，例如 空庭', 'zh-TW': '你自己的酒窖叫什麼，例如 空庭', 'ja': 'あなたの酒蔵の名前、例：空庭'},
     voices: {
       Voice.heiress: '你自己的酒窖叫什么，例如「空庭」——名字随你，别太短就行。',
-      Voice.heiressJa: '自分の酒蔵の名前よ、例えば「空庭」——好きにつけていいけど、短すぎないこと。',
+      Voice.heiressJa: 'ご自分の酒蔵の名前ですわ、例えば「空庭」——お好きにつけてよろしくてよ、ただし短すぎないこと。',
     
-      Voice.minister:
-          'What your own cellar is called, for instance 空庭',},
+      Voice.minister: 'What your own cellar is called, for instance 空庭',},
   
   );
   static const namesChoice = CopyLine.withLanguages(
@@ -2380,11 +2352,10 @@ abstract final class Copy {
     ),
     also: {'zh-HK': '選了空庭名稱，但還沒給空庭起名——現在對方看到的是設備名稱。', 'zh-TW': '選了空庭名稱，但還沒給空庭起名——現在對方看到的是裝置名稱。', 'ja': '酒蔵名を選びましたが、まだ名前がありません。いま相手に見えているのは端末名です。'},
     voices: {
-      Voice.heiress: '名字是选了「空庭」，可还没给空庭起名——现在对方看到的还是设备名。起一个吧，人家又不会替你取。',
-      Voice.heiressJa: '名前は「空庭」を選んだけれど、まだ空庭に名前をつけていないの——今、相手に見えているのは端末名のままよ。つけてあげなさいよ、人が代わりに名付けてはあげないわ。',
+      Voice.heiress: '名字是选了「空庭」，可还没给空庭起名——现在对方看到的还是设备名。起一个吧，本小姐不会替你取。',
+      Voice.heiressJa: '名前は「空庭」をお選びですけれど、まだ空庭にお名前をつけておりませんの——今、相手に見えているのは端末名のままですわ。おつけなさいな、わたくしが代わりに名付けてはあげませんのよ。',
     
-      Voice.minister:
-          'The cellar name has been chosen, but the cellar has not yet been given one, and it is the device name that accordingly goes out.',},
+      Voice.minister: 'The cellar name has been chosen, but the cellar has not yet been given one, and it is the device name that accordingly goes out.',},
   
   );
 
@@ -2402,11 +2373,10 @@ abstract final class Copy {
     ),
     also: {'zh-HK': '可以只給一個貨架——其餘的酒不會被傳過去。', 'zh-TW': '可以只給一個貨架——其餘的酒不會被傳過去。', 'ja': 'ひとつの棚だけに限定できます。残りはこちらに留まります。'},
     voices: {
-      Voice.heiress: '可以只给一个货架——其余的酒不会被传过去。给多少你自己定，人家不会多拿。',
-      Voice.heiressJa: 'ひとつの棚だけに限定してもいいの——残りの酒はそちらへ渡らないわ。どこまで渡すかは自分で決めなさい、人が余計に取ったりはしないから。',
+      Voice.heiress: '可以只给一个货架——其余的酒不会被传过去。给多少你自己定，本小姐不多拿。',
+      Voice.heiressJa: 'ひとつの棚だけに限ってもよろしくてよ——残りの酒はそちらへ渡りませんわ。どこまで渡すかはご自分でお決めなさいな。',
     
-      Voice.minister:
-          'A share may be confined to a single shelf. Everything else remains here.',},
+      Voice.minister: 'A share may be confined to a single shelf. Everything else remains here.',},
   
   );
 
@@ -2441,10 +2411,9 @@ abstract final class Copy {
     also: {'zh-HK': '連不上時，可以把碼裏的地址改成對方螢幕上顯示的那個。', 'zh-TW': '連不上時，可以把碼裡的地址改成對方螢幕上顯示的那個。', 'ja': 'つながらないときは、コードの中の住所を相手の画面のものに書き換えられます。'},
     voices: {
       Voice.heiress: '连不上时，可以把码里的地址改成对方屏幕上显示的那个。地址对不上，谁也连不上谁。',
-      Voice.heiressJa: 'つながらないときは、コードの中の住所を相手の画面に出ているものに書き換えていいわ。住所が合わなければ、誰も誰にもつながらないのよ。',
+      Voice.heiressJa: 'つながらないときは、コードの中の住所を、相手の画面に出ているものに書き換えてもよろしくてよ。住所が合わなければ、誰も誰にもつながりませんわ。',
     
-      Voice.minister:
-          'In the event that a connection cannot be made, the address within the code may be corrected by hand.',},
+      Voice.minister: 'Where a connection cannot be made, the address within the code may be corrected by hand to the one on the other screen.',},
   
   );
 
@@ -2465,11 +2434,10 @@ abstract final class Copy {
     ),
     also: {'zh-HK': '第一次用配對碼見面時各記下對方的密鑰，之後不必再輸碼。', 'zh-TW': '第一次用配對碼見面時各記下對方的金鑰，之後不必再輸碼。', 'ja': '初回はペアリングコードで認証し、以後はコードは要りません。'},
     voices: {
-      Voice.heiress: '第一次用配对码见面时，各记下对方的密钥——之后就不必再输码了。记住的是它，不是你的记性。',
-      Voice.heiressJa: '初回にペアリングコードで顔を合わせたとき、互いの鍵を控えておくの——以後はコードを入れなくて済むわ。頼りになるのはそれであって、あなたの記憶力じゃないのよ。',
+      Voice.heiress: '第一次用配对码见面时，各记下对方的密钥——之后就不必再输码。记住的是它，不是你的记性。',
+      Voice.heiressJa: '初回にペアリングコードで顔を合わせたおり、互いの鍵を控えますの——以後はコードを入れずに済みますわ。頼りになるのはそれであって、あなたの記憶力ではございませんの。',
     
-      Voice.minister:
-          'The first meeting is authenticated by the pairing code; each side is made acquainted with the other\'s key, and no code is required thereafter.',},
+      Voice.minister: 'The first meeting is authenticated by the pairing code; each side is made acquainted with the other key, and no code is required thereafter.',},
   
   );
 
@@ -2479,11 +2447,10 @@ abstract final class Copy {
     Translated.authored('No devices remembered yet. One successful pairing is enough.'),
     also: {'zh-HK': '還沒有記住任何設備。配對成功一次就會記下。', 'zh-TW': '還沒有記住任何裝置。配對成功一次就會記下。', 'ja': 'まだどの端末も記憶していません。一度成功すれば記憶します。'},
     voices: {
-      Voice.heiress: '还没有记住任何设备——配对成功一次就会记下了。本小姐不替你记，它自己记。',
-      Voice.heiressJa: 'まだどの端末も記憶していないわ——一度成功すれば記憶するの。あたしが覚えるんじゃない、これが覚えるのよ。',
+      Voice.heiress: '还没有记住任何设备——配对成功一次就会记下。本小姐不替你记，它自己记。',
+      Voice.heiressJa: 'まだどの端末も記憶しておりませんの——一度成功すれば記憶しますわ。わたくしが覚えるのではなく、これが覚えるのですの。',
     
-      Voice.minister:
-          'No devices are as yet remembered. A single successful pairing is sufficient.',},
+      Voice.minister: 'No devices are as yet remembered. A single successful pairing is sufficient.',},
   
   );
 
@@ -2514,10 +2481,9 @@ abstract final class Copy {
     Translated.authored('Both sides already match; nothing needed to travel.'), also: {'ja': '両側はすでに同じです。送るものはありません。', 'zh-HK': '兩邊已經一樣了，沒有需要傳的。', 'zh-TW': '兩邊已經一樣了，沒有需要傳的。'},
     voices: {
       Voice.heiress: '两边已经一样了，没有需要传的——本小姐不替你找事做。',
-      Voice.heiressJa: '両側はもう同じよ、送るものは何もないの——あたしは余計な仕事を探してあげたりしないわ。',
+      Voice.heiressJa: '両側はもう同じですわ、送るものは何もございませんの——余計な仕事を探してはあげませんわ。',
     
-      Voice.minister:
-          'The two sides are already the same, and there is nothing to convey.',},
+      Voice.minister: 'The two sides are already the same, and there is nothing to convey.',},
   );
 
   static const syncMoved = CopyLine.withLanguages(
@@ -2575,11 +2541,10 @@ abstract final class Copy {
     Translated.authored('A barcode is 8, 12, 13 or 14 digits'),
     also: {'ja': 'バーコードは 8/12/13/14 桁です', 'zh-HK': '條碼是 8、12、13 或 14 位數字', 'zh-TW': '條碼是 8、12、13 或 14 位數字'},
     voices: {
-      Voice.heiress: '条码是 8、12、13 或 14 位数字——不是这个长度，本小姐认不出来。',
-      Voice.heiressJa: 'バーコードは 8/12/13/14 桁よ——この長さでなければ、あたしには読めないわ。',
+      Voice.heiress: '条码只有 8、12、13 或 14 位这几种——长度不对，本小姐认不出来，也不打算猜。',
+      Voice.heiressJa: 'バーコードは 8、12、13、14 桁のどれかですわ——長さが違えば、わたくしには読めませんの。',
     
-      Voice.minister:
-          'A barcode consists of 8, 12, 13 or 14 digits',},
+      Voice.minister: 'A barcode is 8, 12, 13 or 14 digits; at any other length it cannot be read.',},
   );
   static const barcodeProblemCheck = CopyLine.withLanguages(
     Translated.authored('校验位不对，最后一位应为 '),
@@ -2599,11 +2564,10 @@ abstract final class Copy {
     Translated.authored('Not seen before; saving will remember it'),
     also: {'ja': '未登録です。保存時に記録します', 'zh-HK': '這個條碼還沒記過，儲存時會記下', 'zh-TW': '這個條碼還沒記過，儲存時會記下'},
     voices: {
-      Voice.heiress: '这个条码还没记过，保存时会记下——记错的话，回头自己来改。',
-      Voice.heiressJa: 'このバーコードはまだ記録していないの、保存したときに記録されるわ——間違えたら、あとで自分で直しなさい。',
+      Voice.heiress: '这个条码还没记过，保存时会记下——记错了，回头自己来改，本小姐可不替你认。',
+      Voice.heiressJa: 'このバーコードはまだ記録しておりませんの、保存なさったときに記録されますわ——間違えたら、あとでご自分でお直しなさいな。',
     
-      Voice.minister:
-          'This barcode has not been recorded before; it is recorded on saving.',},
+      Voice.minister: 'This barcode has not been recorded before; it is recorded on saving.',},
   );
 
   static const adapterNeedsCamera = CopyLine.withLanguages(
@@ -2626,10 +2590,9 @@ abstract final class Copy {
     },
     voices: {
       Voice.heiress: '，其中包含你酒窖里的内容（瓶子与剩余量）。把话说到这份上，你自己掂量。',
-      Voice.heiressJa: '（ボトルと残量を含む）——ここまで言えば、分かるわね。',
+      Voice.heiressJa: '（ボトルと残量を含む）——ここまで申せば、お分かりですわね。',
     
-      Voice.minister:
-          ', including that which is in your cellar (bottles and what remains).',},
+      Voice.minister: ', including that which is in your cellar (bottles and what remains).',},
   );
   static const adapterLocalHost = CopyLine.withLanguages(
     Translated.authored('这个地址就在本机，请求不离开这台设备。'),
@@ -2640,11 +2603,10 @@ abstract final class Copy {
       'zh-TW': '這個位址就在本機，請求不離開這台裝置。',
     },
     voices: {
-      Voice.heiress: '这个地址就在本机——请求不离开这台设备。别搞错了，它一步都没出过门。',
-      Voice.heiressJa: 'この宛先は同じマシン上にあるの——要求は端末の外に出ないわ。勘違いしないで、一歩も外へは出ていないのよ。',
+      Voice.heiress: '这个地址就在本机——请求不离开这台设备。它一步都没出过门。',
+      Voice.heiressJa: 'この宛先は同じマシンの上ですわ——要求は端末の外に出ませんの。一歩も外へ出ておりませんことよ。',
     
-      Voice.minister:
-          'That address is on this machine, and the request accordingly does not leave the device.',},
+      Voice.minister: 'That address is on this machine, and the request accordingly does not leave the device.',},
   );
 
   /// Section 11.2's peripherals, and the one adapter whose privacy question answers itself:
@@ -2715,10 +2677,9 @@ abstract final class Copy {
     ), also: {'ja': 'ライブラリが無いため、選べる材料もありません。まずはそれを用意してください。', 'zh-HK': '沒有酒庫，也就沒有可選的配料 —— 先把它建起來。', 'zh-TW': '沒有酒庫，也就沒有可選的配料 —— 先把它建起來。'},
     voices: {
       Voice.heiress: '没有酒库，也就没有可选的配料——先把它建起来。等着它自己长出来，那可等不到。',
-      Voice.heiressJa: 'ライブラリが無ければ、選べる材料も無いの——まずそれを用意すること。勝手に生えてくるのを待っても、来ないわよ。',
+      Voice.heiressJa: 'ライブラリが無ければ、選べる材料もありませんの——まずそれをご用意なさいな。勝手に生えてくるのを待っても、来ませんわよ。',
     
-      Voice.minister:
-          'There being no library, there is nothing from which to choose. It would be as well to establish one first.',},
+      Voice.minister: 'There being no library, there is nothing from which to choose. It would be as well to establish one first.',},
   );
 
   /// The one hint that has to name the join between the two layers: the name has to
@@ -2731,10 +2692,9 @@ abstract final class Copy {
     ), also: {'ja': 'ライブラリにある材料から選びます。名前が一致してはじめて、レシピがこの瓶を認識します。', 'zh-HK': '從酒庫已有的配料裏選一格。名字要對得上，配方才認得這瓶酒。', 'zh-TW': '從酒庫已有的配料裡選一格。名字要對得上，配方才認得這瓶酒。'},
     voices: {
       Voice.heiress: '从酒库已有的配料里选一格。名字要对得上——对得上，配方才认得这瓶酒。名字对不上，本小姐也认不出它是什么。',
-      Voice.heiressJa: 'ライブラリにある材料から一枠選ぶの。名前が一致してこそ、レシピがこの瓶を認識するんだから。名前が違えば、あたしにも何の瓶か分からないわ。',
+      Voice.heiressJa: 'ライブラリにある材料から一枠お選びなさいな。名前が一致してこそ、レシピがこの瓶を認識しますの。名前が違えば、わたくしにも何の瓶か分かりませんわ。',
     
-      Voice.minister:
-          'The choice is made from among the ingredients the library already holds. The name must correspond, without which the recipes will not know this bottle.',},
+      Voice.minister: 'The choice is made from among the ingredients the library holds. The name must correspond, without which the recipes will not know this bottle.',},
   );
 
   // Recipes.
@@ -2766,6 +2726,12 @@ abstract final class Copy {
       'ja': 'アプリに同梱のものは変更できません。自分で足したものは編集も削除もできます。',
       'zh-HK': '隨應用發布嘅改唔到。你自己加嘅，可以改、可以刪。',
       'zh-TW': '隨應用發布的改不了。你自己加的，可以改、可以刪。',
+    },
+  
+    voices: {
+      Voice.heiress: '随应用一起发下来的那些，改不了。你自己加的那些——可以改，也可以删，本小姐不拦。',
+      Voice.heiressJa: 'アプリに同梱のものは変更できませんの。ご自分で足したものは、編集も削除もご自由に。止めはしませんわ。',
+      Voice.minister: 'Those which ship with the application are not subject to change; additions may be edited and removed as desired.',
     },
   );
 
@@ -2816,6 +2782,12 @@ abstract final class Copy {
       'zh-HK': '呢度仲係空嘅。記低一瓶酒，或者自己加一種原料。',
       'zh-TW': '這裡還是空的。記下一瓶酒，或者自己加一種原料。',
     },
+  
+    voices: {
+      Voice.heiress: '这里还空着。记下一瓶酒，或者自己加一种原料。本小姐不催你。',
+      Voice.heiressJa: 'ここはまだ空いておりますわ。瓶を一本記録するか、ご自分で材料をお足しなさいな。',
+      Voice.minister: 'Nothing has yet been recorded here. A bottle may be entered, or an ingredient of one kind added.',
+    },
   );
 
   static const ingredientLibraryEmpty = CopyLine.withLanguages(
@@ -2825,6 +2797,12 @@ abstract final class Copy {
       'ja': 'ライブラリに残りはありません。カタログのものは全部手元にあります。',
       'zh-HK': '庫裏已經冇其他嘢喇 —— 目錄上嘅你都有齊。',
       'zh-TW': '庫裡已經沒有別的了 —— 目錄上的你都有了。',
+    },
+  
+    voices: {
+      Voice.heiress: '库里没有别的了。目录上的，本小姐都替你收齐了。',
+      Voice.heiressJa: 'ライブラリにはもう残りはありませんわ。カタログのものは、わたくしが全部ご用意しましたの。',
+      Voice.minister: 'Nothing further remains in the library; all that the catalogue lists is already held.',
     },
   );
 
@@ -2844,8 +2822,8 @@ abstract final class Copy {
     Translated.authored('核心（四个以上的配方用到）'),
     Translated.authored('Core (four or more recipes)'),
     voices: {
-      Voice.heiress: '核心。四个以上的配方都要它 —— 这几样缺了，吧台就停了。',
-      Voice.heiressJa: '主力。4つ以上のレシピが求めているもの。これが欠けるとバーが止まるわ。',
+      Voice.heiress: '核心。四个以上的配方都要它——这几样缺了，吧台就停了，本小姐可没吓你。',
+      Voice.heiressJa: '主力。4つ以上のレシピが求めておりますもの。これが欠ければバーが止まりますわ。',
       Voice.minister: 'Core: four or more recipes call for it. Without these the bar stops.',
     },
     also: {
@@ -2859,8 +2837,8 @@ abstract final class Copy {
     Translated.authored('偶尔（两三个配方用到）'),
     Translated.authored('Occasional (two or three recipes)'),
     voices: {
-      Voice.heiress: '偶尔。两三个配方的事 —— 备着不亏，缺了也只是少几杯。',
-      Voice.heiressJa: '時々。2、3のレシピのこと。備えておいて損はないけれど、無ければ数杯が作れないだけ。',
+      Voice.heiress: '偶尔。两三个配方的事——备着不亏，缺了也只是少几杯。',
+      Voice.heiressJa: '時々。2、3のレシピのことですわ。備えておいて損はございませんけれど、無ければ数杯が作れないだけですの。',
       Voice.minister: 'Occasional: two or three recipes. Worth keeping, and their absence costs a few drinks.',
     },
     also: {
@@ -2874,8 +2852,8 @@ abstract final class Copy {
     Translated.authored('少见（只有一个配方用到）'),
     Translated.authored('Rare (exactly one recipe)'),
     voices: {
-      Voice.heiress: '少见。只有一个配方指名要它 —— 那杯酒你想喝的时候，它才重要。',
-      Voice.heiressJa: 'まれ。たった1つのレシピだけが名指しするもの。その一杯を飲みたいときに、初めて要る。',
+      Voice.heiress: '少见。只有一个配方指名要它——那杯酒你想喝的时候，它才重要。',
+      Voice.heiressJa: 'まれ。たった1つのレシピだけが名指しするものですわ。その一杯を飲みたいときに、初めて要りますの。',
       Voice.minister: 'Rare: exactly one recipe names it. It matters on the day one wants that drink.',
     },
     also: {
@@ -2890,9 +2868,9 @@ abstract final class Copy {
     Translated.authored('死库存（没有任何配方用到）'),
     Translated.authored('Dead stock (no recipe at all)'),
     voices: {
-      Voice.heiress: '死库存。没有任何配方用到 —— 这不是你的责任，是库自己带来的。',
-      Voice.heiressJa: '死に筋。どのレシピも使わない。これはあなたの責務じゃない、ライブラリが抱えてきたものよ。',
-      Voice.minister: 'Dead stock: no recipe calls for it. Not one\'s responsibility -- the library brought it along.',
+      Voice.heiress: '死库存。任何配方都不用它——这不是你的责任，是库自己带来的。',
+      Voice.heiressJa: '死に筋。どのレシピも使いませんの。これはあなたの責務ではございません、ライブラリが抱えてきたものですわ。',
+      Voice.minister: 'Dead stock: no recipe names it. The library carried it here; it is no charge upon the reader.',
     },
     also: {
       'ja': '死に筋（どのレシピにも使われない）',
@@ -2985,6 +2963,12 @@ abstract final class Copy {
       'zh-HK': '標準：剩返唔夠 {percent}%、或者唔夠 {ml} 毫升、或者撐唔過 {days} 日。',
       'zh-TW': '標準：剩下不到 {percent}%、或不足 {ml} 毫升、或撐不過 {days} 天。',
     },
+  
+    voices: {
+      Voice.heiress: '标准本小姐定好了：剩下不到 {percent}%、不足 {ml} 毫升、或者 {days} 天内要见底。',
+      Voice.heiressJa: '基準はわたくしが決めましたの。{percent}% を切ったら、{ml} ml を切ったら、{days} 日以内なら、ですわ。',
+      Voice.minister: 'The thresholds in force are these: under {percent}% of a bottle, under {ml} ml, or within {days} days.',
+    },
   );
 
   /// How long a bottle lasts at the speed it has been going.
@@ -3050,10 +3034,9 @@ abstract final class Copy {
       'Change them in Settings.',
     ),
     voices: {
-      Voice.heiress: '这一页下面的数字，用的是你附加的 {packages} 个包 —— 多出来 {events} 条更早的记录。不想要就去设置里摘掉。',
-      Voice.heiressJa: 'この頁の数字は、あなたが接続した {packages} 件の包みを含んでいるわ —— 古い記録が {events} 件多いの。要らなければ設定で外しなさい。',
-      Voice.minister:
-          'The figures on this page are drawn from {packages} attached packages besides the log, '
+      Voice.heiress: '这一页的读数里，含你附加的 {packages} 个包——{events} 条更早的记录。不想要，去设置里摘掉，本小姐不数第二遍。',
+      Voice.heiressJa: 'この頁の数字には、接続なさった {packages} 件が含まれていますの——古い記録が {events} 件。お要りにならなければ、設定で外してちょうだい。',
+      Voice.minister: 'The figures on this page are drawn from {packages} attached packages besides the log, covering a further {events} earlier events.'
           'which is {events} earlier events. They may be detached in the settings.',
     },
     also: {
@@ -3079,10 +3062,9 @@ abstract final class Copy {
       'files, and did not travel with this sync.',
     ),
     voices: {
-      Voice.heiress: '对方手里还有 {count} 段，这台没有 —— 它们住在对方自己的文件里，这次没有跟过来。',
-      Voice.heiressJa: '相手はさらに {count} の区切りを持っているわ、この機械には無い。あちらのファイルの中よ、今回は付いてこなかった。',
-      Voice.minister:
-          'The other party holds {count} further segments which are not on this machine. They reside in its '
+      Voice.heiress: '对方手里还有 {count} 段，这台没有——它们住在对方自己的文件里，这次没跟过来。本小姐只是把话说清楚。',
+      Voice.heiressJa: '相手はさらに {count} の区切りを持っていますの、この機械にはありませんわ。あちらのファイルの中にありましてよ、今回は付いてこなかっただけ。',
+      Voice.minister: 'The other party holds {count} further segments which are not on this machine. They reside in its own files, and were not carried across on this occasion.'
           'own files and did not accompany this synchronisation.',
     },
     also: {
@@ -3137,6 +3119,12 @@ abstract final class Copy {
       'zh-HK': 'spirit、liqueur、syrup、tea……庫裏有嘅照抄，冇嘅自己寫。',
       'zh-TW': 'spirit、liqueur、syrup、tea……庫裡有的照抄，沒有自己寫。',
     },
+  
+    voices: {
+      Voice.heiress: 'spirit、liqueur、syrup、tea……库里有的，照抄一个。没有的，哼，自己写。',
+      Voice.heiressJa: 'spirit、liqueur、syrup、tea……ライブラリにあるものは写して、ないものはご自分でお書きなさいな。',
+      Voice.minister: 'The kinds are spirit, liqueur, syrup and tea; kinds absent from the library may be stated by the reader.',
+    },
   );
 
   static const ingredientFieldAliases = CopyLine.withLanguages(
@@ -3152,6 +3140,12 @@ abstract final class Copy {
       'ja': 'カンマ区切り。レシートが別の名前で書いている時に。',
       'zh-HK': '用逗號分開。收據寫嘅係第二個名嗰陣有用。',
       'zh-TW': '用逗號分開。收據上寫的是別的名字時有用。',
+    },
+  
+    voices: {
+      Voice.heiress: '用逗号分开。收据上写的是别的名字时，就有用了——本小姐知道。',
+      Voice.heiressJa: 'カンマで区切りますの。レシートが別の名前で書いている時には、役に立ちますわ。',
+      Voice.minister: 'Separated by commas, which is of use when a receipt records the item under another name.',
     },
   );
 
@@ -3183,6 +3177,12 @@ abstract final class Copy {
       'ja': 'それを使うレシピや瓶は残ります。名前が引けなくなるだけです。',
       'zh-HK': '用佢嘅配方同酒瓶會留低，只係認唔出個名。',
       'zh-TW': '用它的配方和酒瓶會留著，只是認不出名字了。',
+    },
+  
+    voices: {
+      Voice.heiress: '用它的配方和酒瓶都会留着。只是名字认不出来了，本小姐不骗你。',
+      Voice.heiressJa: 'それを使うレシピや瓶は残りますの。ただ、名前が引けなくなるだけですわ。',
+      Voice.minister: 'Recipes and bottles naming it will remain. It is only that the name will cease to resolve.',
     },
   );
 
@@ -3228,6 +3228,12 @@ abstract final class Copy {
       'zh-HK': '裏頭係邊個嘅酒、幾時收嘅，隨便寫。',
       'zh-TW': '裡頭是誰的酒、什麼時候收的，隨便寫。',
     },
+  
+    voices: {
+      Voice.heiress: '里头是谁的酒、什么时候收的，随便写。本小姐只是问问。',
+      Voice.heiressJa: '誰のお酒か、いつ手に入れたか、ご自由にお書きなさいな。……わたくしは少し伺っただけですわ。',
+      Voice.minister: 'Whose drinks these are, and when they arrived, may be noted at choice.',
+    },
   );
 
   static const packFieldAccent = CopyLine.withLanguages(
@@ -3244,6 +3250,12 @@ abstract final class Copy {
       'ja': '#RRGGBB、空なら画面の金色。',
       'zh-HK': '#RRGGBB，唔填就用界面嘅金色。',
       'zh-TW': '#RRGGBB，不填就用介面的金色。',
+    },
+  
+    voices: {
+      Voice.heiress: '颜色写 #RRGGBB。不填，本小姐就给你用界面的金色。',
+      Voice.heiressJa: '#RRGGBB でお書きなさいな。空けておけば画面の金色を使いますわ。',
+      Voice.minister: 'A colour is written #RRGGBB; left empty, the interface gold is used.',
     },
   );
 
@@ -3275,6 +3287,12 @@ abstract final class Copy {
       'zh-HK': '顏色要寫成 #RRGGBB，例如 #8A5A32。',
       'zh-TW': '顏色要寫成 #RRGGBB，例如 #8A5A32。',
     },
+  
+    voices: {
+      Voice.heiress: '颜色要写成 #RRGGBB 的样子，比如 #8A5A32。写错了，本小姐可不认。',
+      Voice.heiressJa: '色は #RRGGBB の形でお書きなさいな、たとえば #8A5A32 ですわ。間違えたら、わたくし知りませんことよ。',
+      Voice.minister: 'A colour is expressed in the form #RRGGBB, for instance #8A5A32.',
+    },
   );
 
   /// The action that removes a folder the reader made.
@@ -3293,6 +3311,12 @@ abstract final class Copy {
       'ja': '中のレシピは残ります。どのフォルダにも属さなくなるだけです。',
       'zh-HK': '裏頭嘅配方會留低，只係唔再屬於任何文件夾。',
       'zh-TW': '裡頭的配方會留下，只是不再屬於任何資料夾。',
+    },
+  
+    voices: {
+      Voice.heiress: '里头的配方会留下。只是不再属于哪个文件夹了，本小姐先说清楚。',
+      Voice.heiressJa: '中のレシピは残りますわ。どのフォルダにも属さなくなるだけですの。',
+      Voice.minister: 'The recipes within it will remain. They will merely belong to no folder thereafter.',
     },
   );
 
@@ -3464,6 +3488,12 @@ abstract final class Copy {
       'zh-HK': '咁樣佢就裝入自己裏面——走唔返出嚟。攞走嗰項。',
       'zh-TW': '這樣它就裝進自己裡面了——繞不出來。把那一項去掉。',
     },
+  
+    voices: {
+      Voice.heiress: '那样它就装进自己里面了——再也绕不出来。把那一项去掉，本小姐替你说了。',
+      Voice.heiressJa: 'それだと自分自身の中に入ってしまいましてよ。二度と外に出られません。その項目をお外しなさいな。',
+      Voice.minister: 'That would place it within itself, from which it could not be recovered. That item should be removed.',
+    },
   );
 
   /// The button that starts writing a recipe.
@@ -3522,6 +3552,12 @@ abstract final class Copy {
       'ja': '自由に——ステア、シェイク、ビルド、それ以外でも。',
       'zh-HK': '隨便寫——攪、搖、直調都行，寫別的也行。',
       'zh-TW': '隨便寫——攪、搖、直調都行，寫別的也行。',
+    },
+  
+    voices: {
+      Voice.heiress: '随便写——搅、摇、直调都行。写别的，本小姐也不拦。',
+      Voice.heiressJa: 'ご自由に——ステア、シェイク、ビルド、どれでも。それ以外でも構いませんことよ。',
+      Voice.minister: 'It may be written as desired: stirred, shaken, built, or in other words.',
     },
   );
 
@@ -3598,10 +3634,9 @@ abstract final class Copy {
       'incomplete; installing once more is all it takes.',
     ),
     voices: {
-      Voice.heiress: '配方库是随本小姐的应用一起奉上的——这里若是空的，说明这一份装得不全。重装一次就好，不必自己动手去补。',
-      Voice.heiressJa: 'レシピ集はあたしのアプリに最初から付いてくるの——ここが空なら、このインストールが不完全なだけ。入れ直せば済むわ、自分で埋め合わせる必要なんてないの。',
-      Voice.minister:
-          'The recipe library accompanies the application. Should this remain empty, the installation is '
+      Voice.heiress: '配方库是随应用一起奉上的。这里若是空的，说明这一份装得不全——重装一次就好，不必自己动手去补。',
+      Voice.heiressJa: 'レシピ集はアプリに最初から付いておりますの。ここが空なら、このインストールが不完全なだけ。入れ直せば済みますわ、自分で埋め合わせる必要はございませんの。',
+      Voice.minister: 'The recipe library accompanies the application. Should this remain empty, the installation is incomplete, and a reinstallation suffices.'
           'incomplete rather than the library absent; installing once more is the whole of the remedy.',
     },
     also: {
@@ -3726,6 +3761,12 @@ abstract final class Copy {
       'zh-HK': '架上面嘅瓶唔會郁 —— 少咗嘅淨係一個名。',
       'zh-TW': '架子上的瓶子不會動 —— 少掉的只是一個名字。',
     },
+  
+    voices: {
+      Voice.heiress: '架子上的瓶子一个都不会动。少掉的只是个名字，本小姐先说清楚。',
+      Voice.heiressJa: '棚の瓶は一本も動きませんわ。消えるのは名前だけ——先に申し上げておきますの。',
+      Voice.minister: 'The bottles upon it will not be moved. What is lost is the name alone.',
+    },
   );
 
   static const barInTheBox = CopyLine.withLanguages(
@@ -3738,11 +3779,10 @@ abstract final class Copy {
       'next device that reads it sees the same shelf.',
     ), also: {'ja': '瓶を棚へドラッグすると、位置がログに記録されます。', 'zh-HK': '把瓶子拖到架子上，位置會記進日誌。', 'zh-TW': '把瓶子拖到架子上，位置會記進日誌。'},
     voices: {
-      Voice.heiress: '把瓶子拖到架子上，位置会记进日志——位置也是账目的一部分。',
-      Voice.heiressJa: '瓶を棚にドラッグしなさい、位置は記録に残るの——位置もまた帳簿のうちよ。',
+      Voice.heiress: '把瓶子拖到架子上，位置会记进日志——位置也是账目的一部分，本小姐记着。',
+      Voice.heiressJa: '瓶を棚へドラッグなさいな、位置は記録に残りますの——位置もまた帳簿のうちですわ。',
     
-      Voice.minister:
-          'Drag the bottle to the shelf; the position is entered in the record.',},
+      Voice.minister: 'Drag the bottle to the shelf; the position is entered in the record.',},
   );
   static const barShelfEmpty = CopyLine.withLanguages(
     Translated.authored('这层架子还空着。'),
@@ -3839,7 +3879,7 @@ abstract final class Copy {
       'zh-TW': '按你上次付的價，這些大約'},
       voices: {
         Voice.heiress: '照你上次付的价算，这一批大概要',
-        Voice.heiressJa: '前回払った値段で数えれば、この分はおよそ',
+        Voice.heiressJa: '前回お払いになった値段で数えれば、この分はおよそ',
         Voice.minister: 'At the prices last paid, the requirement is of the order of',
       },);
 
@@ -3854,8 +3894,8 @@ abstract final class Copy {
       'zh-HK': '有配料還沒記過價，所以這不是全部。',
       'zh-TW': '有配料還沒記過價，所以這不是全部。'},
       voices: {
-        Voice.heiress: '有几样你还没告诉过我价钱，所以这数目不全。',
-        Voice.heiressJa: 'いくつか値段を聞いていないものがあるから、これで全部ではないわ。',
+        Voice.heiress: '有几样你还没告诉过我价钱，所以这数目不全——本小姐不瞎猜。',
+        Voice.heiressJa: 'いくつか値段を伺っておりませんものがありますから、これで全部ではございませんの。',
         Voice.minister: 'Certain ingredients have no recorded figure, and the sum is consequently incomplete.',
       },);
 
@@ -3868,8 +3908,8 @@ abstract final class Copy {
       'zh-HK': '清單裡的價不止一種貨幣，所以這裡不合計。',
       'zh-TW': '清單裡的價不止一種貨幣，所以這裡不合計。'},
       voices: {
-        Voice.heiress: '两种钱混在一块儿，合起来就是个没意义的数——我不给你算。',
-        Voice.heiressJa: '通貨が混ざっているの。足したところで意味のない数字になるから、合計は出さないわ。',
+        Voice.heiress: '两种钱混在一块儿，合起来就是个没意义的数——本小姐不给你算。等它们是一种货币了再说。',
+        Voice.heiressJa: '通貨が混ざっておりますの。足したところで意味のない数字になりますから、合計は出しませんわ。',
         Voice.minister: 'The figures are denominated in more than one currency, and no total is therefore offered.',
       },);
 
@@ -3950,8 +3990,8 @@ abstract final class Copy {
       'zh-TW': '收入還記不了：現在沒有任何事件記錄「賣出」這件事，所以上面只有支出。'},
       voices: {
         Voice.heiress: '卖了多少？这个本小姐记不了——账本里根本没有「卖出」这一笔，只有你买了什么。',
-        Voice.heiressJa: 'いくら売れたか？それは記録できないのよ。帳面には「売った」なんて一行も無いんだから。',
-        Voice.minister: 'I am unable to account for receipts. No entry in the record states that anything was '
+        Voice.heiressJa: 'いくら売れたか？それは記録できませんの。帳面には「売った」など一行もございませんのよ。',
+        Voice.minister: 'I am unable to account for receipts. No entry in the record states that anything was sold, so only the spending can be shown.'
             'sold; only that something was bought.',
       },);
 
@@ -3962,8 +4002,8 @@ abstract final class Copy {
       'zh-HK': '這段時間裡沒有花過錢。',
       'zh-TW': '這段時間裡沒有花過錢。'},
       voices: {
-        Voice.heiress: '这段时间你什么都没买呢。',
-        Voice.heiressJa: 'この期間は何も買っていないわね。',
+        Voice.heiress: '这段时间你什么都没买呢——花出去的，本小姐这里一笔都没有。',
+        Voice.heiressJa: 'この期間は何もお買いになっておりませんわね——出ていったお金は、一筆もございませんの。',
         Voice.minister: 'No expenditure has been recorded in this period.',
       },);
 
@@ -4027,9 +4067,9 @@ abstract final class Copy {
       // they were written to: a register may change the phrasing, the subject or the tone, and may not drop a
       // fact. Both directions and both causes are therefore still in all three.
       voices: {
-        Voice.heiress: '抽屉里比账上多，那就是有一笔卖出你忘了记；少了，就是有一笔买进你忘了写。',
-        Voice.heiressJa: '引き出しが帳簿より多ければ、売ったのに書き忘れたの。少なければ、買ったのに書き忘れたのよ。',
-        Voice.minister: 'A sum greater than the record implies is, as a rule, a sale that went unentered; a sum '
+        Voice.heiress: '抽屉里比账上多，那就是有一笔卖出你忘了记；少了，就是有一笔买进你忘了写。本小姐只是把差数翻成话。',
+        Voice.heiressJa: '引き出しが帳簿より多ければ、売ったのに書き忘れたのですわ。少なければ、買ったのに書き忘れたのですの。わたくしは差を言葉にしただけですのよ。',
+        Voice.minister: 'A sum greater than the record implies is, as a rule, a sale that went unentered; a sum smaller is a purchase left unwritten.'
             'less than it implies is a purchase that did.',
       },);
 
@@ -4052,11 +4092,10 @@ abstract final class Copy {
       'These are facts about the program. What has happened to your bottles is on Cellar.',
     ), also: {'ja': 'ここで調整するのはアプリそのものです。酒蔵で起きたことは「記録」のタブにあります。', 'zh-HK': '這裏調的是程式本身。酒窖裏發生過什麼，在「記錄」那一欄。', 'zh-TW': '這裡調的是程式本身。酒窖裡發生過什麼，在「記錄」那一欄。'},
     voices: {
-      Voice.heiress: '这里调的是程序本身——酒窖里发生过什么，在「记录」那一栏。一个是设置，一个是账目，别混。',
-      Voice.heiressJa: 'ここで調整するのはアプリそのものよ——酒蔵で起きたことは「記録」のタブにあるの。片方は設定、片方は記録、混ぜないこと。',
+      Voice.heiress: '这里调的是程序本身——酒窖里发生过什么，在「记录」那一栏。一个是设置，一个是账目，别混，本小姐说清楚。',
+      Voice.heiressJa: 'ここで調整するのはアプリそのものですわ——酒蔵で起きたことは「記録」のタブにございます。片方は設定、片方は記録、混ぜないことですの。',
     
-      Voice.minister:
-          'These are matters of fact concerning the program. What has befallen your bottles is to be found under Cellar.',},
+      Voice.minister: 'These are matters of fact concerning the program. What has befallen the bottles is to be found under the journal.',},
   );
 
   // ---------------------------------------------------------------- correcting a bottle
@@ -4075,9 +4114,8 @@ abstract final class Copy {
     ), also: {'ja': '名前は事実ではなく、数量は観察です。数量の変更は数え直しの記録であって、数字を消して書き直すことではありません。', 'zh-HK': '名字不是事實，數量是觀察：改數量記的是一次重數，不是把數字擦掉重寫。', 'zh-TW': '名字不是事實，數量是觀察：改數量記的是一次重數，不是把數字擦掉重寫。'},
     voices: {
       Voice.heiress: '名字不是事实，数量才是观察——改数量，记的是本小姐又数了一遍，不是把数字擦掉重写。',
-      Voice.heiressJa: '名前は事実じゃないの、数こそが観察よ——数を直すのは、あたしがもう一度数えたという記録。数字を消して書き直すのとは違うの。',
-      Voice.minister:
-          'A name is an assertion; a quantity is an observation. Correcting the quantity records '
+      Voice.heiressJa: '名前は事実ではございません、数こそが観察ですの——数を直すのは、わたくしがもう一度数えたという記録。数字を消して書き直すのとは違いますわ。',
+      Voice.minister: 'A name is an assertion; a quantity is an observation. Correcting the quantity records a fresh count rather than an erasure.'
           'that somebody counted again -- it does not erase the number and write another in its '
           'place.',
     },
@@ -4117,10 +4155,9 @@ abstract final class Copy {
       'cannot: use Discard for that.',
     ), also: {'ja': '一行まるごと間違えたなら取り消せます。すでに注いだり飲んだりした分は取り消せません。その場合は「捨てる」を使ってください。', 'zh-HK': '記錯了一整行，可以撤回——已經倒過或喝過的不行，那請用「倒掉」。', 'zh-TW': '記錯了一整行，可以撤回——已經倒過或喝過的不行，那請用「倒掉」。'},
     voices: {
-      Voice.heiress: '一整行记错了？可以撤回——不过已经倒过或喝过的那些不行。那种情况，请用「倒掉」。',
-      Voice.heiressJa: '一行まるごと間違えた？取り消していいわ——でも、もう注いだり飲んだりした分は駄目よ。それは「捨てる」を使って。',
-      Voice.minister:
-          'A line entered in error may be retracted. Where the bottle has since been poured from '
+      Voice.heiress: '一整行记错了？可以撤回——不过已经倒过或喝过的那些不行。那种情况，请用「倒掉」，本小姐不替你改账。',
+      Voice.heiressJa: '一行まるごと間違えましたの？取り消してよろしくてよ——でも、もう注いだり飲んだりした分は駄目ですわ。それは「捨てる」をお使いなさいな。',
+      Voice.minister: 'A line entered in error may be retracted. Where the bottle has since been poured from or drunk, it may not, and discarding is the course.'
           'or drunk, retraction is not available, and the discarding entry is the correct one.',
     },
   );
@@ -4133,10 +4170,9 @@ abstract final class Copy {
       'This one has been poured from, so it cannot be retracted. Use Discard for what is left.',
     ), also: {'ja': 'この瓶はすでに注いだか飲んだため、取り消せません。残りは「捨てる」で記録してください。', 'zh-HK': '這瓶已經倒過或喝過，所以不能撤回——請用「倒掉」記剩下的。', 'zh-TW': '這瓶已經倒過或喝過，所以不能撤回——請用「倒掉」記剩下的。'},
     voices: {
-      Voice.heiress: '这一瓶已经倒过、也喝过了——撤回可不行。剩下的那些，请用「倒掉」记下来。本小姐不是在为难你，是账目不能乱。',
-      Voice.heiressJa: 'この瓶はもう注いだし飲んだの——取り消しはできないわ。残りは「捨てる」で記録して。あたしが意地悪してるんじゃないの、帳尻は合わせたいだけよ。',
-      Voice.minister:
-          'A line that has already been poured from or drunk cannot be retracted; the record of '
+      Voice.heiress: '这一瓶已经倒过、也喝过了——撤回可不行。剩下的那些，请用「倒掉」记下来，本小姐不是为难你，是账目不能乱。',
+      Voice.heiressJa: 'この瓶はもう注いだし飲んでおりますの——取り消しはできませんわ。残りは「捨てる」でお記録なさいな。意地悪を申しているのではなく、帳尻は合わせたいだけですの。',
+      Voice.minister: 'A line already poured from or drunk cannot be retracted; the remainder is to be recorded by discarding it.'
           'what happened is not the record of what we would have preferred. For what remains, '
           'the discarding entry is the appropriate instrument.',
     },
@@ -4169,11 +4205,10 @@ abstract final class Copy {
       'A cellar you actually own: three platforms, offline, no account and no server.',
     ), also: {'ja': '本当に自分のものになる酒蔵。三つの環境、オフライン、アカウントもサーバーもありません。', 'zh-HK': '一個你真正擁有的酒窖：三端、離線、沒有賬號，也沒有服務器。', 'zh-TW': '一個你真正擁有的酒窖：三端、離線、沒有賬號，也沒有伺服器。'},
     voices: {
-      Voice.heiress: '一个你真正拥有的酒窖——三端、离线、没有账号，也没有服务器。哼，别人的东西随时能收回去，本小姐这个不会。',
-      Voice.heiressJa: '本当にあなたのものになる酒蔵よ——三つの環境、オフライン、アカウントもサーバーもないの。ふん、人のものはいつでも取り上げられるけど、これは違うわ。',
+      Voice.heiress: '一个你真正拥有的酒窖——三端、离线、没有账号，也没有服务器。别人的东西随时能收回去，本小姐这个不会。',
+      Voice.heiressJa: '本当にあなたのものになる酒蔵ですわ——三つの環境、オフライン、アカウントもサーバーもございません。人のものはいつでも取り上げられますけど、これは違いますわ。',
     
-      Voice.minister:
-          'A cellar of your own: three platforms, offline, with no account and no server.',},
+      Voice.minister: 'A cellar of your own: three platforms, offline, with no account and no server.',},
   );
 
   /// **Who publishes this, on every platform that shows such a thing.** The `.msi` carries it as
@@ -4264,7 +4299,13 @@ abstract final class Copy {
     also: {
       'ja': 'この端末にはブラウザを開けるものがないの。宛先はこちら：',
       'zh-HK': '這台裝置上沒有能打開瀏覽器的程式。地址是：',
-      'zh-TW': '這台裝置上沒有能開啟瀏覽器的程式。地址是：'});
+      'zh-TW': '這台裝置上沒有能開啟瀏覽器的程式。地址是：'},
+    voices: {
+      Voice.heiress: '这台设备上，没有能打开浏览器的程序。本小姐也没辙。地址是：',
+      Voice.heiressJa: 'この端末にはブラウザを開けるものがありませんの。わたくしにもどうにもなりませんわ。宛先はこちら：',
+      Voice.minister: 'This device has nothing capable of opening a browser. The address is:',
+    },
+  );
 
   /// Shown when there is nothing that can open a browser, with the address beside it so the reader can still
   /// get there. A link that silently does nothing is the same failure as a switch that moves and leads nowhere.
@@ -4307,10 +4348,9 @@ abstract final class Copy {
       'ja': '一つの名前、三つの書き方。中国語では「空庭」、英語では Hollow Court、日本語では「虚ろな庭」。',
     },
     voices: {
-      Voice.heiress: '一个名字，三种写法：中文是「空庭」，英文是 Hollow Court，日文是「虚ろな庭」——本小姐的名字可不止一种念法。',
-      Voice.heiressJa: '一つの名前、三つの書き方——中国語では「空庭」、英語では Hollow Court、日本語では「虚ろな庭」。あたしの名前は一つじゃないのよ。',
-      Voice.minister:
-          'One name, three scripts: 空庭 in Chinese, Hollow Court in English, 虚ろな庭 in Japanese. It '
+      Voice.heiress: '一个名字，三种写法：中文是「空庭」，英文是 Hollow Court，日文是「虚ろな庭」——本小姐的名字，念法可不止一种。',
+      Voice.heiressJa: '一つの名前、三つの書き方ですわ——中国語では「空庭」、英語では Hollow Court、日本語では「虚ろな庭」。……わたくしの名前は一つきりではありませんのよ。',
+      Voice.minister: 'One name, three scripts: 空庭 in Chinese, Hollow Court in English, 虚ろな庭 in Japanese.'
           'is a matter of which the reader reads, and no rendering takes precedence over '
           'another.',
     },
@@ -4324,8 +4364,8 @@ abstract final class Copy {
     Translated.authored('The mark is drawn in this repository; no typeface is borrowed for it'),
     voices: {
       Voice.heiress: '图标是本小姐自己画的，才没借谁的字体呢。',
-      Voice.minister: "The mark is drawn in this house. We have not, on this occasion, availed ourselves of anybody else's typeface.",
-      Voice.heiressJa: 'アイコンはあたしが自分で描いたの。誰かのフォントなんて借りてないわよ。',
+      Voice.minister: 'The mark is drawn in this repository; no typeface is borrowed for it.',
+      Voice.heiressJa: 'アイコンはわたくしが自分で描きましたの。誰かのフォントなど借りておりませんわよ。',
     },
     also: {
       'ja': 'アイコンは本リポジトリで描画しており、フォントを借用していません',
@@ -4498,11 +4538,10 @@ https://piapro.jp/license/pcl/summary
       'something.',
     ), also: {'ja': 'ここにあるのはこのビルド自身の状態です。ログ、接続点、診断。何かを変えたらここを開いてください。', 'zh-HK': '這些是這個構建自己的狀態：日誌、接縫、診斷。改了東西再打開這裏。', 'zh-TW': '這些是這個構建自己的狀態：日誌、接縫、診斷。改了東西再開啟這裡。'},
     voices: {
-      Voice.heiress: '这里放的是这个构建自己的状态：日志、外部连接、诊断。改完东西再回来开这一页——不看就改，回头可别来问本小姐为什么。',
-      Voice.heiressJa: 'ここにあるのはこのビルド自身の状態よ：ログ、接続点、診断。何か変えたらもう一度ここを開くの——見ずに変えて、あとであたしに文句を言うのはなしよ。',
+      Voice.heiress: '这里放的是这个构建自己的状态：日志、外部连接、诊断。改完东西再回来开这一页——不看就改，回头别来问本小姐。',
+      Voice.heiressJa: 'ここにあるのはこのビルド自身の状態ですわ：ログ、接続点、診断。何か変えたら、またここをお開きなさいな。見ずに変えて、あとでわたくしに文句を仰るのは無しですわよ。',
     
-      Voice.minister:
-          'Matters of fact concerning this build: the log, the outside connections, the diagnostics. It is here that one looks after changing something.',},
+      Voice.minister: 'Matters of fact concerning this build: the log, the outside connections, the diagnostics. It is here that one looks after changing something.',},
   );
 
   static const developerLogHeading = CopyLine.withLanguages(
@@ -4540,9 +4579,9 @@ https://piapro.jp/license/pcl/summary
       'Off by default, and only the ones this build can actually use are listed here.',
     ),
     voices: {
-      Voice.heiress: '默认都关着。这里只列本构建真能用的那几个——做不到的事，本小姐可不会替你摆出来。',
-      Voice.minister: 'They are, I need hardly add, disabled by default; and only those this build can actually operate are listed.',
-      Voice.heiressJa: '既定では全部オフよ。ここには、このビルドで本当に使えるものしか並べてないんだから。',
+      Voice.heiress: '默认都关着。这里只列本构建真能用的那几个——做不到的事，本小姐不替你摆出来。',
+      Voice.minister: 'They are disabled by default; and only those this build can actually operate are listed.',
+      Voice.heiressJa: '既定では全部オフですわ。ここには、このビルドで本当に使えるものしか並べておりませんの。',
     },
     also: {'ja': '既定ではすべて無効。ここには、このビルドで実際に使えるものだけを並べています。', 'zh-HK': '預設全部關閉；這裡只列出本構建真能用的那些。', 'zh-TW': '預設全部關閉；這裡只列出本建置真能用的那些。'});
 
@@ -4602,6 +4641,12 @@ https://piapro.jp/license/pcl/summary
       'ja': 'まだ五年より前の記録がないので、移すものはありません。',
       'zh-HK': '暫時未有早過五年嘅記錄，冇嘢好收。',
       'zh-TW': '還沒有早於五年的記錄，暫時沒什麼可收的。',
+    },
+  
+    voices: {
+      Voice.heiress: '还没有早过五年的记录。暂时没什么可收的，本小姐白跑一趟。',
+      Voice.heiressJa: 'まだ五年より前の記録がありませんの。今は移すものがありませんわ。',
+      Voice.minister: 'Nothing is yet older than five years, and there is consequently nothing to move.',
     },
   );
 
@@ -4666,6 +4711,12 @@ https://piapro.jp/license/pcl/summary
       'ja': '{packages} 件を接続中、古い記録 {events} 件。',
       'zh-HK': '掛上咗 {packages} 份，共 {events} 條舊記錄。',
       'zh-TW': '已掛上 {packages} 份，共 {events} 條舊記錄。',
+    },
+  
+    voices: {
+      Voice.heiress: '挂上 {packages} 份了，里头 {events} 条旧记录。……本小姐一份份数过的。',
+      Voice.heiressJa: '{packages} 件を接続しましたの。古い記録は {events} 件。数えたのはわたくしですわ。',
+      Voice.minister: 'There are {packages} packages attached, holding {events} events of an earlier date.',
     },
   );
 
@@ -4780,11 +4831,10 @@ https://piapro.jp/license/pcl/summary
       'ja': '主言語は、画面とライブラリの文字を既定でどの言語で出すか、そして訳が無いときの代替先を決めます。',
     },
     voices: {
-      Voice.heiress: '主语言决定界面与库的文字默认用哪一种——它同时还是找不到译文时的回退目标。换句话说：选它，就是在选那个兜底的。',
-      Voice.heiressJa: '主言語は、画面とライブラリの文字を既定でどの言語で出すかを決めるの——そして訳が無いときの代替先でもあるわ。つまり、それを選ぶというのは受け皿を選ぶということよ。',
+      Voice.heiress: '主语言决定界面与库的文字默认用哪一种——它同时是找不到译文时的回退目标。选它，就是在选那个兜底的，本小姐说清楚。',
+      Voice.heiressJa: '主言語は、画面とライブラリの文字を既定でどの言語で出すかを決めますの——そして訳が無いときの代替先でもありますわ。つまり、それを選ぶとは受け皿を選ぶことですの。',
     
-      Voice.minister:
-          'The primary language determines the language in which text is shown by default, and it is to this that a missing translation falls back.',},
+      Voice.minister: 'The primary language determines the language in which text is shown by default, and it is to this that a missing translation falls back.',},
   
   );
 
@@ -4801,10 +4851,9 @@ https://piapro.jp/license/pcl/summary
     },
     voices: {
       Voice.heiress: '副语言只在开启双字幕时出现——两边选了同一种时，让位的是它。它本来就是备用的那个。',
-      Voice.heiressJa: '副言語は二言語併記のときだけ現れるの——両側が同じ言語なら、譲るのはこちらよ。もともと控えの立場なんだから。',
+      Voice.heiressJa: '副言語は二言語併記のときだけ現れますの——両側が同じ言語なら、譲るのはこちらですわ。もともと控えの立場ですのよ。',
     
-      Voice.minister:
-          'The secondary line appears only where dual copy is in use, and it is the one that gives way when both sides are the same language.',},
+      Voice.minister: 'The secondary line appears only where dual copy is in use, and it is the one that gives way when both sides are the same language.',},
   
   );
 
@@ -4820,11 +4869,10 @@ https://piapro.jp/license/pcl/summary
       'ja': 'オンにすると各ラベルが二行——自分の言語と副言語——になります。代わりに画面は密になり、長い文は折り返します。',
     },
     voices: {
-      Voice.heiress: '开了以后，每个标签显示两行——你的语言与副语言。代价说清楚：每屏更密，长句会换行。划算不划算，你自己看着办。',
-      Voice.heiressJa: 'オンにすると各ラベルが二行になるわ——自分の言語と副言語。代わりに画面は密になるし、長い文は折り返すの。割に合うかどうかは、自分で決めなさい。',
+      Voice.heiress: '开了以后，每个标签显示两行——你的语言与副语言。代价本小姐说清楚：每屏更密，长句会换行。划算不划算，你自己掂量。',
+      Voice.heiressJa: 'オンにすると各ラベルが二行になりますの——自分の言語と副言語。代わりに画面は密になりましてよ、長い文は折り返しますわ。割に合うかどうか、ご自分でお決めなさいな。',
     
-      Voice.minister:
-          'With it in use, every label displays two lines -- your language and the secondary one. The cost is a denser screen and longer sentences wrapping.',},
+      Voice.minister: 'With it in use, every label displays two lines -- your language and the secondary one. The cost is a denser screen and longer sentences wrapping.',},
   
   );
 
@@ -4834,11 +4882,10 @@ https://piapro.jp/license/pcl/summary
       'When both pick the same language, the secondary is the one that moves.',
     ), also: {'ja': '両側で同じ言語を選んだ場合、譲るのは副言語です。', 'zh-HK': '兩邊選了同一種語言時，讓位的是副語言。', 'zh-TW': '兩邊選了同一種語言時，讓位的是副語言。'},
     voices: {
-      Voice.heiress: '两边选了同一种语言时，让位的是副语言——本来就是它该让。',
-      Voice.heiressJa: '両側で同じ言語を選んだ場合、譲るのは副言語よ——もともと譲る側なんだから。',
+      Voice.heiress: '两边选了同一种语言时，让位的是副语言——本来就轮不到它站在前面。',
+      Voice.heiressJa: '両側で同じ言語をお選びなら、譲るのは副言語ですわ——もともと譲る側ですの。',
     
-      Voice.minister:
-          'Where both sides select the same language, it is the secondary that moves aside.',},
+      Voice.minister: 'Where both sides select the same language, it is the secondary that moves aside.',},
   );
   static const settingsUnits = CopyLine.withLanguages(
     Translated.authored('计量单位'),
