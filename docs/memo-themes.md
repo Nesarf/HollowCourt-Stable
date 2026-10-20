@@ -261,6 +261,14 @@ branch.
 | `absent` | 铜蓝 `#1A2F4C` | `#6289C0` | clears 3.0 |
 | `rose` | 红铜 `#C45A34` | `#DC7A4C` | 3.86 on the ground, then 4.47 on the surface, then **4.00 on `surfaceRaised`**, floor 4.5 |
 
+**Re-measured 2026-10-21 against the surfaces that actually ship.** The two rows above that say "clears 3.0" were
+read against that attempt's own surfaces. With `#3A312A` and `#4A4038` -- the values now in `theme.dart` -- `#CE6B69`
+reads **3.59 on `surface` and 2.85 on `surfaceRaised`**, and `#6289C0` reads **3.55 and 2.81**. The raised surface is
+the binding one for `theme_palette_test`, so neither clears it. What is being refused is not the floor but the
+colour: lifting 紫铜 far enough needs `#B37F7F` (35% toward white) and 铜蓝 needs `#828D9D` (45%), where they are a
+grey rose and a grey blue. **`tool/copper_check.dart` measures the nine families, not these three roles, so this cell
+had never been read again.**
+
 **The third one is the finding.** 红铜 is not only a fill: it is drawn **as text** on all three surfaces, and
 `theme_palette_test` holds an accent used as text to 4.5:1 against the *lightest* one. A colour that clears it there
 needs a luminance of **0.341 or above** -- and at that point it is no longer 红铜, it is a salmon. **Three of the eight

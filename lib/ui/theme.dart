@@ -368,20 +368,18 @@ final class HollowPaletteValue {
   /// The home world, and the one the name describes -- a honeyed court in a hollow. Its ground is nearly black so
   /// the amber reads as light *in* the room rather than paint on it, and the one saturated colour is the honey.
   ///
-  /// **[Still amber, and that is now a known discrepancy rather than an oversight.]** The world was retitled to 銅鳴
-  /// and its values were never changed, so a chip called *copper* sits over a palette that says *amber* -- the same
-  /// fault as `Copy.themeAmber`, with the label moved and the value left behind. `docs/memo-themes.md` records the
-  /// eight copper colours the owner gave on 2026-10-11, and **a copper build was written and then withdrawn the same
-  /// day**: three of the roles the family would fill failed the readability floors that were already in force.
+  /// **[Landed 2026-10-21: copper, with three of the eight values left out on purpose.]** The world was retitled to
+  /// 銅鳴 and its ground and surface now carry copper -- `#3E2016`, and a deliberately near-neutral `#3A312A` for the
+  /// surfaces so the five rooms keep their hues. What did not come across is three of the eight colours the owner
+  /// gave on 2026-10-11, because they cannot be read on the surfaces this world draws: 紫铜 `#8B3A3A`, 铜蓝
+  /// `#1A2F4C` and 红铜 `#C45A34` bottom out at **1.33, 1.06 and 2.33** against `surfaceRaised`, while the roles they
+  /// would fill are held to 3.0 and 4.5.
   ///
-  ///     紫铜 #8B3A3A as `line`        2.20:1 against the surface, floor 3.0
-  ///     铜蓝 #1A2F4C as `absent`      1.24:1, floor 3.0
-  ///     红铜 #C45A34 under `onAccent` 3.94:1, floor 4.5
-  ///
-  /// **The family has one dark colour and one mid-dark one, and both roles want more contrast than either can give**
-  /// -- so filling them means brightening two of the eight or relaxing two floors, and **that is a decision about the
-  /// palette rather than a transcription of it**. It is left here with the numbers attached rather than forced,
-  /// because a theme whose separator cannot be seen is worse than a theme with the wrong name on it.
+  /// **The lifting route was measured rather than argued.** Reaching 3.0 on `surfaceRaised` needs `#B37F7F` for 紫铜
+  /// (35% of the way to white) and `#828D9D` for 铜蓝 (45%) -- a grey rose and a grey blue rather than a metal -- and
+  /// 红铜 needs `#DD9F88` (42%) to reach 4.5. Relaxing the three floors instead would put them at 1.33/1.06/2.33,
+  /// which is not a relaxation. **So the three are absent by measurement rather than by indecision**, and
+  /// `docs/memo-themes.md` already says what to do with them: give them roles that are fills rather than text.
   static const HollowPaletteValue honeyed = HollowPaletteValue(
     name: 'honeyed',
     ornament: Ornament.halo,
