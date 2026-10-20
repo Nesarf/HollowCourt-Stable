@@ -670,7 +670,12 @@ def do_status(argv: list[str]) -> int:
 
 # **The platform's own version.** It lives here rather than in a file beside the tools, because a version in its
 # own file drifts from the code it names the moment somebody edits one and not the other.
-HMA_VERSION = "0.1.0"
+#
+# **0.2.0 rather than 0.1.1, and the reason is what moved.** 0.1.0 described itself as not having a scaffold, an
+# extension point or a rollback; all three arrived the day after it was published, and neither the number nor the
+# changelog followed. Nothing in this release is new work -- it is the release in which what the platform says about
+# itself matches what it does.
+HMA_VERSION = "0.2.0"
 
 def main(argv: list[str]) -> int:
     # **`argv[1]`, not `argv[0]`.** `main` is handed `sys.argv` whole, so the first element is the script path and the
