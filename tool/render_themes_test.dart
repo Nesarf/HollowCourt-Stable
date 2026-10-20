@@ -58,7 +58,7 @@ void main() {
                         const SizedBox(height: 6),
                         DualCopyText(Copy.stockEmpty, style: HollowType.body),
                         const SizedBox(height: 22),
-                        DualCopyText(Copy.cellarValue, style: HollowType.heading),
+                        DualCopyText(Copy.journalValue, style: HollowType.heading),
                         const SizedBox(height: 8),
                         Text('1280.00 CNY', style: HollowType.numeric),
                         Text('700 ml', style: HollowType.caption),

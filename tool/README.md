@@ -64,6 +64,7 @@ browser with `dart:io` and a `MethodChannel` rather than with `url_launcher`.
 | Tool | What it does |
 | --- | --- |
 | `l10n_status.dart` | `dart run tool/l10n_status.dart`: how much of the interface is translated, per language, as a number. A counter rather than a test, on purpose -- a test that always fails until 400 strings are done teaches people to ignore it. |
+| `query_cost.dart` | `dart run tool/query_cost.dart`: what the eight folds cost, and stage ⑤ of `docs/catalogue-and-stock.md` answered with a number. **It asserts nothing and is a script rather than a test on purpose** -- a timing assertion fails on a loaded machine, and this project has already recorded two tests that failed for exactly that reason. `docs/query-cost.md` is the reading. |
 | `sync_probe.dart` | Drives the production sync code from a command line, so two real processes on two real machines can meet without anybody clicking anything. |
 | `probe.sh` | Runs `sync_probe.dart` with the package config this platform needs (the Windows tree and the WSL tree share `.dart_tool/package_config.json`, and one of them is always wrong for the other). |
 | `generate_chinese_variants.py` | Adds 港繁 and 台繁 to every `CopyLine` that has a 简中 line, converting with OpenCC rather than falling back. Python in a Dart repository because the conversion needs OpenCC's table set; needs `PYTHONPATH=E:/DaShaoHuo/Python/opencc_lib`. |

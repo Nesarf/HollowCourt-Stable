@@ -1,6 +1,6 @@
 # HMA — Hollow Mixing Association
 
-**A development platform for Hollow Court.** This branch is where it lives; `main` is the application itself, and the two
+**A development platform for Hollow Court.** This branch is where it lives; `HC-Stable` is the application itself, and the two
 are deliberately separate, because **a product should not have to carry a platform around with it.** Every change to a
 development tool would otherwise become a change to the product.
 
