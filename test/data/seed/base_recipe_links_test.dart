@@ -97,12 +97,13 @@ void main() {
     // **The reason the visited set is not decoration.** Affogato names coffee ice cream, which is made by a base,
     // and that base names ice cream, which is made by another base. Two hops of data, three sheets of interface.
     expect(depthOf('houseAffogato', <String>{}), 2);
+    expect(depthOf('houseCafeLiegeois', <String>{}), 2);
     expect(depthOf('houseLatte', <String>{}), 1);
   });
 
   test('**a base is a recipe with a method, and it never names itself**', () {
     final bases = recipes().where((row) => extrasOf(row)?['category'] == 'Base').toList();
-    expect(bases, hasLength(8));
+    expect(bases, hasLength(9));
 
     for (final base in bases) {
       final steps = (base['methodSteps']! as List).cast<String>();
@@ -125,7 +126,7 @@ void main() {
       for (final ingredient in ingredients())
         if (extrasOf(ingredient)?['madeBy'] != null) ingredient['id']! as String,
     };
-    expect(finished, hasLength(8));
+    expect(finished, hasLength(9));
 
     final users = <String>{};
     for (final recipe in recipes()) {

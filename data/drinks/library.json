@@ -3,8 +3,8 @@
   "version": 1,
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
-    "ingredients": 208,
-    "drinks": 166
+    "ingredients": 209,
+    "drinks": 168
   },
   "ingredients": [
     {
@@ -282,6 +282,14 @@
       "name": "Coffee beans",
       "kind": "spice",
       "family": "coffee"
+    },
+    {
+      "id": "coffeeCream",
+      "name": "Coffee cream",
+      "kind": "dairy",
+      "extras": {
+        "madeBy": "baseCoffeeCream"
+      }
     },
     {
       "id": "coffeeDecaf",
@@ -8033,6 +8041,74 @@
           "amount": 20000,
           "unit": "ml",
           "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "baseCoffeeCream",
+      "name": "Coffee cream",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Whip the cream to a soft peak.",
+        "Add the espresso a spoonful at a time, folding rather than stirring.",
+        "Stop as soon as it holds -- more coffee and it collapses."
+      ],
+      "description": "A base whose ingredients are themselves bases: the whipped cream and the espresso both arrive with their own methods.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "whippedCream",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseCafeLiegeois",
+      "name": "Café liégeois",
+      "glass": "highball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put two scoops of the coffee ice cream in a cold glass.",
+        "Pour the cold espresso over them.",
+        "Spoon the coffee cream on top and serve it at once, with a long spoon."
+      ],
+      "description": "Three finished things in one glass, and each of them opens to its own method.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeIceCream",
+          "amount": 120000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 40000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "coffeeCream",
+          "amount": 50000,
+          "unit": "g",
+          "role": "garnish"
         }
       ]
     }
