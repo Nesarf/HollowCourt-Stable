@@ -25,9 +25,10 @@ most of the rest; eight traditional tea-and-milk drinks followed with four tea a
 milk drinks were chosen from the dead list on purpose; **ten of those drinks were withdrawn** when the owner added a
 boundary -- nothing that only exists after the 1990s -- **and two more when that line moved to the 1980s**. **The
 library is now 207 ingredients and 130 drinks, with 62 dead.** The ingredients behind the withdrawn drinks stayed on
-the shelf, which is why the count went back up. The figures above are the measurement this page is about and are
-left exactly as they were read; `test/domain/model/ingredient_demand_test.dart` carries the current ones, and its
-header says when and why they moved.
+the shelf, which is why the count went back up. **The boundary applies to the non-alcoholic side only** -- the
+owner's own wording was that alcohol is not limited by era -- so the IBA list keeps every entry, the New Era drinks
+included. The figures above are the measurement this page is about and are left exactly as they were read;
+`test/domain/model/ingredient_demand_test.dart` carries the current ones, and its header says when and why they moved.
 
 **An ingredient record is a name and an id**, and the category is an *added* field rather than a base one — which is
 why the count of unclassified ingredients is a count of records nobody has been through, not a count of missing data.
