@@ -1205,7 +1205,7 @@ abstract final class Copy {
     Translated.authored('Show the code below to the other device, or type the one on its screen.'),
     also: {'zh-HK': '把下面這串碼給對方看，或者輸入對方螢幕上的碼。', 'zh-TW': '把下面這串碼給對方看，或者輸入對方螢幕上的碼。', 'ja': '下のコードを相手に見せるか、相手の画面のコードを入力します。'},
     voices: {
-      Voice.heiress: '把下面这串码给对方看，或者输入对方屏幕上的码——两条路，随你挑。只是别把码念错，念错了本小姐不猜。',
+      Voice.heiress: '把下面这串码给对方看，或者输入对方屏幕上的码——两条路，随你挑。只是别把码念错，念错了不猜。',
       Voice.heiressJa: '下のコードを相手にお見せになるか、相手の画面のコードを入力なさるか——道は二つ、お好きな方で。ただ、読み違えないことですわ。',
     
       Voice.minister: 'The code below may be shown to the other device, or the one on its screen may be entered; either course will serve.',},
@@ -1308,7 +1308,7 @@ abstract final class Copy {
       'ja': '二台が今回のハンドシェイクから同じ数字を導きます。間に誰もいなければ一致します。片方だけ違えば、誰かが中継しています。',
     },
     voices: {
-      Voice.heiress: '两台各算出这串数字——握手相同才会一致。一边一样、一边不一样？那就是中间有人接了手，别信，本小姐说到这儿。',
+      Voice.heiress: '两台各算出这串数字——握手相同才会一致。一边一样、一边不一样？那就是中间有人接了手，别信。',
       Voice.heiressJa: '二台がそれぞれこの数字を出しますの——同じ握手なら一致しますわ。片方だけ違う？なら間に誰かが割り込んでいますの。信じてはなりません。',
       Voice.minister: 'Each machine derives the number from this handshake, and agreement is the evidence of an undisturbed meeting. Where one side differs, something has interposed itself, and the exchange should not be trusted.'
           'an uninterrupted conversation. Should one side differ, the difference is itself the '
@@ -1340,7 +1340,7 @@ abstract final class Copy {
       'ja': '一致しなければこの同期はあきらめます。やり直しはしません——六桁は一度きりで足りる数字です。',
     },
     voices: {
-      Voice.heiress: '不一致就直接放弃这次同步，不会重试——六位数字只够用一次。本小姐说到这儿。',
+      Voice.heiress: '不一致就直接放弃这次同步，不会重试——六位数字只够用一次，重来也没有第二次。',
       Voice.heiressJa: '一致しなければ、この同期はあきらめますの。やり直しはしませんわ——六桁は一度きりで足りる数字ですの。',
     
       Voice.minister: 'A difference is taken as the sync being given up rather than retried; six digits serve exactly once, and no more.',},
@@ -1407,7 +1407,7 @@ abstract final class Copy {
     Translated.authored('Carry it on a stick (.courtpack)'),
     also: {'zh-HK': 'U 盤搬運（.courtpack）', 'zh-TW': 'U 盤搬運（.courtpack）', 'ja': 'USBメモリで運ぶ（.courtpack）'},
     voices: {
-      Voice.heiress: 'U 盘搬运（.courtpack）——没有网也行，这是那条走得通的路，本小姐说清楚。',
+      Voice.heiress: 'U 盘搬运（.courtpack）——没有网也行，这是那条走得通的路。',
       Voice.heiressJa: 'USB メモリでの運搬ですわ（.courtpack）——網が無くてもよろしくてよ、これが通る道ですの。',
     
       Voice.minister: 'Carriage on a USB drive (`.courtpack`), which serves where no network does.',},
@@ -1427,7 +1427,7 @@ abstract final class Copy {
       'ja': 'ファイルに書き出し、もう一方の端末にコピーして取り込みます。ネットワークは不要——クライアント分離のあるネットワークで唯一使える手段です。バックアップではなく、信頼もされません。取り込みは常に自分のログへの併合なので、二度取り込んでも増えません。',
     },
     voices: {
-      Voice.heiress: '导成一个文件，拷到另一台再导进去——没有网也行。对，这是隔离网里唯一走得通的路。不过本小姐先说清楚：它不是备份，导入永远只是并进你自己的日志，导两次也不会多出东西。',
+      Voice.heiress: '导成一个文件，拷到另一台再导进去——没有网也行。对，这是隔离网里唯一走得通的路。不过有件事得先说在前头：它不是备份，导入永远只是并进你自己的日志，导两次也不会多出东西。',
       Voice.heiressJa: 'ファイルに書き出して、もう一台に写して取り込みますの。網がなくても使えますわ。……クライアント分離の網では、それが唯一通る道ですの。ただし、バックアップではございません。取り込みはいつも自分の記録に併合されるだけで、二度やっても増えませんわ。',
       Voice.minister: 'Written to a single file and carried to the other machine, and it functions without a network; in a network with client isolation this is the only course available. It is not a backup, and it is not to be trusted as one: an import is always merged into one log, and importing twice adds nothing.'
           'network, which is the only reason it works at all where clients are isolated. It is '
@@ -1670,7 +1670,7 @@ abstract final class Copy {
       'ja': '名前は自称にすぎません。指紋だけは勝手に名乗れないものです——確かめてから押してください。',
     },
     voices: {
-      Voice.heiress: '名字只是自称——指纹才是它唯一没法随口说出来的东西。核对指纹，别核对名字，本小姐说清楚。',
+      Voice.heiress: '名字只是自称——指纹才是它唯一没法随口说出来的东西。核对指纹，别核对名字 —— 名字谁都能编。',
       Voice.heiressJa: '名前は自称にすぎませんの——指紋こそ、口から出任せにできない唯一のものですわ。見るべきは指紋、名前ではございませんの。',
     
       Voice.minister: 'A name is a claim and nothing more. The fingerprint is the one particular in which a device cannot be inventive about itself, and it is to be read before the button is pressed.',},
@@ -1932,7 +1932,7 @@ abstract final class Copy {
       'ja': '一言で：待ち受けがループバックだけなので、同じネットワークからは永遠に届きません。',
     },
     voices: {
-      Voice.heiress: '只在自家屋里应声，外面听不见——监听只绑在本机回环上。局域网里的设备，等到什么时候都连不上，本小姐说得够清楚了。',
+      Voice.heiress: '只在自家屋里应声，外面听不见——监听只绑在本机回环上。局域网里的设备，等到什么时候都一样连不上。',
       Voice.heiressJa: '自分の部屋でしか返事をしておりませんの——待ち受けがループバックだけ、ですから。同じネットワークからは、いつまでお待ちになっても届きませんわ。',
       Voice.minister: 'The listener is bound to the loopback alone, so it answers inside its own room. From the local network it will never be reached, however long the wait.'
           'else can enter -- and the network will wait for a reply that was never addressed to it.',
@@ -2206,7 +2206,7 @@ abstract final class Copy {
       'ja': '1行に1組：表示したい名前、「=」、そのあとに別の呼び方をカンマで区切って書きます。# で始まる行はメモです。',
     },
     voices: {
-      Voice.heiress: '一行一组——等号前是要显示的名字，等号后是别的叫法，逗号分开。以 # 开头的行只是备注，别当成能写注释的地方，本小姐先说清楚。',
+      Voice.heiress: '一行一组——等号前是要显示的名字，等号后是别的叫法，逗号分开。以 # 开头的行只是备注，别当成能写注释的地方，它不会听你的。',
       Voice.heiressJa: '1行に1組ですわ——「=」の前が表示したい名前、後ろが別の呼び方、カンマ区切り。 # で始まる行はメモですの。注釈を書く場所ではございませんわ。',
     
       Voice.minister: 'One group occupies one line: the name to be shown, then "=", then the other names, separated by commas. A line beginning with # is a note, and not a place for commentary.',},
@@ -3060,7 +3060,7 @@ abstract final class Copy {
       'files, and did not travel with this sync.',
     ),
     voices: {
-      Voice.heiress: '对方手里还有 {count} 段，这台没有——它们住在对方自己的文件里，这次没跟过来。本小姐只是把话说清楚。',
+      Voice.heiress: '对方手里还有 {count} 段，这台没有——它们住在对方自己的文件里，这次没跟过来。我照实说。',
       Voice.heiressJa: '相手はさらに {count} の区切りを持っていますの、この機械にはありませんわ。あちらのファイルの中にありましてよ、今回は付いてこなかっただけ。',
       Voice.minister: 'The other party holds {count} further segments which are not on this machine. They reside in its own files, and were not carried across on this occasion.'
           'own files and did not accompany this synchronisation.',
@@ -3312,7 +3312,7 @@ abstract final class Copy {
     },
   
     voices: {
-      Voice.heiress: '里头的配方会留下。只是不再属于哪个文件夹了，本小姐先说清楚。',
+      Voice.heiress: '里头的配方会留下。只是不再属于哪个文件夹了。',
       Voice.heiressJa: '中のレシピは残りますわ。どのフォルダにも属さなくなるだけですの。',
       Voice.minister: 'The recipes within it will remain. They will merely belong to no folder thereafter.',
     },
@@ -3761,7 +3761,7 @@ abstract final class Copy {
     },
   
     voices: {
-      Voice.heiress: '架子上的瓶子一个都不会动。少掉的只是个名字，本小姐先说清楚。',
+      Voice.heiress: '架子上的瓶子一个都不会动。少掉的只是个名字，瓶子还在。',
       Voice.heiressJa: '棚の瓶は一本も動きませんわ。消えるのは名前だけ——先に申し上げておきますの。',
       Voice.minister: 'The bottles upon it will not be moved. What is lost is the name alone.',
     },
@@ -4090,7 +4090,7 @@ abstract final class Copy {
       'These are facts about the program. What has happened to your bottles is on Cellar.',
     ), also: {'ja': 'ここで調整するのはアプリそのものです。酒蔵で起きたことは「記録」のタブにあります。', 'zh-HK': '這裏調的是程式本身。酒窖裏發生過什麼，在「記錄」那一欄。', 'zh-TW': '這裡調的是程式本身。酒窖裡發生過什麼，在「記錄」那一欄。'},
     voices: {
-      Voice.heiress: '这里调的是程序本身——酒窖里发生过什么，在「记录」那一栏。一个是设置，一个是账目，别混，本小姐说清楚。',
+      Voice.heiress: '这里调的是程序本身——酒窖里发生过什么，在「记录」那一栏。一个是设置，一个是账目，别混。',
       Voice.heiressJa: 'ここで調整するのはアプリそのものですわ——酒蔵で起きたことは「記録」のタブにございます。片方は設定、片方は記録、混ぜないことですの。',
     
       Voice.minister: 'These are matters of fact concerning the program. What has befallen the bottles is to be found under the journal.',},
@@ -4829,7 +4829,7 @@ https://piapro.jp/license/pcl/summary
       'ja': '主言語は、画面とライブラリの文字を既定でどの言語で出すか、そして訳が無いときの代替先を決めます。',
     },
     voices: {
-      Voice.heiress: '主语言决定界面与库的文字默认用哪一种——它同时是找不到译文时的回退目标。选它，就是在选那个兜底的，本小姐说清楚。',
+      Voice.heiress: '主语言决定界面与库的文字默认用哪一种——它同时是找不到译文时的回退目标。选它，就是在选那个兜底的。',
       Voice.heiressJa: '主言語は、画面とライブラリの文字を既定でどの言語で出すかを決めますの——そして訳が無いときの代替先でもありますわ。つまり、それを選ぶとは受け皿を選ぶことですの。',
     
       Voice.minister: 'The primary language determines the language in which text is shown by default, and it is to this that a missing translation falls back.',},
@@ -4867,7 +4867,7 @@ https://piapro.jp/license/pcl/summary
       'ja': 'オンにすると各ラベルが二行——自分の言語と副言語——になります。代わりに画面は密になり、長い文は折り返します。',
     },
     voices: {
-      Voice.heiress: '开了以后，每个标签显示两行——你的语言与副语言。代价本小姐说清楚：每屏更密，长句会换行。划算不划算，你自己掂量。',
+      Voice.heiress: '开了以后，每个标签显示两行——你的语言与副语言。代价是这个：每屏更密，长句会换行。划算不划算，你自己掂量。',
       Voice.heiressJa: 'オンにすると各ラベルが二行になりますの——自分の言語と副言語。代わりに画面は密になりましてよ、長い文は折り返しますわ。割に合うかどうか、ご自分でお決めなさいな。',
     
       Voice.minister: 'With it in use, every label displays two lines -- your language and the secondary one. The cost is a denser screen and longer sentences wrapping.',},
