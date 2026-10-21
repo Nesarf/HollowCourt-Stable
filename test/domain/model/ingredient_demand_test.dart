@@ -121,7 +121,7 @@ void main() {
   /// move would be the same failure as the one `seed_vocabulary_test` records: a check that quietly redefines what
   /// it checks. Whoever adds ingredients or recipes updates this and the document together, deliberately.
   group('the library that ships', () {
-    test('**38 / 35 / 71 / 63, over 207 ingredients and 132 recipes**', () {
+    test('**38 / 36 / 71 / 62, over 207 ingredients and 132 recipes**', () {
       final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
       final demand = IngredientDemand.of([
         for (final recipe in seed.recipes)
@@ -132,9 +132,9 @@ void main() {
       expect(seed.ingredients, hasLength(207));
       expect(seed.recipes, hasLength(132));
       expect(histogram[DemandClass.core], 38);
-      expect(histogram[DemandClass.occasional], 35);
+      expect(histogram[DemandClass.occasional], 36);
       expect(histogram[DemandClass.rare], 71);
-      expect(histogram[DemandClass.dead], 63);
+      expect(histogram[DemandClass.dead], 62);
 
       // **And the four add up to the catalogue**, which is the check that survives a wrong histogram: every
       // ingredient is in exactly one class, so a bucket lost to a bug shows up as a total that is short.
@@ -144,13 +144,14 @@ void main() {
 
     test('**dead stock is a third of the catalogue, and that is the finding**', () {
       // Said as a ratio rather than the raw count, because the claim being guarded is the one a reader meets on the
-      // screen -- "a third of these are not your responsibility" -- and 63 over 207 is what makes it true.
+      // screen -- "a third of these are not your responsibility" -- and 62 over 207 is what makes it true.
       //
-      // **The centre has moved four times on 2026-10-21, and every move was this same body of work.** Seven house
+      // **The centre has moved six times on 2026-10-21, and every move was the same body of work.** Seven house
       // recipes naming `coffeeBeans`, `espressoCoffee` and `water` took 0.360 to 0.3492. Twelve coffee-family
       // ingredients then arrived with only five of them used, which put it back up to 0.3682. Ten more drinks --
-      // five coffee, five milk -- began using most of the rest and made it 0.3350. Eight traditional tea-and-milk
-      // drinks and four tea and spice rows finished the job: **0.3043**. The band follows the number each time
+      // five coffee, five milk -- made it 0.3350. Eight traditional tea-and-milk drinks made it 0.3043. Ten fizz,
+      // juice and milk drinks made it 0.2560. Then ten drinks were withdrawn for being after the 1990s, which put
+      // their ingredients back on the shelf and the ratio back to **0.2995**. The band follows the number each time
       // rather than being widened to hold every value it has ever had, because a range that tolerates everything
       // has stopped saying anything.
       final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
@@ -160,8 +161,8 @@ void main() {
       ]);
       final dead = demand.histogramOf([for (final i in seed.ingredients) i.id])[DemandClass.dead]!;
 
-      expect(dead / seed.ingredients.length, greaterThan(0.29));
-      expect(dead / seed.ingredients.length, lessThan(0.32));
+      expect(dead / seed.ingredients.length, greaterThan(0.28));
+      expect(dead / seed.ingredients.length, lessThan(0.31));
     });
   });
 }

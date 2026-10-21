@@ -5839,37 +5839,6 @@
       ]
     },
     {
-      "id": "housePourOver",
-      "name": "Pour-over coffee",
-      "glass": "lowball",
-      "ice": "none",
-      "method": "poured",
-      "methodSteps": [
-        "Rinse the filter with hot water and warm the cup.",
-        "Add the ground coffee, pour just enough water to wet it, and wait thirty seconds.",
-        "Pour the rest in two or three goes and let it drain completely."
-      ],
-      "description": "The ratio is 1:16 -- 15 g to 250 ml. Those numbers are a target for your own scale; the application cannot see what actually went into the cup.",
-      "extras": {
-        "source": "house",
-        "category": "Brewed"
-      },
-      "items": [
-        {
-          "ingredientId": "coffeeGround",
-          "amount": 15000,
-          "unit": "g",
-          "role": "base"
-        },
-        {
-          "ingredientId": "water",
-          "amount": 250000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
       "id": "houseFrenchPress",
       "name": "French press",
       "glass": "lowball",
@@ -5895,37 +5864,6 @@
         {
           "ingredientId": "water",
           "amount": 500000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
-      "id": "houseColdBrew",
-      "name": "Cold brew",
-      "glass": "highball",
-      "ice": "cubes",
-      "method": "poured",
-      "methodSteps": [
-        "Put the ground coffee in a jar and cover it with cold water.",
-        "Leave it in the refrigerator for about twelve hours.",
-        "Strain it through a filter and keep it cold."
-      ],
-      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
-      "extras": {
-        "source": "house",
-        "category": "Brewed"
-      },
-      "items": [
-        {
-          "ingredientId": "coffeeGround",
-          "amount": 100000,
-          "unit": "g",
-          "role": "base"
-        },
-        {
-          "ingredientId": "water",
-          "amount": 1000000,
           "unit": "ml",
           "role": "modifier"
         }
@@ -6093,136 +6031,6 @@
       ]
     },
     {
-      "id": "houseOatLatte",
-      "name": "Oat latte",
-      "glass": "lowball",
-      "ice": "none",
-      "method": "built",
-      "methodSteps": [
-        "Pull the espresso into a jug.",
-        "Steam the oat milk gently -- it takes foam faster than dairy milk does.",
-        "Pour it in and spoon the foam on top."
-      ],
-      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
-      "extras": {
-        "source": "house",
-        "category": "Espresso"
-      },
-      "items": [
-        {
-          "ingredientId": "espressoCoffee",
-          "amount": 30000,
-          "unit": "ml",
-          "role": "base"
-        },
-        {
-          "ingredientId": "oatMilk",
-          "amount": 150000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
-      "id": "houseCaramelLatte",
-      "name": "Caramel latte",
-      "glass": "lowball",
-      "ice": "none",
-      "method": "built",
-      "methodSteps": [
-        "Put the caramel syrup in the bottom of the cup.",
-        "Pull the espresso over it and stir until the syrup has gone in.",
-        "Add the steamed milk and spoon the foam on top."
-      ],
-      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
-      "extras": {
-        "source": "house",
-        "category": "Espresso"
-      },
-      "items": [
-        {
-          "ingredientId": "espressoCoffee",
-          "amount": 30000,
-          "unit": "ml",
-          "role": "base"
-        },
-        {
-          "ingredientId": "milk",
-          "amount": 140000,
-          "unit": "ml",
-          "role": "modifier"
-        },
-        {
-          "ingredientId": "caramelSyrup",
-          "amount": 10000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
-      "id": "houseDecafPourOver",
-      "name": "Decaf pour-over",
-      "glass": "lowball",
-      "ice": "none",
-      "method": "poured",
-      "methodSteps": [
-        "Rinse the filter with hot water and warm the cup.",
-        "Add the decaffeinated coffee, pour just enough water to wet it, and wait thirty seconds.",
-        "Pour the rest in two or three goes and let it drain completely."
-      ],
-      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
-      "extras": {
-        "source": "house",
-        "category": "Brewed"
-      },
-      "items": [
-        {
-          "ingredientId": "coffeeDecaf",
-          "amount": 16000,
-          "unit": "g",
-          "role": "base"
-        },
-        {
-          "ingredientId": "water",
-          "amount": 250000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
-      "id": "houseColdBrewTonic",
-      "name": "Cold brew tonic",
-      "glass": "highball",
-      "ice": "cubes",
-      "method": "built",
-      "methodSteps": [
-        "Fill a highball with ice.",
-        "Pour the tonic in first and let it settle.",
-        "Float the cold brew on top and stir it once, at the table."
-      ],
-      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
-      "extras": {
-        "source": "house",
-        "category": "Brewed"
-      },
-      "items": [
-        {
-          "ingredientId": "coldBrewCoffee",
-          "amount": 120000,
-          "unit": "ml",
-          "role": "base"
-        },
-        {
-          "ingredientId": "tonicWater",
-          "amount": 120000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
       "id": "houseInstantCoffee",
       "name": "Instant coffee",
       "glass": "lowball",
@@ -6255,74 +6063,6 @@
           "ingredientId": "sugar",
           "amount": 8000,
           "unit": "g",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
-      "id": "houseSoyLatte",
-      "name": "Soy latte",
-      "glass": "lowball",
-      "ice": "none",
-      "method": "built",
-      "methodSteps": [
-        "Pull the espresso into a jug.",
-        "Steam the soy milk to about sixty degrees -- it will not take more heat than that.",
-        "Pour it in and spoon the foam on top."
-      ],
-      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
-      "extras": {
-        "source": "house",
-        "category": "Espresso"
-      },
-      "items": [
-        {
-          "ingredientId": "espressoCoffee",
-          "amount": 30000,
-          "unit": "ml",
-          "role": "base"
-        },
-        {
-          "ingredientId": "soyMilk",
-          "amount": 150000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
-      "id": "houseHazelnutLatte",
-      "name": "Hazelnut latte",
-      "glass": "lowball",
-      "ice": "none",
-      "method": "built",
-      "methodSteps": [
-        "Put the hazelnut syrup in the bottom of the cup.",
-        "Pull the espresso over it and stir until the syrup has gone in.",
-        "Add the steamed milk and spoon the foam on top."
-      ],
-      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
-      "extras": {
-        "source": "house",
-        "category": "Espresso"
-      },
-      "items": [
-        {
-          "ingredientId": "espressoCoffee",
-          "amount": 30000,
-          "unit": "ml",
-          "role": "base"
-        },
-        {
-          "ingredientId": "milk",
-          "amount": 140000,
-          "unit": "ml",
-          "role": "modifier"
-        },
-        {
-          "ingredientId": "hazelnutSyrup",
-          "amount": 10000,
-          "unit": "ml",
           "role": "modifier"
         }
       ]
@@ -6783,80 +6523,6 @@
       ]
     },
     {
-      "id": "houseMatchaLatte",
-      "name": "Matcha latte",
-      "glass": "lowball",
-      "ice": "none",
-      "method": "built",
-      "methodSteps": [
-        "Sift the matcha into a bowl so it does not clump.",
-        "Add a little hot water -- not boiling -- and whisk it to a smooth paste with no foam.",
-        "Warm the milk and pour it in, then stir it once from the bottom."
-      ],
-      "description": "Boiling water on matcha makes it bitter; let the kettle rest for a minute first.",
-      "extras": {
-        "source": "house",
-        "category": "Tea"
-      },
-      "items": [
-        {
-          "ingredientId": "matcha",
-          "amount": 4000,
-          "unit": "g",
-          "role": "base"
-        },
-        {
-          "ingredientId": "water",
-          "amount": 60000,
-          "unit": "ml",
-          "role": "modifier"
-        },
-        {
-          "ingredientId": "milk",
-          "amount": 150000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
-      "id": "houseHoujichaLatte",
-      "name": "Houjicha latte",
-      "glass": "lowball",
-      "ice": "none",
-      "method": "built",
-      "methodSteps": [
-        "Steep the houjicha for three minutes in water just off the boil -- it is roasted, so it takes heat.",
-        "Strain it and warm the milk separately.",
-        "Pour the milk in and stir once."
-      ],
-      "description": "A target for your own kettle and your own scale; the application cannot see the cup.",
-      "extras": {
-        "source": "house",
-        "category": "Tea"
-      },
-      "items": [
-        {
-          "ingredientId": "houjicha",
-          "amount": 6000,
-          "unit": "g",
-          "role": "base"
-        },
-        {
-          "ingredientId": "water",
-          "amount": 120000,
-          "unit": "ml",
-          "role": "modifier"
-        },
-        {
-          "ingredientId": "milk",
-          "amount": 150000,
-          "unit": "ml",
-          "role": "modifier"
-        }
-      ]
-    },
-    {
       "id": "houseVietnameseCoffee",
       "name": "Vietnamese iced coffee",
       "glass": "highball",
@@ -6882,6 +6548,340 @@
         {
           "ingredientId": "condensedMilk",
           "amount": 40000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseLemonadeFizz",
+      "name": "Lemonade fizz",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Fill a highball with ice.",
+        "Pour the lemonade in first.",
+        "Top it with the soda water and stir once."
+      ],
+      "description": "Build it in the glass and keep everything cold; this is a drink that dies in a warm room.",
+      "extras": {
+        "source": "house",
+        "category": "Fizz"
+      },
+      "items": [
+        {
+          "ingredientId": "lemonade",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sodaWater",
+          "amount": 100000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseOrangeFizz",
+      "name": "Orange and grapefruit fizz",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Pour the grapefruit juice into the glass over ice.",
+        "Add the orange soda slowly, down the side, so it keeps its gas.",
+        "Stir it once and serve it at once."
+      ],
+      "description": "Build it in the glass and keep everything cold; this is a drink that dies in a warm room.",
+      "extras": {
+        "source": "house",
+        "category": "Fizz"
+      },
+      "items": [
+        {
+          "ingredientId": "grapefruitJuice",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "orangeSoda",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "housePomegranateFizz",
+      "name": "Pomegranate fizz",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Pour the pomegranate juice over ice.",
+        "Top it with the soda water.",
+        "Stir it once, gently -- it stains anything it sits on."
+      ],
+      "description": "Build it in the glass and keep everything cold; this is a drink that dies in a warm room.",
+      "extras": {
+        "source": "house",
+        "category": "Fizz"
+      },
+      "items": [
+        {
+          "ingredientId": "pomegranateJuice",
+          "amount": 100000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sodaWater",
+          "amount": 100000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseLycheeCooler",
+      "name": "Lychee cooler",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Pour the lychee juice and the lime juice over ice.",
+        "Top it with the soda water.",
+        "Stir once; lychee is sweet enough that the lime is doing the work of keeping it drinkable."
+      ],
+      "description": "Build it in the glass and keep everything cold; this is a drink that dies in a warm room.",
+      "extras": {
+        "source": "house",
+        "category": "Fizz"
+      },
+      "items": [
+        {
+          "ingredientId": "lycheeJuice",
+          "amount": 100000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "limeJuice",
+          "amount": 20000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sodaWater",
+          "amount": 80000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseGuavaFizz",
+      "name": "Guava fizz",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Pour the guava juice over ice.",
+        "Top it with the soda water.",
+        "Stir it once from the bottom, because guava settles."
+      ],
+      "description": "Build it in the glass and keep everything cold; this is a drink that dies in a warm room.",
+      "extras": {
+        "source": "house",
+        "category": "Fizz"
+      },
+      "items": [
+        {
+          "ingredientId": "guavaJuice",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sodaWater",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseRoseLemonade",
+      "name": "Rose lemonade",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Pour the lemonade over ice.",
+        "Add the rose water -- five millilitres is enough; more tastes of soap.",
+        "Stir it once and drink it cold."
+      ],
+      "description": "The rose water is the one line here that can be overdone, and badly.",
+      "extras": {
+        "source": "house",
+        "category": "Fizz"
+      },
+      "items": [
+        {
+          "ingredientId": "lemonade",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "rosewater",
+          "amount": 5000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "housePeachIcedTea",
+      "name": "Peach iced tea",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Steep the tea strong and let it cool completely -- hot tea poured on ice turns cloudy.",
+        "Muddle a quarter of a peach in the glass.",
+        "Pour the tea over it, add the sugar, and fill the glass with ice."
+      ],
+      "description": "A target for your own kettle; the application cannot see the cup.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "blackTea",
+          "amount": 8000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "peach",
+          "amount": 1,
+          "unit": "each",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 8000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseGreenTea",
+      "name": "Green tea",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Let the kettle rest for a minute after it boils; green tea scorched by boiling water is bitter.",
+        "Steep it for two minutes and no longer.",
+        "Pour it off the leaves."
+      ],
+      "description": "A target for your own kettle; the application cannot see the cup.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "greenTea",
+          "amount": 6000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseChocolateMilk",
+      "name": "Chocolate milk",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Melt the chocolate with a spoonful of the milk over a low heat.",
+        "Stir it into the rest of the cold milk until it is even.",
+        "Pour it over ice, and add the sugar only if it needs it."
+      ],
+      "description": "Chocolate on its own is not sweet; taste it before adding sugar.",
+      "extras": {
+        "source": "house",
+        "category": "Milk"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "chocolate",
+          "amount": 20000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 5000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseMapleMilk",
+      "name": "Maple milk",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Warm the milk without letting it boil.",
+        "Stir the maple syrup in off the heat.",
+        "Pour it into the cup and drink it while it is hot."
+      ],
+      "description": "Serve it hot -- this is a winter drink, and cold milk with maple is not the same thing.",
+      "extras": {
+        "source": "house",
+        "category": "Milk"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "mapleSyrup",
+          "amount": 15000,
           "unit": "ml",
           "role": "modifier"
         }
