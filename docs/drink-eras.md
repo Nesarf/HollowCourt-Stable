@@ -37,6 +37,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Caffè americano | 1940s | tradition | the wartime story is the usual one; nobody has a document for it |
 | Latte | mid 20th century | tradition | milk and coffee at home is older; the café order is 20th century |
 | Vienna coffee | 17th century | tradition | the Viennese coffee house, and whipped cream on coffee |
+| Bicerin | 18th century | tradition | Turin, and the three layers are meant to be seen |
 | Vietnamese iced coffee | mid 20th century | tradition | condensed milk and a filter, with ice |
 | Ristretto | 20th century | tradition | the short end of the same shot |
 | Lungo | 20th century | tradition | the long end of it |
@@ -76,6 +77,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Iced coffee | 1840s | documented | mazagran is the name it was first sold under |
 | Iced tea | 1904 | documented | the St Louis world's fair, and a heat wave |
 | Lemonade | 17th century | documented | the Paris limonadiers were a guild |
+| Cucumber water | 19th century | tradition | in the household books as a jug of cold water |
 | Mint lemonade | 17th century | tradition | mint in a cold drink is older than the soda fountain |
 | Orange juice | early 20th century | documented | the Florida industry, and the juice is the reason |
 | Ginger ale | 1850s | documented | Belfast, and it started as a medicinal drink |
@@ -109,6 +111,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Strawberry cordial | 19th century | tradition | a cordial is a syrup cut with water, and that is old |
 | Brown sugar ginger tea | pre-modern | tradition | Chinese, and the sugar is what makes it a comfort rather than a medicine |
 | Cocoa tea | 16th century | documented | cocoa with water, a century before milk became usual |
+| Chilli cocoa | pre-modern | documented | chilli with cocoa is older than sugar with cocoa |
 | Honey lemon | pre-modern | tradition | honey and lemon, and cold water to carry it |
 | Rose milk | early 20th century | tradition | South Asian; five millilitres is the whole line |
 | Blackberry cordial | 19th century | tradition | a cordial is a syrup cut with water, and that is old |
@@ -119,7 +122,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 
 ## What this page is not
 
-It is not a claim that every one of these is a "classic". **Seven of the sixty-three are marked `assembled`** — the five
+It is not a claim that every one of these is a "classic". **Seven of the sixty-six are marked `assembled`** — the five
 fizzes whose pairing nobody called a drink before us, and the peach iced tea — and they say so rather than being
 dressed up as traditions.
 
