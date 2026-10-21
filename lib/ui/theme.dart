@@ -2568,6 +2568,44 @@ abstract final class Copy {
       Voice.minister: 'This barcode has not been recorded before; it is recorded on saving.',},
   );
 
+  /// **The camera beside the barcode field** -- the owner's point of 2026-10-22: the field has always been typed
+  /// into, and the scanning half never existed. Four lines rather than one, because a button, a frame caption, a
+  /// failure and a close button are read at four different moments.
+  static const barcodeScan = CopyLine.withLanguages(
+    Translated.authored('用摄像头扫'), Translated.authored('Scan with the camera'),
+    also: {'ja': 'カメラで読み取る', 'zh-HK': '用鏡頭掃', 'zh-TW': '用鏡頭掃'});
+  static const barcodeScanHint = CopyLine.withLanguages(
+    Translated.authored('把条码放进框里，对上焦就会读出来。'),
+    Translated.authored('Put the barcode inside the frame; it reads once the bars are sharp.'),
+    also: {
+      'ja': 'バーコードを枠の中に入れてください。ピントが合えば読み取ります。',
+      'zh-HK': '將條碼放入框內，對好焦就會讀出嚟。',
+      'zh-TW': '把條碼放進框裡，對上焦就會讀出來。',
+    },
+    voices: {
+      Voice.heiress: '把条码放进框里。对上焦，我念给你听。',
+      Voice.heiressJa: '枠の中に入れて。ピントが合えば、こちらで読み取りますわ。',
+      Voice.minister: 'The code should be placed within the frame; it is read once in focus.',
+    },
+  );
+  static const barcodeScanNoCamera = CopyLine.withLanguages(
+    Translated.authored('这台机器上没有可用的摄像头。'),
+    Translated.authored('There is no camera available on this machine.'),
+    also: {
+      'ja': 'この機械には使えるカメラがありません。',
+      'zh-HK': '呢部機冇可用嘅鏡頭。',
+      'zh-TW': '這台機器上沒有可用的鏡頭。',
+    },
+    voices: {
+      Voice.heiress: '这台机器没有摄像头。只能手打了，别嫌慢。',
+      Voice.heiressJa: 'この機械にカメラはありませんの。手で打つしかありませんわね。',
+      Voice.minister: 'No camera is available on this machine; the code will have to be typed.',
+    },
+  );
+  static const barcodeScanClose = CopyLine.withLanguages(
+    Translated.authored('关掉'), Translated.authored('Close'),
+    also: {'ja': '閉じる', 'zh-HK': '閂咗佢', 'zh-TW': '關掉'});
+
   static const adapterNeedsCamera = CopyLine.withLanguages(
     Translated.authored('需要摄像头'), Translated.authored('Needs the camera'),
     also: {'ja': 'カメラが必要', 'zh-HK': '需要鏡頭', 'zh-TW': '需要鏡頭'});

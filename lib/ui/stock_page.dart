@@ -5,6 +5,7 @@ import '../data/seed/seed_repository.dart';
 import '../domain/model/ingredient.dart';
 import '../domain/model/barcode.dart';
 import 'barcode_providers.dart';
+import 'barcode_scanner_page.dart';
 import '../domain/overlay/synonyms.dart';
 import '../domain/preferences/cellar_preferences.dart';
 import '../domain/pricing/price.dart';
@@ -584,6 +585,24 @@ class _AddBottleSheetState extends ConsumerState<_AddBottleSheet> {
               labelText: ref.copy(Copy.barcodeLabel),
             ),
             onChanged: _checkBarcode,
+          ),
+          // **The camera, beside the field it fills.** Manual entry stays first-class -- the owner asked for it
+          // by name on 2026-09-25, and a phone in a cellar loses signal long before it loses a keyboard -- so this
+          // is an addition rather than a replacement. What the scanner answers goes through exactly the same
+          // `_checkBarcode` the typing path uses, which is what keeps one validation rule rather than two.
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: const ValueKey('barcode-scan'),
+              onPressed: () async {
+                final code = await scanBarcode(context);
+                if (code == null) return;
+                _barcode.text = code;
+                await _checkBarcode(code);
+              },
+              icon: const Icon(Icons.qr_code_scanner, size: 17),
+              label: DualCopyText(Copy.barcodeScan, style: HollowType.caption),
+            ),
           ),
           if (_barcodeVerdict case final verdict?) ...[
             const SizedBox(height: 6),
