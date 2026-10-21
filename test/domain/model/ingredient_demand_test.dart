@@ -121,7 +121,7 @@ void main() {
   /// move would be the same failure as the one `seed_vocabulary_test` records: a check that quietly redefines what
   /// it checks. Whoever adds ingredients or recipes updates this and the document together, deliberately.
   group('the library that ships', () {
-    test('**36 / 31 / 56 / 66, over 189 ingredients and 110 recipes**', () {
+    test('**37 / 30 / 60 / 74, over 201 ingredients and 114 recipes**', () {
       final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
       final demand = IngredientDemand.of([
         for (final recipe in seed.recipes)
@@ -129,12 +129,12 @@ void main() {
       ]);
       final histogram = demand.histogramOf([for (final i in seed.ingredients) i.id]);
 
-      expect(seed.ingredients, hasLength(189));
-      expect(seed.recipes, hasLength(110));
-      expect(histogram[DemandClass.core], 36);
-      expect(histogram[DemandClass.occasional], 31);
-      expect(histogram[DemandClass.rare], 56);
-      expect(histogram[DemandClass.dead], 66);
+      expect(seed.ingredients, hasLength(201));
+      expect(seed.recipes, hasLength(114));
+      expect(histogram[DemandClass.core], 37);
+      expect(histogram[DemandClass.occasional], 30);
+      expect(histogram[DemandClass.rare], 60);
+      expect(histogram[DemandClass.dead], 74);
 
       // **And the four add up to the catalogue**, which is the check that survives a wrong histogram: every
       // ingredient is in exactly one class, so a bucket lost to a bug shows up as a total that is short.
@@ -144,12 +144,14 @@ void main() {
 
     test('**dead stock is a third of the catalogue, and that is the finding**', () {
       // Said as a ratio rather than the raw count, because the claim being guarded is the one a reader meets on the
-      // screen -- "a third of these are not your responsibility" -- and 66 over 189 is what makes it true.
+      // screen -- "a third of these are not your responsibility" -- and 74 over 201 is what makes it true.
       //
-      // **The centre moved on 2026-10-21, and the coffee list is why.** Seven house recipes name `coffeeBeans`,
-      // `espressoCoffee` and `water`, which took two ingredients out of dead and one out of rare: 0.360 became
-      // 0.3492. The band moved with the number rather than being widened to hold both, because a range that
-      // tolerated either value would have stopped saying what the number means.
+      // **The centre has moved twice on 2026-10-21, and both times it was the coffee work.** Seven house recipes
+      // naming `coffeeBeans`, `espressoCoffee` and `water` took the ratio from 0.360 to 0.3492. Then twelve
+      // coffee-family ingredients arrived, four recipes began using five of them, and the other seven entered the
+      // catalogue with nothing naming them yet -- which is what "classified but not yet used" looks like in this
+      // number, and why it is 0.3682 now. The band follows the number each time rather than being widened to hold
+      // every value it has ever had, because a range that tolerates everything has stopped saying anything.
       final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
       final demand = IngredientDemand.of([
         for (final recipe in seed.recipes)
@@ -157,8 +159,8 @@ void main() {
       ]);
       final dead = demand.histogramOf([for (final i in seed.ingredients) i.id])[DemandClass.dead]!;
 
-      expect(dead / seed.ingredients.length, greaterThan(0.34));
-      expect(dead / seed.ingredients.length, lessThan(0.36));
+      expect(dead / seed.ingredients.length, greaterThan(0.36));
+      expect(dead / seed.ingredients.length, lessThan(0.38));
     });
   });
 }

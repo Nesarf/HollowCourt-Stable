@@ -17,11 +17,13 @@ Measured from `assets/drinks/library.json`:
 | An ingredient's shape | `{id, name}`, and `category` / `defaultUnit` where somebody added them |
 | Recipes | 103, all from IBA's three categories |
 
-**Later, and this is a note rather than an edit.** On 2026-10-21 seven house coffee recipes were added, so the
-library now holds **110 recipes**, and the dead-stock count is **66 of 189** rather than 68 — `coffeeBeans`,
-`espressoCoffee` and `water` are the three that moved. The figures above are the measurement this page is about and
-are left exactly as they were read; `test/domain/model/ingredient_demand_test.dart` carries the current ones, and
-its header says when and why they moved.
+**Later, and this is a note rather than an edit.** Two changes arrived on 2026-10-21, both of them the coffee work.
+Seven house coffee recipes took the drinks list to 110 and the dead-stock count to **66 of 189**; then twelve
+coffee-family ingredients were added and four more recipes began using five of them, which puts the library at
+**201 ingredients and 114 recipes**, with **74** dead — the other seven new ingredients are classified and not yet
+named by any drink. The figures above are the measurement this page is about and are left exactly as they were
+read; `test/domain/model/ingredient_demand_test.dart` carries the current ones, and its header says when and why
+they moved.
 
 **An ingredient record is a name and an id**, and the category is an *added* field rather than a base one — which is
 why the count of unclassified ingredients is a count of records nobody has been through, not a count of missing data.

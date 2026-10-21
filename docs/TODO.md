@@ -584,6 +584,27 @@ python tool/hma_tests.py         # 工具自己的测试
 
 **连带改了两处测量**：`ingredient_demand_test` 的计数（189/110、36/31/56/66）与死库存比例（0.3492，原来是 0.360），`docs/ingredient-gap.md` 顶上加了注记，原测量保留不动。**七条名字与七条步骤都写了四种语言**，`seed_translation_coverage_test` 是那条「加一条饮品就要写四份翻译」的守卫。
 
+### 2026-10-21 晚：咖啡的类别从四条补到十一条
+
+**原来只有四条**（`coffee`、`coffeeBeans`、`espressoCoffee`、`coffeeLiqueur`，全都 `family: coffee`）。现在十一条，按形态分层：
+
+| family | 条目 |
+| --- | --- |
+| `coffeeBrewed` | `filterCoffee`、`coldBrewCoffee`、`mokaCoffee` |
+| `coffeeGround` | `coffeeGround` |
+| `coffeeDecaf` | `coffeeDecaf` |
+| `coffeeInstant` | `coffeeInstant` |
+| `coffee`（原样保留） | `coffee`、`coffeeBeans`、`espressoCoffee`、`coffeeLiqueur` |
+| 配料一侧 | `oatMilk`、`soyMilk`、`whippedCream`（`plantMilk`／`cream`）、`cocoaPowder`（`cocoa`）、`caramelSyrup`、`hazelnutSyrup` |
+
+**`kind` 不能新增。** `seed_codec_test` 里那张白名单只有十四个值（spirit、liqueur、wine、beer、juice、syrup、bitter、dairy、spice、garnish、pantry、mixer、tea、fruit），所以咖啡的细分全部落在 `family` 上。这正是两层化的用处：`kind` 是筛选器画得出来的那一层，`family` 在它下面收窄。
+
+**四条 brewed 配方改用 `coffeeGround` 而不是 `coffeeBeans`** —— 手冲用的是粉，不是整豆；这一步也让新加的那条有了真实引用。
+
+**又加了四条配方**：摩卡（用 `cocoaPowder`）、燕麦拿铁（`oatMilk`）、焦糖拿铁（`caramelSyrup`）、低因手冲（`coffeeDecaf`）。现在是 **201 种原料、114 条配方**。
+
+**死库存比例又动了，原因写在这里**：十二条新原料里七条暂时没有任何配方引用（`coffeeInstant`、`coldBrewCoffee`、`filterCoffee`、`mokaCoffee`、`soyMilk`、`hazelnutSyrup`、`whippedCream`），所以它从 0.3492 升到 0.3682。那是「已分类、还没被用上」的样子，不是错。`ingredient_demand_test` 的四类数与区间都跟着改，注释里写了两次移动的原因。
+
 **一条观察，留着免得下一个人白查**：`test/ui/world_artwork_test.dart` 那三项在全量并行跑时偶发失败。2026-10-21 的一次全量里红了三项，单独跑这个文件三项全过，紧接着的下一次全量也全过。它读的是立绘资源，看起来是并发下的资源竞争 —— 下次红了先单独跑它，再判断是不是真的坏了。
 
 ---
