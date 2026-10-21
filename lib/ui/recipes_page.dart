@@ -878,6 +878,7 @@ class _ItemRow extends ConsumerWidget {
     required this.available,
     this.name,
     this.depth = 0,
+    this.visited = const <String>{},
   });
 
   final RecipeItem item;
@@ -888,6 +889,11 @@ class _ItemRow extends ConsumerWidget {
   /// ingredient, and an ingredient with a recipe behind it opens, but the opening has to stop somewhere or a
   /// mistake in the data becomes a screen that never closes.
   final int depth;
+
+  /// **The bases already open above this row.** A depth number alone would let a cycle of two bases open for ever,
+  /// and the data is now two levels deep rather than one, so the guard is the set rather than the number. The depth
+  /// stays as a second bound because a long chain that is not a cycle is still a screen nobody can get out of.
+  final Set<String> visited;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -913,7 +919,7 @@ class _ItemRow extends ConsumerWidget {
     final library = ref.watch(seedProvider).value;
     final madeBy = library?.ingredientById(item.ingredientId)?.extras['madeBy'];
     final base = madeBy == null ? null : library?.recipeById(madeBy);
-    final canOpen = base != null && depth < 3;
+    final canOpen = base != null && depth < 3 && !visited.contains(base.id);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
@@ -947,7 +953,11 @@ class _ItemRow extends ConsumerWidget {
               onTap: () => showModalBottomSheet<void>(
                 context: context,
                 isScrollControlled: true,
-                builder: (_) => _SubRecipeSheet(recipe: base, depth: depth + 1),
+                builder: (_) => _SubRecipeSheet(
+                  recipe: base,
+                  depth: depth + 1,
+                  visited: {...visited, base.id},
+                ),
               ),
               child: Padding(
                 padding: const EdgeInsets.only(left: 8),
@@ -971,10 +981,15 @@ class _ItemRow extends ConsumerWidget {
 /// one line of method behind it, and its own ingredient lines -- which may themselves open, up to the depth the row
 /// carries.
 class _SubRecipeSheet extends ConsumerWidget {
-  const _SubRecipeSheet({required this.recipe, required this.depth});
+  const _SubRecipeSheet({
+    required this.recipe,
+    required this.depth,
+    required this.visited,
+  });
 
   final Recipe recipe;
   final int depth;
+  final Set<String> visited;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1019,6 +1034,7 @@ class _SubRecipeSheet extends ConsumerWidget {
               item: item,
               available: cellar?.has(item.ingredientId) ?? false,
               depth: depth,
+              visited: visited,
               name: names?.nameFor(
                     item.ingredientId,
                     locale,

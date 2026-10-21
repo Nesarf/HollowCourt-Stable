@@ -3,8 +3,8 @@
   "version": 1,
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
-    "ingredients": 207,
-    "drinks": 163
+    "ingredients": 208,
+    "drinks": 166
   },
   "ingredients": [
     {
@@ -294,6 +294,14 @@
       "name": "Ground coffee",
       "kind": "pantry",
       "family": "coffeeGround"
+    },
+    {
+      "id": "coffeeIceCream",
+      "name": "Coffee ice cream",
+      "kind": "dairy",
+      "extras": {
+        "madeBy": "baseCoffeeIceCream"
+      }
     },
     {
       "id": "coffeeInstant",
@@ -7925,6 +7933,105 @@
           "ingredientId": "eggYolk",
           "amount": 4,
           "unit": "each",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "baseCoffeeIceCream",
+      "name": "Coffee ice cream",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "blended",
+      "methodSteps": [
+        "Soften the ice cream enough to stir, but not enough to melt it.",
+        "Fold the espresso through it -- a little at a time, tasting as it goes in.",
+        "Freeze it again for an hour before it is served."
+      ],
+      "description": "A base made out of another base: this one opens the ice cream beneath it.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "iceCream",
+          "amount": 400000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseAffogato",
+      "name": "Affogato",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put two scoops of the coffee ice cream in a cold glass.",
+        "Pull the espresso and pour it over while it is still hot.",
+        "Serve it at once, with a spoon."
+      ],
+      "description": "The Italian word means drowned, and that is the whole instruction.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeIceCream",
+          "amount": 120000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 40000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseIceCreamSoda",
+      "name": "Ice cream soda",
+      "glass": "highball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put the syrup in the bottom of the glass.",
+        "Pour the soda water down the side and do not stir it hard.",
+        "Float two scoops of the ice cream on top and serve it with a spoon."
+      ],
+      "description": "Two finished things -- the syrup and the ice cream -- used as ingredients, which is the whole point of the tree.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "iceCream",
+          "amount": 120000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sodaWater",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "vanillaSyrup",
+          "amount": 20000,
+          "unit": "ml",
           "role": "modifier"
         }
       ]
