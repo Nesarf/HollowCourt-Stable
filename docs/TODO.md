@@ -797,6 +797,25 @@ python tool/hma_tests.py         # 工具自己的测试
 
 **数字**：配方 168 → **174**，原料仍是 209，死库存 50 → **46**，比例 0.2392 → **0.2201**。`docs/drink-eras.md` 同步加了六行，标 `assembled` 的从六条变成七条。
 
+### 再挖：四条来自四个传统的咖啡
+
+| 配方 | 出处 |
+| --- | --- |
+| 土耳其咖啡 | 16 世纪，这一页上最老的做法 |
+| 陶罐咖啡（café de olla） | 墨西哥，19 世纪；陶罐、肉桂、红糖 |
+| 越南蛋咖啡 | 河内，1946 年 |
+| 希腊冰摇咖啡（frappé） | 塞萨洛尼基，1957 年；必须要速溶咖啡才摇得出那层泡沫 |
+
+**救活了 `egg`。** 这是全蛋第一次被一条饮品点名 —— 蛋蜜乳用的是蛋黄，蛋咖啡用的是整只。
+
+**这一轮的边界提醒**：frappé 是 1957，离 1980 只有二十三年，是这批里最贴线的一条。它的出处清楚（塞萨洛尼基的雀巢展位），所以我留下了；但这是「出处清楚才留」的一个例证，不是「大概不晚」。
+
+**数字**：配方 174 → **178**，原料仍是 209，死库存 46 → **45**，比例 0.2201 → **0.2153**。
+
+**非酒侧还剩 18 条 dead**：`aquafaba`、`bellPepper`、`caramelSyrup`、`chilliPowder`、`coffeeBeans`、`coldBrewCoffee`、`corianderLeaf`、`cucumber`、`energyDrink`、`hazelnutSyrup`、`mokaCoffee`、`oatMilk`、`olive`、`oliveBrine`、`orangeMarmalade`、`pickleBrine`、`pickledOnion`、`sesameOil`。
+
+这里面：佐料 6 条（`olive` 那几条）不该救；现代货 4 条受约束限制；`aquafaba` 是 2010 年代才发现打发性；`coffeeBeans`、`mokaCoffee`、`coldBrewCoffee` 是结构性的；真还能救的只剩 `bellPepper`、`cucumber`、`chilliPowder`、`corianderLeaf` 四条蔬果香料 —— **而蔬果饮这条线很薄，要救它们得先找到能站住的出处，不找到就不做**。
+
 **一条观察，留着免得下一个人白查**：`test/ui/world_artwork_test.dart` 那三项在全量并行跑时偶发失败。2026-10-21 的一次全量里红了三项，单独跑这个文件三项全过，紧接着的下一次全量也全过。它读的是立绘资源，看起来是并发下的资源竞争 —— 下次红了先单独跑它，再判断是不是真的坏了。
 
 ---

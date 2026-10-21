@@ -26,6 +26,9 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Instant coffee | 1901 | documented | the patent predates the commercial product by more than thirty years |
 | Decaffeinated coffee | 1903 | documented | the process is this drink's date |
 | Coffee with milk | 17th century | documented | milk in coffee is discussed in print early |
+| Turkish coffee | 16th century | documented | the oldest method on the page |
+| Café de olla | 19th century | tradition | the clay pot, cinnamon and brown sugar |
+| Egg coffee | 1946 | documented | Hanoi, and the year is Giang's cafe |
 
 ## Espresso
 
@@ -79,6 +82,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Iced cocoa | 19th century | tradition | the soda fountain again, and cold cocoa before it |
 | Egg cream | 1920s | tradition | Brooklyn, and the origin story has more than one version |
 | Coffee granita | 19th century | tradition | Sicilian, and the crystals are the point |
+| Greek frappé | 1957 | documented | Thessaloniki, and it needs instant coffee |
 | Grapefruit juice | early 20th century | documented | the fruit is an 18th-century crossing; the juice came with the groves |
 | Apple juice | pre-modern | documented | pressing fruit and drinking it is older than the word juice |
 | Coconut water | pre-modern | documented | drunk from the nut in the tropics; the glass is the only new part |
@@ -115,7 +119,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 
 ## What this page is not
 
-It is not a claim that every one of these is a "classic". **Seven of the fifty-nine are marked `assembled`** — the five
+It is not a claim that every one of these is a "classic". **Seven of the sixty-three are marked `assembled`** — the five
 fizzes whose pairing nobody called a drink before us, and the peach iced tea — and they say so rather than being
 dressed up as traditions.
 

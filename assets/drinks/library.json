@@ -4,7 +4,7 @@
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
     "ingredients": 209,
-    "drinks": 174
+    "drinks": 178
   },
   "ingredients": [
     {
@@ -8330,6 +8330,160 @@
           "ingredientId": "honeySyrup",
           "amount": 30000,
           "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseTurkishCoffee",
+      "name": "Turkish coffee",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put the coffee, the sugar and the cold water in the pot and stir it once.",
+        "Set it on a low heat and do not stir it again.",
+        "When the foam rises, take it off and pour it slowly, foam first."
+      ],
+      "description": "Ground to powder, water cold, and the foam is the whole judgement -- it is made once and not stirred.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeGround",
+          "amount": 15000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseCafeDeOlla",
+      "name": "Café de olla",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Boil the water with the cinnamon and the brown sugar until the sugar has gone.",
+        "Add the coffee, take it off the heat and put a lid on it.",
+        "Leave it five minutes, then strain it into the cups."
+      ],
+      "description": "The clay pot is not decoration: it holds the heat differently and takes the cinnamon with it.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeGround",
+          "amount": 20000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 300000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "brownSugar",
+          "amount": 30000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "cinnamon",
+          "amount": 1,
+          "unit": "pinch",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseEggCoffee",
+      "name": "Egg coffee",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Beat the egg with the condensed milk until it is a pale cream.",
+        "Pull a small strong coffee and pour it into the cup.",
+        "Spoon the cream on top and serve it with a spoon, hot."
+      ],
+      "description": "The yolk and the condensed milk are beaten to a cream that sits on the coffee rather than in it.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 40000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "condensedMilk",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "egg",
+          "amount": 1,
+          "unit": "each",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseGreekFrappe",
+      "name": "Greek frappé",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "shaken",
+      "methodSteps": [
+        "Shake the instant coffee, the sugar and a little cold water until it is all foam.",
+        "Pour it over ice in a tall glass.",
+        "Top it with the rest of the water and add milk if you want the white one."
+      ],
+      "description": "Instant coffee is required -- the foam only happens with the soluble kind, which is why this is 1957.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeInstant",
+          "amount": 8000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
+          "unit": "g",
           "role": "modifier"
         }
       ]
