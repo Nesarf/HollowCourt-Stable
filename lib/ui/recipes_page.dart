@@ -872,15 +872,25 @@ class _RecipeSheet extends ConsumerWidget {
   }
 }
 
-class _ItemRow extends StatelessWidget {
-  const _ItemRow({required this.item, required this.available, this.name});
+class _ItemRow extends ConsumerWidget {
+  const _ItemRow({
+    required this.item,
+    required this.available,
+    this.name,
+    this.depth = 0,
+  });
 
   final RecipeItem item;
   final bool available;
   final String? name;
 
+  /// How far down the sub-recipe tree this row already is. **Bounded on purpose**: a finished thing can be an
+  /// ingredient, and an ingredient with a recipe behind it opens, but the opening has to stop somewhere or a
+  /// mistake in the data becomes a screen that never closes.
+  final int depth;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // A measured line shows millilitres; a counted one shows the count, because
     // section 5.2 is firm that four leaves are not millilitres and printing
     // "0 ml" there would be a worse lie than printing nothing.
@@ -896,6 +906,14 @@ class _ItemRow extends StatelessWidget {
         : item.amount > 0
             ? '${(item.amount / 1000).toStringAsFixed(item.amount % 1000 == 0 ? 0 : 1)} ml'
             : '';
+
+    // **The sub-recipe behind a finished thing.** `espressoCoffee` is not a word, it is a shot with a method; the
+    // link is `extras.madeBy` on the ingredient, and this row is where it becomes reachable. A row whose ingredient
+    // has no such link simply has nothing to open, which is most of them and is not a gap.
+    final library = ref.watch(seedProvider).value;
+    final madeBy = library?.ingredientById(item.ingredientId)?.extras['madeBy'];
+    final base = madeBy == null ? null : library?.recipeById(madeBy);
+    final canOpen = base != null && depth < 3;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
@@ -923,6 +941,91 @@ class _ItemRow extends StatelessWidget {
               child: Text(Copy.garnish, style: HollowType.caption),
             ),
           Text(amount, style: HollowType.numeric),
+          if (canOpen)
+            InkWell(
+              key: ValueKey('sub-recipe-${item.ingredientId}'),
+              onTap: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => _SubRecipeSheet(recipe: base, depth: depth + 1),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Icon(
+                  Icons.account_tree_outlined,
+                  size: 15,
+                  color: HollowPalette.text.faint,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A finished thing's own method, opened from the line that names it.
+///
+/// **It is a smaller sheet than the drink's, and the difference is deliberate.** There is no score, no mix button and
+/// no note: those are about *this drink*, and a base is not a drink a reader orders. What a base has is a name, the
+/// one line of method behind it, and its own ingredient lines -- which may themselves open, up to the depth the row
+/// carries.
+class _SubRecipeSheet extends ConsumerWidget {
+  const _SubRecipeSheet({required this.recipe, required this.depth});
+
+  final Recipe recipe;
+  final int depth;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final names = ref.watch(seedNamesProvider).value;
+    final locale = ref.watch(seedNameLocaleProvider);
+    final cellar = ref.watch(cellarProvider).value;
+    final library = ref.watch(seedProvider).value;
+    final steps = names?.stepsFor(recipe.id, locale) ?? recipe.methodSteps;
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.fromLTRB(
+        20,
+        20,
+        20,
+        20 + MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            names?.nameFor(recipe.id, locale, fallback: recipe.name) ?? recipe.name,
+            style: HollowType.heading,
+          ),
+          if (recipe.description != null) ...[
+            const SizedBox(height: 6),
+            Text(recipe.description!, style: HollowType.caption),
+          ],
+          if (steps.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            for (final step in steps.take(6))
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4),
+                child: Text(step, style: HollowType.body),
+              ),
+          ],
+          const SizedBox(height: 12),
+          const Divider(height: 1),
+          const SizedBox(height: 10),
+          for (final item in recipe.items)
+            _ItemRow(
+              item: item,
+              available: cellar?.has(item.ingredientId) ?? false,
+              depth: depth,
+              name: names?.nameFor(
+                    item.ingredientId,
+                    locale,
+                    fallback: library?.ingredientById(item.ingredientId)?.name ?? '',
+                  ) ??
+                  library?.ingredientById(item.ingredientId)?.name,
+            ),
         ],
       ),
     );

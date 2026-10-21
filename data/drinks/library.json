@@ -4,7 +4,7 @@
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
     "ingredients": 207,
-    "drinks": 150
+    "drinks": 163
   },
   "ingredients": [
     {
@@ -325,7 +325,10 @@
       "name": "Cold brew coffee",
       "defaultUnit": "ml",
       "kind": "pantry",
-      "family": "coffeeBrewed"
+      "family": "coffeeBrewed",
+      "extras": {
+        "madeBy": "baseColdBrew"
+      }
     },
     {
       "id": "condensedMilk",
@@ -475,7 +478,10 @@
       "id": "espressoCoffee",
       "name": "Espresso",
       "kind": "pantry",
-      "family": "coffee"
+      "family": "coffee",
+      "extras": {
+        "madeBy": "baseEspresso"
+      }
     },
     {
       "id": "evaporatedMilk",
@@ -501,7 +507,10 @@
       "name": "Filter coffee",
       "defaultUnit": "ml",
       "kind": "pantry",
-      "family": "coffeeBrewed"
+      "family": "coffeeBrewed",
+      "extras": {
+        "madeBy": "baseFilterBrew"
+      }
     },
     {
       "id": "frangelico",
@@ -637,7 +646,10 @@
     {
       "id": "iceCream",
       "name": "Ice cream",
-      "kind": "dairy"
+      "kind": "dairy",
+      "extras": {
+        "madeBy": "baseIceCream"
+      }
     },
     {
       "id": "irishCreamLiqueur",
@@ -684,7 +696,10 @@
     {
       "id": "lemonSorbet",
       "name": "Lemon sorbet",
-      "kind": "dairy"
+      "kind": "dairy",
+      "extras": {
+        "madeBy": "baseLemonSorbet"
+      }
     },
     {
       "id": "lemonade",
@@ -760,7 +775,10 @@
       "name": "Moka coffee",
       "defaultUnit": "ml",
       "kind": "pantry",
-      "family": "coffeeBrewed"
+      "family": "coffeeBrewed",
+      "extras": {
+        "madeBy": "baseMokaBrew"
+      }
     },
     {
       "id": "nutmeg",
@@ -1192,7 +1210,10 @@
       "name": "Whipped cream",
       "defaultUnit": "ml",
       "kind": "dairy",
-      "family": "cream"
+      "family": "cream",
+      "extras": {
+        "madeBy": "baseWhippedCream"
+      }
     },
     {
       "id": "whiskey",
@@ -7501,6 +7522,409 @@
           "ingredientId": "sugar",
           "amount": 12000,
           "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseRistretto",
+      "name": "Ristretto",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Grind fine and dose as for a normal shot.",
+        "Stop the shot at about half the usual volume.",
+        "Drink it at once, while the crema is still there."
+      ],
+      "description": "The same dose of coffee, stopped early or run long -- the difference is water, not beans.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 20000,
+          "unit": "ml",
+          "role": "base"
+        }
+      ]
+    },
+    {
+      "id": "houseLungo",
+      "name": "Lungo",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Dose as for a normal shot.",
+        "Run the water through for twice as long as usual.",
+        "Taste it before deciding it is too weak -- the bitterness arrives at the end."
+      ],
+      "description": "The same dose of coffee, stopped early or run long -- the difference is water, not beans.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 45000,
+          "unit": "ml",
+          "role": "base"
+        }
+      ]
+    },
+    {
+      "id": "houseShakerato",
+      "name": "Shakerato",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "shaken",
+      "methodSteps": [
+        "Pull a double espresso and sweeten it while it is hot.",
+        "Shake it hard with plenty of ice until the tin is cold through.",
+        "Strain it into a chilled glass without ice."
+      ],
+      "description": "Shake it hard and pour it at once; the foam is the whole point and it does not keep.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 8000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseDecaf",
+      "name": "Decaffeinated coffee",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Treat it like any other coffee: water just off the boil, four minutes.",
+        "Pour it off the grounds rather than leaving them in the cup.",
+        "Drink it as it is, or with milk."
+      ],
+      "description": "Decaffeinated coffee is 1903; the drink is as old as the process.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeDecaf",
+          "amount": 8000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseGrapefruitJuice",
+      "name": "Grapefruit juice",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Halve the grapefruit and press it, keeping the pith out of the glass.",
+        "Taste it; add sugar only if it is a bitter one.",
+        "Pour it over ice."
+      ],
+      "description": "The grapefruit is a 18th-century crossing and the juice came with the Florida groves.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "grapefruit",
+          "amount": 1,
+          "unit": "each",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 5000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseTonicLime",
+      "name": "Tonic with lime",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Fill a glass with ice and pour the tonic down the side of it.",
+        "Squeeze the lime in and drop the shell in after it.",
+        "Stir it once, and do not add sugar -- the tonic is already sweet."
+      ],
+      "description": "Tonic was a medicine before it was a mixer, and it is drunk straight in the places that made it.",
+      "extras": {
+        "source": "house",
+        "category": "Fizz"
+      },
+      "items": [
+        {
+          "ingredientId": "tonicWater",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "limeJuice",
+          "amount": 15000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "baseEspresso",
+      "name": "Espresso",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Dose eighteen grams of ground coffee into the basket and level it.",
+        "Tamp it flat, lock the basket in, and start the shot.",
+        "Stop it at thirty-six millilitres."
+      ],
+      "description": "The ratio is 1:2 -- eighteen grams in, thirty-six millilitres out. Everything else is the machine.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeGround",
+          "amount": 18000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 36000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "baseFilterBrew",
+      "name": "Filter brew",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "poured",
+      "methodSteps": [
+        "Rinse the filter and warm the pot.",
+        "Wet the grounds and wait thirty seconds.",
+        "Pour the rest in stages and let it drain."
+      ],
+      "description": "The ratio is 1:15, and the water goes in stages; pouring it all at once is what makes a bitter cup.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeGround",
+          "amount": 20000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 300000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "baseMokaBrew",
+      "name": "Moka brew",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Fill the base with water to the valve and the basket with grounds, unpressed.",
+        "Assemble it and set it on a low flame.",
+        "Take it off when it starts to hiss and pour it at once."
+      ],
+      "description": "The water goes in the base and never touches the grounds until it is pushed up through them.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeGround",
+          "amount": 18000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "baseColdBrew",
+      "name": "Cold brew",
+      "glass": "highball",
+      "ice": "none",
+      "method": "poured",
+      "methodSteps": [
+        "Put the grounds in a jar and cover them with cold water.",
+        "Leave it twelve hours in the refrigerator.",
+        "Strain it twice and keep it cold."
+      ],
+      "description": "Cold water and time instead of heat: ten to one, twelve hours, and strain it after.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeGround",
+          "amount": 100000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 1000000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "baseWhippedCream",
+      "name": "Whipped cream",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Chill the bowl and the cream.",
+        "Whip it until it holds a soft peak.",
+        "Stop there -- a few seconds more and it separates."
+      ],
+      "description": "Cold cream, cold bowl, and stop before it turns to butter.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "cream",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        }
+      ]
+    },
+    {
+      "id": "baseLemonSorbet",
+      "name": "Lemon sorbet",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "blended",
+      "methodSteps": [
+        "Boil the sugar and water into a syrup and let it cool.",
+        "Add the lemon juice once the syrup is cold.",
+        "Freeze it, breaking it up every half hour."
+      ],
+      "description": "Sugar and water first, lemon last; acid added early dulls the colour.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "lemon",
+          "amount": 4,
+          "unit": "each",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 200000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 500000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "baseIceCream",
+      "name": "Ice cream",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "blended",
+      "methodSteps": [
+        "Warm the milk, cream and sugar and pour them over the yolks, whisking.",
+        "Cook it gently until it coats a spoon, then chill it completely.",
+        "Churn it, and freeze it hard before serving."
+      ],
+      "description": "Custard base, chilled, then churned. The yolks are what make it hold together.",
+      "extras": {
+        "source": "house",
+        "category": "Base"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 500000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "cream",
+          "amount": 250000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 150000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "eggYolk",
+          "amount": 4,
+          "unit": "each",
           "role": "modifier"
         }
       ]
