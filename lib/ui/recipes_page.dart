@@ -17,6 +17,7 @@ import 'l10n/copy_resolution.dart';
 import 'l10n/dual_copy_text.dart';
 import 'collection_editor.dart';
 import 'recipe_composer.dart';
+import 'sub_recipe_sheet.dart';
 
 /// Section 12.3's Recipes tab, at P1's scope.
 ///
@@ -808,7 +809,7 @@ class _RecipeSheet extends ConsumerWidget {
           const Divider(height: 1),
           const SizedBox(height: 12),
           for (final item in recipe.items)
-            _ItemRow(
+            SubRecipeItemRow(
               item: item,
               available: cellar?.has(item.ingredientId) ?? false,
               // **The ingredient in the reader's language too.** The same table carries all 187 of them, and the
@@ -872,195 +873,6 @@ class _RecipeSheet extends ConsumerWidget {
   }
 }
 
-class _ItemRow extends ConsumerWidget {
-  const _ItemRow({
-    required this.item,
-    required this.available,
-    this.name,
-    this.depth = 0,
-    this.visited = const <String>{},
-  });
-
-  final RecipeItem item;
-  final bool available;
-  final String? name;
-
-  /// How far down the sub-recipe tree this row already is. **Bounded on purpose**: a finished thing can be an
-  /// ingredient, and an ingredient with a recipe behind it opens, but the opening has to stop somewhere or a
-  /// mistake in the data becomes a screen that never closes.
-  final int depth;
-
-  /// **The bases already open above this row.** A depth number alone would let a cycle of two bases open for ever,
-  /// and the data is now two levels deep rather than one, so the guard is the set rather than the number. The depth
-  /// stays as a second bound because a long chain that is not a cycle is still a screen nobody can get out of.
-  final Set<String> visited;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // A measured line shows millilitres; a counted one shows the count, because
-    // section 5.2 is firm that four leaves are not millilitres and printing
-    // "0 ml" there would be a worse lie than printing nothing.
-    //
-    // **A line with neither shows nothing, and this is a fix from the phone.**
-    // It used to fall back to `originalText`, which put the importer's own
-    // string on screen: a garnish row read `garnish: Lemon (Twist)` in English,
-    // duplicating the 装饰 tag already beside it. `originalText` is the
-    // importer's record of what the source said, and it belongs in a
-    // reverse-engineering record rather than in a person's way.
-    final amount = item.count != null
-        ? '${item.count} × ${item.unit?.id ?? ""}'
-        : item.amount > 0
-            ? '${(item.amount / 1000).toStringAsFixed(item.amount % 1000 == 0 ? 0 : 1)} ml'
-            : '';
-
-    // **The sub-recipe behind a finished thing.** `espressoCoffee` is not a word, it is a shot with a method; the
-    // link is `extras.madeBy` on the ingredient, and this row is where it becomes reachable. A row whose ingredient
-    // has no such link simply has nothing to open, which is most of them and is not a gap.
-    final library = ref.watch(seedProvider).value;
-    final madeBy = library?.ingredientById(item.ingredientId)?.extras['madeBy'];
-    final base = madeBy == null ? null : library?.recipeById(madeBy);
-    final canOpen = base != null && depth < 3 && !visited.contains(base.id);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 18,
-            child: Icon(
-              available ? Icons.check : Icons.remove,
-              size: 15,
-              color: available ? HollowPalette.gold : HollowPalette.absent,
-            ),
-          ),
-          Expanded(
-            child: Text(
-              name ?? item.ingredientId,
-              style: HollowType.body.copyWith(
-                color: available ? HollowPalette.ink : HollowPalette.text.faint,
-              ),
-            ),
-          ),
-          if (item.role == ItemRole.garnish)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Text(Copy.garnish, style: HollowType.caption),
-            ),
-          Text(amount, style: HollowType.numeric),
-          if (canOpen)
-            InkWell(
-              key: ValueKey('sub-recipe-${item.ingredientId}'),
-              onTap: () => showModalBottomSheet<void>(
-                context: context,
-                isScrollControlled: true,
-                builder: (_) => _SubRecipeSheet(
-                  recipe: base,
-                  depth: depth + 1,
-                  visited: {...visited, base.id},
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8),
-                child: Icon(
-                  Icons.account_tree_outlined,
-                  size: 15,
-                  color: HollowPalette.text.faint,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// A finished thing's own method, opened from the line that names it.
-///
-/// **It is a smaller sheet than the drink's, and the difference is deliberate.** There is no score, no mix button and
-/// no note: those are about *this drink*, and a base is not a drink a reader orders. What a base has is a name, the
-/// one line of method behind it, and its own ingredient lines -- which may themselves open, up to the depth the row
-/// carries.
-class _SubRecipeSheet extends ConsumerWidget {
-  const _SubRecipeSheet({
-    required this.recipe,
-    required this.depth,
-    required this.visited,
-  });
-
-  final Recipe recipe;
-  final int depth;
-  final Set<String> visited;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final names = ref.watch(seedNamesProvider).value;
-    final locale = ref.watch(seedNameLocaleProvider);
-    final cellar = ref.watch(cellarProvider).value;
-    final library = ref.watch(seedProvider).value;
-    final steps = names?.stepsFor(recipe.id, locale) ?? recipe.methodSteps;
-
-    return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(
-        20,
-        20,
-        20,
-        20 + MediaQuery.viewInsetsOf(context).bottom,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            names?.nameFor(recipe.id, locale, fallback: recipe.name) ?? recipe.name,
-            style: HollowType.heading,
-          ),
-          if (recipe.description != null) ...[
-            const SizedBox(height: 6),
-            Text(recipe.description!, style: HollowType.caption),
-          ],
-          if (steps.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            for (final step in steps.take(6))
-              Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Text(step, style: HollowType.body),
-              ),
-          ],
-          const SizedBox(height: 12),
-          const Divider(height: 1),
-          const SizedBox(height: 10),
-          for (final item in recipe.items)
-            _ItemRow(
-              item: item,
-              available: cellar?.has(item.ingredientId) ?? false,
-              depth: depth,
-              visited: visited,
-              name: names?.nameFor(
-                    item.ingredientId,
-                    locale,
-                    fallback: library?.ingredientById(item.ingredientId)?.name ?? '',
-                  ) ??
-                  library?.ingredientById(item.ingredientId)?.name,
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// The note somebody wrote on this recipe, and the field that changes it.
-///
-/// **Section 8's first consumer, and the reason it is a note on a recipe rather
-/// than something easier to reach.** A recipe carries an id section 4.4 promised
-/// not to renumber -- `recipe_id.dart` says a running index "would have been
-/// simpler and wrong", and gives this section as the reason. So the note survives
-/// the seed being replaced wholesale, which is the one thing the overlay exists to
-/// make true. A note keyed on the recipe's *name*, or on its position in the list,
-/// would look identical on screen and lose the user's words on the first update.
-///
-/// **Saving is explicit rather than on every keystroke.** An overlay write is an
-/// event, so a note typed at speaking pace would be one event per character, and
-/// the log is a thing people are meant to be able to read.
 class _RecipeNote extends ConsumerStatefulWidget {
   const _RecipeNote({required this.recipeId});
 

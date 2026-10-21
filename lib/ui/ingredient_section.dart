@@ -11,6 +11,7 @@ import 'hollow_glyphs.dart';
 import 'library.dart';
 import 'seed_names.dart';
 import 'shelf_label.dart';
+import 'sub_recipe_sheet.dart';
 import 'theme.dart';
 
 /// The reader's own ingredients, and the library's beside them.
@@ -380,14 +381,21 @@ class _Grid extends StatelessWidget {
 /// and one line per fact; a card has half a phone to work with, so the name goes on its own line and the two facts
 /// that qualify it go under it in one. `maxLines: 1` with an ellipsis on both, because a card that grew to fit
 /// "Plymouth Gin · spirit · Plymouth" would make its neighbours different heights and the grid ragged.
-class _IngredientCard extends StatelessWidget {
+class _IngredientCard extends ConsumerWidget {
   const _IngredientCard({super.key, required this.row, required this.onOpen});
 
   final _Row row;
   final VoidCallback onOpen;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // **How this thing is made, when it is a finished thing.** The same tree button the recipe sheet uses: "where
+    // does this come from" is asked in the ingredient list too, and answering it only from a drink's ingredient line
+    // left the more obvious place without an answer.
+    final library = ref.watch(seedProvider).value;
+    final madeBy = library?.ingredientById(row.id)?.extras['madeBy'];
+    final base = madeBy == null ? null : library?.recipeById(madeBy);
+
     final qualifiers = [
       if (row.kind != null) row.kind!,
       if (row.aliases.isNotEmpty) row.aliases.join(' · '),
@@ -463,6 +471,8 @@ class _IngredientCard extends StatelessWidget {
                 ),
               ),
             ],
+            if (base != null)
+              TreeButton(recipe: base, depth: 0, visited: const <String>{}),
           ],
         ),
       ),
