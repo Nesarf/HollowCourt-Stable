@@ -221,3 +221,32 @@ Three passes, in order:
 
 **A test asserts every shipped ingredient has a kind**, which the proposal already asks for. That is the guard that
 keeps the 142 from coming back.
+
+## What is still dead, and the four reasons it stays dead (2026-10-21)
+
+**Fifty of 207.** The number on its own reads like a backlog; grouped by reason it reads like a shelf. None of the
+four is a defect, and saying which is which is the difference between a to-do list and a description.
+
+| Reason | Count | Which |
+| --- | --- | --- |
+| **Alcohol we do not write for** | 27 | six spirits, fourteen liqueurs, three wines, three beers and one bitters — `whiskey`, `soju`, `sambuca`, `blueCuracao`, `tawnyPort`, `stout`, … |
+| **Seasoning, not a drink** | 6 | `olive`, `oliveBrine`, `pickleBrine`, `pickledOnion`, `sesameOil`, `orangeMarmalade` |
+| **Modern shelf goods** | 4 | `oatMilk`, `caramelSyrup`, `hazelnutSyrup`, `energyDrink` — the shelf may hold them; the drinks are past the 1980 line |
+| **Structural** | 2 | `filterCoffee`, `mokaCoffee` |
+| The rest | 11 | `appleJuice`, `aquafaba`, `bellPepper`, `blackberry`, `chilliPowder`, `coffeeBeans`, `coldBrewCoffee`, `corianderLeaf`, `cucumber`, `egg`, `sageLeaf` |
+
+**The 27 are not a gap in the list — they are the edge of it.** The IBA pages name 103 drinks, and those drinks use
+the spirits and liqueurs they use; a bottle outside that set is a bottle on a shelf that nobody's recipe calls for.
+Nothing needs fixing there. Alcohol is also outside the era boundary, so the reason they are dead has nothing to do
+with 1980.
+
+**The 2 structural ones are worth naming.** `filterCoffee` and `mokaCoffee` are *the liquid a brewer produces*, and
+**they used to have no way to be named at all** — a recipe pointing at them would have been a recipe naming the output
+of a recipe. That changed on 2026-10-21 with the sub-recipe tree: both now carry `extras.madeBy` pointing at a Base
+recipe that says how they are made, so a drink can name them and the reader can open the method behind them. **They
+are still dead on this page's own terms** — no drink names them yet — and that is now a content question rather than
+a structural one.
+
+**The 11 are the honest remainder**, and one of them — `coffeeBeans` — is dead because the brewed recipes were
+repointed at `coffeeGround`, which is what a pour-over actually uses. That repointing is in the history if anybody
+wants to see why the bean went quiet.
