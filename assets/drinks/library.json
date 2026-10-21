@@ -4,7 +4,7 @@
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
     "ingredients": 207,
-    "drinks": 130
+    "drinks": 138
   },
   "ingredients": [
     {
@@ -6815,6 +6815,296 @@
           "ingredientId": "mapleSyrup",
           "amount": 15000,
           "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseIcedCoffee",
+      "name": "Iced coffee",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Pull the espresso and let it cool completely.",
+        "Stir the sugar into the coffee while it is still warm.",
+        "Fill a glass with ice and pour the cold coffee over it."
+      ],
+      "description": "Cool the coffee before it goes anywhere near ice; poured hot it turns bitter and thin.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 8000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseIcedTea",
+      "name": "Iced tea",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Steep the tea strong and let it cool down completely.",
+        "Stir the sugar in while it is warm.",
+        "Pour it over ice, and do not add more water -- the ice will do it."
+      ],
+      "description": "Cool the coffee before it goes anywhere near ice; poured hot it turns bitter and thin.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "blackTea",
+          "amount": 8000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseLemonade",
+      "name": "Lemonade",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "shaken",
+      "methodSteps": [
+        "Squeeze the lemon and keep the peel out of the juice.",
+        "Shake the juice with the sugar and a little water until the sugar has gone.",
+        "Pour it over ice and top it up with the rest of the water."
+      ],
+      "description": "A lemon held at room temperature gives more juice than one straight from the cold.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "lemon",
+          "amount": 1,
+          "unit": "each",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 20000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseOrangeJuice",
+      "name": "Orange juice",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Squeeze the oranges and strain the pulp out if you want it clear.",
+        "Taste it before adding any sugar.",
+        "Pour it over ice and drink it at once."
+      ],
+      "description": "Two oranges make one glass only if they are good ones; the sugar is there for the bad mornings.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "orange",
+          "amount": 2,
+          "unit": "each",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 5000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseGingerAle",
+      "name": "Ginger ale",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Grate the ginger and steep it in a little hot water for ten minutes.",
+        "Strain it and stir the sugar into the still-warm liquid.",
+        "Let it cool, then top it with the soda water over ice."
+      ],
+      "description": "The ginger syrup keeps for a few days; the fizz does not, so it is added at the glass.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "ginger",
+          "amount": 20000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 15000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sodaWater",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseIcedCocoa",
+      "name": "Iced cocoa",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Make a paste of the cocoa and the sugar with a little cold milk.",
+        "Work the rest of the milk in, then chill it.",
+        "Pour it over ice and stir it once."
+      ],
+      "description": "Cool the coffee before it goes anywhere near ice; poured hot it turns bitter and thin.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "cocoaPowder",
+          "amount": 12000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseEggCream",
+      "name": "Egg cream",
+      "glass": "highball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Melt the chocolate with a spoonful of the milk.",
+        "Put it in the bottom of a tall glass and pour the cold milk in on top.",
+        "Add the soda water last and stir it hard from the bottom, once."
+      ],
+      "description": "The Brooklyn original is made with chocolate syrup. This is melted chocolate, which is thicker -- thin it with a spoonful of the milk before it goes in.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 100000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sodaWater",
+          "amount": 100000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "chocolate",
+          "amount": 10000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseCaffeGranita",
+      "name": "Coffee granita",
+      "glass": "lowball",
+      "ice": "crushed",
+      "method": "blended",
+      "methodSteps": [
+        "Sweeten the coffee while it is hot, then let it cool.",
+        "Freeze it in a shallow tray and break it up with a fork every half hour.",
+        "Spoon the crystals into a glass; do not let it melt into a slush."
+      ],
+      "description": "A fork and a shallow tray beat a machine here -- the crystals are the point of the drink.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 30000,
+          "unit": "g",
           "role": "modifier"
         }
       ]

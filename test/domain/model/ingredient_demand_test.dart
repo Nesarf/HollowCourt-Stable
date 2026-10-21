@@ -121,7 +121,7 @@ void main() {
   /// move would be the same failure as the one `seed_vocabulary_test` records: a check that quietly redefines what
   /// it checks. Whoever adds ingredients or recipes updates this and the document together, deliberately.
   group('the library that ships', () {
-    test('**38 / 35 / 72 / 62, over 207 ingredients and 130 recipes**', () {
+    test('**38 / 37 / 70 / 62, over 207 ingredients and 138 recipes**', () {
       final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
       final demand = IngredientDemand.of([
         for (final recipe in seed.recipes)
@@ -130,10 +130,10 @@ void main() {
       final histogram = demand.histogramOf([for (final i in seed.ingredients) i.id]);
 
       expect(seed.ingredients, hasLength(207));
-      expect(seed.recipes, hasLength(130));
+      expect(seed.recipes, hasLength(138));
       expect(histogram[DemandClass.core], 38);
-      expect(histogram[DemandClass.occasional], 35);
-      expect(histogram[DemandClass.rare], 72);
+      expect(histogram[DemandClass.occasional], 37);
+      expect(histogram[DemandClass.rare], 70);
       expect(histogram[DemandClass.dead], 62);
 
       // **And the four add up to the catalogue**, which is the check that survives a wrong histogram: every
