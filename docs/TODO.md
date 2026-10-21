@@ -570,6 +570,22 @@ python tool/hma_tests.py         # 工具自己的测试
 
 **判定：两件都可以做 ✓，但次序是「先分类，再配方」** —— 因为分类是前置数据工作，而配方是在它之上写内容。**而外设那一层（§11.2 整张表）继续不做，包括秤。**
 
+### 2026-10-21：② 咖啡单做了，七条，落在 `house` 这个来源里
+
+**① 那个前置已经完成，所以先分类这一步不再阻塞。** `tool/classify_ingredients.py` 报「189 ingredients, 0 changed, 0 unclassified」—— 全表都有 `kind`，`family` 在其上再收窄。咖啡早在表里：`coffee`、`coffeeBeans`、`espressoCoffee`、`coffeeLiqueur` 四条，都带 `family: coffee`。
+
+**七条配方**：手冲、法压壶、冷萃、摩卡壶（`Brewed`），美式、拿铁、冰拿铁（`Espresso`）。`extras.source` 写 `house`，所以 `foldersOf` 会把它们排成 IBA 之后的一个新文件夹 —— **这一步不需要改任何代码**，分组是从 `extras` 推导的。
+
+**方法那一栏是 owner 当年那句话的实例。** `library.json` 的 `method` 受 `Method` 枚举限制（只有 shaken/stirred/built/poured/blended），所以手冲写 `poured`、法压与摩卡壶写 `built`。**要真的让配方写 `pourOver`，得先放开 `Method`** —— 读者自写的配方（`AuthoredRecipe.method`）早就是自由字符串，只是随构建发布的那份不是。
+
+**「粉水比只能靠人自己对照秤」这条边界写进配方自己的 `description` 了**：1:16，那是给你自己秤的目标值，应用看不到杯子里实际有多少。
+
+**玻璃杯那栏有个诚实的缺口**：`Glass` 八个形状都是酒杯，咖啡杯不在里面。热饮用了 `lowball`、冰饮用 `highball`，是最接近的已有形状，不是咖啡杯。
+
+**连带改了两处测量**：`ingredient_demand_test` 的计数（189/110、36/31/56/66）与死库存比例（0.3492，原来是 0.360），`docs/ingredient-gap.md` 顶上加了注记，原测量保留不动。**七条名字与七条步骤都写了四种语言**，`seed_translation_coverage_test` 是那条「加一条饮品就要写四份翻译」的守卫。
+
+**一条观察，留着免得下一个人白查**：`test/ui/world_artwork_test.dart` 那三项在全量并行跑时偶发失败。2026-10-21 的一次全量里红了三项，单独跑这个文件三项全过，紧接着的下一次全量也全过。它读的是立绘资源，看起来是并发下的资源竞争 —— 下次红了先单独跑它，再判断是不是真的坏了。
+
 ---
 
 ## 十四、原料与配方的管理效率：**五条，四条建好、第五条量过之后拒掉**（2026-10-08 起，2026-10-11 结）

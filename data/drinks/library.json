@@ -4,7 +4,7 @@
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
     "ingredients": 189,
-    "drinks": 103
+    "drinks": 110
   },
   "ingredients": [
     {
@@ -5717,6 +5717,223 @@
           "ingredientId": "sodaWater",
           "amount": 0,
           "unit": "dash",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "housePourOver",
+      "name": "Pour-over coffee",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "poured",
+      "methodSteps": [
+        "Rinse the filter with hot water and warm the cup.",
+        "Add the ground coffee, pour just enough water to wet it, and wait thirty seconds.",
+        "Pour the rest in two or three goes and let it drain completely."
+      ],
+      "description": "The ratio is 1:16 -- 15 g to 250 ml. Those numbers are a target for your own scale; the application cannot see what actually went into the cup.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeBeans",
+          "amount": 15000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 250000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseFrenchPress",
+      "name": "French press",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put the ground coffee in the jug and pour on water just off the boil.",
+        "Stir it once, put the lid on, and leave it four minutes.",
+        "Press the plunger down slowly and pour it out."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeBeans",
+          "amount": 30000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 500000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseColdBrew",
+      "name": "Cold brew",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "poured",
+      "methodSteps": [
+        "Put the ground coffee in a jar and cover it with cold water.",
+        "Leave it in the refrigerator for about twelve hours.",
+        "Strain it through a filter and keep it cold."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeBeans",
+          "amount": 100000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 1000000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseMoka",
+      "name": "Moka pot",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Fill the base with water up to the valve and put the ground coffee in the basket without pressing it.",
+        "Screw the two halves together and set it on a low flame.",
+        "Take it off as soon as it starts to hiss, and pour it at once."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeBeans",
+          "amount": 18000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseCaffeAmericano",
+      "name": "Caffe americano",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Pull the espresso into a cup.",
+        "Pour the hot water over it.",
+        "Stir it once so the crema settles back in."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseLatte",
+      "name": "Latte",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Pull the espresso into a jug.",
+        "Steam the milk until it is glossy, then pour it in, holding the foam back with a spoon.",
+        "Spoon the foam on top."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseIcedLatte",
+      "name": "Iced latte",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Fill a glass with ice.",
+        "Pour the cold milk in, then the espresso over it.",
+        "Stir it before drinking."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 120000,
+          "unit": "ml",
           "role": "modifier"
         }
       ]

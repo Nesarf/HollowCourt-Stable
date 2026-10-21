@@ -112,12 +112,16 @@ void main() {
   /// [IngredientDemand]. Two measurements agreeing is worth more than either, and the day they stop agreeing is a
   /// day somebody should look.
   ///
+  /// **Re-measured 2026-10-21, when the coffee list arrived** -- the first time this group has moved since it was
+  /// written. Seven house recipes took two ingredients out of dead and one out of rare. The figures below are the
+  /// new ones, and `docs/ingredient-gap.md` keeps the original measurement with a note saying so.
+  ///
   /// **It is pinned exactly rather than bounded, and that is the point.** The numbers are a documented claim about
   /// the shipped data, so a seed change that moves them has made a document wrong, and a test that tolerated the
   /// move would be the same failure as the one `seed_vocabulary_test` records: a check that quietly redefines what
   /// it checks. Whoever adds ingredients or recipes updates this and the document together, deliberately.
   group('the library that ships', () {
-    test('**33 / 31 / 57 / 68, over 189 ingredients and 103 recipes**', () {
+    test('**36 / 31 / 56 / 66, over 189 ingredients and 110 recipes**', () {
       final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
       final demand = IngredientDemand.of([
         for (final recipe in seed.recipes)
@@ -126,11 +130,11 @@ void main() {
       final histogram = demand.histogramOf([for (final i in seed.ingredients) i.id]);
 
       expect(seed.ingredients, hasLength(189));
-      expect(seed.recipes, hasLength(103));
-      expect(histogram[DemandClass.core], 33);
+      expect(seed.recipes, hasLength(110));
+      expect(histogram[DemandClass.core], 36);
       expect(histogram[DemandClass.occasional], 31);
-      expect(histogram[DemandClass.rare], 57);
-      expect(histogram[DemandClass.dead], 68);
+      expect(histogram[DemandClass.rare], 56);
+      expect(histogram[DemandClass.dead], 66);
 
       // **And the four add up to the catalogue**, which is the check that survives a wrong histogram: every
       // ingredient is in exactly one class, so a bucket lost to a bug shows up as a total that is short.
@@ -139,8 +143,13 @@ void main() {
     });
 
     test('**dead stock is a third of the catalogue, and that is the finding**', () {
-      // Said as a ratio rather than the raw 68, because the claim being guarded is the one a reader meets on the
-      // screen -- "a third of these are not your responsibility" -- and 68 over 189 is what makes it true.
+      // Said as a ratio rather than the raw count, because the claim being guarded is the one a reader meets on the
+      // screen -- "a third of these are not your responsibility" -- and 66 over 189 is what makes it true.
+      //
+      // **The centre moved on 2026-10-21, and the coffee list is why.** Seven house recipes name `coffeeBeans`,
+      // `espressoCoffee` and `water`, which took two ingredients out of dead and one out of rare: 0.360 became
+      // 0.3492. The band moved with the number rather than being widened to hold both, because a range that
+      // tolerated either value would have stopped saying what the number means.
       final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
       final demand = IngredientDemand.of([
         for (final recipe in seed.recipes)
@@ -148,8 +157,8 @@ void main() {
       ]);
       final dead = demand.histogramOf([for (final i in seed.ingredients) i.id])[DemandClass.dead]!;
 
-      expect(dead / seed.ingredients.length, greaterThan(0.35));
-      expect(dead / seed.ingredients.length, lessThan(0.37));
+      expect(dead / seed.ingredients.length, greaterThan(0.34));
+      expect(dead / seed.ingredients.length, lessThan(0.36));
     });
   });
 }
