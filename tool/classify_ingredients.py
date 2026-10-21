@@ -173,6 +173,8 @@ BY_HAND: dict[str, tuple[str, str | None]] = {
     'blackTea': ('tea', None),
     'earlGreyTea': ('tea', None),
     'greenTea': ('tea', None),
+    'matcha': ('tea', 'matcha'),
+    'houjicha': ('tea', 'houjicha'),
     'falernum': ('syrup', 'spice'),
     # ---- dairy and eggs --------------------------------------------------------------------------
     'condensedMilk': ('dairy', None),
@@ -196,6 +198,8 @@ BY_HAND: dict[str, tuple[str, str | None]] = {
     'corianderLeaf': ('spice', 'herb'),
     'mintLeaf': ('spice', 'herb'),
     'nutmeg': ('spice', 'spice'),
+    'cardamom': ('spice', 'spice'),
+    'clove': ('spice', 'spice'),
     'sageLeaf': ('spice', 'herb'),
     'chilliPepper': ('spice', 'spice'),
     'chilliPowder': ('spice', 'spice'),

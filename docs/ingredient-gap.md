@@ -17,13 +17,14 @@ Measured from `assets/drinks/library.json`:
 | An ingredient's shape | `{id, name}`, and `category` / `defaultUnit` where somebody added them |
 | Recipes | 103, all from IBA's three categories |
 
-**Later, and this is a note rather than an edit.** The coffee and milk work arrived on 2026-10-21 in three passes.
-Seven house coffee recipes took the drinks list to 110 and the dead-stock count to **66 of 189**; twelve
+**Later, and this is a note rather than an edit.** The coffee, milk and tea work arrived on 2026-10-21 in four
+passes. Seven house coffee recipes took the drinks list to 110 and the dead-stock count to **66 of 189**; twelve
 coffee-family ingredients were added next, which put the library at 201 and the count at 74 because seven of them
-were not used yet; then ten more drinks -- five coffee, five milk, and the milk group steeps no leaf -- began using
-most of the rest. **The library is now 203 ingredients and 124 drinks, with 68 dead.** The figures above are the
-measurement this page is about and are left exactly as they were read; `test/domain/model/ingredient_demand_test.dart`
-carries the current ones, and its header says when and why they moved.
+were not used yet; then ten more drinks -- five coffee, five milk, and that milk group steeps no leaf -- began using
+most of the rest; and finally eight traditional tea-and-milk drinks with four tea and spice rows finished it.
+**The library is now 207 ingredients and 132 drinks, with 63 dead.** The figures above are the measurement this page
+is about and are left exactly as they were read; `test/domain/model/ingredient_demand_test.dart` carries the current
+ones, and its header says when and why they moved.
 
 **An ingredient record is a name and an id**, and the category is an *added* field rather than a base one — which is
 why the count of unclassified ingredients is a count of records nobody has been through, not a count of missing data.
