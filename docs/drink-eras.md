@@ -24,6 +24,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | French press | 1929 | documented | the patent is the modern press; infusing and straining is much older |
 | Moka pot | 1933 | documented | Bialetti's design, and the shape has not changed since |
 | Instant coffee | 1901 | documented | the patent predates the commercial product by more than thirty years |
+| Decaffeinated coffee | 1903 | documented | the process is this drink's date |
 
 ## Espresso
 
@@ -33,6 +34,9 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Latte | mid 20th century | tradition | milk and coffee at home is older; the café order is 20th century |
 | Vienna coffee | 17th century | tradition | the Viennese coffee house, and whipped cream on coffee |
 | Vietnamese iced coffee | mid 20th century | tradition | condensed milk and a filter, with ice |
+| Ristretto | 20th century | tradition | the short end of the same shot |
+| Lungo | 20th century | tradition | the long end of it |
+| Shakerato | mid 20th century | tradition | the Italian answer to a hot afternoon |
 
 ## Tea
 
@@ -72,6 +76,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Iced cocoa | 19th century | tradition | the soda fountain again, and cold cocoa before it |
 | Egg cream | 1920s | tradition | Brooklyn, and the origin story has more than one version |
 | Coffee granita | 19th century | tradition | Sicilian, and the crystals are the point |
+| Grapefruit juice | early 20th century | documented | the fruit is an 18th-century crossing; the juice came with the groves |
 | Apple juice | pre-modern | documented | pressing fruit and drinking it is older than the word juice |
 | Coconut water | pre-modern | documented | drunk from the nut in the tropics; the glass is the only new part |
 | Lemon sorbet glass | 19th century | tradition | the granita's colder cousin, served wide enough to be a drink |
@@ -86,6 +91,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Lychee cooler | 19th century | assembled | the fruit reaches Europe in the 18th century; the drink is ours |
 | Guava fizz | 19th century | assembled | same |
 | Rose lemonade | 19th century | tradition | rose water in a cold drink is old in the eastern Mediterranean |
+| Tonic with lime | 19th century | documented | quinine water was a medicine before it was a mixer |
 
 ## Sweet
 
@@ -103,7 +109,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 
 ## What this page is not
 
-It is not a claim that every one of these is a "classic". **Six of the forty-seven are marked `assembled`** — the five
+It is not a claim that every one of these is a "classic". **Six of the fifty-three are marked `assembled`** — the five
 fizzes whose pairing nobody called a drink before us, and the peach iced tea — and they say so rather than being
 dressed up as traditions.
 
