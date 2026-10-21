@@ -3,8 +3,8 @@
   "version": 1,
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
-    "ingredients": 203,
-    "drinks": 124
+    "ingredients": 207,
+    "drinks": 132
   },
   "ingredients": [
     {
@@ -201,6 +201,12 @@
       "family": "caramel"
     },
     {
+      "id": "cardamom",
+      "name": "Cardamom",
+      "kind": "spice",
+      "family": "spice"
+    },
+    {
       "id": "chamomileCordial",
       "name": "Chamomile cordial",
       "defaultUnit": "ml",
@@ -246,6 +252,12 @@
       "id": "cinnamonSyrup",
       "name": "Cinnamon syrup",
       "kind": "syrup",
+      "family": "spice"
+    },
+    {
+      "id": "clove",
+      "name": "Clove",
+      "kind": "spice",
       "family": "spice"
     },
     {
@@ -617,6 +629,12 @@
       "kind": "pantry"
     },
     {
+      "id": "houjicha",
+      "name": "Houjicha",
+      "kind": "tea",
+      "family": "houjicha"
+    },
+    {
       "id": "iceCream",
       "name": "Ice cream",
       "kind": "dairy"
@@ -707,6 +725,12 @@
       "defaultUnit": "ml",
       "kind": "liqueur",
       "family": "fruit"
+    },
+    {
+      "id": "matcha",
+      "name": "Matcha",
+      "kind": "tea",
+      "family": "matcha"
     },
     {
       "id": "melonLiqueur",
@@ -6527,6 +6551,338 @@
           "ingredientId": "sugar",
           "amount": 10000,
           "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseEnglishTea",
+      "name": "English tea with milk",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Warm the pot, put the leaves in, and pour water just off the boil over them.",
+        "Leave it four minutes, then pour it into the cup.",
+        "Add the milk and the sugar."
+      ],
+      "description": "Milk in first or last is a household argument, not a fact this application can settle.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "blackTea",
+          "amount": 5000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 5000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseEarlGreyMilkTea",
+      "name": "Earl Grey milk tea",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Steep the Earl Grey for three minutes rather than four: bergamot turns bitter before the tea does.",
+        "Warm the milk and pour it in.",
+        "Add the sugar and stir once."
+      ],
+      "description": "Milk in first or last is a household argument, not a fact this application can settle.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "earlGreyTea",
+          "amount": 5000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 180000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 40000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 5000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseHongKongMilkTea",
+      "name": "Hong Kong milk tea",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Steep a strong pot of black tea long enough that it reads as dark as coffee.",
+        "Pour it back and forth between two pots a few times to pull the astringency out.",
+        "Fill the cup two-thirds with the tea and top it with evaporated milk."
+      ],
+      "description": "A target for your own kettle and your own scale; the application cannot see the cup.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "blackTea",
+          "amount": 10000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "evaporatedMilk",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseThaiMilkTea",
+      "name": "Thai milk tea",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Steep the tea strong, then strain it.",
+        "Stir the condensed milk in while the tea is still hot.",
+        "Fill a glass with ice, pour the tea over it, and float the evaporated milk on top."
+      ],
+      "description": "A target for your own kettle and your own scale; the application cannot see the cup.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "blackTea",
+          "amount": 10000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "condensedMilk",
+          "amount": 50000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "evaporatedMilk",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseMasalaChai",
+      "name": "Masala chai",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Boil the water with the crushed cardamom, the clove and the cinnamon for two minutes.",
+        "Add the tea and boil it another minute.",
+        "Pour the milk in and bring it back to a simmer, then strain it into the cup."
+      ],
+      "description": "Crush the spices rather than grinding them; ground spice clouds the cup and turns it bitter.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "blackTea",
+          "amount": 8000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 100000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 12000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "cardamom",
+          "amount": 2,
+          "unit": "each",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "clove",
+          "amount": 2,
+          "unit": "each",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "cinnamon",
+          "amount": 1,
+          "unit": "pinch",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseMatchaLatte",
+      "name": "Matcha latte",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Sift the matcha into a bowl so it does not clump.",
+        "Add a little hot water -- not boiling -- and whisk it to a smooth paste with no foam.",
+        "Warm the milk and pour it in, then stir it once from the bottom."
+      ],
+      "description": "Boiling water on matcha makes it bitter; let the kettle rest for a minute first.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "matcha",
+          "amount": 4000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseHoujichaLatte",
+      "name": "Houjicha latte",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Steep the houjicha for three minutes in water just off the boil -- it is roasted, so it takes heat.",
+        "Strain it and warm the milk separately.",
+        "Pour the milk in and stir once."
+      ],
+      "description": "A target for your own kettle and your own scale; the application cannot see the cup.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "houjicha",
+          "amount": 6000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseVietnameseCoffee",
+      "name": "Vietnamese iced coffee",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Put the condensed milk in the bottom of the glass.",
+        "Brew a strong coffee and pour it over the milk while it is hot.",
+        "Fill the glass with ice and stir it up from the bottom."
+      ],
+      "description": "The condensed milk is the sugar; adding more makes it a dessert.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "condensedMilk",
+          "amount": 40000,
+          "unit": "ml",
           "role": "modifier"
         }
       ]
