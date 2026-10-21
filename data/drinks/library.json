@@ -4,7 +4,7 @@
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
     "ingredients": 209,
-    "drinks": 178
+    "drinks": 181
   },
   "ingredients": [
     {
@@ -8484,6 +8484,117 @@
           "ingredientId": "sugar",
           "amount": 10000,
           "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseChilliCocoa",
+      "name": "Chilli cocoa",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Stir the cocoa, the sugar and the chilli together dry.",
+        "Pour a little hot water on and work it into a paste.",
+        "Add the rest of the water and bring it to the edge of a boil."
+      ],
+      "description": "Chilli came before sugar in this cup by a very long way; the sugar here is the modern correction.",
+      "extras": {
+        "source": "house",
+        "category": "Sweet"
+      },
+      "items": [
+        {
+          "ingredientId": "cocoaPowder",
+          "amount": 12000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "chilliPowder",
+          "amount": 1,
+          "unit": "pinch",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseCucumberWater",
+      "name": "Cucumber water",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "poured",
+      "methodSteps": [
+        "Slice the cucumber thin and put it in a jug of cold water.",
+        "Leave it an hour in the refrigerator; longer and it turns bitter.",
+        "Pour it over ice and keep the slices in the jug."
+      ],
+      "description": "A jug of cold water with cucumber in it is in the household books; it is not a cocktail and does not try.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "cucumber",
+          "amount": 1,
+          "unit": "each",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 300000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseBicerin",
+      "name": "Bicerin",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Melt the chocolate into the bottom of a warm glass and let it settle.",
+        "Pour the hot coffee over it, down the side, so the layers do not mix.",
+        "Float the cream on top and serve it without a spoon."
+      ],
+      "description": "Three layers, and they are meant to be seen: chocolate on the bottom, coffee, cream on top, and no stirring.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 40000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "chocolate",
+          "amount": 20000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "cream",
+          "amount": 40000,
+          "unit": "ml",
           "role": "modifier"
         }
       ]

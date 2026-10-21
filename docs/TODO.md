@@ -816,6 +816,24 @@ python tool/hma_tests.py         # 工具自己的测试
 
 这里面：佐料 6 条（`olive` 那几条）不该救；现代货 4 条受约束限制；`aquafaba` 是 2010 年代才发现打发性；`coffeeBeans`、`mokaCoffee`、`coldBrewCoffee` 是结构性的；真还能救的只剩 `bellPepper`、`cucumber`、`chilliPowder`、`corianderLeaf` 四条蔬果香料 —— **而蔬果饮这条线很薄，要救它们得先找到能站住的出处，不找到就不做**。
 
+### 三条：辣椒可可、黄瓜水、比切林
+
+| 配方 | 出处 |
+| --- | --- |
+| 辣椒可可 | 阿兹特克；辣椒配可可比起糖配可可早得多 |
+| 黄瓜水 | 19 世纪家庭手册里的「一壶冷水加黄瓜」 |
+| 比切林 | 都灵，18 世纪；巧克力、咖啡、奶油分三层 |
+
+**救活两条**：`chilliPowder` 与 `cucumber`。
+
+**两条没救，是刻意的**：`bellPepper` 与 `corianderLeaf` 背后没有一条我能指出来的饮品。为了把 dead 数压下去而编一条出来，正是这个工程一直拒绝做的事 —— 所以它们留在名单里，而这一条留在这里。
+
+**比切林的说明里写了「不给勺子」** —— 三层是给人看的，搅开就不是它了。这类「不许搅」的指令在配方里很少见，写下来是因为它属于做法本身。
+
+**数字**：配方 178 → **181**，原料仍是 209，死库存 45 → **43**，比例 0.2153 → **0.2057**。
+
+**非酒侧现在只剩 16 条 dead**，按理由分：佐料 6（`olive`、`oliveBrine`、`orangeMarmalade`、`pickleBrine`、`pickledOnion`、`sesameOil`）、现代货 5（`oatMilk`、`caramelSyrup`、`hazelnutSyrup`、`energyDrink`、`aquafaba`）、结构性 3（`coffeeBeans`、`mokaCoffee`、`coldBrewCoffee`）、**没有出处的 2**（`bellPepper`、`corianderLeaf`）。**这条线到这里可以收了** —— 剩下每一条要么不该救，要么找不到能站住的出处。
+
 **一条观察，留着免得下一个人白查**：`test/ui/world_artwork_test.dart` 那三项在全量并行跑时偶发失败。2026-10-21 的一次全量里红了三项，单独跑这个文件三项全过，紧接着的下一次全量也全过。它读的是立绘资源，看起来是并发下的资源竞争 —— 下次红了先单独跑它，再判断是不是真的坏了。
 
 ---
