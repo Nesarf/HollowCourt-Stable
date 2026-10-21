@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/seed/seed_repository.dart';
 import '../domain/model/ingredient.dart';
 import '../domain/model/barcode.dart';
+import '../adapters/barcode_catalog.dart';
+import '../adapters/registry.dart';
+import 'adapters_providers.dart';
 import 'barcode_providers.dart';
 import 'barcode_scanner_page.dart';
 import '../domain/overlay/synonyms.dart';
@@ -349,6 +352,11 @@ class _AddBottleSheetState extends ConsumerState<_AddBottleSheet> {
   /// What the digits turned out to be: not a barcode, a barcode nobody has described, or one that resolves.
   BarcodeResolution? _barcodeVerdict;
 
+  /// **What the catalogue said, when the reader asked it.** Null until the button is pressed, and cleared whenever the
+  /// digits change -- an answer about a different bottle on the screen is worse than no answer.
+  CatalogAnswer? _catalog;
+  bool _looking = false;
+
   /// The unit this entry is being typed in, or null while the reader has not picked one.
   ///
   /// **Null means "whatever the preference says", not "no unit".** Resolving the preference
@@ -374,7 +382,10 @@ class _AddBottleSheetState extends ConsumerState<_AddBottleSheet> {
   /// reason: a reader can close the sheet while the disk is answering.
   Future<void> _checkBarcode(String typed) async {
     if (typed.trim().isEmpty) {
-      setState(() => _barcodeVerdict = null);
+      setState(() {
+        _barcodeVerdict = null;
+        _catalog = null;
+      });
       return;
     }
     final registry = await ref.read(barcodeRegistryProvider.future);
@@ -478,6 +489,38 @@ class _AddBottleSheetState extends ConsumerState<_AddBottleSheet> {
     _volume.dispose();
     _price.dispose();
     super.dispose();
+  }
+
+  /// Asks the catalogue what a code is, and shows whatever came back -- including a miss, which is an answer.
+  Future<void> _lookUpCatalog(String code) async {
+    if (code.isEmpty) return;
+    setState(() {
+      _looking = true;
+      _catalog = null;
+    });
+    final answer = await const BarcodeCatalog().lookUp(code);
+    if (!mounted) return;
+    setState(() {
+      _looking = false;
+      _catalog = answer;
+    });
+  }
+
+  /// The line the answer becomes. **The source is printed with the product**, every time: a fact that arrived from
+  /// the network and is shown without saying so is a fact the reader will attribute to this application.
+  Widget _catalogAnswer(CatalogAnswer answer) {
+    return switch (answer) {
+      CatalogFound(:final product) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('${ref.copy(Copy.barcodeCatalogFound)}${product.title}', style: HollowType.body),
+            const SizedBox(height: 2),
+            DualCopyText(Copy.barcodeCatalogSource, style: HollowType.caption),
+          ],
+        ),
+      CatalogMissing() => DualCopyText(Copy.barcodeCatalogMissing, style: HollowType.caption),
+      CatalogUnreachable() => DualCopyText(Copy.barcodeCatalogUnreachable, style: HollowType.caption),
+    };
   }
 
   Future<void> _save() async {
@@ -621,6 +664,29 @@ class _AddBottleSheetState extends ConsumerState<_AddBottleSheet> {
                 color: _barcodeVerdict is BarcodeUnusable ? HollowPalette.rose : HollowPalette.inkSoft,
               ),
             ),
+          ],
+          // **The catalogue, offered only where it can answer.** It appears when the digits are a valid barcode this
+          // application has never recorded, and only if the reader has enabled the adapter -- the card in 设置 is
+          // where the disclosure lives, and a lookup here without that consent would be the silent exposure the
+          // disclosure exists to prevent.
+          if (_barcodeVerdict is BarcodeUnknown && ref.watch(adapterRegistryProvider).isEnabled(AdapterKind.barcode)) ...[
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                key: const ValueKey('barcode-lookup'),
+                onPressed: _looking ? null : () => _lookUpCatalog(_barcode.text.trim()),
+                icon: const Icon(Icons.travel_explore, size: 17),
+                label: DualCopyText(
+                  _looking ? Copy.barcodeLookingUp : Copy.barcodeLookUp,
+                  style: HollowType.caption,
+                ),
+              ),
+            ),
+            if (_catalog case final answer?) ...[
+              const SizedBox(height: 2),
+              _catalogAnswer(answer),
+            ],
           ],
           const SizedBox(height: 18),
           if (widget.ingredients.isNotEmpty)

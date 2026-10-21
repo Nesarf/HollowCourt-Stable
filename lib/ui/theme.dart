@@ -2613,6 +2613,68 @@ abstract final class Copy {
     Translated.authored('关掉'), Translated.authored('Close'),
     also: {'ja': '閉じる', 'zh-HK': '閂咗佢', 'zh-TW': '關掉'});
 
+  // ---------------------------------------------------------------- the catalogue
+
+  /// **The step 2026-09-25 called "directory lookup", and the only adapter that leaves the machine.**
+  ///
+  /// The button carries no voice: it is a label, and the labels this application speaks in are the plain ones.
+  static const barcodeLookUp = CopyLine.withLanguages(
+    Translated.authored('联网查这个条码'), Translated.authored('Look this barcode up'),
+    also: {'ja': 'このバーコードを照会', 'zh-HK': '聯網查呢個條碼', 'zh-TW': '聯網查這個條碼'});
+  static const barcodeLookingUp = CopyLine.withLanguages(
+    Translated.authored('正在查…'), Translated.authored('Looking it up...'),
+    also: {'ja': '照会中…', 'zh-HK': '正在查…', 'zh-TW': '正在查…'});
+
+  /// The catalogue has it. The product's own line is appended after this.
+  static const barcodeCatalogFound = CopyLine.withLanguages(
+    Translated.authored('目录里说这是：'), Translated.authored('The catalogue says this is '),
+    also: {'ja': 'カタログでは：', 'zh-HK': '目錄話呢個係：', 'zh-TW': '目錄裡說這是：'});
+
+  static const barcodeCatalogMissing = CopyLine.withLanguages(
+    Translated.authored('目录里没有这个码。小厂子的酒常常查不到，不是你的错。'),
+    Translated.authored('The catalogue does not have this code. A small distillery is often missing, and that is not a mistake of yours.'),
+    also: {
+      'ja': 'カタログにこのコードはありません。小さな蒸留所のお酒は載っていないことが多く、あなたの落ち度ではありません。',
+      'zh-HK': '目錄冇呢個碼。細廠嘅酒成日查唔到，唔係你嘅錯。',
+      'zh-TW': '目錄裡沒有這個碼。小廠的酒常常查不到，不是你的錯。',
+    },
+    voices: {
+      Voice.heiress: '目录里没有这个码。小厂子的酒常常查不到，这跟你的输入没关系。',
+      Voice.heiressJa: 'カタログにこのコードはありませんの。小さな蒸留所のお酒は載っておりませんでしょう。入力の誤りではございませんわ。',
+      Voice.minister: 'The catalogue holds no such code. A small distillery is frequently absent from it, and that is not a fault in the entry.',
+    },
+  );
+  static const barcodeCatalogUnreachable = CopyLine.withLanguages(
+    Translated.authored('没能问到目录：要么没网，要么目录那边不应答。'),
+    Translated.authored('The catalogue could not be reached: either there is no network, or it did not answer.'),
+    also: {
+      'ja': 'カタログに問い合わせられませんでした。ネットワークがないか、応答がありません。',
+      'zh-HK': '問唔到目錄：一係冇網，一係目錄嗰邊唔應。',
+      'zh-TW': '沒能問到目錄：要麼沒網，要麼目錄那邊沒有回應。',
+    },
+    voices: {
+      Voice.heiress: '没能问到目录。要么是网断了，要么是那边不理人——两件事本小姐分得清。',
+      Voice.heiressJa: 'カタログに問い合わせられませんでしたの。回線が切れているのか、向こうが応じないのか——そこは区別して差し上げますわ。',
+      Voice.minister: 'The catalogue did not answer, which may mean the network is down or that it declined to respond; the two are reported separately.',
+    },
+  );
+
+  /// Where the answer came from, said every time rather than in a document.
+  static const barcodeCatalogSource = CopyLine.withLanguages(
+    Translated.authored('来源：Open Food Facts（ODbL）。只发出去这串数字，你家酒窖的事一个字都没提。'),
+    Translated.authored('Source: Open Food Facts (ODbL). Only these digits were sent; nothing about your cellar was mentioned.'),
+    also: {
+      'ja': '出典：Open Food Facts（ODbL）。送ったのはこの数字だけで、酒蔵のことは何も伝えておりません。',
+      'zh-HK': '來源：Open Food Facts（ODbL）。只寄咗呢串數字，你個酒窖嘅事一個字都冇提。',
+      'zh-TW': '來源：Open Food Facts（ODbL）。只送出這串數字，你家酒窖的事一個字都沒提。',
+    },
+    voices: {
+      Voice.heiress: '出自 Open Food Facts，ODbL。只把这串数字递出去，你家酒窖的事本小姐一个字都没提。',
+      Voice.heiressJa: 'Open Food Facts、ODbL でございます。差し出したのはこの数字だけで、酒蔵のことは一言も申しておりませんわ。',
+      Voice.minister: 'Sourced from Open Food Facts under ODbL. The digits alone were transmitted; no fact about the cellar was.',
+    },
+  );
+
   static const adapterNeedsCamera = CopyLine.withLanguages(
     Translated.authored('需要摄像头'), Translated.authored('Needs the camera'),
     also: {'ja': 'カメラが必要', 'zh-HK': '需要鏡頭', 'zh-TW': '需要鏡頭'});

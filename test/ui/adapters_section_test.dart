@@ -42,32 +42,41 @@ void main() {
     await pumpSection(tester);
 
     expect(tester.takeException(), isNull);
+    // **The barcode is offered and the other two are not**, which is the rule applied honestly rather than the rule
+    // abandoned: on 2026-10-22 the camera and the catalogue became things this build can actually do.
+    expect(find.text(Copy.adapterBarcode.primary.text), findsOneWidget,
+        reason: 'the barcode can be scanned and looked up now, so its card is shown');
     for (final held in <String>[
       Copy.adapterPriceComparison.primary.text,
-      Copy.adapterBarcode.primary.text,
       Copy.adapterMeasurement.primary.text,
     ]) {
       expect(find.text(held), findsNothing, reason: '$held is held back until it can be used');
     }
-    expect(find.byType(Switch), findsNothing,
-        reason: 'a switch is offered when a seam can be used, and none of them can be yet');
+    // And exactly one switch, beside the one seam that can be switched on.
+    expect(find.byType(Switch), findsOneWidget,
+        reason: 'a switch is offered for the seams that can be used, and there is one of those');
   });
 
-  testWidgets('**and the registry agrees with the screen: nothing is available**', (tester) async {
+  testWidgets('**and the registry agrees with the screen: only the barcode is built**', (tester) async {
     await pumpSection(tester);
 
     final container = ProviderScope.containerOf(tester.element(find.byType(AdaptersSection)));
     final registry = container.read(adapterRegistryProvider);
     expect(registry.enabled, isEmpty, reason: 'off by default is the initial state');
-    for (final kind in AdapterKind.values) {
+    // **The barcode is the one seam this build can actually run**, since the catalogue lookup landed on 2026-10-22.
+    // Everything else is still a promise, and the discipline this file guards is that a promise is not a button.
+    expect(registry.isAvailable(AdapterKind.barcode), isTrue);
+    for (final kind in AdapterKind.values.where((k) => k != AdapterKind.barcode)) {
       expect(registry.isAvailable(kind), isFalse, reason: '${kind.name} is not built in this build');
     }
   });
 
   test('an unavailable adapter still refuses to be enabled', () {
+    // The price comparison, which remains unimplemented; the barcode used to stand here as the example and no longer
+    // can, because it is built.
     final registry = AdapterRegistry(declaredAdapters);
     expect(
-      () => registry.enable(AdapterKind.barcode),
+      () => registry.enable(AdapterKind.priceComparison),
       throwsA(isA<StateError>()),
       reason: 'the registry is what makes a shut door shut, not the screen',
     );

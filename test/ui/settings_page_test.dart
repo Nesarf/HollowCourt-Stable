@@ -185,11 +185,13 @@ void main() {
     expect(find.text(Copy.developerSeamsNote.primary.text), findsOneWidget);
     // **The developer section lists the seams, and under the owner's rule of 2026-09-25 it lists only the ones
     // that can be used.** What is held back keeps its code and its disclosure; it is simply not on the screen,
-    // which is what "暂时隐藏，等以后确认可用了再放出" means in practice. The bartender was the one that could be
-    // used and it has since been withdrawn, so nothing is listed at all -- which is the same rule applied to a
-    // different state rather than an exception to it.
-    expect(find.text(Copy.adapterBarcode.primary.text), findsNothing,
-        reason: 'the camera has no plugin, no permission and no implementation: held back');
+    // which is what "暂时隐藏，等以后确认可用了再放出" means in practice.
+    //
+    // **The barcode is the first seam to come back.** It was held back from 2026-09-25 because the camera had no
+    // plugin and the catalogue had no client; both exist since 2026-10-22, so it is listed, with its switch and its
+    // disclosure. The rule did not change -- what changed is whether this build can keep the promise.
+    expect(find.text(Copy.adapterBarcode.primary.text), findsOneWidget,
+        reason: 'the camera and the catalogue both work now: the card is back');
     expect(find.text(Copy.adapterPriceComparison.primary.text), findsNothing,
         reason: 'no price source is built: held back');
     expect(

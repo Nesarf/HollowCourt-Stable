@@ -84,9 +84,13 @@ final class BarcodeAdapter implements Adapter {
   @override
   AdapterTransport get transport => AdapterTransport.https;
 
-  /// False: no implementation in this build. Not the same question as whether a catalogue exists.
+  /// **True since 2026-10-22**, when `adapters/barcode_catalog.dart` landed. It said false before that, and the card
+  /// was hidden with it -- the discipline of 2026-09-25: a screen does not offer what this build cannot do.
+  ///
+  /// Being available is not being on. The reader still has to enable it, and the disclosure below has not changed:
+  /// the digits leave, the cellar does not.
   @override
-  bool get isAvailable => false;
+  bool get isAvailable => true;
 
   @override
   AdapterDisclosure get disclosure => const AdapterDisclosure(
