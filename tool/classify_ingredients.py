@@ -188,6 +188,8 @@ BY_HAND: dict[str, tuple[str, str | None]] = {
     'whippedCream': ('dairy', 'cream'),
     'oatMilk': ('dairy', 'plantMilk'),
     'soyMilk': ('dairy', 'plantMilk'),
+    'evaporatedMilk': ('dairy', 'milk'),
+    'yogurt': ('dairy', 'fermentedMilk'),
     # ---- spices and herbs ------------------------------------------------------------------------
     'basilLeaf': ('spice', 'herb'),
     'cinnamon': ('spice', 'spice'),

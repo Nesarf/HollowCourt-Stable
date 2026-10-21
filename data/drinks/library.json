@@ -3,8 +3,8 @@
   "version": 1,
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
-    "ingredients": 201,
-    "drinks": 114
+    "ingredients": 203,
+    "drinks": 124
   },
   "ingredients": [
     {
@@ -464,6 +464,13 @@
       "name": "Espresso",
       "kind": "pantry",
       "family": "coffee"
+    },
+    {
+      "id": "evaporatedMilk",
+      "name": "Evaporated milk",
+      "defaultUnit": "ml",
+      "kind": "dairy",
+      "family": "milk"
     },
     {
       "id": "falernum",
@@ -1209,6 +1216,12 @@
       "name": "Brandy",
       "kind": "spirit",
       "family": "brandy"
+    },
+    {
+      "id": "yogurt",
+      "name": "Yogurt",
+      "kind": "dairy",
+      "family": "fermentedMilk"
     }
   ],
   "recipes": [
@@ -6150,6 +6163,370 @@
           "ingredientId": "water",
           "amount": 250000,
           "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseColdBrewTonic",
+      "name": "Cold brew tonic",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Fill a highball with ice.",
+        "Pour the tonic in first and let it settle.",
+        "Float the cold brew on top and stir it once, at the table."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coldBrewCoffee",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "tonicWater",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseInstantCoffee",
+      "name": "Instant coffee",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put the instant coffee in the cup with the sugar.",
+        "Pour a little hot water on and stir it into a paste.",
+        "Add the rest of the water."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Brewed"
+      },
+      "items": [
+        {
+          "ingredientId": "coffeeInstant",
+          "amount": 6000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 8000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseSoyLatte",
+      "name": "Soy latte",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Pull the espresso into a jug.",
+        "Steam the soy milk to about sixty degrees -- it will not take more heat than that.",
+        "Pour it in and spoon the foam on top."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "soyMilk",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseHazelnutLatte",
+      "name": "Hazelnut latte",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put the hazelnut syrup in the bottom of the cup.",
+        "Pull the espresso over it and stir until the syrup has gone in.",
+        "Add the steamed milk and spoon the foam on top."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 140000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "hazelnutSyrup",
+          "amount": 10000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseViennaCoffee",
+      "name": "Vienna coffee",
+      "glass": "highball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Pull the espresso into a tall glass.",
+        "Whip the cream until it just holds a peak.",
+        "Spoon it on top, and do not stir it in."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Espresso"
+      },
+      "items": [
+        {
+          "ingredientId": "espressoCoffee",
+          "amount": 40000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "whippedCream",
+          "amount": 40000,
+          "unit": "ml",
+          "role": "garnish"
+        }
+      ]
+    },
+    {
+      "id": "houseVanillaShake",
+      "name": "Vanilla milkshake",
+      "glass": "highball",
+      "ice": "none",
+      "method": "blended",
+      "methodSteps": [
+        "Put the milk, the ice cream and the vanilla in a blender.",
+        "Blend it until it is smooth and thick.",
+        "Pour it into a cold glass and serve it at once."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Milk"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "iceCream",
+          "amount": 90000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "vanillaExtract",
+          "amount": 5000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseHotCocoa",
+      "name": "Hot cocoa",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Stir the cocoa and the sugar together in the cup so no lumps form later.",
+        "Pour in a little hot milk and work it into a paste.",
+        "Add the rest of the milk and stir it until it steams."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Milk"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 220000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "cocoaPowder",
+          "amount": 12000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseEggnog",
+      "name": "Eggnog",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "shaken",
+      "methodSteps": [
+        "Beat the egg yolk with the sugar until it is pale.",
+        "Add the milk and the cream and shake it with ice until it is cold.",
+        "Strain it into the glass and grate nutmeg over the top."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Milk"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "cream",
+          "amount": 60000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "eggYolk",
+          "amount": 1,
+          "unit": "each",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 15000,
+          "unit": "g",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "nutmeg",
+          "amount": 1,
+          "unit": "pinch",
+          "role": "garnish"
+        }
+      ]
+    },
+    {
+      "id": "houseSweetLassi",
+      "name": "Sweet lassi",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "blended",
+      "methodSteps": [
+        "Put the yogurt, the milk and the sugar in a blender.",
+        "Blend it for half a minute, until it is loose and frothy.",
+        "Pour it over ice."
+      ],
+      "description": "The weights and volumes below are a starting point, not a measurement this application can check.",
+      "extras": {
+        "source": "house",
+        "category": "Milk"
+      },
+      "items": [
+        {
+          "ingredientId": "yogurt",
+          "amount": 150000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 80000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseCreamSoda",
+      "name": "Cream soda",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Put the sugar in the bottom of the glass and add the ice.",
+        "Pour the soda water in and stir until the sugar has gone.",
+        "Float the cream on top, over the back of a spoon."
+      ],
+      "description": "The two liquids have to be cold and the glass colder, or the cream will not float.",
+      "extras": {
+        "source": "house",
+        "category": "Milk"
+      },
+      "items": [
+        {
+          "ingredientId": "sodaWater",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "cream",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
+          "unit": "g",
           "role": "modifier"
         }
       ]
