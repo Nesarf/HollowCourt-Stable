@@ -4,7 +4,7 @@
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
     "ingredients": 207,
-    "drinks": 138
+    "drinks": 144
   },
   "ingredients": [
     {
@@ -7104,6 +7104,222 @@
         {
           "ingredientId": "sugar",
           "amount": 30000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseAlmondMilk",
+      "name": "Almond milk drink",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Pour the almond syrup into the glass.",
+        "Add the cold milk and stir it from the bottom.",
+        "Fill the glass with ice and stir it once more."
+      ],
+      "description": "Medieval cooks made this with ground almonds and water; the syrup is the short way to the same cup, and the difference is that the syrup is sweet already.",
+      "extras": {
+        "source": "house",
+        "category": "Sweet"
+      },
+      "items": [
+        {
+          "ingredientId": "almondSyrup",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "milk",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseStrawberryCordial",
+      "name": "Strawberry cordial",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "shaken",
+      "methodSteps": [
+        "Shake the strawberry syrup with the lemon juice and the water.",
+        "Pour it over ice.",
+        "Top it with a little more water and stir once."
+      ],
+      "description": "A cordial is a syrup drink cut with water; the lemon is there because the syrup alone is flat.",
+      "extras": {
+        "source": "house",
+        "category": "Sweet"
+      },
+      "items": [
+        {
+          "ingredientId": "strawberrySyrup",
+          "amount": 30000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "lemonJuice",
+          "amount": 15000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 150000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseBrownSugarGinger",
+      "name": "Brown sugar ginger tea",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Bruise the ginger with the flat of a knife and simmer it in the water for ten minutes.",
+        "Stir the brown sugar in and let it dissolve.",
+        "Strain it into the cup and drink it hot."
+      ],
+      "description": "The ginger is bruised, not grated, when the tea is made in a pot -- grated ginger turns the cup cloudy and hot in the throat.",
+      "extras": {
+        "source": "house",
+        "category": "Sweet"
+      },
+      "items": [
+        {
+          "ingredientId": "ginger",
+          "amount": 15000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "brownSugar",
+          "amount": 20000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseCocoaTea",
+      "name": "Cocoa tea",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Stir the cocoa and the sugar together dry, so no lumps form.",
+        "Pour a little hot water on and work it into a paste.",
+        "Add the rest of the water and bring it just to the edge of a boil."
+      ],
+      "description": "Cocoa was drunk with water for a century before anybody put milk in it.",
+      "extras": {
+        "source": "house",
+        "category": "Sweet"
+      },
+      "items": [
+        {
+          "ingredientId": "cocoaPowder",
+          "amount": 10000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 8000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseHoneyLemon",
+      "name": "Honey lemon",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "shaken",
+      "methodSteps": [
+        "Squeeze the lemon and shake it with the honey syrup and a little water.",
+        "Pour it over ice.",
+        "Top it up with the rest of the water and stir once."
+      ],
+      "description": "Honey does not dissolve in cold water; the syrup is why this one shakes rather than stirs.",
+      "extras": {
+        "source": "house",
+        "category": "Sweet"
+      },
+      "items": [
+        {
+          "ingredientId": "honeySyrup",
+          "amount": 25000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "lemon",
+          "amount": 1,
+          "unit": "each",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseRoseMilk",
+      "name": "Rose milk",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Stir the rose water and the sugar into a little of the milk.",
+        "Add the rest of the milk and stir it until the sugar has gone.",
+        "Pour it over ice -- five millilitres of rose water is the whole line between a drink and a soap."
+      ],
+      "description": "Rose water is easy to overdo and impossible to take back out.",
+      "extras": {
+        "source": "house",
+        "category": "Sweet"
+      },
+      "items": [
+        {
+          "ingredientId": "milk",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "rosewater",
+          "amount": 5000,
+          "unit": "ml",
+          "role": "modifier"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 10000,
           "unit": "g",
           "role": "modifier"
         }
