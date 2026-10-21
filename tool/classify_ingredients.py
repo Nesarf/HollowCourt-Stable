@@ -167,6 +167,8 @@ BY_HAND: dict[str, tuple[str, str | None]] = {
     'raspberrySyrup': ('syrup', 'berry'),
     'simpleSyrup': ('syrup', None),
     'strawberrySyrup': ('syrup', 'berry'),
+    'caramelSyrup': ('syrup', 'caramel'),
+    'hazelnutSyrup': ('syrup', 'hazelnut'),
     # ---- tea, and the things that are neither food nor drink -------------------------------------
     'blackTea': ('tea', None),
     'earlGreyTea': ('tea', None),
@@ -183,6 +185,9 @@ BY_HAND: dict[str, tuple[str, str | None]] = {
     'eggWhite': ('dairy', 'egg'),
     'eggYolk': ('dairy', 'egg'),
     'aquafaba': ('dairy', 'egg'),
+    'whippedCream': ('dairy', 'cream'),
+    'oatMilk': ('dairy', 'plantMilk'),
+    'soyMilk': ('dairy', 'plantMilk'),
     # ---- spices and herbs ------------------------------------------------------------------------
     'basilLeaf': ('spice', 'herb'),
     'cinnamon': ('spice', 'spice'),
@@ -227,6 +232,21 @@ BY_HAND: dict[str, tuple[str, str | None]] = {
     'honey': ('pantry', 'syrup'),
     'salt': ('pantry', None),
     'pepper': ('pantry', 'spice'),
+
+    # ---- coffee, added with the coffee list on 2026-10-21 -----------------------------------------
+    #
+    # **`kind` is what a picker can draw and `family` is the narrower claim; here the narrower claim is the shape of
+    # the thing.** A ground coffee, a decaffeinated one and a brewed cup are all pantry goods, so they stay in that
+    # kind and are told apart by family. The three brewed liquids share `coffeeBrewed` on purpose: what separates a
+    # filter cup from a moka cup from a cold brew is the brewer, and a family per brewer would be a family that
+    # describes the equipment rather than the ingredient.
+    'coffeeGround': ('pantry', 'coffeeGround'),
+    'coffeeDecaf': ('pantry', 'coffeeDecaf'),
+    'coffeeInstant': ('pantry', 'coffeeInstant'),
+    'filterCoffee': ('pantry', 'coffeeBrewed'),
+    'coldBrewCoffee': ('pantry', 'coffeeBrewed'),
+    'mokaCoffee': ('pantry', 'coffeeBrewed'),
+    'cocoaPowder': ('pantry', 'cocoa'),
 
     # ---- the 38 that used to be classified by `category` -------------------------------------------
     #
