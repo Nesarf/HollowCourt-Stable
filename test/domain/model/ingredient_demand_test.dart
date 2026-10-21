@@ -121,7 +121,7 @@ void main() {
   /// move would be the same failure as the one `seed_vocabulary_test` records: a check that quietly redefines what
   /// it checks. Whoever adds ingredients or recipes updates this and the document together, deliberately.
   group('the library that ships', () {
-    test('**40 / 40 / 79 / 50, over 209 ingredients and 168 recipes**', () {
+    test('**40 / 40 / 83 / 46, over 209 ingredients and 174 recipes**', () {
       final seed = SeedCodec.decode(File('data/drinks/library.json').readAsStringSync());
       final demand = IngredientDemand.of([
         for (final recipe in seed.recipes)
@@ -130,11 +130,11 @@ void main() {
       final histogram = demand.histogramOf([for (final i in seed.ingredients) i.id]);
 
       expect(seed.ingredients, hasLength(209));
-      expect(seed.recipes, hasLength(168));
+      expect(seed.recipes, hasLength(174));
       expect(histogram[DemandClass.core], 40);
       expect(histogram[DemandClass.occasional], 40);
-      expect(histogram[DemandClass.rare], 79);
-      expect(histogram[DemandClass.dead], 50);
+      expect(histogram[DemandClass.rare], 83);
+      expect(histogram[DemandClass.dead], 46);
 
       // **And the four add up to the catalogue**, which is the check that survives a wrong histogram: every
       // ingredient is in exactly one class, so a bucket lost to a bug shows up as a total that is short.
@@ -163,8 +163,8 @@ void main() {
       ]);
       final dead = demand.histogramOf([for (final i in seed.ingredients) i.id])[DemandClass.dead]!;
 
-      expect(dead / seed.ingredients.length, greaterThan(0.22));
-      expect(dead / seed.ingredients.length, lessThan(0.26));
+      expect(dead / seed.ingredients.length, greaterThan(0.20));
+      expect(dead / seed.ingredients.length, lessThan(0.24));
     });
   });
 }

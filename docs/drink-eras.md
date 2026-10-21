@@ -25,6 +25,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Moka pot | 1933 | documented | Bialetti's design, and the shape has not changed since |
 | Instant coffee | 1901 | documented | the patent predates the commercial product by more than thirty years |
 | Decaffeinated coffee | 1903 | documented | the process is this drink's date |
+| Coffee with milk | 17th century | documented | milk in coffee is discussed in print early |
 
 ## Espresso
 
@@ -49,6 +50,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Masala chai | pre-modern | documented | spiced milk tea is old in South Asia; tea itself arrived with the British trade |
 | Peach iced tea | 1904 | assembled | iced tea is the fair; peach in it is a later habit |
 | Green tea | pre-modern | documented | the oldest thing on this page |
+| Sage tea | pre-modern | documented | the English herb tea; sage is in the household books |
 | Usucha | pre-modern | documented | thin matcha, the everyday bowl of the Japanese tea room |
 | Houjicha | 19th century | documented | roasted tea, Kyoto |
 
@@ -71,6 +73,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Iced coffee | 1840s | documented | mazagran is the name it was first sold under |
 | Iced tea | 1904 | documented | the St Louis world's fair, and a heat wave |
 | Lemonade | 17th century | documented | the Paris limonadiers were a guild |
+| Mint lemonade | 17th century | tradition | mint in a cold drink is older than the soda fountain |
 | Orange juice | early 20th century | documented | the Florida industry, and the juice is the reason |
 | Ginger ale | 1850s | documented | Belfast, and it started as a medicinal drink |
 | Iced cocoa | 19th century | tradition | the soda fountain again, and cold cocoa before it |
@@ -91,6 +94,7 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Lychee cooler | 19th century | assembled | the fruit reaches Europe in the 18th century; the drink is ours |
 | Guava fizz | 19th century | assembled | same |
 | Rose lemonade | 19th century | tradition | rose water in a cold drink is old in the eastern Mediterranean |
+| Apple juice fizz | 19th century | assembled | apple juice and soda, both old, paired by us |
 | Tonic with lime | 19th century | documented | quinine water was a medicine before it was a mixer |
 
 ## Sweet
@@ -103,13 +107,15 @@ is not the same as inventing a drink in 2010. The row says so instead of dressin
 | Cocoa tea | 16th century | documented | cocoa with water, a century before milk became usual |
 | Honey lemon | pre-modern | tradition | honey and lemon, and cold water to carry it |
 | Rose milk | early 20th century | tradition | South Asian; five millilitres is the whole line |
+| Blackberry cordial | 19th century | tradition | a cordial is a syrup cut with water, and that is old |
+| Honey ginger | pre-modern | documented | ginger and honey, hot, in the medicinal line |
 | Sweet soy milk | pre-modern | documented | Chinese, and older than any coffee on this page |
 
 ---
 
 ## What this page is not
 
-It is not a claim that every one of these is a "classic". **Six of the fifty-three are marked `assembled`** — the five
+It is not a claim that every one of these is a "classic". **Seven of the fifty-nine are marked `assembled`** — the five
 fizzes whose pairing nobody called a drink before us, and the peach iced tea — and they say so rather than being
 dressed up as traditions.
 
