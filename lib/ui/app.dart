@@ -12,6 +12,7 @@ import 'ingredients_page.dart';
 import 'settings_page.dart';
 import 'stock_page.dart';
 import 'l10n/locale_providers.dart';
+import 'chat_page.dart';
 import 'hollow_nav_bar.dart';
 import 'materials.dart';
 import 'theme.dart';
@@ -198,6 +199,24 @@ class _ShellState extends ConsumerState<_Shell> {
               ),
             ],
           ),
+          // **Her door, in the corner of the cellar and nowhere else.** The owner asked for it here on 2026-10-22:
+          // the cellar is where a bottle is being identified, which is the moment a second opinion is worth having.
+          // Hidden on the other four tabs rather than floating over them, because a conversation is not part of
+          // recipes, ingredients or the journal, and a button that follows a reader around every screen is a button
+          // they learn to ignore.
+          if (_index == 0)
+            Positioned(
+              right: 20,
+              bottom: 20,
+              child: FloatingActionButton(
+                key: const ValueKey('open-chat'),
+                tooltip: null,
+                onPressed: () => Navigator.of(context).push<void>(
+                  MaterialPageRoute<void>(builder: (_) => const ChatPage()),
+                ),
+                child: const Icon(Icons.chat_bubble_outline, size: 22),
+              ),
+            ),
         ],
       ),
       // **The application's own bar.** It used to be Material's `NavigationBar`, with Material's icon font in

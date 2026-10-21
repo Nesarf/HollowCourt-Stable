@@ -2659,6 +2659,118 @@ abstract final class Copy {
     },
   );
 
+  // ---------------------------------------------------------------- the conversation
+
+  /// Her name, which is not translated -- it is a name.
+  static const chatTitle = CopyLine.withLanguages(
+    Translated.authored('伊丽莎白'), Translated.authored('Elizabeth'),
+    also: {'ja': 'エリザベス', 'zh-HK': '伊麗莎白', 'zh-TW': '伊麗莎白'});
+  static const chatPlaceholder = CopyLine.withLanguages(
+    Translated.authored('说点什么…'), Translated.authored('Say something...'),
+    also: {'ja': '何か言って…', 'zh-HK': '講啲嘢…', 'zh-TW': '說點什麼…'});
+  static const chatSend = CopyLine.withLanguages(
+    Translated.authored('说'), Translated.authored('Say'),
+    also: {'ja': '言う', 'zh-HK': '講', 'zh-TW': '說'});
+  static const chatEmpty = CopyLine.withLanguages(
+    Translated.authored('先开口吧。'), Translated.authored('Say something first.'),
+    also: {'ja': '先に口を開きなさいな。', 'zh-HK': '先開口啦。', 'zh-TW': '先開口吧。'},
+    voices: {
+      Voice.heiress: '先开口。本小姐等着——别让我等太久。',
+      Voice.heiressJa: '先に口を開きなさいな。待って差し上げますわ——あまり長くは待ちませんけど。',
+      Voice.minister: 'You may begin; the floor is yours, though not indefinitely.',
+    },
+  );
+  static const chatNeedKey = CopyLine.withLanguages(
+    Translated.authored('还没有填 key。设置最下面填上，她才听得到你。'),
+    Translated.authored('No key yet. Fill one in at the bottom of the settings and she will be able to hear you.'),
+    also: {
+      'ja': 'まだキーがありません。設定のいちばん下で入れてください。',
+      'zh-HK': '仲未填 key。喺設定最底填咗，佢先聽到你講嘢。',
+      'zh-TW': '還沒填 key。在設定最下面填上，她才聽得到你。',
+    },
+    voices: {
+      Voice.heiress: '还没填 key。到设置最下面那一段填上——不然本小姐听不见你说话。',
+      Voice.heiressJa: 'キーがまだありませんの。設定のいちばん下に入れてくださいまし——でないと、あなたの声が届きませんわ。',
+      Voice.minister: 'No key has been provided; it is entered at the foot of the settings, without which nothing can be heard.',
+    },
+  );
+  static const chatTroubleUnauthorised = CopyLine.withLanguages(
+    Translated.authored('key 被拒了。要么抄错了，要么那边已经把它作废。'),
+    Translated.authored('The key was refused: either it was mistyped, or the provider has cancelled it.'),
+    also: {
+      'ja': 'キーが拒否されました。写し間違いか、向こうで無効にされたかです。',
+      'zh-HK': 'key 被拒。一係抄錯，一係嗰邊已經作廢咗。',
+      'zh-TW': 'key 被拒。要麼抄錯，要麼那邊已經作廢。',
+    },
+    voices: {
+      Voice.heiress: 'key 被拒了。要么你抄错，要么那边把它作废了——自己去查，本小姐查不到这种账。',
+      Voice.heiressJa: 'キーが拒否されましたの。写し間違いか、向こうで無効にされたか。そこまではこちらでは分かりませんわ。',
+      Voice.minister: 'The key was refused, which means it was mistyped or has been cancelled; that distinction is not visible from here.',
+    },
+  );
+  static const chatTroubleRefused = CopyLine.withLanguages(
+    Translated.authored('那边不肯答。可能是额度到了。'),
+    Translated.authored('The other end declined. The quota is the usual reason.'),
+    also: {
+      'ja': '向こうが応じません。たいていは利用枠です。',
+      'zh-HK': '嗰邊唔肯應。多數係額度用晒。',
+      'zh-TW': '那邊不肯答。多半是額度到了。',
+    },
+    voices: {
+      Voice.heiress: '那边不肯答。多半是额度见底了——去看看你的账，别怪本小姐。',
+      Voice.heiressJa: '向こうが応じませんの。たいていは利用枠が尽きたせいですわ——そちらでご確認なさいな。',
+      Voice.minister: 'The other end declined; an exhausted quota is the ordinary cause, and it is visible in your own account.',
+    },
+  );
+  static const chatTroubleUnreachable = CopyLine.withLanguages(
+    Translated.authored('连不上。看看网，或者那个地址对不对。'),
+    Translated.authored('Could not reach it: check the network, or the address itself.'),
+    also: {
+      'ja': 'つながりません。回線か、そのアドレスをご確認ください。',
+      'zh-HK': '連唔上。睇下網，或者個地址啱唔啱。',
+      'zh-TW': '連不上。看看網路，或者那個地址對不對。',
+    },
+    voices: {
+      Voice.heiress: '连不上。网、地址、还是那边根本没开着——三样里总有一样不对。',
+      Voice.heiressJa: 'つながりませんの。回線か、アドレスか、それとも向こうが動いていないか。どれかですわ。',
+      Voice.minister: 'It could not be reached: the network, the address, or a service that is not running. One of the three.',
+    },
+  );
+
+  /// The settings block. Three fields and one sentence about what is stored where.
+  static const chatSettingsTitle = CopyLine.withLanguages(
+    Translated.authored('伊丽莎白的钥匙'), Translated.authored('Elizabeth, and the key she is reached with'),
+    also: {'ja': 'エリザベスと、その鍵', 'zh-HK': '伊麗莎白嘅鎖匙', 'zh-TW': '伊麗莎白的鑰匙'});
+  static const chatBaseUrl = CopyLine.withLanguages(
+    Translated.authored('接口地址'), Translated.authored('Endpoint'),
+    also: {'ja': '接続先', 'zh-HK': '接口地址', 'zh-TW': '介面位址'});
+  static const chatModel = CopyLine.withLanguages(
+    Translated.authored('模型'), Translated.authored('Model'),
+    also: {'ja': 'モデル', 'zh-HK': '模型', 'zh-TW': '模型'});
+  static const chatApiKey = CopyLine.withLanguages(
+    Translated.authored('密钥'), Translated.authored('Key'),
+    also: {'ja': 'キー', 'zh-HK': '鎖匙', 'zh-TW': '金鑰'});
+  static const chatSave = CopyLine.withLanguages(
+    Translated.authored('存下'), Translated.authored('Save'),
+    also: {'ja': '保存', 'zh-HK': '存落嚟', 'zh-TW': '存下'});
+  static const chatSaved = CopyLine.withLanguages(
+    Translated.authored('存好了'), Translated.authored('Saved'),
+    also: {'ja': '保存しました', 'zh-HK': '存好咗', 'zh-TW': '存好了'});
+  static const chatSettingsNote = CopyLine.withLanguages(
+    Translated.authored('key 加密存在这台机器上；地址与模型名明文存，方便你改。'),
+    Translated.authored('The key is sealed on this machine; the address and the model are stored as written, so they can be corrected.'),
+    also: {
+      'ja': 'キーはこの機械に暗号化して保存します。接続先とモデル名はそのまま保存します。',
+      'zh-HK': 'key 加密存喺呢部機；地址同模型名明文存，方便你改。',
+      'zh-TW': 'key 加密存在這台機器上；位址與模型名明文存，方便你改。',
+    },
+    voices: {
+      Voice.heiress: 'key 加密搁在这台机器上。地址和模型名明面写着，你爱改就改。',
+      Voice.heiressJa: 'キーはこの機械に暗号化して置いておきますわ。接続先とモデル名はそのまま書いておきますから、ご自由に。',
+      Voice.minister: 'The key is sealed on this machine; the address and the model are stored plainly, for correction.',
+    },
+  );
+
   /// Where the answer came from, said every time rather than in a document.
   static const barcodeCatalogSource = CopyLine.withLanguages(
     Translated.authored('来源：Open Food Facts（ODbL）。只发出去这串数字，你家酒窖的事一个字都没提。'),
