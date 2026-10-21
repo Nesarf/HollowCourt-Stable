@@ -22,11 +22,12 @@ passes. Seven house coffee recipes took the drinks list to 110 and the dead-stoc
 coffee-family ingredients were added next, which put the library at 201 and the count at 74 because seven of them
 were not used yet; then ten more drinks -- five coffee, five milk, and that milk group steeps no leaf -- began using
 most of the rest; eight traditional tea-and-milk drinks followed with four tea and spice rows; ten fizz, juice and
-milk drinks were chosen from the dead list on purpose; and then **ten of those drinks were withdrawn** when the owner
-added a boundary: nothing that only exists after the 1990s. **The library is now 207 ingredients and 132 drinks, with
-62 dead.** The ingredients behind the withdrawn drinks stayed on the shelf, which is why the count went back up. The
-figures above are the measurement this page is about and are left exactly as they were read;
-`test/domain/model/ingredient_demand_test.dart` carries the current ones, and its header says when and why they moved.
+milk drinks were chosen from the dead list on purpose; **ten of those drinks were withdrawn** when the owner added a
+boundary -- nothing that only exists after the 1990s -- **and two more when that line moved to the 1980s**. **The
+library is now 207 ingredients and 130 drinks, with 62 dead.** The ingredients behind the withdrawn drinks stayed on
+the shelf, which is why the count went back up. The figures above are the measurement this page is about and are
+left exactly as they were read; `test/domain/model/ingredient_demand_test.dart` carries the current ones, and its
+header says when and why they moved.
 
 **An ingredient record is a name and an id**, and the category is an *added* field rather than a base one — which is
 why the count of unclassified ingredients is a count of records nobody has been through, not a count of missing data.
