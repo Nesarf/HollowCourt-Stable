@@ -197,7 +197,12 @@ P_WINDOWS=$!
     [A-Za-z]:/*) OUT_DIR_MNT="/mnt/$(printf '%s' "$OUT_DIR_WIN" | sed 's|^\([A-Za-z]\):|\L\1|')" ;;
     *) OUT_DIR_MNT="$OUT_DIR_WIN" ;;
   esac
-  wsl -d "$WSL_DISTRO" -e bash -lc "cd '$LINUX_MNT' && bash tool/build_linux.sh && OUT_DIR='$OUT_DIR_MNT' bash packaging/linux/build_appimage.sh" > "$T/linux.log" 2>&1
+  # **The commit crosses into WSL as data, because git over there cannot read this checkout's `.git`.**
+  # The worktree's `.git` is a text file naming `E:/hollow-court/.git/worktrees/linux`, which is a Windows path to
+  # a Linux git -- so every receipt written inside WSL said `src-commit : none` until 2026-10-22. This side knows
+  # the commit (it checked the worktree out at it) and the tree's cleanliness, so it hands both over.
+  if git -C "$REPO" diff --quiet && git -C "$REPO" diff --cached --quiet; then TREE_DIRTY=no; else TREE_DIRTY=yes; fi
+  wsl -d "$WSL_DISTRO" -e bash -lc "cd '$LINUX_MNT' && SRC_COMMIT='$REV' HEAD_REV='$REV' SRC_SUBJECT='$(git -C "$REPO" log -1 --format=%s "$REV")' TREE_DIRTY='$TREE_DIRTY' SRC_DIRTY='$TREE_DIRTY' bash tool/build_linux.sh && OUT_DIR='$OUT_DIR_MNT' SRC_COMMIT='$REV' HEAD_REV='$REV' SRC_SUBJECT='$(git -C "$REPO" log -1 --format=%s "$REV")' TREE_DIRTY='$TREE_DIRTY' SRC_DIRTY='$TREE_DIRTY' bash packaging/linux/build_appimage.sh" > "$T/linux.log" 2>&1
   echo "linux exit=$?" > "$T/linux.status"
 ) &
 P_LINUX=$!
