@@ -26,22 +26,36 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    // **Loaded on the real clock, and this is the fault the first attempt hit.** A widget test's zone does not
-    // advance real file I/O, so the asset is still resolving when the frame is captured -- the render came out
-    // with the texture and no picture, which reads exactly like "the feature is not wired up". `runAsync` is what
-    // lets the loader finish; without it the test would sit until its timeout and then report nothing useful.
     if (world.artwork case final artwork?) {
+      // **The pump now happens outside `runAsync`, and that is the correction rather than a tidy-up.** Flutter's own
+      // guidance is that a widget tree is not pumped inside a real-async zone: the frame clock and the real clock
+      // interleave, and which one wins depends on load. That is the exact shape of a test that passes alone and
+      // fails during a full parallel run, which is what this file did on 2026-10-21 -- twice it was red while the
+      // whole suite ran and green on its own, and the failure named these three tests and no cause.
+      //
+      // What genuinely needs the real clock is the image decode, so that is all the block below does now.
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [displaySettingsProvider.overrideWith(() => _FixedWorld(world))],
+          child: const MaterialApp(home: SizedBox()),
+        ),
+      );
+      await tester.pump();
+
+      // **A decode that fails says so here.** Before this, `precacheImage` was called without `onError`, so a decode
+      // that did not finish was silent: the picture was simply absent and three assertions later the test reported
+      // "no picture", which reads like the feature rather than the loader.
+      final failures = <String>[];
       await tester.runAsync(() async {
-        await tester.pumpWidget(
-          ProviderScope(
-            overrides: [displaySettingsProvider.overrideWith(() => _FixedWorld(world))],
-            child: const MaterialApp(home: SizedBox()),
-          ),
-        );
         for (final asset in [artwork.tall, artwork.wide]) {
-          await precacheImage(AssetImage(asset), tester.element(find.byType(SizedBox)));
+          await precacheImage(
+            AssetImage(asset),
+            tester.element(find.byType(SizedBox)),
+            onError: (error, _) => failures.add('$asset: $error'),
+          );
         }
       });
+      expect(failures, isEmpty, reason: 'the artwork has to load for the rest of this file to mean anything');
     }
 
     await tester.pumpWidget(
@@ -53,6 +67,9 @@ void main() {
       ),
     );
     await tester.pump();
+    // **A second frame before anything is asserted.** One frame was enough on an idle machine and not enough under
+    // load; the image is resolved by the next one, and asserting on the first was the other half of the flakiness.
+    await tester.pump(const Duration(milliseconds: 32));
   }
 
   testWidgets('**the world with a picture draws the shape its window asks for**', (tester) async {
@@ -72,7 +89,7 @@ void main() {
       findsOneWidget,
       reason: 'a window wider than it is tall gets the landscape one',
     );
-  }, timeout: const Timeout(Duration(seconds: 30)));
+  }, timeout: const Timeout(Duration(seconds: 60)));
 
   testWidgets('**no other world draws a picture**', (tester) async {
     for (final world in HollowPaletteValue.all) {
@@ -84,7 +101,7 @@ void main() {
         reason: '${world.name} has no picture, and one appearing there is the leak this asserts against',
       );
     }
-  }, timeout: const Timeout(Duration(seconds: 30)));
+  }, timeout: const Timeout(Duration(seconds: 60)));
 
   testWidgets('**the picture is drawn under the interface**', (tester) async {
     // It is a material rather than a subject: anything the reader can press or read is above it, and it takes no
@@ -94,5 +111,5 @@ void main() {
     final ornament = tester.getTopLeft(find.byType(CustomPaint).last);
     expect(picture, ornament, reason: 'both fill the same box');
     expect(find.byType(IgnorePointer), findsWidgets);
-  }, timeout: const Timeout(Duration(seconds: 30)));
+  }, timeout: const Timeout(Duration(seconds: 60)));
 }
