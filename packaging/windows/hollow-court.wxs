@@ -32,9 +32,9 @@
   <Package
       Name="空庭 Hollow Court"
       Manufacturer="S.M.Y.T."
-      Version="1.0.48000"
+      Version="1.0.51524"
       UpgradeCode="7C4E1B62-5A3D-4F18-9E77-2B6D4A0C51E3"
-      ProductCode="61B33F6B-3C47-42E0-A182-8C878F607A9E"
+      ProductCode="BDAB30D6-B632-4D97-94CF-6BB960484BE3"
       Scope="perUser"
       Compressed="yes">
 
@@ -45,6 +45,12 @@
          successfully" and "the new code is on the machine" are two different facts, and the second is the one
          the fourth consequence of this rule exists for: bump Version and ProductCode together, even for a
          rebuild of the same round. -->
+
+    <!-- **2026-10-22, the round that went to 51524.** Version to 1.0.51524 and ProductCode to the GUID beside it,
+          together. **What the build script now does is the point**: it compares this file's `Version` with
+          `pubspec.yaml`'s build number and refuses to build when they disagree, which is exactly the failure this
+          comment has been warning about since 48000 — the two numbers live in two files and only a person moving both
+          keeps them together. The guard means a person no longer has to. -->
 
     <!-- **2026-09-29, the round that replaced the 1.0.0 artifacts.** Version went to 1.0.2184 and ProductCode to
          07692879-7425-44A9-A6F8-49B4C8442709, together, because the rule above is not about this round being different from the last one ——
