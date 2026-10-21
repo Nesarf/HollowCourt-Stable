@@ -179,6 +179,29 @@ void main(List<String> args) {
     return;
   }
 
+  if (args.contains('--long')) {
+    // **Length is the English voice's actual defect**, not its markers: the same sheet has room for a sentence and
+    // the minister writes a paragraph. This lists the lines above a threshold so the rewriting has a work list rather
+    // than an opinion.
+    final voice = args[args.indexOf('--long') + 1];
+    final threshold = args.length > args.indexOf('--long') + 2
+        ? int.parse(args[args.indexOf('--long') + 2])
+        : 120;
+    final rows = <List<Object>>[];
+    for (final entry in all) {
+      final text = entry.value[voice];
+      if (text == null) continue;
+      if (text.runes.length >= threshold) rows.add([entry.key, text.runes.length, text]);
+    }
+    rows.sort((a, b) => (b[1] as int).compareTo(a[1] as int));
+    for (final row in rows) {
+      print('[${row[1]}] ${row[0]}');
+      print('    ${row[2]}');
+    }
+    print('$voice 里超过 $threshold 字的：${rows.length} / ${all.length}');
+    return;
+  }
+
   print('# 声音标记分布（${all.length} 条）');
   print('');
   for (final voice in _voices) {

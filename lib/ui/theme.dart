@@ -1286,7 +1286,7 @@ abstract final class Copy {
       Voice.heiress: '两台都显示同一串六位数字，你只要看一眼。……不过两块屏幕得同时看得见，本小姐没法替你并排放好。',
       Voice.heiressJa: '両方の画面に同じ六桁が出ますの。見比べるだけでよろしくてよ。ただし、二つの画面が同時に見えていなくてはなりませんわ。',
     
-      Voice.minister: 'Both screens will show the same six digits, and no more than a glance is required of you. The two screens must, however, be in view at the same time.',},
+      Voice.minister: 'Both screens show the same six digits, and a glance is all that is required. The two screens must be in view at the same time.',},
   
   );
 
@@ -1310,7 +1310,7 @@ abstract final class Copy {
     voices: {
       Voice.heiress: '两台各算出这串数字——握手相同才会一致。一边一样、一边不一样？那就是中间有人接了手，别信。',
       Voice.heiressJa: '二台がそれぞれこの数字を出しますの——同じ握手なら一致しますわ。片方だけ違う？なら間に誰かが割り込んでいますの。信じてはなりません。',
-      Voice.minister: 'Each machine derives the number from this handshake, and agreement is the evidence of an undisturbed meeting. Where one side differs, something has interposed itself, and the exchange should not be trusted.'
+      Voice.minister: 'Each machine derives the number from the handshake; agreement means nothing interposed itself. Where one side differs, do not trust the exchange.'
           'an uninterrupted conversation. Should one side differ, the difference is itself the '
           'finding: somebody is relaying between you.',
     },
@@ -1429,7 +1429,7 @@ abstract final class Copy {
     voices: {
       Voice.heiress: '导成一个文件，拷到另一台再导进去——没有网也行。对，这是隔离网里唯一走得通的路。不过有件事得先说在前头：它不是备份，导入永远只是并进你自己的日志，导两次也不会多出东西。',
       Voice.heiressJa: 'ファイルに書き出して、もう一台に写して取り込みますの。網がなくても使えますわ。……クライアント分離の網では、それが唯一通る道ですの。ただし、バックアップではございません。取り込みはいつも自分の記録に併合されるだけで、二度やっても増えませんわ。',
-      Voice.minister: 'Written to a single file and carried to the other machine, and it functions without a network; in a network with client isolation this is the only course available. It is not a backup, and it is not to be trusted as one: an import is always merged into one log, and importing twice adds nothing.'
+      Voice.minister: 'A single file, carried and imported; no network needed, and under client isolation it is the only course. Not a backup: an import merges into your own log, and doing it twice adds nothing.'
           'network, which is the only reason it works at all where clients are isolated. It is '
           'not a backup and is not to be trusted as one: an import is always merged into your '
           'own log, and performing it twice adds nothing.',
@@ -1628,7 +1628,7 @@ abstract final class Copy {
     voices: {
       Voice.heiress: '同一个网里、此刻正在报上名号的设备——名字只是自称，算数的是指纹与握手。名字看看就好。',
       Voice.heiressJa: '同じ網の中で、いま名乗っている端末ですわ——名前は自称にすぎませんの。効くのは指紋とハンドシェイク。名前は眺めるだけになさいな。',
-      Voice.minister: 'Machines on this network that are, at this moment, announcing themselves. A name is a claim; the fingerprint and the handshake are what count.'
+      Voice.minister: 'Machines on this network announcing themselves now. A name is a claim; the fingerprint and the handshake are what count.'
           'an assertion and nothing more; what counts is the fingerprint and the handshake that '
           'follows it.',
     },
@@ -1934,7 +1934,7 @@ abstract final class Copy {
     voices: {
       Voice.heiress: '只在自家屋里应声，外面听不见——监听只绑在本机回环上。局域网里的设备，等到什么时候都一样连不上。',
       Voice.heiressJa: '自分の部屋でしか返事をしておりませんの——待ち受けがループバックだけ、ですから。同じネットワークからは、いつまでお待ちになっても届きませんわ。',
-      Voice.minister: 'The listener is bound to the loopback alone, so it answers inside its own room. From the local network it will never be reached, however long the wait.'
+      Voice.minister: 'Bound to the loopback alone, so it answers inside its own room. From the local network it will never be reached, however long the wait.'
           'else can enter -- and the network will wait for a reply that was never addressed to it.',
     },
   );
@@ -2435,7 +2435,7 @@ abstract final class Copy {
       Voice.heiress: '第一次用配对码见面时，各记下对方的密钥——之后就不必再输码。记住的是它，不是你的记性。',
       Voice.heiressJa: '初回にペアリングコードで顔を合わせたおり、互いの鍵を控えますの——以後はコードを入れずに済みますわ。頼りになるのはそれであって、あなたの記憶力ではございませんの。',
     
-      Voice.minister: 'The first meeting is authenticated by the pairing code; each side is made acquainted with the other key, and no code is required thereafter.',},
+      Voice.minister: 'The first meeting is authenticated by the pairing code; each side learns the other key, and no code is needed after that.',},
   
   );
 
@@ -2692,7 +2692,7 @@ abstract final class Copy {
       Voice.heiress: '从酒库已有的配料里选一格。名字要对得上——对得上，配方才认得这瓶酒。名字对不上，本小姐也认不出它是什么。',
       Voice.heiressJa: 'ライブラリにある材料から一枠お選びなさいな。名前が一致してこそ、レシピがこの瓶を認識しますの。名前が違えば、わたくしにも何の瓶か分かりませんわ。',
     
-      Voice.minister: 'The choice is made from among the ingredients the library holds. The name must correspond, without which the recipes will not know this bottle.',},
+      Voice.minister: 'The choice is made from the ingredients the library holds. The name must correspond, or the recipes will not know this bottle.',},
   );
 
   // Recipes.
@@ -3062,7 +3062,7 @@ abstract final class Copy {
     voices: {
       Voice.heiress: '对方手里还有 {count} 段，这台没有——它们住在对方自己的文件里，这次没跟过来。我照实说。',
       Voice.heiressJa: '相手はさらに {count} の区切りを持っていますの、この機械にはありませんわ。あちらのファイルの中にありましてよ、今回は付いてこなかっただけ。',
-      Voice.minister: 'The other party holds {count} further segments which are not on this machine. They reside in its own files, and were not carried across on this occasion.'
+      Voice.minister: 'The other party holds {count} further segments not on this machine. They live in its own files and were not carried across.'
           'own files and did not accompany this synchronisation.',
     },
     also: {
@@ -4539,7 +4539,7 @@ https://piapro.jp/license/pcl/summary
       Voice.heiress: '这里放的是这个构建自己的状态：日志、外部连接、诊断。改完东西再回来开这一页——不看就改，回头别来问本小姐。',
       Voice.heiressJa: 'ここにあるのはこのビルド自身の状態ですわ：ログ、接続点、診断。何か変えたら、またここをお開きなさいな。見ずに変えて、あとでわたくしに文句を仰るのは無しですわよ。',
     
-      Voice.minister: 'Matters of fact concerning this build: the log, the outside connections, the diagnostics. It is here that one looks after changing something.',},
+      Voice.minister: 'Matters of fact about this build: the log, the outside connections, the diagnostics. Look here after changing something.',},
   );
 
   static const developerLogHeading = CopyLine.withLanguages(
@@ -4870,7 +4870,7 @@ https://piapro.jp/license/pcl/summary
       Voice.heiress: '开了以后，每个标签显示两行——你的语言与副语言。代价是这个：每屏更密，长句会换行。划算不划算，你自己掂量。',
       Voice.heiressJa: 'オンにすると各ラベルが二行になりますの——自分の言語と副言語。代わりに画面は密になりましてよ、長い文は折り返しますわ。割に合うかどうか、ご自分でお決めなさいな。',
     
-      Voice.minister: 'With it in use, every label displays two lines -- your language and the secondary one. The cost is a denser screen and longer sentences wrapping.',},
+      Voice.minister: 'Every label then shows two lines -- your language and the secondary one. The cost is a denser screen and sentences that wrap.',},
   
   );
 
