@@ -345,11 +345,9 @@ void main() {
       // where `ensureVisible` stops, the tap misses by a few pixels, and the failure reads as
       // "the source was the plain log" rather than "nothing was tapped". `dragUntilVisible` moves it clear of
       // the edge.
-      await tester.dragUntilVisible(
-        find.text('显示配对码'),
-        find.byType(Scrollable).first,
-        const Offset(0, -120),
-      );
+      // **Scrolled, not dragged**, since the device lists moved above this button: `ensureVisible` puts it fully
+      // inside the viewport, which is what a tap needs.
+      await tester.ensureVisible(find.text('显示配对码'));
       await tester.pump();
       await tester.tap(find.text('显示配对码'));
       await tester.pump();
@@ -379,11 +377,9 @@ void main() {
       // where `ensureVisible` stops, the tap misses by a few pixels, and the failure reads as
       // "the source was the plain log" rather than "nothing was tapped". `dragUntilVisible` moves it clear of
       // the edge.
-      await tester.dragUntilVisible(
-        find.text('显示配对码'),
-        find.byType(Scrollable).first,
-        const Offset(0, -120),
-      );
+      // **Scrolled, not dragged**, since the device lists moved above this button: `ensureVisible` puts it fully
+      // inside the viewport, which is what a tap needs.
+      await tester.ensureVisible(find.text('显示配对码'));
       await tester.pump();
       await tester.tap(find.text('显示配对码'));
       await tester.pump();
@@ -671,11 +667,9 @@ void main() {
       // where `ensureVisible` stops, the tap misses by a few pixels, and the failure reads as
       // "the source was the plain log" rather than "nothing was tapped". `dragUntilVisible` moves it clear of
       // the edge.
-      await tester.dragUntilVisible(
-        find.text('显示配对码'),
-        find.byType(Scrollable).first,
-        const Offset(0, -120),
-      );
+      // **Scrolled, not dragged**, since the device lists moved above this button: `ensureVisible` puts it fully
+      // inside the viewport, which is what a tap needs.
+      await tester.ensureVisible(find.text('显示配对码'));
       await tester.pump();
       await tester.tap(find.text('显示配对码'));
       await tester.pump();
@@ -709,11 +703,9 @@ void main() {
       // where `ensureVisible` stops, the tap misses by a few pixels, and the failure reads as
       // "the source was the plain log" rather than "nothing was tapped". `dragUntilVisible` moves it clear of
       // the edge.
-      await tester.dragUntilVisible(
-        find.text('显示配对码'),
-        find.byType(Scrollable).first,
-        const Offset(0, -120),
-      );
+      // **Scrolled, not dragged**, since the device lists moved above this button: `ensureVisible` puts it fully
+      // inside the viewport, which is what a tap needs.
+      await tester.ensureVisible(find.text('显示配对码'));
       await tester.pump();
       await tester.tap(find.text('显示配对码'));
       await tester.pump();

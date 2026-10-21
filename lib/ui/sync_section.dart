@@ -913,6 +913,20 @@ class _ChooseView extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // **Discovery first, and now it is literally first.** This list used to sit below the code block, with a
+        // note arguing that what is on the network right now is the more useful thing -- the right judgement in the
+        // wrong place. `DESIGN.md` §10.2 makes finding the other device the primary path and the pairing code the
+        // fallback, so what moved is the fallback, downwards. A reader with two machines in one room should not have
+        // to read a code off one screen to learn the other is there. What is on the network right now is the more useful list --
+        // and a remembered device that is present appears in both, which is how the reader can tell "I know
+        // this phone" from "this phone is here".
+        NearbyDevices(
+          known: known,
+          // **The tap, once the reader has confirmed it** (§10.3.2): a remembered device is reached with the key
+          // it learned, a stranger by comparing six digits on two screens. Which of the two it is was already
+          // said in the box, so this method only has to do it.
+          onConnect: onConnectNearby,
+        ),
         DualCopyText(Copy.syncTokenLabel, style: HollowType.caption),
         const SizedBox(height: 6),
         // **The reader's own token, and the rule is stated rather than enforced silently.** Six to eight
@@ -1056,16 +1070,6 @@ class _ChooseView extends ConsumerWidget {
         // problem is the one that should be saying so.
         const ReachableRow(),
         const HostFirewallRow(),
-        // **Discovery first, the store second.** What is on the network right now is the more useful list --
-        // and a remembered device that is present appears in both, which is how the reader can tell "I know
-        // this phone" from "this phone is here".
-        NearbyDevices(
-          known: known,
-          // **The tap, once the reader has confirmed it** (§10.3.2): a remembered device is reached with the key
-          // it learned, a stranger by comparing six digits on two screens. Which of the two it is was already
-          // said in the box, so this method only has to do it.
-          onConnect: onConnectNearby,
-        ),
         _KnownDevices(
           known: known,
           thisDevice: thisDevice,

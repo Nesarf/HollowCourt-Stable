@@ -450,6 +450,23 @@ final class _Keyed extends SyncIdentityNotifier {
 Finder _on(Key key, Finder matching) =>
     find.descendant(of: find.byKey(key), matching: matching);
 
+/// **Tap it where a finger could, not where `ensureVisible` leaves it.**
+///
+/// After the device lists moved above the code block (`DESIGN.md` §10.2), the join button sits further down the
+/// page. `ensureVisible` stops the moment the widget's top edge is inside the viewport, which puts its centre under
+/// the app bar -- the tap then lands on the scroll view and the failure reads as "the sync never finished".
+/// Dragging back a little clears the edge before the tap.
+Future<void> _tapVisible(WidgetTester tester, Finder finder) async {
+  await tester.ensureVisible(finder);
+  await tester.pump();
+  if (tester.getRect(finder).top < 32) {
+    final scrollable = find.ancestor(of: finder, matching: find.byType(Scrollable)).first;
+    await tester.drag(scrollable, const Offset(0, 96));
+    await tester.pump();
+  }
+  await tester.tap(finder);
+}
+
 void main() {
   late Directory dir;
 
@@ -561,7 +578,11 @@ void main() {
 
     // --------------------------------------------------------------- the phone is told it
     await tester.enterText(_on(_guestKey, find.byKey(const ValueKey('sync-code'))), code);
-    await tester.tap(_on(_guestKey, find.text('连接并同步')));
+    // **Scrolled to before the tap, and that is the reorder's consequence rather than a flake.** The device
+    // lists became the primary path (`DESIGN.md` §10.2), so the code field and its button moved below them and
+    // can now sit outside the viewport. A tap on a widget that is not laid out inside the viewport misses
+    // silently, and the failure reads as "the sync never finished".
+    await _tapVisible(tester, _on(_guestKey, find.text('连接并同步')));
 
     // The exchange is real work rather than one frame's worth of state change, so pump until both
     // screens have said so -- with a bound, because a loop that cannot end is a hang instead of a
@@ -641,7 +662,7 @@ void main() {
       _on(_guestKey, find.byKey(const ValueKey('sync-code'))),
       'hollowcourt://127.0.0.1:47000/AB23CD',
     );
-    await tester.tap(_on(_guestKey, find.text('连接并同步')));
+    await _tapVisible(tester, _on(_guestKey, find.text('连接并同步')));
     var pumps = 0;
     while (pumps < 100 && find.text('没能同步').evaluate().isEmpty) {
       await tester.pump();
