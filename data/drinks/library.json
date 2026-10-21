@@ -4,7 +4,7 @@
   "note": "The first-party drink list: every drink on the IBA's three category pages (The Unforgettables, Contemporary Classics, New Era) that could be read from its own page on iba-world.com. Names and standard proportions are referenced (© IBA, all rights reserved); the instruction text and every translation are ours. Nothing here is recalled: each recipe was read, and the ones that could not be are not in the list. Barracuda is deliberately absent: the IBA removed it in 2024 (it.wikipedia, 'Estromissione = 2024', citing the AIBM Project's IBA Official Cocktails 2024), which is why its iba-world.com page now 404s and the English Wikipedia article carries no official recipe.",
   "counts": {
     "ingredients": 207,
-    "drinks": 144
+    "drinks": 150
   },
   "ingredients": [
     {
@@ -7320,6 +7320,186 @@
         {
           "ingredientId": "sugar",
           "amount": 10000,
+          "unit": "g",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseAppleJuice",
+      "name": "Apple juice",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Press the apples and strain the juice.",
+        "Taste it before adding anything; a good apple needs nothing.",
+        "Pour it over ice and drink it at once."
+      ],
+      "description": "Pressed and drunk the same day; it browns within the hour and that is not a fault in the fruit.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "apple",
+          "amount": 3,
+          "unit": "each",
+          "role": "base"
+        }
+      ]
+    },
+    {
+      "id": "houseCoconutWater",
+      "name": "Coconut water",
+      "glass": "highball",
+      "ice": "cubes",
+      "method": "built",
+      "methodSteps": [
+        "Open the coconut and pour the water out through a strainer.",
+        "Add a squeeze of lime -- it is the one thing coconut water wants.",
+        "Pour it over ice."
+      ],
+      "description": "Drunk straight from the nut in most of the places it grows; the glass is the only new part.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "coconutWater",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "limeJuice",
+          "amount": 15000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseLemonSorbet",
+      "name": "Lemon sorbet glass",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put two scoops of the sorbet in a cold glass.",
+        "Pour the soda water over it, slowly.",
+        "Serve it with a spoon and drink what melts."
+      ],
+      "description": "Serve it in a glass with a spoon rather than in a bowl -- the difference between this and a dessert is width.",
+      "extras": {
+        "source": "house",
+        "category": "Cold"
+      },
+      "items": [
+        {
+          "ingredientId": "lemonSorbet",
+          "amount": 120000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sodaWater",
+          "amount": 120000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseUsucha",
+      "name": "Usucha",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Sift the matcha into the bowl so it does not clump.",
+        "Add the hot water -- not boiling -- and whisk it in quick straight strokes.",
+        "Drink it before the foam settles."
+      ],
+      "description": "Thin tea, the everyday bowl; the thick one is a different drink and a different amount of leaf.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "matcha",
+          "amount": 2000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 70000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseHoujicha",
+      "name": "Houjicha",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Put the roasted tea in the pot.",
+        "Pour water just off the boil over it and steep it for thirty seconds.",
+        "Pour it off at once -- it goes bitter quickly, and it is cheap enough to use a second time."
+      ],
+      "description": "Roasted tea takes hotter water than green tea does, and much less time.",
+      "extras": {
+        "source": "house",
+        "category": "Tea"
+      },
+      "items": [
+        {
+          "ingredientId": "houjicha",
+          "amount": 6000,
+          "unit": "g",
+          "role": "base"
+        },
+        {
+          "ingredientId": "water",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "modifier"
+        }
+      ]
+    },
+    {
+      "id": "houseSoyMilk",
+      "name": "Sweet soy milk",
+      "glass": "lowball",
+      "ice": "none",
+      "method": "built",
+      "methodSteps": [
+        "Warm the soy milk without letting it boil.",
+        "Stir the sugar in off the heat.",
+        "Pour it into the cup and drink it warm, not hot."
+      ],
+      "description": "Soy milk is older than any coffee on this list; the sugar is the part that makes it a treat.",
+      "extras": {
+        "source": "house",
+        "category": "Sweet"
+      },
+      "items": [
+        {
+          "ingredientId": "soyMilk",
+          "amount": 200000,
+          "unit": "ml",
+          "role": "base"
+        },
+        {
+          "ingredientId": "sugar",
+          "amount": 12000,
           "unit": "g",
           "role": "modifier"
         }
