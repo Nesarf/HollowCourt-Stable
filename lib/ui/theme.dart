@@ -1365,14 +1365,7 @@ abstract final class Copy {
   static const usbCheck = CopyLine.withLanguages(
     Translated.authored('检查 USB 连接'),
     Translated.authored('Check for a cable'),
-    also: {'zh-HK': '檢查 USB 連接', 'zh-TW': '檢查 USB 連線', 'ja': 'ケーブルを確認'},
-  
-      voices: {
-        Voice.heiress: 'USB 接上没有，本小姐看一眼。……就一眼。顺路而已。',
-        Voice.heiressJa: 'USB が繋がっておりますか、見てまいります。……一目だけですわ。',
-        Voice.minister:
-            'It would be advisable to verify the USB connection.',
-      },);
+    also: {'zh-HK': '檢查 USB 連接', 'zh-TW': '檢查 USB 連線', 'ja': 'ケーブルを確認'},);
 
   static const usbForward = CopyLine.withLanguages(
     Translated.authored('建立转发'),
@@ -2602,6 +2595,20 @@ abstract final class Copy {
       Voice.minister: 'No camera is available on this machine; the code will have to be typed.',
     },
   );
+  static const barcodeScanDenied = CopyLine.withLanguages(
+    Translated.authored('没有摄像头权限，扫不了。可以在系统设置里允许。'),
+    Translated.authored('The camera permission is not granted, so scanning cannot start. It can be allowed in the system settings.'),
+    also: {
+      'ja': 'カメラの権限がありませんので読み取れません。システム設定で許可できます。',
+      'zh-HK': '冇鏡頭權限，掃唔到。可以喺系統設定度允許。',
+      'zh-TW': '沒有鏡頭權限，掃不到。可以在系統設定裡允許。',
+    },
+    voices: {
+      Voice.heiress: '没有摄像头权限，扫不了。到系统设置里允许一下，再来找我。',
+      Voice.heiressJa: 'カメラの権限がありませんので、読み取れませんわ。システム設定でお許しになってから、またお声がけください。',
+      Voice.minister: 'The camera permission has not been granted, so scanning cannot begin; it may be allowed in the system settings.',
+    },
+  );
   static const barcodeScanClose = CopyLine.withLanguages(
     Translated.authored('关掉'), Translated.authored('Close'),
     also: {'ja': '閉じる', 'zh-HK': '閂咗佢', 'zh-TW': '關掉'});
@@ -3113,11 +3120,6 @@ abstract final class Copy {
   static const ingredientAdd = CopyLine.withLanguages(
     Translated.authored('加一种原料'),
     Translated.authored('Add an ingredient'),
-    voices: {
-      Voice.heiress: '库里有你手头这种吗？没有就自己加一个，本小姐给你记上。',
-      Voice.heiressJa: '手持ちの材料、ライブラリに無い？なら自分で足しなさい、控えておくわ。',
-      Voice.minister: 'If the library does not carry it, add it, and it shall be kept.',
-    },
     also: {'ja': '材料を足す', 'zh-HK': '加一種原料', 'zh-TW': '加一種原料'},
   );
 
@@ -3365,11 +3367,6 @@ abstract final class Copy {
   static const collectStart = CopyLine.withLanguages(
     Translated.authored('挑几个'),
     Translated.authored('Select'),
-    voices: {
-      Voice.heiress: '想挑几杯收在一起？按这个，本小姐看着。',
-      Voice.heiressJa: 'いくつか選んでまとめたいの？これを押しなさい。',
-      Voice.minister: 'To gather several, begin here.',
-    },
     also: {'ja': 'いくつか選ぶ', 'zh-HK': '揀幾個', 'zh-TW': '挑幾個'},
   );
 
@@ -3377,11 +3374,6 @@ abstract final class Copy {
   static const collectMake = CopyLine.withLanguages(
     Translated.authored('收成一个合集'),
     Translated.authored('Collect these'),
-    voices: {
-      Voice.heiress: '挑好了？那就收成一个合集吧。',
-      Voice.heiressJa: '選んだ？なら一つにまとめなさい。',
-      Voice.minister: 'Then let them be gathered into one.',
-    },
     also: {'ja': '一つにまとめる', 'zh-HK': '收成一個合集', 'zh-TW': '收成一個合集'},
   );
 
@@ -3456,11 +3448,6 @@ abstract final class Copy {
   static const collectionNew = CopyLine.withLanguages(
     Translated.authored('编一个集合'),
     Translated.authored('Make a collection'),
-    voices: {
-      Voice.heiress: '想把几杯收在一起？说吧，本小姐给你编。',
-      Voice.heiressJa: 'いくつかまとめたいの？言いなさい、編んであげる。',
-      Voice.minister: 'A collection of one\'s own devising. Name it, and I shall keep it.',
-    },
     also: {'ja': 'コレクションを作る', 'zh-HK': '編一個集合', 'zh-TW': '編一個集合'},
   );
 
@@ -3540,11 +3527,6 @@ abstract final class Copy {
   static const recipeNew = CopyLine.withLanguages(
     Translated.authored('写一条配方'),
     Translated.authored('Write a recipe'),
-    voices: {
-      Voice.heiress: '想自己写一条？那就写吧，本小姐看着。',
-      Voice.heiressJa: '自分で書きたいの？なら書きなさい、あたしが見ててあげる。',
-      Voice.minister: 'One may compose one\'s own, should one wish. I shall look on.',
-    },
     also: {'ja': 'レシピを書く', 'zh-HK': '寫一條配方', 'zh-TW': '寫一條配方'},
   );
 
@@ -3612,11 +3594,6 @@ abstract final class Copy {
   static const recipeSave = CopyLine.withLanguages(
     Translated.authored('收下'),
     Translated.authored('Keep it'),
-    voices: {
-      Voice.heiress: '写好了就收下吧，本小姐给你留着。',
-      Voice.heiressJa: '書き終わったなら預かりなさい、あたしが取っておくわ。',
-      Voice.minister: 'It shall be kept, once one is satisfied with it.',
-    },
     also: {'ja': '收める', 'zh-HK': '收下', 'zh-TW': '收下'},
   );
 

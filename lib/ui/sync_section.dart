@@ -1170,11 +1170,16 @@ class _UsbCableRowState extends ConsumerState<UsbCableRow> {
     if (status == null) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 12),
-        child: Row(
+        // **A `Wrap`, not a `Row`, and the phone is why.** On a narrow screen the title and the button together
+        // were wider than the line: an unbounded button keeps its full intrinsic width, so the title was left a
+        // sliver and its characters stacked one per line. A `Wrap` puts the button on the next line instead, which
+        // is what a reader would do with a pen. Found on the handset on 2026-10-22, at 1220 physical pixels.
+        child: Wrap(
+          spacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Icon(Icons.usb, size: 18, color: HollowPalette.gold),
-            const SizedBox(width: 8),
-            Expanded(child: DualCopyText(Copy.usbTitle, style: HollowType.body)),
+            DualCopyText(Copy.usbTitle, style: HollowType.body),
             TextButton(
               key: const ValueKey('usb-check'),
               onPressed: _busy ? null : _inspect,
@@ -1200,11 +1205,12 @@ class _UsbCableRowState extends ConsumerState<UsbCableRow> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Wrap(
+            spacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Icon(Icons.usb, size: 18, color: HollowPalette.gold),
-              const SizedBox(width: 8),
-              Expanded(child: DualCopyText(Copy.usbTitle, style: HollowType.body)),
+              DualCopyText(Copy.usbTitle, style: HollowType.body),
               if (status.availability == AdbAvailability.ready)
                 TextButton(
                   key: const ValueKey('usb-forward'),

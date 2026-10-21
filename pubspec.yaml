@@ -36,7 +36,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # is the whole point of the table, and quiet on `1000 x ABI` for the one that matters most on a phone.
 #
 # `docs/TODO.md` section 八之一 had already caught this; the comment here had not been changed with it.
-version: 1.0.0+51525
+version: 1.0.0+51527
 
 environment:
   sdk: ^3.13.3
@@ -61,7 +61,6 @@ dependencies:
   image: ^4.12.0
   camera: ^0.12.1
   camera_windows: ^0.3.0+1
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

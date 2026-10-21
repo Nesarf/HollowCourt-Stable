@@ -18,6 +18,11 @@
         manifest merge with "Error parsing AndroidManifest.xml" instead of saying which character.)
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- **The camera, and only for the barcode scanner.** Declared here and requested at the moment the
+         scanner opens rather than at launch: a permission prompt on first run, with no explanation beside it,
+         is how a reader decides an application is nosy. The owner asked for barcode scanning on 2026-10-22. -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"

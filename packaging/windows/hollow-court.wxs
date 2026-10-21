@@ -32,9 +32,9 @@
   <Package
       Name="空庭 Hollow Court"
       Manufacturer="S.M.Y.T."
-      Version="1.0.51525"
+      Version="1.0.51527"
       UpgradeCode="7C4E1B62-5A3D-4F18-9E77-2B6D4A0C51E3"
-      ProductCode="F9DCA6FA-9D9E-40A2-B689-47BAAAE5E4FF"
+      ProductCode="A0E7A6F5-8AF1-40E2-9F12-64467DCA9938"
       Scope="perUser"
       Compressed="yes">
 
