@@ -8,7 +8,11 @@ import '../adapters/cellar_tools.dart';
 import '../adapters/chat_client.dart';
 import '../adapters/elizabeth_prompt.dart';
 import '../adapters/web_search.dart';
+import '../data/chat_actions.dart';
+import '../data/chat_settings.dart';
 import '../data/image_picker_channel.dart';
+import '../domain/events/ingredient_authoring.dart';
+import '../domain/events/recipe_authoring.dart';
 import '../domain/events/stock.dart';
 import '../domain/model/ingredient.dart';
 import '../domain/model/recipe.dart';
@@ -47,7 +51,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   /// **What she wants recorded, and has not recorded.** The proposal is shown and the reader decides; nothing is
   /// written until they press the button, which is the rule `cellar_tools.dart` exists to keep.
-  BottleProposal? _proposal;
+  PendingChange? _proposal;
   bool _proposalApplied = false;
   String? _trouble;
   bool _busy = false;
@@ -92,8 +96,17 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       setState(() => _trouble = 'needSwitch');
       return;
     }
-    final settings = ref.read(chatSettingsProvider).value;
-    if (settings == null || !settings.isConfigured) {
+    // **Awaited, not read.** The first version took `.value`, which is null until the file has been read -- so a
+    // reader who opened the conversation and typed at once was told "no key yet" about a key that was already stored.
+    // The owner reported exactly that on 2026-10-22: it worked only after visiting the settings page first, because
+    // visiting it gave the read time to finish. Waiting for the future is the fix; there is nothing to cache.
+    ChatSettings settings;
+    try {
+      settings = await ref.read(chatSettingsProvider.future);
+    } on Exception {
+      settings = const ChatSettings();
+    }
+    if (!settings.isConfigured) {
       setState(() => _trouble = 'needKey');
       return;
     }
@@ -138,6 +151,14 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         history,
         tools: CellarToolBox.tools,
         runTool: (call) async {
+          // **The line goes down before the work, and is filled in after it.** A call that never returns still leaves
+          // evidence that it was attempted, which is the only thing an action log is worth anything for.
+          final store = await ref.read(chatActionsProvider.future);
+          final index = await store.start(ChatAction(
+            at: DateTime.now(),
+            tool: call.name,
+            arguments: call.arguments,
+          ));
           final answer = await box.run(
             call,
             search: (query) => const DeepSeekSearch().search(endpoint, query),
@@ -150,6 +171,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               }
             },
           );
+          await store.settle(index, answer);
           return answer;
         },
       )) {
@@ -195,12 +217,24 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   /// **The card, and the only place a write happens.** Two buttons: one records through the same `addBottle` the
   /// stock form uses, the other drops the proposal. There is no third path, and no path where the model writes.
-  Widget _proposalCard(BottleProposal proposal) {
-    final name = ref.read(seedProvider).value?.ingredients
-            .where((ingredient) => ingredient.id == proposal.sku)
-            .map((ingredient) => ingredient.name)
-            .firstOrNull ??
-        proposal.sku;
+  Widget _proposalCard(PendingChange proposal) {
+    // What it is, and what it is about. A bottle id is not a name, so the seed is asked before the id is shown.
+    final (CopyLine verb, String subject) = switch (proposal) {
+      AddBottle(:final sku) => (
+          Copy.chatProposalHeading,
+          '${ref.read(seedProvider).value?.ingredients.where((i) => i.id == sku).map((i) => i.name).firstOrNull ?? sku} · ${proposal.millilitres} ml',
+        ),
+      RecountBottle(:final bottleId) => (Copy.chatProposalRecount, '$bottleId · ${proposal.millilitres} ml'),
+      DiscardBottle(:final bottleId) => (Copy.chatProposalDiscard, '$bottleId · ${proposal.millilitres} ml'),
+      NewIngredient(:final name, :final category) => (
+          Copy.chatProposalIngredient,
+          category == null ? name : '$name · $category',
+        ),
+      NewRecipe(:final name, :final items) => (
+          Copy.chatProposalRecipe,
+          '$name · ${items.map((item) => '${item.amount}${item.unit == null ? '' : ' ${item.unit}'} ${item.ingredientId}').join(' + ')}',
+        ),
+    };
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
@@ -211,9 +245,9 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DualCopyText(Copy.chatProposalHeading, style: HollowType.caption),
+          DualCopyText(verb, style: HollowType.caption),
           const SizedBox(height: 4),
-          Text('$name · ${proposal.millilitres} ml', style: HollowType.body.copyWith(color: HollowPalette.ink)),
+          Text(subject, style: HollowType.body.copyWith(color: HollowPalette.ink)),
           const SizedBox(height: 6),
           Row(
             children: [
@@ -223,10 +257,36 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                 FilledButton(
                   key: const ValueKey('proposal-apply'),
                   onPressed: () async {
-                    await ref.read(cellarProvider.notifier).addBottle(
-                          sku: proposal.sku,
-                          volume: Volume.fromMillilitres(proposal.millilitres),
-                        );
+                    final notifier = ref.read(cellarProvider.notifier);
+                    switch (proposal) {
+                      case AddBottle(:final sku, :final millilitres):
+                        await notifier.addBottle(sku: sku, volume: Volume.fromMillilitres(millilitres));
+                      case RecountBottle(:final bottleId, :final millilitres):
+                        await notifier.recountBottle(bottleId, Volume.fromMillilitres(millilitres));
+                      case DiscardBottle(:final bottleId, :final millilitres):
+                        await notifier.discardBottle(bottleId, Volume.fromMillilitres(millilitres));
+                      case NewRecipe(:final name, :final items, :final method, :final glass):
+                        await notifier.authorRecipe(AuthoredRecipe(
+                          id: '',
+                          name: name,
+                          method: method,
+                          glass: glass,
+                          items: <AuthoredItem>[
+                            for (final item in items)
+                              AuthoredItem(
+                                ingredientId: item.ingredientId,
+                                amount: item.amount,
+                                unit: item.unit,
+                              ),
+                          ],
+                        ));
+                      case NewIngredient(:final name, :final category):
+                        await notifier.authorIngredient(AuthoredIngredient(
+                          id: '',
+                          name: name,
+                          category: category,
+                        ));
+                    }
                     if (mounted) {
                       setState(() {
                         _proposalApplied = true;

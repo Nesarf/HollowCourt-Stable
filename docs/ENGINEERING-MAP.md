@@ -88,9 +88,27 @@ lib/
                   → ui 重新画
 ```
 
-**没有服务器，没有账号，没有网络。** 联网只发生在两道门里，而且默认关着（条码那道本次打开）。
+**没有服务器，没有账号，没有网络。** 联网只发生在适配器那几道门里。条码与对话这两道自 2026-10-22 起默认打开，另外两道（比价、外设）还没有实现，所以不出现在界面上。
+
+**默认打开不等于默认发送。** 对话那道还要读者自己填 key；填之前，一个字节都不会出去。
 
 两条旁路：`domain/sync/` 让两台设备交换缺失的事件（同一份日志，不是同一份文件）；`adapters/` 让外面的事情进来（一个码是什么、她说了什么）。
+
+---
+
+## 三之二、平台通道：三条缝
+
+Dart 做不到的三件事，各用一条 `MethodChannel` 交给平台，**都不引第三方插件**。三条都在 `MainActivity.kt`。
+
+| 通道 | 干什么 | Dart 侧 |
+| --- | --- | --- |
+| `com.nesarf.hollow_court/open_url` | 在系统浏览器里打开一个地址 | `ui/open_url.dart` |
+| `com.nesarf.hollow_court/camera_permission` | 要相机权限（运行时） | `data/camera_permission.dart` |
+| `com.nesarf.hollow_court/picker` | 从系统选择器选一张图 | `data/image_picker_channel.dart` |
+
+**为什么是手写而不是插件。** 相机那两条最初都用插件试过：`permission_handler` 要求 compileSdk 37，而本工程在 36；选图那个 `image_picker` 是同一个风险面。为一个权限或一张照片把整条工具链升一级，不划算，所以改成二十行 Kotlin。代价写在各自文件里。
+
+**选图那条用的是 `startActivityForResult`**，不是 `registerForActivityResult` —— 后者在这个工程的 `FlutterActivity` 上解析不到，要 `activity-ktx`。代价是：选择器开着时转屏会丢回执。选择器只开几秒，这个失败可见，可接受。
 
 ---
 
@@ -109,6 +127,9 @@ lib/
 - `test/data/seed/shipped_assets_match_the_data_test.dart` —— `assets/` 与 `data/` 必须逐字节一致
 - `test/ui/voice_repetition_test.dart` —— 声音里那几种套话收尾不许回来
 - `test/ui/world_art_fidelity_test.dart` —— 背景插画不许是 `const`
+- `test/data/chat_settings_test.dart` —— 「空 key 保存不许抹掉已存的 key」。这条是补的，因为它是真的发生过：一个空字段抹掉了一把填好的 key
+- `test/adapters/chat_client_test.dart` —— 工具调用与 `reasoning_content` 的回传，以及 200 里夹着的错误
+- `test/adapters/update_check_test.dart` —— 三种写法的版本号要比出同一个数
 - `.github/workflows/verify.yml` —— 每个 `*_test.dart` 都必须真的被某一步跑到
 
 ---
@@ -174,4 +195,6 @@ lib/
 
 ---
 
-*最后更新：2026-10-22。文件计数会随时间变，改结构时顺手核对一次。*
+*最后更新：2026-10-30。文件计数会随时间变，改结构时顺手核对一次。*
+
+*本轮补进来的三样：平台通道那一节、两条默认打开的适配器、以及对话与条码那几个新文件在清单里的位置。*

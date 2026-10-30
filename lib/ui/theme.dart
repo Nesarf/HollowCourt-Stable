@@ -2765,6 +2765,26 @@ abstract final class Copy {
       Voice.minister: 'I would record this bottle; the decision to accept remains yours.',
     },
   );
+  static const chatProposalRecount = CopyLine.withLanguages(
+    Translated.authored('重记这一瓶剩下的量'),
+    Translated.authored('correct how much is left in this bottle'),
+    also: {
+      'ja': 'この瓶の残量を記録し直す',
+      'zh-HK': '重記呢瓶剩低幾多',
+      'zh-TW': '重記這一瓶剩下的量',
+    });
+  static const chatProposalDiscard = CopyLine.withLanguages(
+    Translated.authored('把这一瓶倒掉'),
+    Translated.authored('pour this bottle away'),
+    also: {'ja': 'この瓶を捨てる', 'zh-HK': '倒咗呢瓶', 'zh-TW': '把這一瓶倒掉'});
+  static const chatProposalIngredient = CopyLine.withLanguages(
+    Translated.authored('新记一种原料'),
+    Translated.authored('record a new ingredient'),
+    also: {'ja': '新しい材料を登録する', 'zh-HK': '新記一種原料', 'zh-TW': '新記一種原料'});
+  static const chatProposalRecipe = CopyLine.withLanguages(
+    Translated.authored('写一条配方'),
+    Translated.authored('write a recipe'),
+    also: {'ja': 'レシピを書く', 'zh-HK': '寫一條配方', 'zh-TW': '寫一條配方'});
   static const chatProposalApply = CopyLine.withLanguages(
     Translated.authored('记下'), Translated.authored('Record it'),
     also: {'ja': '記録する', 'zh-HK': '記低', 'zh-TW': '記下'});
@@ -2909,6 +2929,14 @@ abstract final class Copy {
   static const chatSaved = CopyLine.withLanguages(
     Translated.authored('存好了'), Translated.authored('Saved'),
     also: {'ja': '保存しました', 'zh-HK': '存好咗', 'zh-TW': '存好了'});
+  static const chatKeyStored = CopyLine.withLanguages(
+    Translated.authored('已存下，留空就是不改'),
+    Translated.authored('stored; leave it blank to keep it'),
+    also: {
+      'ja': '保存済み。空欄なら変更しません',
+      'zh-HK': '存咗，留空就係唔改',
+      'zh-TW': '已存下，留空就是不改',
+    });
   static const chatSettingsNote = CopyLine.withLanguages(
     Translated.authored('key 加密存在这台机器上；地址与模型名明文存，方便你改。'),
     Translated.authored('The key is sealed on this machine; the address and the model are stored as written, so they can be corrected.'),

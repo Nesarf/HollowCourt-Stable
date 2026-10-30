@@ -81,6 +81,23 @@ void main() {
     expect(read.isConfigured, isFalse);
   });
 
+  test('**saving with an empty key field leaves the stored key alone**', () async {
+    // The bug this test exists for: the first version dropped the sealed field when the field was blank, so any save
+    // made while it happened to be empty deleted a credential the reader had entered.
+    final store = ChatKeyStore(directory);
+    await store.write(const ChatSettings(
+      baseUrl: 'https://api.example.test/v1',
+      model: 'some-model',
+      apiKey: 'sk-test-0123456789',
+    ));
+    // A later save for an unrelated field, with the key field left blank.
+    await store.write(const ChatSettings(baseUrl: 'https://other.example.test/v1', model: 'another-model'));
+
+    final read = await ChatKeyStore(directory).read();
+    expect(read.baseUrl, 'https://other.example.test/v1');
+    expect(read.apiKey, 'sk-test-0123456789', reason: 'the key survives an edit that did not touch it');
+  });
+
   test('**an empty key writes no sealed field at all**', () async {
     final store = ChatKeyStore(directory);
     await store.write(const ChatSettings(baseUrl: 'https://api.example.test/v1', model: 'm'));

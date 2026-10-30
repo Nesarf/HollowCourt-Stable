@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../data/chat_actions.dart';
 import '../data/chat_history.dart';
 import '../data/chat_settings.dart';
 
@@ -37,4 +38,11 @@ class ChatSettingsNotifier extends AsyncNotifier<ChatSettings> {
 final chatHistoryProvider = FutureProvider<ChatHistoryStore>((Ref ref) async {
   final directory = await getApplicationSupportDirectory();
   return ChatHistoryStore(directory);
+});
+
+/// Where what she did is written. Beside the transcript, and separate from it on purpose: one file answers "what did
+/// we say" and the other answers "what did she touch".
+final chatActionsProvider = FutureProvider<ChatActionStore>((Ref ref) async {
+  final directory = await getApplicationSupportDirectory();
+  return ChatActionStore(directory);
 });

@@ -27,6 +27,11 @@ class _ChatSettingsSectionState extends ConsumerState<ChatSettingsSection> {
   bool _loaded = false;
   bool _saved = false;
 
+  /// Whether a key is already on disk. **The key itself is never put back into the field**: a credential redrawn on
+  /// screen every time the page opens is a credential in every screenshot, and the field's job is to say whether one
+  /// exists rather than to show it.
+  bool _keyStored = false;
+
   @override
   void dispose() {
     _baseUrl.dispose();
@@ -42,15 +47,20 @@ class _ChatSettingsSectionState extends ConsumerState<ChatSettingsSection> {
     _loaded = true;
     _baseUrl.text = settings.baseUrl;
     _model.text = settings.model;
-    _key.text = settings.apiKey;
+    // Deliberately not `_key.text = settings.apiKey`. See [_keyStored].
+    _keyStored = settings.apiKey.trim().isNotEmpty;
   }
 
   Future<void> _save() async {
+    final typed = _key.text.trim();
     await ref.read(chatSettingsProvider.notifier).save(ChatSettings(
           baseUrl: _baseUrl.text.trim(),
           model: _model.text.trim(),
-          apiKey: _key.text.trim(),
+          // Empty means "keep what is stored" -- see `ChatKeyStore.write`, which carries the sealed field across.
+          apiKey: typed,
         ));
+    _key.clear();
+    _keyStored = _keyStored || typed.isNotEmpty;
     if (mounted) {
       setState(() => _saved = true);
       await Future<void>.delayed(const Duration(seconds: 2));
@@ -101,7 +111,10 @@ class _ChatSettingsSectionState extends ConsumerState<ChatSettingsSection> {
               controller: _key,
               style: HollowType.body,
               obscureText: true,
-              decoration: InputDecoration(labelText: ref.copy(Copy.chatApiKey)),
+              decoration: InputDecoration(
+                labelText: ref.copy(Copy.chatApiKey),
+                hintText: _keyStored ? ref.copy(Copy.chatKeyStored) : null,
+              ),
             ),
             const SizedBox(height: 10),
             Row(

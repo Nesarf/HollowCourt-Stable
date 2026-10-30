@@ -90,6 +90,14 @@ class ChatKeyStore {
     Object? sealed;
     if (settings.apiKey.trim().isNotEmpty) {
       sealed = await _seal(master, settings.apiKey);
+    } else {
+      // **An empty field means "leave it as it was", and this is a bug fix rather than a convenience.**
+      //
+      // The first version omitted the sealed field when the key was empty, which is the same file as "forget the
+      // key" -- so any save made while the field happened to be blank deleted a credential the reader had entered.
+      // Measured on 2026-10-22: a key entered, a later save for an unrelated field, and the conversation stopped
+      // working with nothing on screen to explain it.
+      sealed = await _storedSeal();
     }
     final json = <String, Object?>{
       'baseUrl': settings.baseUrl,
@@ -97,6 +105,19 @@ class ChatKeyStore {
       'key': ?sealed,
     };
     await _settingsFileHandle.writeAsString(const JsonEncoder.withIndent('  ').convert(json), flush: true);
+  }
+
+  /// The sealed key already on disk, if any. Read as raw JSON so it is carried across a settings edit untouched.
+  Future<Object?> _storedSeal() async {
+    final file = _settingsFileHandle;
+    if (!await file.exists()) return null;
+    try {
+      final decoded = jsonDecode(await file.readAsString());
+      if (decoded is Map<String, Object?>) return decoded['key'];
+    } on FormatException {
+      return null;
+    }
+    return null;
   }
 
   Future<SecretKey> _masterKey() async {
