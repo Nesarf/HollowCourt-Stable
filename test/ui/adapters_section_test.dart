@@ -65,9 +65,9 @@ void main() {
 
     final container = ProviderScope.containerOf(tester.element(find.byType(AdaptersSection)));
     final registry = container.read(adapterRegistryProvider);
-    // **One seam starts open, by the owner's decision of 2026-10-22**, and it is the one that was built: the barcode
-    // catalogue. Everything else is still shut, which is the part of the old rule that still applies.
-    expect(registry.enabled, <AdapterKind>{AdapterKind.barcode});
+    // **Two seams start open, by the owner's decision of 2026-10-22**: the barcode catalogue and the conversation.
+    // Everything else is still shut, which is the part of the old rule that still applies.
+    expect(registry.enabled, <AdapterKind>{AdapterKind.barcode, AdapterKind.chatModel});
     // **The barcode is the one seam this build can actually run**, since the catalogue lookup landed on 2026-10-22.
     // Everything else is still a promise, and the discipline this file guards is that a promise is not a button.
     expect(registry.isAvailable(AdapterKind.barcode), isTrue);

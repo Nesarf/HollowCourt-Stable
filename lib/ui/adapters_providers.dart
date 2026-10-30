@@ -16,7 +16,7 @@ final adapterRegistryProvider = NotifierProvider<AdapterRegistryNotifier, Adapte
 );
 
 class AdapterRegistryNotifier extends Notifier<AdapterRegistry> {
-  /// **The barcode starts switched on, and the owner asked for that on 2026-10-22.**
+  /// **The barcode and the conversation both start switched on, and the owner asked for that on 2026-10-22.**
   ///
   /// This overrides the rule the registry was built around -- *off by default is the initial state of this object and
   /// not a setting a caller passes* -- and it overrides it deliberately, because the reason behind that rule was a
@@ -29,8 +29,8 @@ class AdapterRegistryNotifier extends Notifier<AdapterRegistry> {
   @override
   AdapterRegistry build() {
     final registry = AdapterRegistry(declaredAdapters);
-    if (registry.isAvailable(AdapterKind.barcode)) {
-      registry.enable(AdapterKind.barcode);
+    for (final kind in <AdapterKind>[AdapterKind.barcode, AdapterKind.chatModel]) {
+      if (registry.isAvailable(kind)) registry.enable(kind);
     }
     return registry;
   }
