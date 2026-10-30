@@ -1,11 +1,25 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../adapters/cellar_tools.dart';
 import '../adapters/chat_client.dart';
 import '../adapters/elizabeth_prompt.dart';
+import '../adapters/web_search.dart';
+import '../data/image_picker_channel.dart';
+import '../domain/events/stock.dart';
+import '../domain/model/ingredient.dart';
+import '../domain/model/recipe.dart';
+import '../domain/units/quantity.dart';
 import 'chat_providers.dart';
+import '../adapters/registry.dart';
+import 'adapters_providers.dart';
+import 'library.dart';
 import 'l10n/copy_resolution.dart';
 import 'l10n/dual_copy.dart';
+import 'photo_capture_page.dart';
 import 'l10n/dual_copy_text.dart';
 import 'theme.dart';
 
@@ -28,8 +42,36 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   final _scroll = ScrollController();
   final List<ChatMessage> _messages = <ChatMessage>[];
   String _pending = '';
+  /// The photograph waiting to be sent with the next message.
+  Uint8List? _attachment;
+
+  /// **What she wants recorded, and has not recorded.** The proposal is shown and the reader decides; nothing is
+  /// written until they press the button, which is the rule `cellar_tools.dart` exists to keep.
+  BottleProposal? _proposal;
+  bool _proposalApplied = false;
   String? _trouble;
   bool _busy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // **The transcript comes back, because the owner asked for it on 2026-10-22.** Read once, at the start; written
+    // after every turn rather than on the way out, because a page that is killed has no way out to write on.
+    unawaited(_restore());
+  }
+
+  Future<void> _restore() async {
+    final store = await ref.read(chatHistoryProvider.future);
+    final stored = await store.read();
+    if (!mounted || stored.isEmpty) return;
+    setState(() => _messages.addAll(stored));
+    _follow();
+  }
+
+  Future<void> _persist() async {
+    final store = await ref.read(chatHistoryProvider.future);
+    await store.write(_messages);
+  }
 
   @override
   void dispose() {
@@ -40,15 +82,26 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   Future<void> _send() async {
     final text = _input.text.trim();
-    if (text.isEmpty || _busy) return;
+    // **A photograph with no words is still a question.** Requiring a sentence to attach a picture meant the one
+    // gesture a reader makes with a bottle in hand -- point, and say nothing -- was the one gesture refused.
+    if ((text.isEmpty && _attachment == null) || _busy) return;
+    // **The switch is the consent, and it is asked before anything else.** A key in a field is not permission to
+    // send the cellar anywhere; the adapter card in the settings is where that permission is given, and this is the
+    // one place that reads it.
+    if (!ref.read(adapterRegistryProvider).isEnabled(AdapterKind.chatModel)) {
+      setState(() => _trouble = 'needSwitch');
+      return;
+    }
     final settings = ref.read(chatSettingsProvider).value;
     if (settings == null || !settings.isConfigured) {
       setState(() => _trouble = 'needKey');
       return;
     }
+    final attachment = _attachment;
     setState(() {
-      _messages.add(ChatMessage.user(text));
+      _messages.add(ChatMessage.user(text, image: attachment));
       _input.clear();
+      _attachment = null;
       _busy = true;
       _trouble = null;
       _pending = '';
@@ -60,12 +113,46 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       model: settings.model,
       apiKey: settings.apiKey,
     );
+    // **What she is allowed to look at, gathered at the moment she is asked.** The ledger rather than a copy of it:
+    // the volumes she reads are the volumes the screen shows. No write tool exists -- see `cellar_tools.dart` for why
+    // that is a decision and not an omission.
+    final cellar = ref.read(cellarProvider).value;
+    final seed = ref.read(seedProvider).value;
+    final box = CellarToolBox(
+      stock: cellar?.stock.bottles ?? const <BottleState>[],
+      // **The names, not just the ids.** She was reading the ledger alone and saying 「gin · 700 ml · id: gin」; a
+      // reader asking what they can make wants the library's name for it, which is what the seed already holds.
+      ingredients: seed?.ingredients ?? const <Ingredient>[],
+      recipeNames: <({String id, String name})>[
+        for (final recipe in seed?.recipes ?? const <Recipe>[])
+          (id: recipe.id, name: recipe.name),
+      ],
+    );
     final history = <ChatMessage>[
       const ChatMessage.system(elizabethSystemPrompt),
       ..._messages,
     ];
     try {
-      await for (final piece in const ChatClient().stream(endpoint, history)) {
+      await for (final piece in const ChatClient().converse(
+        endpoint,
+        history,
+        tools: CellarToolBox.tools,
+        runTool: (call) async {
+          final answer = await box.run(
+            call,
+            search: (query) => const DeepSeekSearch().search(endpoint, query),
+            propose: (proposal) {
+              if (mounted) {
+                setState(() {
+                  _proposal = proposal;
+                  _proposalApplied = false;
+                });
+              }
+            },
+          );
+          return answer;
+        },
+      )) {
         if (!mounted) return;
         setState(() => _pending += piece);
         _follow();
@@ -76,6 +163,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         _pending = '';
         _busy = false;
       });
+      unawaited(_persist());
     } on ChatFailure catch (failure) {
       if (!mounted) return;
       setState(() {
@@ -105,7 +193,65 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     });
   }
 
+  /// **The card, and the only place a write happens.** Two buttons: one records through the same `addBottle` the
+  /// stock form uses, the other drops the proposal. There is no third path, and no path where the model writes.
+  Widget _proposalCard(BottleProposal proposal) {
+    final name = ref.read(seedProvider).value?.ingredients
+            .where((ingredient) => ingredient.id == proposal.sku)
+            .map((ingredient) => ingredient.name)
+            .firstOrNull ??
+        proposal.sku;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+      decoration: BoxDecoration(
+        color: HollowPalette.gold.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DualCopyText(Copy.chatProposalHeading, style: HollowType.caption),
+          const SizedBox(height: 4),
+          Text('$name · ${proposal.millilitres} ml', style: HollowType.body.copyWith(color: HollowPalette.ink)),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              if (_proposalApplied)
+                DualCopyText(Copy.chatProposalDone, style: HollowType.caption.copyWith(color: HollowPalette.gold))
+              else ...[
+                FilledButton(
+                  key: const ValueKey('proposal-apply'),
+                  onPressed: () async {
+                    await ref.read(cellarProvider.notifier).addBottle(
+                          sku: proposal.sku,
+                          volume: Volume.fromMillilitres(proposal.millilitres),
+                        );
+                    if (mounted) {
+                      setState(() {
+                        _proposalApplied = true;
+                        _proposal = null;
+                      });
+                    }
+                  },
+                  child: DualCopyText(Copy.chatProposalApply, style: HollowType.body),
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  key: const ValueKey('proposal-dismiss'),
+                  onPressed: () => setState(() => _proposal = null),
+                  child: DualCopyText(Copy.chatProposalDismiss, style: HollowType.body),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   CopyLine? _troubleLine() => switch (_trouble) {
+        'needSwitch' => Copy.chatNeedSwitch,
         'needKey' => Copy.chatNeedKey,
         'unauthorised' => Copy.chatTroubleUnauthorised,
         'refused' => Copy.chatTroubleRefused,
@@ -146,6 +292,28 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     ],
                   ),
           ),
+          if (_proposal case final proposal?) _proposalCard(proposal),
+          // **What is attached, said before it is sent.** The first version kept it in state and showed nothing,
+          // so a reader who picked a photograph had no way to know it had been picked -- and no way to take it back.
+          if (_attachment != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 6),
+              child: Row(
+                children: [
+                  const Icon(Icons.image_outlined, size: 16),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: DualCopyText(Copy.chatPhotoAttached, style: HollowType.caption),
+                  ),
+                  IconButton(
+                    key: const ValueKey('chat-detach'),
+                    onPressed: () => setState(() => _attachment = null),
+                    icon: const Icon(Icons.close, size: 16),
+                    tooltip: null,
+                  ),
+                ],
+              ),
+            ),
           if (trouble != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
@@ -160,6 +328,33 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
               child: Row(
                 children: [
+                  // **Only where the system picker exists.** A button that opens nothing on two of the three
+                  // platforms is the thing the 2026-09-25 rule forbids.
+                  if (canPickFromLibrary)
+                    IconButton(
+                      key: const ValueKey('chat-pick'),
+                      onPressed: _busy
+                          ? null
+                          : () async {
+                              final bytes = await pickPictureFromLibrary();
+                              if (bytes == null || !mounted) return;
+                              setState(() => _attachment = bytes);
+                            },
+                      icon: const Icon(Icons.photo_library_outlined, size: 22),
+                      tooltip: null,
+                    ),
+                  IconButton(
+                    key: const ValueKey('chat-attach'),
+                    onPressed: _busy
+                        ? null
+                        : () async {
+                            final bytes = await takePhoto(context);
+                            if (bytes == null || !mounted) return;
+                            setState(() => _attachment = bytes);
+                          },
+                    icon: const Icon(Icons.photo_camera_outlined, size: 22),
+                    tooltip: null,
+                  ),
                   Expanded(
                     child: TextField(
                       key: const ValueKey('chat-input'),

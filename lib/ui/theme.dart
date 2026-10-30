@@ -2680,6 +2680,20 @@ abstract final class Copy {
       Voice.minister: 'You may begin; the floor is yours, though not indefinitely.',
     },
   );
+  static const chatNeedSwitch = CopyLine.withLanguages(
+    Translated.authored('对话还没打开。设置里那张卡上有开关，开了才发得出去。'),
+    Translated.authored('The conversation is switched off. Its card in the settings has the switch; nothing can be sent until it is on.'),
+    also: {
+      'ja': '会話が切ってあります。設定のカードにスイッチがありますので、入れてから。',
+      'zh-HK': '對話仲未開。設定嗰張卡有開關，開咗先寄得出。',
+      'zh-TW': '對話還沒打開。設定那張卡上有開關，開了才發得出去。',
+    },
+    voices: {
+      Voice.heiress: '对话还没打开。设置里那张卡上有开关——开了本小姐才听得见，别在这儿白喊。',
+      Voice.heiressJa: '会話が切ってありますの。設定のカードにスイッチがあります——入れないと、こちらの耳には届きませんわ。',
+      Voice.minister: 'The conversation is switched off; the switch is on its card in the settings, and nothing is sent until it is on.',
+    },
+  );
   static const chatNeedKey = CopyLine.withLanguages(
     Translated.authored('还没有填 key。设置最下面填上，她才听得到你。'),
     Translated.authored('No key yet. Fill one in at the bottom of the settings and she will be able to hear you.'),
@@ -2738,6 +2752,109 @@ abstract final class Copy {
   );
 
   /// The settings block. Three fields and one sentence about what is stored where.
+  // ---------------------------------------------------------------- the newest release
+
+  // ---------------------------------------------------------------- the proposal
+
+  static const chatProposalHeading = CopyLine.withLanguages(
+    Translated.authored('她想替你记下这一瓶：'), Translated.authored('She would record this bottle for you:'),
+    also: {'ja': 'これを記録しようとしております：', 'zh-HK': '佢想幫你記低呢一瓶：', 'zh-TW': '她想替你記下這一瓶：'},
+    voices: {
+      Voice.heiress: '本小姐替你记这一瓶。要就要，不要就说话。',
+      Voice.heiressJa: 'わたくしがこれを記録いたしましょう。ご入用でなければそう仰いなさいな。',
+      Voice.minister: 'I would record this bottle; the decision to accept remains yours.',
+    },
+  );
+  static const chatProposalApply = CopyLine.withLanguages(
+    Translated.authored('记下'), Translated.authored('Record it'),
+    also: {'ja': '記録する', 'zh-HK': '記低', 'zh-TW': '記下'});
+  static const chatProposalDismiss = CopyLine.withLanguages(
+    Translated.authored('算了'), Translated.authored('Not now'),
+    also: {'ja': 'やめておく', 'zh-HK': '算數', 'zh-TW': '算了'});
+  static const chatProposalDone = CopyLine.withLanguages(
+    Translated.authored('记下了。'),
+    Translated.authored('Recorded.'),
+    also: {
+      'ja': '記録しました。',
+      'zh-HK': '記低咗。',
+      'zh-TW': '記下了。',
+    },
+    voices: {
+      Voice.heiress: '记下了。下一次别让我问第二遍。',
+      Voice.heiressJa: '記録いたしました。次からは二度聞かせないでくださいな。',
+      Voice.minister: 'It has been recorded.',
+    },
+  );
+  static const updateCheck = CopyLine.withLanguages(
+    Translated.authored('看看有没有新版本'), Translated.authored('Look for a newer release'),
+    also: {'ja': '新しい版があるか見る', 'zh-HK': '睇下有冇新版本', 'zh-TW': '看看有沒有新版本'});
+  static const updateChecking = CopyLine.withLanguages(
+    Translated.authored('正在问仓库…'), Translated.authored('Asking the repository...'),
+    also: {'ja': 'リポジトリに問い合わせ中…', 'zh-HK': '問緊倉庫…', 'zh-TW': '正在問倉庫…'});
+  static const updateCurrentLine = CopyLine.withLanguages(
+    Translated.authored('已经是最新的了。'),
+    Translated.authored('This is the newest release.'),
+    also: {
+      'ja': 'これが最新です。',
+      'zh-HK': '已經係最新。',
+      'zh-TW': '已經是最新的了。',
+    },
+    voices: {
+      Voice.heiress: '已经是最新的了。没什么可给你换的，别白跑一趟。',
+      Voice.heiressJa: 'もう最新ですわ。差し上げるものはありませんから、無駄足でしたね。',
+      Voice.minister: 'This build is already the newest release; there is nothing to replace.',
+    },
+  );
+  static const updateAvailableLine = CopyLine.withLanguages(
+    Translated.authored('仓库里有更新的：'),
+    Translated.authored('The repository has something newer:'),
+    also: {
+      'ja': 'リポジトリには新しいものがあります：',
+      'zh-HK': '倉庫有更新嘅：',
+      'zh-TW': '倉庫裡有更新的：',
+    },
+    voices: {
+      Voice.heiress: '仓库那边有更新的了——要不要，你自己决定。',
+      Voice.heiressJa: 'リポジトリに新しいものが出ておりますわ。どうなさるかはご自分で。',
+      Voice.minister: 'A newer release exists; whether to take it is your decision rather than ours.',
+    },
+  );
+  static const updateUnreachableLine = CopyLine.withLanguages(
+    Translated.authored('问不到仓库：要么没网，要么那边不应答。'),
+    Translated.authored('The repository could not be reached: either there is no network, or it did not answer.'),
+    also: {
+      'ja': 'リポジトリに問い合わせられませんでした。回線か、応答がないかです。',
+      'zh-HK': '問唔到倉庫：一係冇網，一係嗰邊唔應。',
+      'zh-TW': '問不到倉庫：要麼沒網，要麼那邊沒有回應。',
+    },
+    voices: {
+      Voice.heiress: '问不到仓库。要么网断了，要么那边不理人——这种账本小姐也没法替你查。',
+      Voice.heiressJa: 'リポジトリに届きませんでしたの。回線か、向こうが応じないか。そこまでは分かりませんわ。',
+      Voice.minister: 'The repository did not answer, which may be the network or the service; the distinction is not visible from here.',
+    },
+  );
+  static const updateOpen = CopyLine.withLanguages(
+    Translated.authored('去看一眼'), Translated.authored('Open it'),
+    also: {'ja': '見に行く', 'zh-HK': '去睇下', 'zh-TW': '去看一眼'});
+  // ---------------------------------------------------------------- the seam's own words
+
+  static const chatDisclosureNoAddress = CopyLine.withLanguages(
+    Translated.authored('地址还没填'), Translated.authored('no address yet'),
+    also: {'ja': '接続先が未設定', 'zh-HK': '地址仲未填', 'zh-TW': '位址還沒填'});
+  static const chatDisclosureSends = CopyLine.withLanguages(
+    Translated.authored('会连到'), Translated.authored('Connects to'),
+    also: {'ja': '接続先：', 'zh-HK': '會連去', 'zh-TW': '會連到'});
+  static const chatDisclosurePayload = CopyLine.withLanguages(
+    Translated.authored('发送对话、她的思考、附上的照片，以及她读过的库存'),
+    Translated.authored('sends the conversation, her reasoning, any photograph, and whatever she has read from the cellar'),
+    also: {
+      'ja': '会話・思考・添付写真・彼女が読んだ在庫を送ります',
+      'zh-HK': '寄對話、佢嘅思考、附上嘅相，同埋佢讀過嘅庫存',
+      'zh-TW': '發送對話、她的思考、附上的照片，以及她讀過的庫存',
+    });
+  static const chatOpen = CopyLine.withLanguages(
+    Translated.authored('和她说两句'), Translated.authored('Talk to her'),
+    also: {'ja': '話しかける', 'zh-HK': '同佢講兩句', 'zh-TW': '和她說兩句'});
   static const chatSettingsTitle = CopyLine.withLanguages(
     Translated.authored('伊丽莎白的钥匙'), Translated.authored('Elizabeth, and the key she is reached with'),
     also: {'ja': 'エリザベスと、その鍵', 'zh-HK': '伊麗莎白嘅鎖匙', 'zh-TW': '伊麗莎白的鑰匙'});
@@ -2750,6 +2867,42 @@ abstract final class Copy {
   static const chatApiKey = CopyLine.withLanguages(
     Translated.authored('密钥'), Translated.authored('Key'),
     also: {'ja': 'キー', 'zh-HK': '鎖匙', 'zh-TW': '金鑰'});
+  static const chatTakePhoto = CopyLine.withLanguages(
+    Translated.authored('拍一张'), Translated.authored('Take a photograph'),
+    also: {'ja': '一枚撮る', 'zh-HK': '影一張', 'zh-TW': '拍一張'});
+  static const chatPickPicture = CopyLine.withLanguages(
+    Translated.authored('从相册选'), Translated.authored('Choose from the library'),
+    also: {'ja': 'アルバムから選ぶ', 'zh-HK': '喺相簿揀', 'zh-TW': '從相簿選'});
+  static const chatPhotoAttached = CopyLine.withLanguages(
+    Translated.authored('附了一张照片，问她这是什么。'),
+    Translated.authored('A photograph is attached; ask what it is.'),
+    also: {
+      'ja': '写真を添えました。これが何か聞いてください。',
+      'zh-HK': '附咗張相，問佢呢個係咩。',
+      'zh-TW': '附了一張照片，問她這是什麼。',
+    },
+    voices: {
+      Voice.heiress: '照片附上了。要问什么，趁本小姐还看着。',
+      Voice.heiressJa: '写真は添えましたわ。何をお聞きになるか、早めに。',
+      Voice.minister: 'A photograph has been attached; the question about it may follow.',
+    },
+  );
+  /// Said where the key is entered, because the difference between an update and a removal is the difference between
+  /// keeping this and typing it again.
+  static const chatSettingsKeep = CopyLine.withLanguages(
+    Translated.authored('覆盖安装不会动它；卸载会一起清掉。'),
+    Translated.authored('Updating the application leaves it alone; removing the application takes it with it.'),
+    also: {
+      'ja': '上書き更新では残ります。アンインストールすると一緒に消えます。',
+      'zh-HK': '覆蓋安裝唔會郁佢；卸載就會一齊清走。',
+      'zh-TW': '覆蓋安裝不會動它；卸載會一起清掉。',
+    },
+    voices: {
+      Voice.heiress: '覆盖安装不动它。卸载就会一起清掉——到时候自己重新填，别来问本小姐。',
+      Voice.heiressJa: '上書き更新では残ります。アンインストールすれば一緒に消えますわ——そのときはご自分で入れ直しなさいな。',
+      Voice.minister: 'An update leaves it in place; a removal does not. The key would then have to be entered once more.',
+    },
+  );
   static const chatSave = CopyLine.withLanguages(
     Translated.authored('存下'), Translated.authored('Save'),
     also: {'ja': '保存', 'zh-HK': '存落嚟', 'zh-TW': '存下'});

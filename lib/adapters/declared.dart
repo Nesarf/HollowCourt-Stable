@@ -104,6 +104,37 @@ final class BarcodeAdapter implements Adapter {
   );
 }
 
+/// The seam as the registry needs to see it: a kind, a transport, availability, and a disclosure.
+///
+/// **Availability is "this build can do it", not "the reader configured it".** Whether a key has been entered is a
+/// different question, asked by the page and answered with its own sentence; folding the two together would make the
+/// card disappear the moment a reader cleared the key field, which reads as "this application cannot do that" rather
+/// than "you have not finished setting it up".
+class ChatAdapter implements Adapter {
+  const ChatAdapter();
+
+  @override
+  AdapterKind get kind => AdapterKind.chatModel;
+
+  @override
+  AdapterTransport get transport => AdapterTransport.https;
+
+  @override
+  bool get isAvailable => true;
+
+  @override
+  AdapterDisclosure get disclosure => const AdapterDisclosure(
+        // Empty on purpose: the host is whatever the reader typed, and a constant here would be a lie the moment
+        // somebody pointed this at a proxy. The card says the address in words instead.
+        hosts: <String>[],
+        payloadKeys: <String>['messages', 'reasoning_content', 'image', 'cellar'],
+        // **True, and this is the sentence that matters.** `read_cellar` is one of her tools, so the shelves can be
+        // sent; a reader deciding whether to switch this on is entitled to know that before they do.
+        sendsAnythingAboutTheCellar: true,
+        needsNetwork: true,
+      );
+}
+
 /// Every seam this build knows about, all of them shut.
 ///
 /// The order is section 13's, then section 11.2's: the price comparison
@@ -113,6 +144,9 @@ const List<Adapter> declaredAdapters = <Adapter>[
   UnimplementedAdapter(AdapterKind.priceComparison),
   BarcodeAdapter(),
   InstrumentAdapter(),
+  // **The conversation.** Declared here rather than in a list of its own so that every card on that screen comes from
+  // one place; a second source of seams would be a second place to forget one.
+  ChatAdapter(),
 ];
 
 /// **The peripheral seam, which is the one that is safe by construction.**

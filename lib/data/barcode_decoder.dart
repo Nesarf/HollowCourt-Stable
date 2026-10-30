@@ -25,7 +25,7 @@ class ScannedBarcode {
 /// The four code formats are what `domain/model/barcode.dart` carries; `code128` is here because a supplier's carton
 /// carries it even when the bottle does not. Asking the reader for everything would try QR first and cost time on
 /// every frame.
-const List<BarcodeFormat> _formats = <BarcodeFormat>[
+const List<BarcodeFormat> readableFormats = <BarcodeFormat>[
   BarcodeFormat.ean13,
   BarcodeFormat.ean8,
   BarcodeFormat.upcA,
@@ -66,7 +66,7 @@ ScannedBarcode? decodeBarcodeImage(img.Image image, {bool tryHarder = true}) {
     final bitmap = BinaryBitmap(GlobalHistogramBinarizer(source));
     final result = MultiFormatReader().decode(
       bitmap,
-      DecodeHint(possibleFormats: _formats, tryHarder: tryHarder),
+      DecodeHint(possibleFormats: readableFormats, tryHarder: tryHarder),
     );
     return ScannedBarcode(result.text, result.barcodeFormat);
   } on Exception {

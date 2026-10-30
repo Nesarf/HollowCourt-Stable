@@ -73,6 +73,8 @@ class _ChatSettingsSectionState extends ConsumerState<ChatSettingsSection> {
             DualCopyText(Copy.chatSettingsTitle, style: HollowType.title),
             const SizedBox(height: 6),
             DualCopyText(Copy.chatSettingsNote, style: HollowType.caption),
+            const SizedBox(height: 4),
+            DualCopyText(Copy.chatSettingsKeep, style: HollowType.caption),
             const SizedBox(height: 10),
             TextField(
               key: const ValueKey('chat-base-url'),

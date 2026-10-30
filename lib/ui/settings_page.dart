@@ -6,6 +6,7 @@ import 'developer_section.dart';
 import 'display_section.dart';
 import 'names_section.dart';
 import 'archive_section.dart';
+import 'chat_seam.dart';
 import 'chat_settings_section.dart';
 import 'integrity_section.dart';
 import 'l10n/dual_copy_text.dart';
@@ -93,6 +94,7 @@ class SettingsPage extends ConsumerWidget {
           // **Her key lives beside the other seams rather than in a tab of its own**, and that is a judgement about
           // how often it is touched: once, when it is set up. The conversation itself has its own door on the cellar,
           // where it is wanted; the three fields that make it possible are furniture.
+          ChatSeamCard(),
           ChatSettingsSection(),
           // **And then the last thing on the page, by the owner's instruction: 关于空庭, always at the
           // bottom.** It is where the repository address lives, and an address that leads out of the

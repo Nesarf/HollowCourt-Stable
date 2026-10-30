@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:zxing_lib/common.dart';
+import 'package:zxing_lib/zxing.dart';
+
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,6 +47,10 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
   bool _running = false;
   bool _finished = false;
 
+  /// **One frame at a time**, for the stream. Decoding is slower than the frame interval, so without this the scanner
+  /// would fall behind the bottle and answer with an older picture than the one in front of it.
+  bool _busy = false;
+
   @override
   void initState() {
     super.initState();
@@ -74,12 +82,46 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
         return;
       }
       setState(() => _controller = controller);
-      _running = true;
-      unawaited(_loop());
+      // **Two ways to get frames, and the platform decides which.** Android can stream them, and on a handset that is
+      // the difference between a scan that finds the code as you move and one that finds it half a second later.
+      // Windows and Linux cannot stream (`camera_windows` still has no image stream), so they keep the shutter loop.
+      if (Platform.isAndroid) {
+        await controller.startImageStream(_onFrame);
+      } else {
+        _running = true;
+        unawaited(_loop());
+      }
     } on CameraException {
       if (mounted) setState(() => _problemLine = Copy.barcodeScanNoCamera);
     } on Exception {
       if (mounted) setState(() => _problemLine = Copy.barcodeScanNoCamera);
+    }
+  }
+
+  /// **One streamed frame, read without colour conversion.**
+  ///
+  /// Android hands over YUV420, and the first plane of that *is* luminance -- the only channel a barcode decoder needs.
+  /// So the frame goes straight into `PlanarYUVLuminanceSource` with no RGBA round trip, which is what makes this
+  /// cheap enough to run on every frame instead of every fourth.
+  ///
+  /// The single-flight flag is here too: decoding takes longer than a frame arrives, and a queue of half-decoded
+  /// frames is a scanner that lags behind the bottle.
+  Future<void> _onFrame(CameraImage frame) async {
+    if (_busy || _finished || frame.planes.isEmpty) return;
+    _busy = true;
+    try {
+      final plane = frame.planes.first;
+      final source = PlanarYUVLuminanceSource(plane.bytes, frame.width, frame.height);
+      final bitmap = BinaryBitmap(HybridBinarizer(source));
+      final result = MultiFormatReader().decode(
+        bitmap,
+        DecodeHint(possibleFormats: readableFormats, tryHarder: false),
+      );
+      if (result.text.isNotEmpty) _finish(result.text);
+    } on Exception {
+      // No code in this frame. That is the ordinary case, several times a second.
+    } finally {
+      _busy = false;
     }
   }
 
@@ -125,6 +167,9 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
   void dispose() {
     _running = false;
     final controller = _controller;
+    if (controller != null && controller.value.isStreamingImages) {
+      unawaited(controller.stopImageStream());
+    }
     _controller = null;
     if (controller != null) unawaited(controller.dispose());
     super.dispose();

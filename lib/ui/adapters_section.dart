@@ -69,6 +69,9 @@ class AdaptersSection extends ConsumerWidget {
     AdapterKind.priceComparison => Copy.adapterPriceComparison,
     AdapterKind.barcode => Copy.adapterBarcode,
     AdapterKind.measurement => Copy.adapterMeasurement,
+    // The conversation has its own card in `chat_seam.dart` -- it needs to say the address in words, which this
+    // generic card cannot do. This label exists so the switch stays exhaustive rather than falling through.
+    AdapterKind.chatModel => Copy.chatTitle,
   };
 }
 

@@ -26,6 +26,9 @@ AdapterRegistry registryWith({bool available = true}) => AdapterRegistry(<Adapte
   _FakeAdapter(AdapterKind.barcode, isAvailable: available),
   _FakeAdapter(AdapterKind.priceComparison, isAvailable: available),
   _FakeAdapter(AdapterKind.measurement, isAvailable: available),
+  // Added 2026-10-22 with the kind itself: the loop below walks `AdapterKind.values`, so a fake for every kind is what
+  // keeps this test about the registry's initial state rather than about which seams happen to exist.
+  _FakeAdapter(AdapterKind.chatModel, isAvailable: available),
 ]);
 
 void main() {

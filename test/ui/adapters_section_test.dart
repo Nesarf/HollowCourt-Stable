@@ -46,6 +46,8 @@ void main() {
     // abandoned: on 2026-10-22 the camera and the catalogue became things this build can actually do.
     expect(find.text(Copy.adapterBarcode.primary.text), findsOneWidget,
         reason: 'the barcode can be scanned and looked up now, so its card is shown');
+    expect(find.text(Copy.chatTitle.primary.text), findsOneWidget,
+        reason: 'the conversation is a declared seam now, and its card is shown with it');
     for (final held in <String>[
       Copy.adapterPriceComparison.primary.text,
       Copy.adapterMeasurement.primary.text,
@@ -53,8 +55,9 @@ void main() {
       expect(find.text(held), findsNothing, reason: '$held is held back until it can be used');
     }
     // And exactly one switch, beside the one seam that can be switched on.
-    expect(find.byType(Switch), findsOneWidget,
-        reason: 'a switch is offered for the seams that can be used, and there is one of those');
+    // Two usable seams, two switches: the barcode and the conversation.
+    expect(find.byType(Switch), findsNWidgets(2),
+        reason: 'a switch is offered for the seams that can be used, and there are two of those');
   });
 
   testWidgets('**and the registry agrees with the screen: only the barcode is built**', (tester) async {
@@ -62,11 +65,15 @@ void main() {
 
     final container = ProviderScope.containerOf(tester.element(find.byType(AdaptersSection)));
     final registry = container.read(adapterRegistryProvider);
-    expect(registry.enabled, isEmpty, reason: 'off by default is the initial state');
+    // **One seam starts open, by the owner's decision of 2026-10-22**, and it is the one that was built: the barcode
+    // catalogue. Everything else is still shut, which is the part of the old rule that still applies.
+    expect(registry.enabled, <AdapterKind>{AdapterKind.barcode});
     // **The barcode is the one seam this build can actually run**, since the catalogue lookup landed on 2026-10-22.
     // Everything else is still a promise, and the discipline this file guards is that a promise is not a button.
     expect(registry.isAvailable(AdapterKind.barcode), isTrue);
-    for (final kind in AdapterKind.values.where((k) => k != AdapterKind.barcode)) {
+    expect(registry.isAvailable(AdapterKind.chatModel), isTrue,
+        reason: 'the conversation was added to this registry on 2026-10-22');
+    for (final kind in AdapterKind.values.where((k) => k != AdapterKind.barcode && k != AdapterKind.chatModel)) {
       expect(registry.isAvailable(kind), isFalse, reason: '${kind.name} is not built in this build');
     }
   });

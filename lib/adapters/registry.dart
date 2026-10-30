@@ -31,6 +31,11 @@ enum AdapterKind {
   /// Section 7's source two: a price looked up rather than typed in.
   priceComparison,
 
+  /// **The conversation, which is a seam like any other** -- added 2026-10-22, when the chat was moved out of the
+  /// settings and into this registry. It is the only kind that can send what is in the cellar (`read_cellar`), which
+  /// is why its disclosure says so.
+  chatModel,
+
   /// A barcode read into an ingredient id.
   barcode,
 

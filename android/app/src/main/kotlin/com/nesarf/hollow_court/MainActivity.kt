@@ -32,6 +32,9 @@ class MainActivity : FlutterActivity() {
     /** The reply to a request that is waiting on the reader, answered from `onRequestPermissionsResult`. */
     private var pendingPermission: MethodChannel.Result? = null
 
+    /** The reply waiting on the picture picker. */
+    private var pendingPick: MethodChannel.Result? = null
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.nesarf.hollow_court/open_url")
@@ -51,6 +54,38 @@ class MainActivity : FlutterActivity() {
                 } catch (missing: android.content.ActivityNotFoundException) {
                     // A device with no browser at all. The reader is told by the screen, not by a crash.
                     result.error("no-browser", "no activity could open this address", null)
+                }
+            }
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.nesarf.hollow_court/picker")
+            .setMethodCallHandler { call, result ->
+                if (call.method != "pickImage") {
+                    result.notImplemented()
+                    return@setMethodCallHandler
+                }
+                // One pick at a time: a `Result` may be answered exactly once, and a second launcher would answer the
+                // first caller with the second reader's choice.
+                if (pendingPick != null) {
+                    result.error("busy", "a picker is already open", null)
+                    return@setMethodCallHandler
+                }
+                pendingPick = result
+                // **`startActivityForResult` rather than `registerForActivityResult`, and the reason is on record.**
+                // The launcher was tried first, on HMA's advice, and it does not compile here: this project's
+                // `FlutterActivity` cannot resolve `registerForActivityResult`, which lives behind `activity-ktx`
+                // and a version this build does not carry. Pulling a new androidx dependency in to choose a
+                // photograph is the same trade that `permission_handler` was refused for, so the older API is used.
+                // Its cost is real and worth stating: a configuration change while the picker is open loses the
+                // reply, and the reader sees the picture not attach. On a picker that is open for a few seconds,
+                // that is an acceptable failure and a visible one.
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "image/*"
+                }
+                try {
+                    startActivityForResult(intent, PICK_IMAGE_REQUEST)
+                } catch (error: Exception) {
+                    pendingPick = null
+                    result.error("unavailable", error.message, null)
                 }
             }
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.nesarf.hollow_court/camera_permission")
@@ -93,7 +128,26 @@ class MainActivity : FlutterActivity() {
         pendingPermission = null
     }
 
+    /// The picker's answer, which is all this project can receive.
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != PICK_IMAGE_REQUEST) return
+        val reply = pendingPick
+        pendingPick = null
+        val uri = data?.data
+        if (resultCode != RESULT_OK || uri == null) {
+            reply?.success(null)
+            return
+        }
+        try {
+            reply?.success(contentResolver.openInputStream(uri)?.use { it.readBytes() })
+        } catch (error: Exception) {
+            reply?.error("read-failed", error.message, null)
+        }
+    }
+
     private companion object {
         const val CAMERA_REQUEST = 4711
+        const val PICK_IMAGE_REQUEST = 4712
     }
 }

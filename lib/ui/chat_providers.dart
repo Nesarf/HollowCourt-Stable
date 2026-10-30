@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../data/chat_history.dart';
 import '../data/chat_settings.dart';
 
 /// Where the conversation settings live: beside the cellar, never inside the build.
@@ -31,3 +32,9 @@ class ChatSettingsNotifier extends AsyncNotifier<ChatSettings> {
     state = AsyncData(settings);
   }
 }
+
+/// Where the transcript is kept. Beside the settings and the key, in the same directory.
+final chatHistoryProvider = FutureProvider<ChatHistoryStore>((Ref ref) async {
+  final directory = await getApplicationSupportDirectory();
+  return ChatHistoryStore(directory);
+});

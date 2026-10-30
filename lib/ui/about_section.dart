@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../adapters/update_check.dart';
+import 'l10n/copy_resolution.dart';
 import 'l10n/dual_copy.dart';
 import 'l10n/dual_copy_text.dart';
 import 'open_url.dart';
@@ -93,6 +96,11 @@ class AboutSection extends StatelessWidget {
               ? Copy.aboutCommitUnknown
               : buildCommit.substring(0, buildCommit.length < 9 ? buildCommit.length : 9),
         ),
+        const SizedBox(height: 10),
+        // **The one thing on this page that reaches outward on purpose, and only when pressed.**
+        // It is here rather than on the settings' first screen because "is there a newer one" is a question about
+        // this build, and the build's own facts are all in this section.
+        const _UpdateRow(),
         const SizedBox(height: 18),
         DualCopyText(Copy.aboutNaming, style: HollowType.caption),
         const SizedBox(height: 6),
@@ -251,6 +259,77 @@ class _Row extends StatelessWidget {
         Expanded(child: DualCopyText(label, style: HollowType.body)),
         const SizedBox(width: 12),
         SelectableText(value, style: HollowType.numeric),
+      ],
+    );
+  }
+}
+
+/// **Asks the public mirror what the newest release is, once, when the reader presses the button.**
+///
+/// Nothing here runs on launch: GitHub's unauthenticated API is sixty requests an hour per address, and a check that
+/// fired on every open would spend them and tell the reader nothing new. The button is the whole schedule.
+class _UpdateRow extends ConsumerStatefulWidget {
+  const _UpdateRow();
+
+  @override
+  ConsumerState<_UpdateRow> createState() => _UpdateRowState();
+}
+
+class _UpdateRowState extends ConsumerState<_UpdateRow> {
+  UpdateAnswer? _answer;
+  bool _checking = false;
+
+  Future<void> _check() async {
+    setState(() {
+      _checking = true;
+      _answer = null;
+    });
+    final answer = await const UpdateChecker().check(
+      repositoryUrl: repositoryUrl,
+      currentVersion: appVersion,
+    );
+    if (!mounted) return;
+    setState(() {
+      _checking = false;
+      _answer = answer;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final answer = _answer;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            key: const ValueKey('update-check'),
+            onPressed: _checking ? null : _check,
+            icon: const Icon(Icons.system_update_alt, size: 17),
+            label: DualCopyText(
+              _checking ? Copy.updateChecking : Copy.updateCheck,
+              style: HollowType.caption,
+            ),
+          ),
+        ),
+        if (answer case UpdateAvailable(:final info)) ...[
+          Text(
+            '${ref.copy(Copy.updateAvailableLine)}${info.tag}',
+            style: HollowType.body.copyWith(color: HollowPalette.gold),
+          ),
+          const SizedBox(height: 4),
+          _ExternalLink(
+            label: Copy.updateOpen,
+            hint: Copy.aboutRepositoryHint,
+            failed: Copy.aboutRepositoryFailed,
+            url: info.url,
+          ),
+        ] else if (answer is UpdateCurrent) ...[
+          DualCopyText(Copy.updateCurrentLine, style: HollowType.caption),
+        ] else if (answer is UpdateUnreadable) ...[
+          DualCopyText(Copy.updateUnreachableLine, style: HollowType.caption),
+        ],
       ],
     );
   }

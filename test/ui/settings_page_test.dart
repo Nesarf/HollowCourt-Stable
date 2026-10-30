@@ -23,10 +23,11 @@ void main() {
   /// window. That is not a missing section, it is an unbuilt one; scrolling in each test would test
   /// the scroller rather than the sections.
   Future<void> pumpSettings(WidgetTester tester) async {
-    // Tall enough for the whole page, and it has grown twice: the four adapters moved here, and then the
-    // sections gained a visible divider instead of a 32-pixel gap. A viewport that is only just tall enough
-    // fails as "the text is missing", which is the least informative way to learn that a page got taller.
-    tester.view.physicalSize = const Size(900, 3400);
+    // Tall enough for the whole page, and it has grown three times now: the four adapters moved here, the sections
+    // gained a visible divider instead of a 32-pixel gap, and on 2026-10-22 the conversation's own card and its three
+    // fields arrived. A viewport that is only just tall enough fails as "the text is missing", which is the least
+    // informative way to learn that a page got taller.
+    tester.view.physicalSize = const Size(900, 4400);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
