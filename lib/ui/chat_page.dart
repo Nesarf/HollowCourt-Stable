@@ -136,10 +136,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       // **The names, not just the ids.** She was reading the ledger alone and saying 「gin · 700 ml · id: gin」; a
       // reader asking what they can make wants the library's name for it, which is what the seed already holds.
       ingredients: seed?.ingredients ?? const <Ingredient>[],
-      recipeNames: <({String id, String name})>[
-        for (final recipe in seed?.recipes ?? const <Recipe>[])
-          (id: recipe.id, name: recipe.name),
-      ],
+      recipes: seed?.recipes ?? const <Recipe>[],
     );
     final history = <ChatMessage>[
       const ChatMessage.system(elizabethSystemPrompt),
@@ -230,6 +227,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           Copy.chatProposalIngredient,
           category == null ? name : '$name · $category',
         ),
+      RenameBottle(:final bottleId, :final name) => (Copy.chatProposalRenameBottle, '$bottleId → $name'),
+      RenameIngredient(:final ingredientId, :final name) => (Copy.chatProposalRenameIngredient, '$ingredientId → $name'),
       NewRecipe(:final name, :final items) => (
           Copy.chatProposalRecipe,
           '$name · ${items.map((item) => '${item.amount}${item.unit == null ? '' : ' ${item.unit}'} ${item.ingredientId}').join(' + ')}',
@@ -265,6 +264,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                         await notifier.recountBottle(bottleId, Volume.fromMillilitres(millilitres));
                       case DiscardBottle(:final bottleId, :final millilitres):
                         await notifier.discardBottle(bottleId, Volume.fromMillilitres(millilitres));
+                      case RenameBottle(:final bottleId, :final name):
+                        await notifier.renameBottle(bottleId, name);
+                      case RenameIngredient(:final ingredientId, :final name):
+                        await notifier.renameIngredient(ingredientId, name);
                       case NewRecipe(:final name, :final items, :final method, :final glass):
                         await notifier.authorRecipe(AuthoredRecipe(
                           id: '',

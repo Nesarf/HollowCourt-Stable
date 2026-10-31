@@ -6,6 +6,7 @@ import 'developer_section.dart';
 import 'display_section.dart';
 import 'names_section.dart';
 import 'archive_section.dart';
+import 'chat_actions_section.dart';
 import 'chat_seam.dart';
 import 'chat_settings_section.dart';
 import 'integrity_section.dart';
@@ -96,6 +97,9 @@ class SettingsPage extends ConsumerWidget {
           // where it is wanted; the three fields that make it possible are furniture.
           ChatSeamCard(),
           ChatSettingsSection(),
+          // **The record of what she did, next to the switch that allowed it.** A reader deciding whether to keep the
+          // conversation on should be able to see what it has been doing.
+          ChatActionsSection(),
           // **And then the last thing on the page, by the owner's instruction: 关于空庭, always at the
           // bottom.** It is where the repository address lives, and an address that leads out of the
           // application belongs after everything that describes what is already in it. Moved here from

@@ -2781,6 +2781,14 @@ abstract final class Copy {
     Translated.authored('新记一种原料'),
     Translated.authored('record a new ingredient'),
     also: {'ja': '新しい材料を登録する', 'zh-HK': '新記一種原料', 'zh-TW': '新記一種原料'});
+  static const chatProposalRenameBottle = CopyLine.withLanguages(
+    Translated.authored('给这一瓶改个名字'),
+    Translated.authored('rename this bottle'),
+    also: {'ja': 'この瓶の名前を変える', 'zh-HK': '畀呢瓶改個名', 'zh-TW': '給這一瓶改個名字'});
+  static const chatProposalRenameIngredient = CopyLine.withLanguages(
+    Translated.authored('把这种原料统一改名'),
+    Translated.authored('rename this ingredient everywhere'),
+    also: {'ja': 'この材料の名前をまとめて変える', 'zh-HK': '將呢種原料統一改名', 'zh-TW': '把這種原料統一改名'});
   static const chatProposalRecipe = CopyLine.withLanguages(
     Translated.authored('写一条配方'),
     Translated.authored('write a recipe'),
@@ -2875,6 +2883,39 @@ abstract final class Copy {
   static const chatOpen = CopyLine.withLanguages(
     Translated.authored('和她说两句'), Translated.authored('Talk to her'),
     also: {'ja': '話しかける', 'zh-HK': '同佢講兩句', 'zh-TW': '和她說兩句'});
+  static const chatActionsTitle = CopyLine.withLanguages(
+    Translated.authored('她做过什么'), Translated.authored('What she has done'),
+    also: {'ja': '彼女がしたこと', 'zh-HK': '佢做過咩', 'zh-TW': '她做過什麼'});
+  static const chatActionsNote = CopyLine.withLanguages(
+    Translated.authored('她调用过的工具、给它的参数，以及回执。只存在这台机器上。'),
+    Translated.authored('The tools she called, what they were given, and what came back. Kept on this machine only.'),
+    also: {
+      'ja': '彼女が呼んだ道具と、渡した引数と、返ってきたもの。この機械にだけ残します。',
+      'zh-HK': '佢叫過嘅工具、畀咗咩參數、返咗咩。只喺呢部機。',
+      'zh-TW': '她呼叫過的工具、給它的參數，以及回執。只存在這台機器上。',
+    });
+  static const chatActionsEmpty = CopyLine.withLanguages(
+    Translated.authored('还没有。她还没动过手。'),
+    Translated.authored('Nothing yet; she has not touched anything.'),
+    also: {
+      'ja': 'まだありません。彼女はまだ何も触っておりません。',
+      'zh-HK': '仲未有。佢仲未郁過手。',
+      'zh-TW': '還沒有。她還沒動過手。',
+    },
+    voices: {
+      Voice.heiress: '还没有。本小姐还没动过你的东西。',
+      Voice.heiressJa: 'まだ何も。あなたのものには手を付けておりませんわ。',
+      Voice.minister: 'Nothing as yet; no action has been taken.',
+    },
+  );
+  static const chatActionsMore = CopyLine.withLanguages(
+    Translated.authored('更早的还有，在这台机器的文件里。'),
+    Translated.authored('Older lines are in a file on this machine.'),
+    also: {
+      'ja': 'それ以前は、この機械のファイルにあります。',
+      'zh-HK': '再早啲嘅喺呢部機個檔案入面。',
+      'zh-TW': '更早的還有，在這台機器的檔案裡。',
+    });
   static const chatSettingsTitle = CopyLine.withLanguages(
     Translated.authored('伊丽莎白的钥匙'), Translated.authored('Elizabeth, and the key she is reached with'),
     also: {'ja': 'エリザベスと、その鍵', 'zh-HK': '伊麗莎白嘅鎖匙', 'zh-TW': '伊麗莎白的鑰匙'});

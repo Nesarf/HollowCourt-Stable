@@ -14,6 +14,7 @@ import 'dart:convert';
 import '../adapters/chat_client.dart';
 import '../domain/events/stock.dart';
 import '../domain/model/ingredient.dart';
+import '../domain/model/recipe.dart';
 
 /// **One change she wants the reader to make.** Nothing here performs it; the screen does, through the same methods
 /// the rest of the application uses.
@@ -68,19 +69,38 @@ final class NewRecipe extends PendingChange {
   final String? glass;
 }
 
+/// Give a bottle, or every bottle of an ingredient, a name the reader prefers.
+///
+/// Two proposals rather than one with a flag, because they act on different things: one renames an object on the shelf,
+/// the other renames a word used everywhere. The owner's own vocabulary problem, from section 8.
+final class RenameBottle extends PendingChange {
+  const RenameBottle({required this.bottleId, required this.name});
+  final String bottleId;
+  final String name;
+}
+
+final class RenameIngredient extends PendingChange {
+  const RenameIngredient({required this.ingredientId, required this.name});
+  final String ingredientId;
+  final String name;
+}
+
 /// The tools, the data they read, and the proposals they produce.
 class CellarToolBox {
   const CellarToolBox({
     this.stock = const <BottleState>[],
     this.ingredients = const <Ingredient>[],
-    this.recipeNames = const <({String id, String name})>[],
+    this.recipes = const <Recipe>[],
   });
 
   /// **What is on the shelves, as the ledger holds it** -- `cellar.stock.bottles`, passed through rather than copied
   /// into another shape, so the numbers she reads are the numbers the screen shows.
   final Iterable<BottleState> stock;
   final List<Ingredient> ingredients;
-  final List<({String id, String name})> recipeNames;
+  /// **Whole recipes, not just their names.** She could list the menu and could not answer "how do I make it",
+  /// which is the question a reader asks next; the items carry the amounts, and the amounts are what make an answer
+  /// usable rather than a suggestion to go and look.
+  final List<Recipe> recipes;
 
   static List<Map<String, Object?>> get tools => <Map<String, Object?>>[
         webSearchToolDefinition,
@@ -179,6 +199,38 @@ class CellarToolBox {
         <String, Object?>{
           'type': 'function',
           'function': <String, Object?>{
+            'name': 'propose_rename_bottle',
+            'description': 'Propose renaming one bottle on the shelf. Use it when the reader calls a specific bottle '
+                'something else. This writes nothing.',
+            'parameters': <String, Object?>{
+              'type': 'object',
+              'properties': <String, Object?>{
+                'bottle': <String, Object?>{'type': 'string', 'description': 'The bottle id from read_cellar.'},
+                'name': <String, Object?>{'type': 'string', 'description': 'What the reader calls it.'},
+              },
+              'required': <String>['bottle', 'name'],
+            },
+          },
+        },
+        <String, Object?>{
+          'type': 'function',
+          'function': <String, Object?>{
+            'name': 'propose_rename_ingredient',
+            'description': 'Propose renaming an ingredient everywhere -- every bottle of it, on every screen. Use it '
+                'when the reader uses a different word for the thing itself. This writes nothing.',
+            'parameters': <String, Object?>{
+              'type': 'object',
+              'properties': <String, Object?>{
+                'ingredient': <String, Object?>{'type': 'string', 'description': 'The ingredient id.'},
+                'name': <String, Object?>{'type': 'string', 'description': 'What the reader calls it.'},
+              },
+              'required': <String>['ingredient', 'name'],
+            },
+          },
+        },
+        <String, Object?>{
+          'type': 'function',
+          'function': <String, Object?>{
             'name': 'propose_recount_bottle',
             'description': 'Propose correcting how much is left in a bottle the reader has just looked at. This '
                 'writes nothing.',
@@ -244,8 +296,21 @@ class CellarToolBox {
         return rows.join('\n');
 
       case 'read_recipes':
-        if (recipeNames.isEmpty) return 'No recipes are loaded.';
-        return recipeNames.map((recipe) => '${recipe.id} · ${recipe.name}').join('\n');
+        if (recipes.isEmpty) return 'No recipes are loaded.';
+        final out = <String>[];
+        for (final recipe in recipes.take(30)) {
+          out.add('${recipe.id} · ${recipe.name}');
+          for (final item in recipe.items) {
+            // Microlitres to millilitres, and a counted line kept as a count -- a garnish is four leaves, not a volume.
+            // A counted line is kept as a count -- a garnish is four leaves, not a volume. No comparison is made on
+            // the count, because the two models that carry one disagree about its type and the display does not care.
+            final amount = item.count != null
+                ? '${item.count} x'
+                : '${(item.amount / 1000).round()}${item.unit == null ? ' ml' : ' ${item.unit}'}';
+            out.add('    - ${item.ingredientId}: $amount');
+          }
+        }
+        return out.join('\n');
 
       case 'propose_add_bottle':
         final sku = '${call.arguments['sku'] ?? ''}'.trim();
@@ -276,7 +341,7 @@ class CellarToolBox {
         final name = '${call.arguments['name'] ?? ''}'.trim();
         if (name.isEmpty) return 'The proposal needs a name.';
         if (propose == null) return 'The proposal cannot be shown here.';
-        if (recipeNames.any((recipe) => recipe.name == name)) {
+        if (recipes.any((recipe) => recipe.name == name)) {
           return 'A recipe called $name already exists.';
         }
         final raw = call.arguments['items'];
@@ -305,6 +370,28 @@ class CellarToolBox {
           glass: glass.isEmpty ? null : glass,
         ));
         return 'Proposed: a recipe called $name with ${items.length} ingredients. The reader decides.';
+
+      case 'propose_rename_bottle':
+        final bottleId = '${call.arguments['bottle'] ?? ''}'.trim();
+        final name = '${call.arguments['name'] ?? ''}'.trim();
+        if (bottleId.isEmpty || name.isEmpty) return 'A rename needs a bottle id and a name.';
+        if (propose == null) return 'The proposal cannot be shown here.';
+        if (!stock.any((bottle) => bottle.bottleId == bottleId)) {
+          return 'No bottle has the id $bottleId. Use read_cellar and pick one that exists.';
+        }
+        propose(RenameBottle(bottleId: bottleId, name: name));
+        return 'Proposed: rename $bottleId to 「$name」. The reader decides.';
+
+      case 'propose_rename_ingredient':
+        final ingredientId = '${call.arguments['ingredient'] ?? ''}'.trim();
+        final name = '${call.arguments['name'] ?? ''}'.trim();
+        if (ingredientId.isEmpty || name.isEmpty) return 'A rename needs an ingredient id and a name.';
+        if (propose == null) return 'The proposal cannot be shown here.';
+        if (ingredients.isNotEmpty && !ingredients.any((ingredient) => ingredient.id == ingredientId)) {
+          return 'No ingredient has the id $ingredientId.';
+        }
+        propose(RenameIngredient(ingredientId: ingredientId, name: name));
+        return 'Proposed: rename $ingredientId to 「$name」 everywhere. The reader decides.';
 
       case 'propose_recount_bottle':
       case 'propose_discard_bottle':
@@ -339,7 +426,7 @@ class CellarToolBox {
   String get summary => jsonEncode(<String, Object?>{
         'bottles': stock.length,
         'ingredients': ingredients.length,
-        'recipes': recipeNames.length,
+        'recipes': recipes.length,
       });
 }
 
