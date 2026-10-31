@@ -91,6 +91,28 @@ for src in "$SCRATCH"/squashfs-root/usr/share/icons/hicolor/*/apps/hollow_court.
   cp "$src" "$dest/"
 done
 
+# **/usr/share/pixmaps is the file WSLg actually reads, and a per-user install never touched it.**
+#
+# Measured on 2026-10-31 by substituting a flat red square: every hollow_court.png under hicolor, in
+# three separate homes, was replaced and the regenerated icon did not change at all. Restoring only
+# /usr/share/pixmaps/hollow_court.png changed it straight back to the artwork. That directory is the
+# X11-era fallback every icon lookup still searches, and the packaging script copies into it only on a
+# --system install -- so the one file that decided the icon was the one file left alone.
+PIXMAP_DIR=/usr/share/pixmaps
+PIXMAP_SRC="$SCRATCH/squashfs-root/usr/share/icons/hicolor/64x64/apps/hollow_court.png"
+if [ -d "$PIXMAP_DIR" ] && [ -f "$PIXMAP_SRC" ]; then
+  if [ -w "$PIXMAP_DIR" ]; then
+    cp "$PIXMAP_SRC" "$PIXMAP_DIR/hollow_court.png"
+    echo "   $PIXMAP_DIR/hollow_court.png"
+  elif sudo -n true 2>/dev/null; then
+    sudo -n cp "$PIXMAP_SRC" "$PIXMAP_DIR/hollow_court.png"       && echo "   $PIXMAP_DIR/hollow_court.png (through sudo -n)"
+  else
+    echo "   NOTE: $PIXMAP_DIR is not writable and sudo wants a password." >&2
+    echo "         WSLg reads its icon from that file; without it the window icon stays stale:" >&2
+    echo "         sudo cp '$PIXMAP_SRC' $PIXMAP_DIR/hollow_court.png" >&2
+  fi
+fi
+
 echo "== registering =="
 # Best-effort: a distribution without these tools still has a working image, it just refreshes the
 # menu cache on its own schedule. Failing the install over a cache would be the tail wagging the dog.
@@ -151,6 +173,40 @@ if [ "$SYSTEM_INSTALL" = "1" ]; then
     command -v gtk-update-icon-cache >/dev/null && gtk-update-icon-cache -qtf /usr/share/icons/hicolor 2>/dev/null || true
     command -v update-desktop-database >/dev/null && update-desktop-database /usr/share/applications 2>/dev/null || true
     grep -E '^(Name|Exec|Icon)=' "/usr/share/applications/$APP_ID.desktop" | sed 's/^/  /'
+  fi
+fi
+
+# **On WSL the install is not finished until the Windows shortcut is handled.** WSLg writes one .lnk
+# per desktop entry on every start, each naming an icon under %TEMP%\WSLDVCPlugin that it regenerates
+# from artwork which can be stale -- and it overwrites any correction made by hand. The shortcut's own
+# IconLocation wins over that regenerated file, so this sets it and then marks the .lnk read-only.
+#
+# Measured on 2026-10-31: every icon directory in the distribution held the current picture, and WSLg
+# still rebuilt a 16 KB .ico carrying the old mark. Neither Windows' FileIO tracing nor inotify inside
+# the distribution could see where it read the old one -- 9p reads are issued by the Windows side and
+# appear in neither. So the shortcut is corrected rather than the thing it copies from.
+#
+# Needs Windows, so it is a PowerShell script beside this one, and it is best-effort: a distribution
+# without WSLg has no shortcut to fix and every step above has already succeeded.
+if grep -qi microsoft /proc/version 2>/dev/null && command -v powershell.exe >/dev/null 2>&1; then
+  echo
+  echo "== windows shortcut (WSLg) =="
+  here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  repo="$(cd "$here/../.." && pwd)"
+  distro="${WSL_DISTRO_NAME:-}"
+  [ -n "$distro" ] || distro="$(uname -n)"
+  if [ -f "$here/wslg-shortcut.ps1" ]; then
+    script_win="$(wslpath -w "$here/wslg-shortcut.ps1" 2>/dev/null || true)"
+    icon_win="$(wslpath -w "$repo/windows/runner/resources/app_icon.ico" 2>/dev/null || true)"
+    if [ -n "$script_win" ]; then
+      if [ -n "$icon_win" ]; then
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$script_win" -Distro "$distro" -IconSource "$icon_win"           || echo "   the shortcut was not updated; the install itself is fine" >&2
+      else
+        powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$script_win" -Distro "$distro"           || echo "   the shortcut was not updated; the install itself is fine" >&2
+      fi
+    fi
+  else
+    echo "   skipped: wslg-shortcut.ps1 is not beside this script"
   fi
 fi
 
