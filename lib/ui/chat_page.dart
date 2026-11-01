@@ -466,10 +466,42 @@ class _Bubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         child: Text(
-          message.text,
+          plainReply(message.text),
           style: HollowType.body.copyWith(color: HollowPalette.ink),
         ),
       ),
     );
   }
+}
+
+/// Take the Markdown out of a reply, because nothing here renders it.
+///
+/// The model answers in Markdown by habit and this transcript is a plain `Text`, so a reader was shown
+/// `**成这样**` with the asterisks still in it. Two things are done about that: the prompt tells her not
+/// to write it, and this removes the marks that arrive anyway. It strips rather than renders on purpose --
+/// a Markdown renderer is a dependency, and a package-size argument already cost this application its
+/// voice.
+String plainReply(String text) {
+  var out = text;
+
+  // Fenced blocks: the content stays, the fence and its language tag go.
+  out = out.replaceAll(RegExp(r'^```[^\n]*$', multiLine: true), '');
+  // Inline code and every emphasis marker.
+  out = out.replaceAll('`', '');
+  out = out.replaceAll(RegExp(r'\*\*\*|___'), '');
+  out = out.replaceAll(RegExp(r'\*\*|__'), '');
+  out = out.replaceAll('*', '');
+  // Headings and block quotes: the words are the content, the prefix is not.
+  out = out.replaceAll(RegExp(r'^\s{0,3}#{1,6}\s*', multiLine: true), '');
+  out = out.replaceAll(RegExp(r'^\s{0,3}>\s?', multiLine: true), '');
+  // A list keeps one mark, the one this interface already uses for a list.
+  out = out.replaceAll(RegExp(r'^\s*[-+]\s+', multiLine: true), '\u00b7 ');
+  // Table rules and pipes: the cells stay, the drawing goes.
+  out = out.replaceAll(RegExp(r'^\s*\|?[-: ]+\|[-: |]*$', multiLine: true), '');
+  out = out.replaceAll('|', ' ');
+  // Links keep their words and lose their targets.
+  out = out.replaceAllMapped(RegExp(r'\[([^\]]+)\]\([^)]*\)'), (match) => match[1] ?? '');
+  // Whatever the removals left behind.
+  out = out.replaceAll(RegExp(r'\n{3,}'), '\n\n');
+  return out.trim();
 }
