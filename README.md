@@ -8,10 +8,14 @@ on what this is meant to be. Everything below is about building it.
 
 ## What is built so far
 
-**P2 is finished: four screens, and the cellar is usable.** This section used to say that
-nothing faced a person yet, which was true at P1 and stopped being true some time before anyone
-edited this paragraph -- the same staleness the design document's roadmap had, corrected the
-same way.
+**Six screens: cellar, recipes, ingredients, journal, settings, and a conversation.** The cellar is
+usable end to end -- bottles go in by hand or by barcode, pours are recorded, the shelf reflects the
+log.
+
+This paragraph has been stale twice, in the same way both times: a status section written before the
+work rather than after it. What keeps it honest is the table below, which is corrected whenever
+something in it stops being true -- the last correction was after a Windows install and a Linux
+install both succeeded on this machine.
 
 | | State |
 | --- | --- |
@@ -21,13 +25,13 @@ same way.
 | Stock, Recipes, Bar and Cellar screens, liquid rendering | done |
 | Shelf placement, consumption curve, statistics, settings, shopping list | done |
 | Pairing and sync | done end to end and tested over loopback sockets; mDNS, the QR camera and the screen that starts it are not built |
-| Packaging | Android APK **used on a real device** (that run was an earlier build; the artifact has since been rebuilt from HEAD); Windows MSI **built, not installable on this machine** (its own fault, not the package's -- see below); Linux AppImage **built and run** under WSLg, never on a real Linux desktop |
-| Network adapters (DeepSeek, prices, barcode) | not started, and off by default by design |
+| Packaging | Android APK **used on a real device**; Windows MSI **installed and run** on this machine; Linux AppImage **installed and run** under WSLg, never on a real Linux desktop |
+| Network adapters | Barcode lookup and the conversation are **implemented, and start switched on**; the price seam is not started |
 
-**767 tests, of which 603 are the domain and data layers on the plain Dart VM**, and the analyzer reports
-nothing. Those two counts are quoted separately because they are the ones that prove the layering: neither
+**1467 tests**, the domain and data layers among them on the plain Dart VM, and the analyzer reports
+nothing. The counts are quoted together because they are the ones that prove the layering: neither
 lib/domain nor lib/data imports Flutter, and those tests would not compile if one of them started
-to. The 767 includes the widget tests, which do.
+to. The total includes the widget tests, which do.
 
 See `docs/DESIGN.md` section 14 for the roadmap with a State column, and `packaging/README.md` for
 what each target is and is not -- including which of the three has actually been installed and run,
@@ -75,9 +79,8 @@ string is added: **who reads this, and where does it end up?**
 | Identifiers, keys, event types, log lines, diagnostics, these documents | ASCII only | English |
 | Labels, headings, empty states, error copy, units as drawn on screen | Real UTF-8 | The reader's locale |
 
-Same value, two audiences, two encodings. Nothing is implemented yet; the
-locale set and the mechanism are planned in section 12.4 of the design
-document.
+Same value, two audiences, two encodings. Both halves exist: the display text lives in `Copy`, which
+carries a variant per locale, and nothing in `lib/domain/` ever sees it.
 
 ## Building
 
