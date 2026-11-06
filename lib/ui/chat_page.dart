@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../adapters/cellar_tools.dart';
+import '../adapters/proposed_writes.dart';
 import '../adapters/chat_client.dart';
 import '../adapters/elizabeth_prompt.dart';
 import '../adapters/web_search.dart';
@@ -257,39 +258,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                   key: const ValueKey('proposal-apply'),
                   onPressed: () async {
                     final notifier = ref.read(cellarProvider.notifier);
-                    switch (proposal) {
-                      case AddBottle(:final sku, :final millilitres):
-                        await notifier.addBottle(sku: sku, volume: Volume.fromMillilitres(millilitres));
-                      case RecountBottle(:final bottleId, :final millilitres):
-                        await notifier.recountBottle(bottleId, Volume.fromMillilitres(millilitres));
-                      case DiscardBottle(:final bottleId, :final millilitres):
-                        await notifier.discardBottle(bottleId, Volume.fromMillilitres(millilitres));
-                      case RenameBottle(:final bottleId, :final name):
-                        await notifier.renameBottle(bottleId, name);
-                      case RenameIngredient(:final ingredientId, :final name):
-                        await notifier.renameIngredient(ingredientId, name);
-                      case NewRecipe(:final name, :final items, :final method, :final glass):
-                        await notifier.authorRecipe(AuthoredRecipe(
-                          id: '',
-                          name: name,
-                          method: method,
-                          glass: glass,
-                          items: <AuthoredItem>[
-                            for (final item in items)
-                              AuthoredItem(
-                                ingredientId: item.ingredientId,
-                                amount: item.amount,
-                                unit: item.unit,
-                              ),
-                          ],
-                        ));
-                      case NewIngredient(:final name, :final category):
-                        await notifier.authorIngredient(AuthoredIngredient(
-                          id: '',
-                          name: name,
-                          category: category,
-                        ));
-                    }
+                    await applyWrite(writeFor(proposal), notifier);
                     if (mounted) {
                       setState(() {
                         _proposalApplied = true;
@@ -471,6 +440,40 @@ class _Bubble extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Perform the write a proposal became.
+///
+/// The proposal-to-write mapping lives in `proposed_writes.dart`, where a test can read it back; this
+/// only says which method on the cellar each write names. Splitting them is what makes the mapping
+/// checkable at all -- in one switch behind a provider and a pump, a case wired to the wrong method
+/// looked exactly like a case wired correctly.
+Future<void> applyWrite(CellarWrite write, CellarNotifier notifier) async {
+  switch (write) {
+    case WriteAddBottle(:final sku, :final millilitres):
+      await notifier.addBottle(sku: sku, volume: Volume.fromMillilitres(millilitres));
+    case WriteRecountBottle(:final bottleId, :final millilitres):
+      await notifier.recountBottle(bottleId, Volume.fromMillilitres(millilitres));
+    case WriteDiscardBottle(:final bottleId, :final millilitres):
+      await notifier.discardBottle(bottleId, Volume.fromMillilitres(millilitres));
+    case WriteRenameBottle(:final bottleId, :final name):
+      await notifier.renameBottle(bottleId, name);
+    case WriteRenameIngredient(:final ingredientId, :final name):
+      await notifier.renameIngredient(ingredientId, name);
+    case WriteAuthorRecipe(:final name, :final items, :final method, :final glass):
+      await notifier.authorRecipe(AuthoredRecipe(
+        id: '',
+        name: name,
+        method: method,
+        glass: glass,
+        items: <AuthoredItem>[
+          for (final item in items)
+            AuthoredItem(ingredientId: item.ingredientId, amount: item.amount, unit: item.unit),
+        ],
+      ));
+    case WriteAuthorIngredient(:final name, :final category):
+      await notifier.authorIngredient(AuthoredIngredient(id: '', name: name, category: category));
   }
 }
 
