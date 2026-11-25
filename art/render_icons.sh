@@ -20,16 +20,14 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/.." && pwd)"
 RENDER="$HERE/render"
 
-# **Which mark family this run draws, and the default is the medallion.**
+# **Which mark family this run draws, and the default is the pair this application ships.**
 #
-#     art/render_icons.sh                    # the medallion: the mark tied to the character sheet
-#     MARK=construct art/render_icons.sh     # the constructivist alternative
-#     MARK=image art/render_icons.sh         # drawn from a picture the owner brought
+#     art/render_icons.sh                    # picture-and-a, which is what this application ships
+#     MARK=image art/render_icons.sh         # the picture alone, for sizes where it can still be read
 #     MARK=a art/render_icons.sh             # the publisher's A, at every size
-#     MARK=picture-and-a art/render_icons.sh # the picture, with the A where the picture fails
 #
 # They are separate generators rather than one with a style switch, because they are separate identities:
-# the medallion keeps the halo's three elements and its fifteen degrees of tilt from the character's
+# the picture is the owner's own still life; the A is the publisher's letter, and it keeps the old mark's
 # setting, and the others owe the character nothing. Which one ships is therefore a decision and not a
 # preference, so it is named here in one line and all of them stay in the repository. Nothing is deleted
 # when another is drawn.
@@ -41,20 +39,8 @@ RENDER="$HERE/render"
 # it is mottled colour. So the picture takes 64 and up, and the A takes 48 and below. The one number that
 # decides is here rather than scattered through the loop.
 FIDELITY_FLOOR=64
-MARK="${MARK:-medallion}"
+MARK="${MARK:-picture-and-a}"
 case "$MARK" in
-  medallion)
-    GENERATOR="$HERE/make_icon.py"
-    SVG="$HERE/icon-hc.svg"
-    MID="$HERE/icon-hc-mid.svg"
-    SMALL="$HERE/icon-hc-small.svg"
-    ;;
-  construct)
-    GENERATOR="$HERE/make_construct_icon.py"
-    SVG="$HERE/icon-hc-construct.svg"
-    MID="$HERE/icon-hc-construct-mid.svg"
-    SMALL="$HERE/icon-hc-construct-small.svg"
-    ;;
   image)
     # **The source travels with the generator, and this checks it is there before drawing.** The
     # drawing is a function of the picture, so a missing input is a pipeline that cannot run; it should
@@ -111,7 +97,7 @@ case "$MARK" in
   a)
     # **The publisher's A, for the sizes where the picture mark cannot be read.** This family exists
     # because the still life of a dozen objects is mottled colour at sixteen pixels: the drawing is
-    # replaced rather than shrunk, which is the same answer the medallion's smaller tiers took in
+    # replaced rather than shrunk, which is the same answer the mark before it took in
     # `docs/DESIGN.md` 12.7.1. Three drawings, one A each, all ink on the application's own ground.
     GENERATOR="$HERE/make_pixel_mark.py"
     # Six drawings, one per size the letter ships at, because a letter has to thin as the mark grows: a
@@ -124,7 +110,7 @@ case "$MARK" in
     A128="$HERE/icon-hc-a128.svg"
     ;;
   *)
-    echo "render_icons.sh: unknown MARK '$MARK' (expected medallion, construct, image or a)" >&2
+    echo "render_icons.sh: unknown MARK '$MARK' (expected image, picture-and-a or a)" >&2
     exit 2
     ;;
 esac
@@ -171,17 +157,10 @@ done
 echo "  $checked drawing(s) checked"
 
 echo "== rendering =="
-# **Each size is rendered from the drawing made for it.** The mark ships at fifteen sizes and was one
-# drawing at all of them, so the twenty-four pyramids, the seventy-two beads and the eight-stop bismuth ramp
-# collapsed into a grey ring below 48 pixels -- which is the same fault this script's own note about the .ico
-# was written about, one level up: a small size has to be *drawn* small. `make_icon.py` emits three densities
-# and the boundaries are here, where the sizes are:
-#
-#   128 and up   the whole medallion: 24 pyramids, the bead-and-reel moulding, all eight crystal hues
-#   48 to 96     twelve pyramids, no moulding (one flat ring instead), five hues, larger letters
-#   32 and down  eight pyramids, no white ring, four hues, letters at 352 units and stroked to hold their
-#                diagonals -- at 16 pixels a Textura capital is a third of a pixel wide and it is the first
-#                thing to disappear
+# **Each size is rendered from the drawing made for it.** Two families are drawn at every size they ship at,
+# and the split between them is `FIDELITY_FLOOR` above: the still life from 64 up, the publisher's A below it,
+# where a dozen objects become mottled colour and the letter is the only thing left that can be named at a
+# glance.
 #
 # The reference is a crafting game's mark: one flat silhouette, detail as negative space rather than thin lines,
 # two inks on paper.
@@ -198,7 +177,7 @@ mkdir -p "$RENDER"
 # two-megabyte file for detail nobody reads at masthead size.
 #
 # Each family names its own drawings below and this reads them; a family that names none of them falls back
-# to the three-tier defaults, which is how the medallion and the constructivist mark are still rendered.
+# to the per-size defaults, which is how the picture and the letter are still rendered.
 drawing_for() {
   case "$1" in
     16)

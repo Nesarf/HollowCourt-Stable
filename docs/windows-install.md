@@ -30,7 +30,7 @@ dialog which does appear cannot hang the caller:
 ```bat
 @echo off
 set LOG=E:\DaShaoHuo\cache	mp\msi-diagnose.log
-set MSI=E:\Hollow Court Bundle\hollow-court-1.0.48000.msi
+set MSI=D:\hollow-court\dist\hollow-court-1.0.51540.msi
 if exist "%LOG%" del "%LOG%"
 msiexec.exe /i "%MSI%" /qn /norestart /L*v "%LOG%"
 echo EXITCODE=%ERRORLEVEL%
@@ -42,7 +42,9 @@ echo EXITCODE=%ERRORLEVEL%
 `** -- a heredoc will mangle it.
 
 Measured: `EXITCODE=0`, `DisplayVersion 1.0.48000`, and the shortcut resolves to `E:\Hollow Court Win\hollow_court.exe`
-with a timestamp from that build.
+with a timestamp from that build. **Re-measured on 2026-11-26 against the current default**: `EXITCODE=0`,
+`DisplayVersion 1.0.51540`, and the shortcut resolves to `D:\Hollow Court Win\hollow_court.exe`. Every `E:` path
+recorded below is that earlier round's; the default has been `D:` since then.
 
 ## Verifying without running it
 
@@ -96,6 +98,6 @@ check would be better than an echo**, which is recorded here rather than pretend
 
 | | |
 | --- | --- |
-| Windows (installed) | `E:\Hollow Court Win\hollow_court.exe`, shortcut 空庭 |
+| Windows (installed) | `D:\Hollow Court Win\hollow_court.exe`, shortcut 空庭 |
 | Linux, on Nyarch | the AppImage, launched through `wslg.exe` -- shortcut 空庭 (Nyarch) |
 | Android | the per-ABI APKs, installed over adb |

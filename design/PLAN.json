@@ -1,0 +1,193 @@
+{
+  "title": "Hollow Court: a beverage cellar you actually own, and HMA, the tooling that maintains it",
+  "goals": [
+    {
+      "id": "app",
+      "title": "One repository, one application, three platforms, and the tooling beside it",
+      "scope": "release",
+      "status": "active",
+      "parent": null,
+      "after": [],
+      "source": "README.md, docs/DESIGN.md section 14",
+      "notes": "The root of this plan. The application is offline-first with no account and no server; HMA is the maintenance toolset living under tool/, art/hma and docs/HMA*. Invariants held on every push: lib/domain and lib/data never import Flutter, the event log is append-only, and every write into the cellar goes through one path -- the model proposes, the reader confirms.",
+      "touches": [
+        "pubspec.yaml",
+        "README.md",
+        "docs/DESIGN.md",
+        "docs/ENGINEERING-MAP.md"
+      ],
+      "verifiedBy": []
+    },
+    {
+      "id": "domain",
+      "title": "The pure Dart domain: units, events, sync, pricing -- no Flutter import, ever",
+      "scope": "layer",
+      "status": "done",
+      "parent": "app",
+      "after": [],
+      "source": "docs/DESIGN.md sections 3, 6",
+      "notes": "Volumes are microlitres, recipes are rational ratios, the event log folds into stock, and the sync format is the storage format. The suite enforces the no-Flutter rule by running on the plain Dart VM: a domain file that reached for Flutter would stop dart test from running at all.",
+      "touches": [
+        "lib/domain/units/quantity.dart",
+        "lib/domain/units/rational.dart",
+        "lib/domain/events/event.dart",
+        "lib/domain/events/stock.dart",
+        "lib/domain/sync/wire.dart",
+        "lib/domain/sync/exchange.dart",
+        "lib/domain/pricing/price.dart",
+        "lib/domain/model/recipe.dart"
+      ],
+      "verifiedBy": [
+        "test/domain/",
+        "test/p3_acceptance_test.dart"
+      ]
+    },
+    {
+      "id": "data",
+      "title": "The data layer: append-only store, seed pipeline, chat history and settings, sealed key",
+      "scope": "layer",
+      "status": "done",
+      "parent": "app",
+      "after": [
+        "domain"
+      ],
+      "source": "docs/DESIGN.md sections 6, 15",
+      "notes": "The event store is one JSON object per line, appended and never rewritten; a torn tail is expected, not corruption. Chat history is bounded at 200 turns, the action log at 500 lines, and the chat key is sealed with AES-GCM beside the settings.",
+      "touches": [
+        "lib/data/event_store.dart",
+        "lib/data/event_log.dart",
+        "lib/data/seed/",
+        "lib/data/chat_history.dart",
+        "lib/data/chat_settings.dart",
+        "lib/data/chat_actions.dart"
+      ],
+      "verifiedBy": [
+        "test/data/",
+        "test/domain/"
+      ]
+    },
+    {
+      "id": "ui",
+      "title": "Six screens and the interaction: cellar, recipes, ingredients, journal, settings, conversation",
+      "scope": "layer",
+      "status": "done",
+      "parent": "app",
+      "after": [
+        "data"
+      ],
+      "source": "docs/DESIGN.md section 12",
+      "notes": "The proposal cards are the write path's only door: a confirmed proposal calls applyWrite, which is the one place that names the method each write becomes. The transcript is plain text; replies pass through plainReply so Markdown marks never reach a reader.",
+      "touches": [
+        "lib/ui/chat_page.dart",
+        "lib/ui/stock_page.dart",
+        "lib/ui/library.dart",
+        "lib/ui/barcode_scanner_page.dart",
+        "lib/ui/chat_seam.dart",
+        "lib/ui/chat_actions_section.dart"
+      ],
+      "verifiedBy": [
+        "test/ui/",
+        "test/widget_test.dart"
+      ]
+    },
+    {
+      "id": "adapters",
+      "title": "The outward seams: chat, web search, cellar tools, barcode, update check -- declared and switched",
+      "scope": "layer",
+      "status": "done",
+      "parent": "app",
+      "after": [
+        "ui"
+      ],
+      "source": "lib/adapters/declared.dart, docs/DESIGN.md section 14 P5",
+      "notes": "Barcode and chatModel start switched on; priceComparison remains an unimplemented declaration. The seven proposal kinds map to seven distinct writes through writeFor, a value-level mapping that a test reads back; the model can propose, never write.",
+      "touches": [
+        "lib/adapters/declared.dart",
+        "lib/adapters/chat_client.dart",
+        "lib/adapters/elizabeth_prompt.dart",
+        "lib/adapters/cellar_tools.dart",
+        "lib/adapters/proposed_writes.dart",
+        "lib/adapters/web_search.dart",
+        "lib/adapters/update_check.dart",
+        "lib/adapters/barcode_catalog.dart"
+      ],
+      "verifiedBy": [
+        "test/adapters/",
+        "test/adapters/proposed_writes_test.dart"
+      ]
+    },
+    {
+      "id": "packaging",
+      "title": "Three platforms from one commit: APK, MSI, AppImage -- and one command to install each",
+      "scope": "release",
+      "status": "done",
+      "parent": "app",
+      "after": [
+        "adapters"
+      ],
+      "source": "packaging/README.md, packaging/build_all.sh",
+      "notes": "build_all.sh builds the three targets in parallel worktrees and lands receipts and a manifest in one bundle directory. install_appimage.sh finishes WSLg's half of a Linux install: it corrects the Windows shortcut, marks it read-only, and writes /usr/share/pixmaps/hollow_court.png -- measured as the one file WSLg actually reads for the menu icon.",
+      "touches": [
+        "packaging/build_all.sh",
+        "packaging/make_manifest.sh",
+        "packaging/linux/install_appimage.sh",
+        "packaging/linux/build_appimage.sh",
+        "packaging/linux/wslg-shortcut.ps1",
+        "packaging/windows/hollow-court.wxs",
+        "tool/publish_public.sh"
+      ],
+      "verifiedBy": [
+        "packaging/make_manifest.sh"
+      ]
+    },
+    {
+      "id": "hma",
+      "title": "HMA: the maintenance toolset -- ten commands, art checks, and the platform's account of itself",
+      "scope": "release",
+      "status": "done",
+      "parent": "app",
+      "after": [],
+      "source": "docs/HMA.md, docs/HMA-getting-started.md",
+      "notes": "HMA lives beside the application in the same repository: tool/hma.py is the dispatcher, with the agent, models, art check and art render beside it, and docs/HMA* as the manual. Its release rides the HC-Stable mirror under HMA=1.",
+      "touches": [
+        "tool/hma.py",
+        "tool/hma_agent.py",
+        "tool/hma_models.py",
+        "tool/hma_art_check.py",
+        "tool/hma_art_render.py",
+        "tool/hma_tests.py",
+        "tool/hma_verify.py",
+        "docs/HMA.md",
+        "docs/HMA-readme.md"
+      ],
+      "verifiedBy": [
+        "tool/hma_tests.py"
+      ]
+    },
+    {
+      "id": "chat",
+      "title": "Elizabeth, the reader's agent in the cellar: a conversation that proposes and never writes",
+      "scope": "capability",
+      "status": "done",
+      "parent": "app",
+      "after": [
+        "adapters",
+        "ui"
+      ],
+      "source": "docs/HMA.md, lib/adapters/elizabeth_prompt.dart",
+      "notes": "OpenAI-compatible chat over SSE with a tool loop capped at four rounds. Tools: web search, read cellar, read recipes with amounts, and seven proposals. The prompt bans inventing bottle facts, flattery, pretending to act, and Markdown; the last of these is also enforced in the UI by plainReply. The key is the reader's own, sealed on this machine.",
+      "touches": [
+        "lib/adapters/chat_client.dart",
+        "lib/adapters/elizabeth_prompt.dart",
+        "lib/adapters/cellar_tools.dart",
+        "lib/adapters/web_search.dart",
+        "lib/ui/chat_page.dart",
+        "lib/ui/chat_seam.dart"
+      ],
+      "verifiedBy": [
+        "test/adapters/chat_client_test.dart",
+        "test/adapters/proposed_writes_test.dart"
+      ]
+    }
+  ]
+}
