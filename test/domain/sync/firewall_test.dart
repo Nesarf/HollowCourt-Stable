@@ -18,7 +18,7 @@ void main() {
     bool supported = true,
   }) => parseFirewallReport(
     output,
-    program: r'E:\Hollow Court Win\hollow_court.exe',
+    program: r'D:\Hollow Court Win\hollow_court.exe',
     listenAddress: listenAddress,
     supported: supported,
   )!;
@@ -127,7 +127,7 @@ void main() {
 
   group('the command a reader copies', () {
     test('**it is scoped to the program, not to a port, and covers every profile**', () {
-      const program = r'E:\Hollow Court Win\hollow_court.exe';
+      const program = r'D:\Hollow Court Win\hollow_court.exe';
       final command = allowCommandFor(program);
 
       expect(command, contains('program="$program"'));
@@ -143,8 +143,8 @@ void main() {
       // Windows compares these strings as they are, so a helper that tidied the case here would make the check say
       // "covered" about a machine that is not.
       expect(
-        programPathFor(r'E:\Hollow Court Win\hollow_court.exe'),
-        r'E:\Hollow Court Win\hollow_court.exe',
+        programPathFor(r'D:\Hollow Court Win\hollow_court.exe'),
+        r'D:\Hollow Court Win\hollow_court.exe',
       );
     });
   });

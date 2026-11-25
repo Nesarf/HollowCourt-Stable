@@ -106,3 +106,12 @@ android/key.properties
 *.key
 secrets/
 .secrets/
+
+# The bundle directory and the signing key, both inside the tree since 2026-11-02.
+#
+# dist/ is where build_all.sh writes now: regenerable, and too large to live in git.
+# keys/ holds release.jks, key.properties and their README -- the Android signing identity, which
+# must never be committed. It was `E:\Hollow Court Keys` before the move and had no ignore rule at
+# all, because nothing in the tree pointed at it.
+/dist/
+/keys/

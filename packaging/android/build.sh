@@ -70,7 +70,7 @@ DISPLAY_VERSION="$VERSION.$BUILD_NUMBER-$COLOUR"
 COMMIT="$(git -C "$(dirname "$0")/../.." rev-parse HEAD 2>/dev/null || echo unknown)"
 DEFINES="--dart-define=APP_VERSION=$DISPLAY_VERSION --dart-define=BUILD_COMMIT=$COMMIT"
 
-OUT_DIR="${OUT_DIR:-/e/Hollow Court Bundle}"
+OUT_DIR="${OUT_DIR:-/d/hollow-court/dist}"
 SPLIT="${UNIVERSAL:-0}"
 
 export PATH="${FLUTTER_BIN:-$(dirname "$(command -v flutter 2>/dev/null || echo /usr/bin/flutter)")}:$PATH"

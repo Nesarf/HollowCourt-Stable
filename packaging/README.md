@@ -74,6 +74,13 @@ rule, so the second photograph is of an *unruled copy* of the same build (a dire
 nothing was added to or removed from the firewall for this round, and the row read-only behaviour that makes that
 possible is itself the feature.
 
+**A note on the paths in photographs and measurements, added 2026-11-26.** They were made while the installer's
+default location was `E:\Hollow Court Win`. The default is `D:\Hollow Court Win` now: the product was uninstalled
+from `E:` and reinstalled at `D:` that day, and the Start Menu shortcut, the firewall rule and the uninstall entry
+moved with it. The rows above are left as they were photographed, because changing a path in a caption would make
+the caption disagree with its own picture. Every measurement in this file that names `E:\Hollow Court Win` beside a
+date is a record of that earlier round, not a statement about where the product lives now.
+
 **And the finding that turned out to be the precondition for ①: the announced port had no socket behind it.**
 `discovery_providers.dart` announced the constant `defaultDiscoveryPort + 1` (48125) while the sync listener has
 always been ephemeral (10838 on the day ① was run). A tap could therefore never have connected, box or no box.
@@ -368,7 +375,7 @@ screenshots cannot -- whether the thing that shipped contains the finished conte
 | Artifact | The library inside it | The icons inside it |
 | --- | --- | --- |
 | `hollow-court-1.0.0.527-arm64-v8a.apk` | `assets/flutter_assets/assets/drinks/library.json`: **103 drinks, 189 ingredients**, 33 Unforgettables / 35 New Era / 35 Contemporary Classics | pixel-identical to `art/render/icon-hc-{48,72,96,144}.png` -- **0 differing pixels**, measured with `magick compare -metric AE` |
-| the installed MSI (`E:\Hollow Court Win`) | `data/flutter_assets/assets/drinks/library.json`: **103 / 189**, the same three counts | the executable carries the rebuilt `.ico` (32x32 reads back through `ExtractAssociatedIcon`) |
+| the installed MSI (`D:\Hollow Court Win`) | `data/flutter_assets/assets/drinks/library.json`: **103 / 189**, the same three counts | the executable carries the rebuilt `.ico` (32x32 reads back through `ExtractAssociatedIcon`) |
 | `hollow-court-1.0.0.527-x86_64.AppImage` | `data/flutter_assets/assets/drinks/library.json`, extracted with `--appimage-extract`: **103 / 189**, the same three counts | `hollow_court.png`, 192x192 -- the desktop entry's icon, and the full-density drawing, which the tiered rework deliberately left unchanged |
 
 **And one lesson worth keeping, because the first test was the wrong one.** Comparing the APK's icons to the
@@ -864,7 +871,7 @@ Timed on purpose:
 07:10:28  wix msi validate <the shipping MSI>
 07:10:33  MsiInstaller 1033  "Windows Installer installed the product ... 空庭 Hollow Court"
 07:10:33  MsiInstaller 11707 "产品: 空庭 Hollow Court -- 成功地完成了安装。"
-          and nothing new under %LOCALAPPDATA%, E:\Hollow Court Win, or the registry
+          and nothing new under %LOCALAPPDATA%, D:\Hollow Court Win, or the registry
 ```
 
 Five seconds, two success entries, no files: the validator performs a real install into a scratch
@@ -895,7 +902,7 @@ command line because a batch file has no shell in the middle to misquote. It tak
 log paths as arguments, runs the install, and prints the exit code:
 
 ```
-cmd /c "E:\hollow-court\packaging\windows\install_test.cmd"
+cmd /c "D:\hollow-court\packaging\windows\install_test.cmd"
   package: "<bundle>\hollow-court-1.0.0.msi"
   log    : "E:\DaShaoHuo\cache\msi-install.log"
   exit=0
@@ -1050,7 +1057,7 @@ phone and a laptop on one network reach each other, which is a fact about two ra
     # so the row showed a hardcoded default and the compile-time value was never a fact about the build.
 
     # 2. both on the same network, and the laptop hosting
-    #    Windows: launch E:\Hollow Court Win\hollow_court.exe, Cellar tab -> 设备与同步 -> 显示配对码
+    #    Windows: launch D:\Hollow Court Win\hollow_court.exe, Cellar tab -> 设备与同步 -> 显示配对码
     #    the code looks like hollowcourt://192.168.x.x:47999/K7FQ2M?name=<host>
 
     # 3. the phone joins: type the code into the same section and press 连接并同步

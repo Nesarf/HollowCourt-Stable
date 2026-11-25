@@ -6,7 +6,7 @@
 # Run this after building, before handing anything to anyone.
 set -euo pipefail
 
-BUNDLE="${1:-/e/Hollow Court Bundle}"
+BUNDLE="${1:-/d/hollow-court/dist}"
 
 if ! git diff --quiet || ! git diff --cached --quiet; then
   echo "refusing: the working tree is dirty, so no commit describes these artifacts" >&2

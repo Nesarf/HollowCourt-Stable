@@ -50,7 +50,7 @@ products.
 **Compare the installed file against the build output, and compare *content*, not the timestamp.**
 
 **`LastWriteTime` is not evidence here, and believing it cost a round.** After the round was installed,
-`E:\Hollow Court Win\hollow_court.exe` still reported `10/06 21:40:10` -- and so did
+`E:\Hollow Court Win\hollow_court.exe` (that round's install path; `D:` since 2026-11-26) still reported `10/06 21:40:10` -- and so did
 `build\windows\x64\runner\Release\hollow_court.exe`, which the build had just spent 199 seconds producing and reported
 as `Built`. **So the mtime is carried over from somewhere in the toolchain**, and it says nothing about whether the
 file was rewritten. Reading it as "the old binary is still installed" was wrong.
@@ -60,7 +60,7 @@ launching the installed application and finding `<documents>\cellar.ndjson.lock`
 running code includes it:
 
 ```powershell
-Start-Process 'E:\Hollow Court Win\hollow_court.exe'
+Start-Process 'D:\Hollow Court Win\hollow_court.exe'
 Get-ChildItem ([Environment]::GetFolderPath('MyDocuments')) -Filter 'cellar*'
 #   cellar.ndjson.lock        0 bytes   10/08 22:22:05
 #   cellar.ndjson.lock.owner  5 bytes   10/08 22:22:05

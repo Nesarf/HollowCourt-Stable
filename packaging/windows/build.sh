@@ -11,7 +11,7 @@ REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 WIX="${WIX:-wix}"
 FLUTTER_BIN="${FLUTTER_BIN:-$(dirname "$(command -v flutter 2>/dev/null || echo /usr/bin/flutter)")}"
 RELEASE_DIR="$(cygpath -w "$REPO/build/windows/x64/runner/Release" 2>/dev/null || echo "$REPO/build/windows/x64/runner/Release")"
-OUT_DIR="${OUT_DIR:-E:\Hollow Court Bundle}"
+OUT_DIR="${OUT_DIR:-D:\hollow-court\dist}"
 VERSION="$(grep -m1 '^version:' "$REPO/pubspec.yaml" | tr -d '
 ' | sed 's/version: *//; s/+.*//')"
 

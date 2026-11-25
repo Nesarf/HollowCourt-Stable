@@ -17,22 +17,22 @@
 # `.dart_tool/` are ignored by git, so they are not copied when a worktree is created and they survive a
 # `git worktree remove`. The layout is therefore made once and reused:
 #
-#     E:\hollow-court-par\android   one checkout, Windows paths
-#     E:\hollow-court-par\linux     one checkout, WSL paths
-#     E:\hollow-court-par\windows   one checkout, Windows paths
+#     D:\hollow-court-par\android   one checkout, Windows paths
+#     D:\hollow-court-par\linux     one checkout, WSL paths
+#     D:\hollow-court-par\windows   one checkout, Windows paths
 #
 # **What it does not do is decide anything about what is built.** Versions still come from `pubspec.yaml` in
-# this tree, the artifacts land in the same `E:\Hollow Court Bundle`, and the receipts and the manifest are
+# this tree, the artifacts land in the same `D:\hollow-court\dist`, and the receipts and the manifest are
 # the same scripts the sequential path runs. It is the same build, twice as fast.
 #
 # Usage:  bash packaging/build_all.sh [--clean]
 set -uo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PAR="${PAR_DIR:-E:\\hollow-court-par}"
+PAR="${PAR_DIR:-D:\\hollow-court-par}"
 PAR_UNIX="$(echo "$PAR" | sed 's|\\|/|g')"
 REV="$(git -C "$REPO" rev-parse HEAD)"
-OUT_DIR="${OUT_DIR:-E:\\Hollow Court Bundle}"
+OUT_DIR="${OUT_DIR:-D:\\hollow-court\\dist}"
 MANIFEST=0
 
 for arg in "$@"; do
@@ -160,7 +160,7 @@ P_WINDOWS=$!
   # `E:\dir`. The first version carried a backslash-to-slash substitution borrowed from elsewhere and it was
   # both unnecessary and broken: with `\\` inside a double-quoted string sed receives `s|\|/|g` and reports an
   # unterminated command, so the substitution printed nothing and the mount point came out as
-  # `/mnt/e/hollow-court-par/linux` -- missing the slash that makes it a path. **Measured, not reasoned about:**
+  # `/mnt/d/hollow-court-par/linux` -- missing the slash that makes it a path. **Measured, not reasoned about:**
   # the failing run's own log said exactly that, which is why the logs are kept now.
   LINUX_WIN_PATH="$(cd "$PAR_UNIX/linux" && pwd -W)"
   case "$LINUX_WIN_PATH" in
@@ -187,7 +187,7 @@ P_WINDOWS=$!
   # **The argument is passed as one word rather than interpolated into a nested string** -- the first version
   # wrapped the whole command in a quoted heredoc-ish string and the quoting did not survive.
   # **The AppImage's output directory is translated, not hardcoded.** The first version wrote
-  # `/mnt/e/Hollow Court Bundle` literally while the script accepted `OUT_DIR` and passed it to the other two
+  # `/mnt/d/hollow-court/dist` literally while the script accepted `OUT_DIR` and passed it to the other two
   # targets -- so the option worked for Windows and Android and silently did nothing for Linux. It is the same
   # fault the script's own header describes finding elsewhere: an option that is honoured in two places out of
   # three is an option a reader cannot trust.

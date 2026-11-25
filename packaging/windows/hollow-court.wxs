@@ -124,15 +124,17 @@
 
     <!-- WHERE THIS INSTALLS, AND WHAT THAT COSTS.
 
-         The application goes to E:\Hollow Court Win rather than to the user profile, because that
+         The application goes to D:\Hollow Court Win rather than to the user profile, because that
          is where this machine keeps its data and 78 MB of Flutter runtime does not belong on the
-         system drive. That is a decision with three consequences worth stating rather than
-         discovering:
+         system drive. It was E: until 2026-11-26, when the copy there was uninstalled and this
+         package was installed at the D: path instead; the shortcut, the firewall rule and the
+         uninstall entry were moved with it, and no path in this repository names E: any more.
+         That is a decision with three consequences worth stating rather than discovering:
 
          1. **The drive letter is now a requirement.** TARGETDIR's child is `Name`d, and the
-            property below overrides the path outright, so on a machine with no E: drive the
+            property below overrides the path outright, so on a machine with no D: drive the
             install fails unless the caller overrides it:
-                msiexec /i hollow-court-1.0.0.msi INSTALLFOLDER="D:\Hollow Court Win"
+                msiexec /i hollow-court-1.0.0.msi INSTALLFOLDER="F:\Hollow Court Win"
             The property is public precisely so that override exists. A default that cannot be
             moved is a default that cannot be shipped anywhere else.
 
@@ -152,7 +154,7 @@
          offers to a motto. -->
     <Property Id="ARPCOMMENTS" Value="F.D.C.U.S." />
 
-    <Property Id="INSTALLFOLDER" Value="E:\Hollow Court Win" />
+    <Property Id="INSTALLFOLDER" Value="D:\Hollow Court Win" />
 
     <StandardDirectory Id="ProgramMenuFolder">
       <Directory Id="AppShortcutFolder" Name="Hollow Court" />

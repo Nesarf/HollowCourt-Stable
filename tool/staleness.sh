@@ -33,7 +33,7 @@ set -uo pipefail
 # No `-e`: this script asks git questions whose "no" answers are the point, and `--is-ancestor` answers 1.
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 REPO="$(pwd)"
-BUNDLE="${BUNDLE:-/e/Hollow Court Bundle}"
+BUNDLE="${BUNDLE:-/d/hollow-court/dist}"
 HEAD_SHA="$(git rev-parse HEAD)"
 HEAD_SUBJECT="$(git log --oneline -1 | cut -c1-70)"
 
