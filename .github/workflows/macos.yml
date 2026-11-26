@@ -1,0 +1,77 @@
+name: macos
+
+# **A separate workflow rather than a job inside `verify.yml`, for two reasons that point the same way.**
+#
+# The first is cost: a `macos-latest` minute bills at ten times an `ubuntu-latest` one, and this bundle is needed when
+# a portable archive is being assembled, not on every push that touches a docstring. A workflow whose only trigger is
+# `workflow_dispatch` cannot be accidentally run by a push, and needs no condition to say so.
+#
+# The second is the note at the top of `verify.yml`: a job-level `if` once took that workflow's other jobs with it
+# rather than skipping one. Keeping the macOS work in its own file removes the question instead of answering it.
+#
+# **Why this cannot live anywhere else.** Flutter builds the macOS target through `xcodebuild`, which needs Xcode, and
+# the Dart AOT step needs a `gen_snapshot` compiled for a darwin host. Neither has a cross-platform substitute today:
+# `osxcross` and `zig cc` can emit Mach-O objects from Linux, and `apple-codesign` can sign and notarise from Linux,
+# but nothing assembles a `.app` bundle without Xcode. Darling lists Xcode among the software it does not run.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    name: the macOS bundle
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # **Which architecture this produced, said out loud in the log.** `macos-latest` is an Intel runner, so the
+      # bundle is x86_64 and an Apple Silicon reader needs Rosetta 2 to run it. An arm64 runner would change that.
+      # This line is how a reader finds out which one they got without unpacking the artifact to check.
+      - name: the runner, named
+        run: uname -m && sw_vers
+
+      # The same pin as `verify.yml`, and for the same reason: the version used to build has to be the version the
+      # product is proven against. Moving it is a change to make on purpose, beside `pubspec.yaml`'s SDK constraint.
+      - if: ${{ hashFiles('pubspec.yaml') != '' }}
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.4'
+          channel: stable
+
+      - name: flutter pub get
+        if: ${{ hashFiles('pubspec.yaml') != '' }}
+        run: flutter pub get
+
+      # **Ad-hoc signing, which is the template's own choice rather than a shortcut taken here.** `project.pbxproj`
+      # sets `CODE_SIGN_IDENTITY = "-"` with an empty `PROVISIONING_PROFILE_SPECIFIER`, so no developer certificate is
+      # needed -- and none is available to a runner in any case. The cost lands on the reader: an ad-hoc signed bundle
+      # that arrived from the internet carries the quarantine flag, so the first launch needs
+      # `xattr -dr com.apple.quarantine "Hollow Court.app"`. Notarisation would remove that step and needs an Apple
+      # Developer account, which this project does not have.
+      - name: flutter build macos --release
+        if: ${{ hashFiles('pubspec.yaml') != '' }}
+        run: flutter build macos --release
+
+      # **`ditto`, not `upload-artifact` pointed at the directory.** An `.app` is a bundle, and the
+      # `FlutterMacOS.framework` inside it is a versioned framework built out of symbolic links. The action's zip
+      # writes entries rather than links, so uploading the directory flattens them and the bundle stops being loadable
+      # while still looking complete. `ditto` is the macOS tool for exactly this and keeps them.
+      - name: pack the bundle with its symlinks
+        if: ${{ hashFiles('pubspec.yaml') != '' }}
+        run: |
+          app=$(ls -d build/macos/Build/Products/Release/*.app | head -1)
+          echo "packing $app"
+          ditto -c -k --sequesterRsrc --keepParent "$app" hollow-court-macos.zip
+          unzip -l hollow-court-macos.zip | tail -3
+
+      - if: ${{ hashFiles('pubspec.yaml') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: hollow-court-macos
+          path: hollow-court-macos.zip
+          if-no-files-found: error
+
+      # And it says so, rather than failing on a branch that deliberately carries no product.
+      - name: nothing to build here
+        if: ${{ hashFiles('pubspec.yaml') == '' }}
+        run: echo "this branch carries the platform, not the product"
