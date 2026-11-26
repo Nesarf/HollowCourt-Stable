@@ -138,7 +138,7 @@ Dart 做不到的三件事，各用一条 `MethodChannel` 交给平台，**都�
 
 | 想做的 | 命令 |
 | --- | --- |
-| 三平台一起构建 | `bash packaging/build_all.sh`（三个 worktree 并行，产物到 `E:\Hollow Court Bundle`） |
+| 三平台一起构建 | `bash packaging/build_all.sh`（三个 worktree 并行，产物到 `D:\hollow-court\dist`） |
 | 单个 Windows 安装器 | `bash packaging/windows/build.sh`（需要 `WIX=` 指向 wix.exe） |
 | 生成产物清单 | `bash packaging/make_manifest.sh`（脏树会拒绝） |
 | 推镜像 | `bash tool/publish_public.sh --push`（HMA 加 `HMA=1`） |

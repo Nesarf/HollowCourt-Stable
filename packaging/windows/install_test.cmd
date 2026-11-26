@@ -1,8 +1,8 @@
 @echo off
 REM Installs -- or uninstalls -- the built MSI and reports the exit code. Run from anywhere:
 REM
-REM     cmd /c "E:\hollow-court\packaging\windows\install_test.cmd"
-REM     cmd /c "E:\hollow-court\packaging\windows\install_test.cmd" uninstall
+REM     cmd /c "D:\hollow-court\packaging\windows\install_test.cmd"
+REM     cmd /c "D:\hollow-court\packaging\windows\install_test.cmd" uninstall
 REM
 REM **Why a file and not a line in a shell.** Every attempt to hand msiexec this package
 REM through git-bash or PowerShell produced a mangled command line, because the path
@@ -36,10 +36,13 @@ REM alphabetically last -- and `1.0.0.msi` sorts before `1.0.514.msi`, which is 
 REM The first version of this line used `/o-n`, descending, so it picked the OLDEST package and
 REM promptly answered 1638 (same version already installed) -- a bug that happened to look like the
 REM very behaviour it was written to avoid.
-if "%MSI%"=="" for /f "delims=" %%f in ('dir /b /o:n "E:\Hollow Court Bundle\hollow-court-*.msi" 2^>nul') do set MSI=E:\Hollow Court Bundle\%%f
-if "%MSI%"=="" set MSI=E:\Hollow Court Bundle\hollow-court-1.0.514.msi
+if "%MSI%"=="" for /f "delims=" %%f in ('dir /b /o:n "D:\hollow-court\dist\hollow-court-*.msi" 2^>nul') do set MSI=D:\hollow-court\dist\%%f
+if "%MSI%"=="" (
+  echo no hollow-court-*.msi under D:\hollow-court\dist
+  exit /b 2
+)
 set LOG=%~3
-if "%LOG%"=="" set LOG=E:\DaShaoHuo\cache\msi-%ACTION%.log
+if "%LOG%"=="" set LOG=D:\DaShaoHuo\cache\msi-%ACTION%.log
 
 echo action : %ACTION%
 echo package: "%MSI%"

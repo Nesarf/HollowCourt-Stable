@@ -26,8 +26,8 @@ import json
 import re
 import sys
 
-THEME = r"E:\hollow-court\lib\ui\theme.dart"
-NAMES = r"E:\hollow-court\data\names\names.json"
+THEME = r"D:\hollow-court\lib\ui\theme.dart"
+NAMES = r"D:\hollow-court\data\names\names.json"
 
 JA_IN_THEME = re.compile(r"'ja':\s*'((?:[^'\\]|\\.)*)'")
 

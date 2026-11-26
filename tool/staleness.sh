@@ -16,7 +16,7 @@
 # Latin ones as UTF-8 inside `libapp.so`, so the strings a build actually contains can be read straight out of the
 # artifact:
 #
-#     unzip -o -j "E:/Hollow Court Bundle/hollow-court-<version>-arm64-v8a.apk" #         lib/arm64-v8a/libapp.so -d /tmp/apk && #     python -c "import io; d=io.open('/tmp/apk/libapp.so','rb').read(); #         print('外部接缝', d.count('外部接缝'.encode('utf-16-le')), #               '| 外部连接', d.count('外部连接'.encode('utf-16-le')))"
+#     unzip -o -j "D:/hollow-court/dist/hollow-court-<version>-arm64-v8a.apk" #         lib/arm64-v8a/libapp.so -d /tmp/apk && #     python -c "import io; d=io.open('/tmp/apk/libapp.so','rb').read(); #         print('外部接缝', d.count('外部接缝'.encode('utf-16-le')), #               '| 外部连接', d.count('外部连接'.encode('utf-16-le')))"
 #
 # The two strings it probes for are the application's own developer-screen labels, written in Traditional Chinese
 # in `lib/ui/theme.dart` (the seam list and the outside-connections heading), so they are quoted above exactly as

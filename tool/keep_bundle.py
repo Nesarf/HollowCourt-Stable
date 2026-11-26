@@ -22,7 +22,7 @@ import re
 import shutil
 import sys
 
-DEFAULT_BUNDLE = os.path.join('E:' + os.sep, 'Hollow Court Bundle')
+DEFAULT_BUNDLE = os.path.join('D:' + os.sep, 'hollow-court', 'dist')
 FOLDER = re.compile(r'^1\.0\.0\+(\d+)$')
 DEFAULT_KEEP = 3
 

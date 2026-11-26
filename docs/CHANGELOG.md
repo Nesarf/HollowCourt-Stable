@@ -95,6 +95,31 @@ python tool/release.py --version 1.0.1+1021 --apply    # 真做
 
 ---
 
+## 1.0.0 —— 构建号 51541（2026-11-26）
+
+**这一版没有新功能。** 它做的是把「东西放在哪」和「哪份源码产出了它」两件事重新说准 —— 前一件事在十一月仓库从 E 盘搬到 D 盘时被打断，后一件事在产物比 HEAD 落后八条提交时被打断。
+
+### 变了什么
+
+- **Windows 的安装位置从 `E:\Hollow Court Win` 迁到 `D:\Hollow Court Win`**。旧那份用 `msiexec /x` 卸载，同一份 `1.0.51540.msi` 重装到新路径；开始菜单快捷方式、防火墙入站规则、注册表卸载项都跟着走。`packaging/windows/hollow-court.wxs` 的默认值同步改成 D，注释里那段论证也一起改 —— 只改默认值不改理由，会留下两句互相打架的话。
+- **三平台产物从 `E:\Hollow Court Bundle` 改到 `D:\hollow-court\dist`**。`build_all.sh`、`android/build.sh`、`windows/build.sh`、`make_manifest.sh`、`staleness.sh` 的默认值一起改。
+- **`dist/` 与 `keys/` 进了 `.gitignore`**：前者可重建而且太大，后者是 Android 的签名身份。
+
+### 修了什么
+
+- **产物追上 HEAD**。`dist` 里上一版产物来自 `af8d667`，而 HEAD 已经走到 `b166909`。同版本重建在 Windows 上不算替换（同版本同 ProductCode 是一次修复），所以版本号与 `ProductCode` 一起动，产物才真的换了内容。
+- **Linux 在 CMake 4 下能构建了**。`linux/CMakeLists.txt` 原来靠 `CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT` 兜安装前缀，CMake 4.3.2 不再为这份模板置这个变量，安装阶段就去写 `/usr/local/hollow_court` 并被权限挡下。现在 `/usr/local` 也算「没人选过前缀」。
+- **工具链路径清理**。`JAVA_HOME`、`ANDROID_HOME`、`ANDROID_SDK_ROOT` 原先指向搬盘后剩下的空壳目录，现在指回 D 盘的完整副本；九个脚本里指向旧仓库根与旧产物目录的默认值一并改正。
+- **Android 构建适配这台机器**：Gradle 堆从 8G 降到 4G，并关掉 Kotlin 增量缓存 —— 每次都是全量构建，它省不下东西，而它失败一次要十六分钟。
+
+### 不声称什么
+
+- **没有动产品行为**。这一版装的还是同一个应用：界面、配方、同步都没有变。
+- **Linux 那份 AppImage 只在 WSL 里构建过**，没有在真实的 Linux 桌面上跑过。构建环境的 glibc 是 2.43，而那个发行版接下来要全量升级；升级之后需要重新验一次它还能起窗口。
+- **WiX 必须是 5.x**。7.x 会要求在装机时接受一份收费的 OSMF 条款，并为此停下（`WIX7015`），这个仓库没有也不需要那份协议。
+
+---
+
 ## 模板（下一版从这里开始 ✓）
 
 ```

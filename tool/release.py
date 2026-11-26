@@ -40,7 +40,7 @@ REPO = os.path.dirname(HERE)
 PUBLISH = os.path.join(HERE, 'publish_public.sh')
 VERIFY = os.path.join(HERE, 'hma_verify.py')
 PUBSPEC = os.path.join(REPO, 'pubspec.yaml')
-BUNDLE = os.path.join('E:' + os.sep, 'Hollow Court Bundle')
+BUNDLE = os.path.join('D:' + os.sep, 'hollow-court', 'dist')
 REMOTE = 'https://github.com/Nesarf/HollowCourt-Stable.git'
 VERSION = re.compile(r'^\d+\.\d+\.\d+\+\d+$')
 

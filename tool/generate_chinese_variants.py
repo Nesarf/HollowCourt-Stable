@@ -25,7 +25,7 @@ import io
 import re
 import sys
 
-THEME = r'E:\hollow-court\lib\ui\theme.dart'
+THEME = r'D:\hollow-court\lib\ui\theme.dart'
 QUOTE = chr(39)
 BACKSLASH = chr(92)
 

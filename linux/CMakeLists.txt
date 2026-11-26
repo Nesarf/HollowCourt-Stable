@@ -106,7 +106,14 @@ include(flutter/generated_plugins.cmake)
 # By default, "installing" just makes a relocatable bundle in the build
 # directory.
 set(BUILD_BUNDLE_DIR "${PROJECT_BINARY_DIR}/bundle")
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+# **The second condition is not redundant.** Under CMake 4 (measured with 4.3.2 on
+# 2026-11-26) `CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT` no longer fires for this
+# template, so the guard below silently stopped doing anything: the prefix stayed at
+# its built-in `/usr/local` and the install step tried to copy the executable there,
+# failing on permission. `/usr/local` is what "nobody chose a prefix" now looks like,
+# so it is spelled out. A caller who passes a different prefix still wins, because
+# only that one value is treated as unset.
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
   set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "..." FORCE)
 endif()
 

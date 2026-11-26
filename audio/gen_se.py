@@ -6,7 +6,7 @@ import soundfile as sf
 from scipy import signal as sgn
 
 SR = 48000
-OUT = r"E:\hollow-court\audio"
+OUT = r"D:\hollow-court\audio"
 os.makedirs(OUT, exist_ok=True)
 
 # ── 玻璃杯的圆环模态（比例约 1 : 1.7 : 2.3 : 3.0 : 3.7）

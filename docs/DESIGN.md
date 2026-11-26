@@ -1860,7 +1860,7 @@ written.
 ## 13. Directory structure
 
 ```
-E:\hollow-court\
+D:\hollow-court\
 +- lib\
 |  +- domain\          pure Dart: units, dosage, pricing, match score, CRDT, HLC
 |  +- data\            event log, overlay layer, seed loading
@@ -1871,12 +1871,12 @@ E:\hollow-court\
 +- data\               seed library (section 15)
 +- docs\               design document, architecture diagrams, reverse-engineering reports
 +- tools\              collection and validation scripts
-\- dist\               build artifacts (copied into the Bundle directory afterwards)
+\- dist\               build artifacts, git-ignored: this is where the bundle lands
 ```
 
-**Artifact directory**: `E:\Hollow Court Bundle\` (MSI / AppImage / APK)
+**Artifact directory**: `D:\hollow-court\dist\` (MSI / AppImage / APK; git-ignored)
 
-**Discipline**: scratch goes to `E:\DaShaoHuo\cache\tmp\`, cleared as soon as it is done with; external resources land first in `E:\DaShaoHuo\downloads\`.
+**Discipline**: scratch goes to `D:\DaShaoHuo\cache\tmp\`, cleared as soon as it is done with; external resources land first in `D:\DaShaoHuo\downloads\`.
 
 ---
 
