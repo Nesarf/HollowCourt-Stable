@@ -1,5 +1,19 @@
 #!/usr/bin/env bash
 #
+# **NOT CALLED ANY MORE, SINCE 2026-11-27.** Linux ships as `linux/` inside
+# `hollow-court-<version>-portable.zip`, unpacked and run, so there is nothing to install and
+# no menu entry to write. `packaging/build_all.sh` does not run this, and nothing else does.
+#
+# It stays in the tree for two reasons, and the second is the load-bearing one:
+#
+#   1. restoring the AppImage is a one-line change in `build_all.sh`, and this script is what
+#      that line would call.
+#   2. the paragraphs below are measurements, not instructions: that WSLg reads
+#      `/usr/share/pixmaps/hollow_court.png` and nothing else for the menu icon, that the
+#      `.desktop` inside the image is the only copy that cannot drift from the image, and that
+#      `Exec=` is the single line needing a rewrite after mounting. Each of those cost an
+#      afternoon, and none of them is a fact about the AppImage format.
+#
 # Installs the AppImage for one user, so that it appears in the desktop menu and can be
 # started by name. Run INSIDE the distribution that will hold it:
 #

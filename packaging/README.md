@@ -2,8 +2,10 @@
 
 Section 14's P4 asks for an installable build on three platforms, **and the three are named here because the
 phrase appears a dozen times below without ever saying which ones**: **Windows** (an `.msi`, built by
-`packaging/windows/build.sh`), **Linux** (an `.AppImage`, built by `packaging/linux/build_appimage.sh`) and
-**Android** (three `.apk` files, one per ABI, built by `packaging/android/build.sh`). No fourth target is
+`packaging/windows/build.sh`), **Linux and macOS** (a `bundle` directory inside
+`hollow-court-<version>-portable.zip`, collected by `packaging/portable/make_portable.ps1`; the AppImage this
+project used to ship was dropped on 2026-11-27) and **Android** (three `.apk` files, one per ABI, built by
+`packaging/android/build.sh`). No fourth target is
 implied anywhere; where this file says "all three" it means those three, and where it says a platform has not
 been verified it means one of them has not.
 
@@ -11,7 +13,7 @@ been verified it means one of them has not.
 | --- | --- | --- |
 | **Android** | `hollow-court-<version>-arm64-v8a.apk` / `-armeabi-v7a.apk` / `-x86_64.apk`, where <version> is the **APK's own `versionName`** | **1.0.0.2184 built, installed in place over 1.0.0.1020, running and used** on `a physical device` (`versionCode=4184`, `versionName=1.0.0.2184`, same S.M.Y.T. signing identity, so no uninstall was needed; the cellar's four bottles survived it, and the About screen was read off the device). Before it, **1.0.0.1014 built, installed, running and used**: `versionCode=3014`（monotonic from 2523）, `versionName=1.0.0.1014`, signed by the new **S.M.Y.T.** identity (`CN=Hollow Court, OU=S.M.Y.T., O=S.M.Y.T.`, SHA-256 `64cca05a...a16d`). The previous copy had to be uninstalled once, because a different signer cannot update in place. A bottle was recorded by hand on the release build and photographed: `packaging/android/apk-1.0.0.1014-used-gin-700ml.png` |
 | **Windows** | `hollow-court-<msi version>.msi` | **1.0.2184 built, and not yet installed** ✗ —— `Version="1.0.2184"` with a new `ProductCode`, moved together as the `.wxs` requires. Before it, **1.0.527 built, installed over 1.0.0.526 with `exit=0`, running, and reading the whole library** -- `hollow_court.exe` reports `1.0.0+527`; the cellar renders (在架 · 2, the two bottles the sync tests left) and the recipes screen reads **共 103 条** across **New Era 35 / The Unforgettables 33 / Contemporary Classics 35**, photographed at `packaging/windows/msi-1.0.527-recipes-103.png`. Those three counts are what the fifteen added IBA drinks produce, so the shipped MSI is carrying the finished library. See the notes below about the build that failed first, and about input |
-| **Linux** | `hollow-court-<version>-x86_64.AppImage` | **1.0.0.527 built from HEAD (`head: c5f1a18`, receipt in the bundle), running, and photographed** -- `packaging/linux/appimage-ui-wslg-x11-1356x817-1.0.0.527.png` shows the Cellar tab, both bottles, the five-tab bar and 记一瓶. The four traps between "running" and "photographed" are in the note below |
+| **Linux** | `linux/` inside `hollow-court-<version>-portable.zip` | **1.0.0.51541 built and packed** -- `build/linux/x64/release/bundle`, 18 files, 29.9 MB, collected into the portable archive beside the Windows release directory. The `.AppImage` this row used to name was dropped on 2026-11-27: the bundle is the deliverable, and the AppImage photographs further down stay as the record of that format rather than as a claim about what ships now |
 
 This table and the acceptance table below it say the same three things on purpose. When they
 disagreed by one round, the top table still read "never run" while the lower one recorded a

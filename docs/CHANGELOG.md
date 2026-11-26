@@ -120,6 +120,18 @@ python tool/release.py --version 1.0.1+1021 --apply    # 真做
 
 ---
 
+## 1.0.0 构建号 51541 之后：Linux 与 macOS 只走 portable（2026-11-27）
+
+**这一条写在同一版构建之后，因为它改的是发行形态，代码没有变。**
+
+- **不再构建 AppImage**。Linux 的那份改为 `hollow-court-<version>-portable.zip` 里的 `linux/` 目录，也就是 `build/linux/x64/release/bundle`（18 个文件、29.9 MB）。`packaging/linux/build_appimage.sh` 留在树里但不再被调用，所以这个决定用一行就能改回来。
+- **新增 portable 归档**，由 `packaging/portable/make_portable.ps1` 生成：`windows/` 收 `build\windows\x64\runner\Release` 整个目录，解压即用，没有安装步骤也没有卸载步骤；`linux/` 收上面那份 bundle；`macos/` 收 `.app`，条件是这台机器上真的构建过。归档里附一份 `README.txt`，说清每个平台跑哪个文件，以及解压工具丢掉执行位时该 `chmod +x` 哪一个。
+- **macOS 目前只有 portable 这一条路**，而且前提是先在一台 Mac 上构建：Flutter 的 macOS 目标要走 xcodebuild，没有跨平台构建的路径。本机是 Windows，所以今天的归档里没有 `macos/` 那一份，`README.txt` 里写的是「没有构建过」，而不是把缺的当成有。
+
+**不声称什么**：归档里的 Windows 与 Linux 两份没有分别做过启动测试 —— 它们是各自平台构建输出的原件，与 MSI 装出来的内容同源，Linux 那份与旧 AppImage 的内层相同。
+
+---
+
 ## 模板（下一版从这里开始 ✓）
 
 ```

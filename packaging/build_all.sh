@@ -183,26 +183,19 @@ P_WINDOWS=$!
     echo "linux exit=1" > "$T/linux.status"
     exit 1
   fi
-  # `tool/build_linux.sh` writes beside its own worktree, so only the AppImage's output directory is given here.
+  # **Linux now produces a bundle directory and nothing else.** The AppImage is no longer built
+  # (2026-11-27): Linux readers get `build/linux/x64/release/bundle` inside the portable archive, and a
+  # second single-file format that has to be regenerated, receipted and re-verified for a platform which
+  # already has a working way in is work nobody asked for. `packaging/linux/build_appimage.sh` stays in
+  # the tree, unused, so this is reversed by one line rather than by writing it again.
   # **The argument is passed as one word rather than interpolated into a nested string** -- the first version
   # wrapped the whole command in a quoted heredoc-ish string and the quoting did not survive.
-  # **The AppImage's output directory is translated, not hardcoded.** The first version wrote
-  # `/mnt/d/hollow-court/dist` literally while the script accepted `OUT_DIR` and passed it to the other two
-  # targets -- so the option worked for Windows and Android and silently did nothing for Linux. It is the same
-  # fault the script's own header describes finding elsewhere: an option that is honoured in two places out of
-  # three is an option a reader cannot trust.
-  OUT_DIR_WIN="$(cd "$OUT_DIR" 2>/dev/null && pwd -W || printf '%s' "$OUT_DIR")"
-  case "$OUT_DIR_WIN" in
-    /*) OUT_DIR_MNT="$OUT_DIR_WIN" ;;
-    [A-Za-z]:/*) OUT_DIR_MNT="/mnt/$(printf '%s' "$OUT_DIR_WIN" | sed 's|^\([A-Za-z]\):|\L\1|')" ;;
-    *) OUT_DIR_MNT="$OUT_DIR_WIN" ;;
-  esac
   # **The commit crosses into WSL as data, because git over there cannot read this checkout's `.git`.**
   # The worktree's `.git` is a text file naming `E:/hollow-court/.git/worktrees/linux`, which is a Windows path to
   # a Linux git -- so every receipt written inside WSL said `src-commit : none` until 2026-10-22. This side knows
   # the commit (it checked the worktree out at it) and the tree's cleanliness, so it hands both over.
   if git -C "$REPO" diff --quiet && git -C "$REPO" diff --cached --quiet; then TREE_DIRTY=no; else TREE_DIRTY=yes; fi
-  wsl -d "$WSL_DISTRO" -e bash -lc "cd '$LINUX_MNT' && SRC_COMMIT='$REV' HEAD_REV='$REV' SRC_SUBJECT='$(git -C "$REPO" log -1 --format=%s "$REV")' TREE_DIRTY='$TREE_DIRTY' SRC_DIRTY='$TREE_DIRTY' bash tool/build_linux.sh && OUT_DIR='$OUT_DIR_MNT' SRC_COMMIT='$REV' HEAD_REV='$REV' SRC_SUBJECT='$(git -C "$REPO" log -1 --format=%s "$REV")' TREE_DIRTY='$TREE_DIRTY' SRC_DIRTY='$TREE_DIRTY' bash packaging/linux/build_appimage.sh" > "$T/linux.log" 2>&1
+  wsl -d "$WSL_DISTRO" -e bash -lc "cd '$LINUX_MNT' && SRC_COMMIT='$REV' HEAD_REV='$REV' SRC_SUBJECT='$(git -C "$REPO" log -1 --format=%s "$REV")' TREE_DIRTY='$TREE_DIRTY' SRC_DIRTY='$TREE_DIRTY' bash tool/build_linux.sh" > "$T/linux.log" 2>&1
   echo "linux exit=$?" > "$T/linux.status"
 ) &
 P_LINUX=$!
@@ -226,6 +219,25 @@ if [ "$FAILED" -ne 0 ]; then
     tail -12 "$T/$target.log" 2>/dev/null >&2
   done
   exit 1
+fi
+
+# **The portable archive is assembled here because it is built from the three targets' outputs
+# rather than from a source tree.** Windows contributes `build/windows/x64/runner/Release`,
+# Linux its bundle, macOS a `.app` when this machine is one -- none of which exists until those
+# targets have finished. It is deliberately not behind a flag: a release shipped without it has
+# one fewer way in, and the omission would surface at upload time rather than at build time.
+if command -v pwsh >/dev/null 2>&1; then
+  REPO_WIN="$(cygpath -w "$REPO" 2>/dev/null || printf '%s' "$REPO")"
+  OUT_DIR_WIN="$(cygpath -w "$OUT_DIR" 2>/dev/null || printf '%s' "$OUT_DIR")"
+  if pwsh -NoProfile -File "$REPO_WIN/packaging/portable/make_portable.ps1" -Bundle "$OUT_DIR_WIN" > "$T/portable.log" 2>&1; then
+    log "==> portable  $(grep -oE 'hollow-court-[^ ]+-portable\.zip \([0-9.]+ MB\)' "$T/portable.log" | tail -1)"
+  else
+    echo "make_portable.ps1 failed:" >&2; tail -6 "$T/portable.log" >&2
+    FAILED=1
+  fi
+else
+  echo "pwsh is not on PATH, so the portable archive was not built" >&2
+  FAILED=1
 fi
 
 # The manifest is the one step that has to happen after everything, because it hashes all of it.
