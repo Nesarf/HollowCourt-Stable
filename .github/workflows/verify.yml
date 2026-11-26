@@ -49,9 +49,19 @@ jobs:
 
       # **Only where the product exists.** `main` has it; the HMA branch deliberately carries the platform instead. The
       # condition is on each step rather than on the job, and that is the fix rather than a preference.
+      # **The version is pinned, and that is the correction of 2026-11-27.** `channel: stable` alone
+      # means whatever upstream last published: that day it was 3.50.1, which deprecates
+      # `package:flutter/material.dart` in favour of `material_ui`. Every screen here imports material,
+      # so `flutter analyze` listed more than a hundred `info` findings and exited non-zero -- a red
+      # pipeline describing the runner's version rather than this repository's code.
+      #
+      # The pin is deliberate rather than convenient: the version used here has to be the one the build
+      # is proven against, and moving it is a change to make on purpose -- beside `pubspec.yaml`'s SDK
+      # constraint, and after the migration the new version asks for.
       - if: ${{ hashFiles('pubspec.yaml') != '' }}
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.47.4'
           channel: stable
       - name: flutter pub get
         if: ${{ hashFiles('pubspec.yaml') != '' }}
