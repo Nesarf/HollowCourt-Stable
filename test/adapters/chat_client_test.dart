@@ -134,5 +134,24 @@ void main() {
     // It must NOT be the other person: a draft that had put 晴光 in this slot was corrected on 2026-10-22.
     expect(elizabethSystemPrompt, isNot(contains('珐丽安')));
     expect(elizabethSystemPrompt, isNot(contains('骑士团')));
+    // **The chart fences are in the renderer, and a renderer nobody was told about never runs.** These four words are
+    // the contract between `chat_render.dart` and the prompt: lose one and the charts stop appearing with no error
+    // anywhere, which is the failure mode this assertion exists for.
+    for (final language in <String>['candle', 'line', 'bar', 'pie']) {
+      expect(elizabethSystemPrompt, contains(language), reason: 'the prompt must name the $language fence');
+    }
+    expect(elizabethSystemPrompt, contains('points'));
+    expect(elizabethSystemPrompt, contains('编'));
+  });
+
+  test('**the prompt carries today, because a model has no clock**', () {
+    final prompt = elizabethSystemPromptOn(DateTime(2026, 11, 27));
+    expect(prompt, contains('2026 年 11 月 27 日'));
+    // Told what to do when the date is not enough, rather than only what day it is.
+    expect(prompt, contains('web_search'));
+    // And the sheet is still underneath, unchanged: the date is a prefix rather than a rewrite of it.
+    expect(prompt, contains('本小姐'));
+    expect(prompt, contains('阿曼纳克'));
+    expect(prompt, contains('candle'));
   });
 }

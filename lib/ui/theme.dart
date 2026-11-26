@@ -2751,6 +2751,67 @@ abstract final class Copy {
     },
   );
 
+  /// **Not the same thing as `refused`, and the reader would act on the wrong one.** "Refused" sends somebody to
+  /// their account page to check a quota; this is the application declining to pay for a fifth round of tool calls,
+  /// and the fix is a smaller question.
+  static const chatTroubleToolLoop = CopyLine.withLanguages(
+    Translated.authored('她想查的太多了，问到第四轮这边就停了。把问题拆小一点再问。'),
+    Translated.authored('She kept reaching for tools, and this end stopped at the fourth round. Ask it in smaller pieces.'),
+    also: {
+      'ja': '調べすぎですので、四度目でこちらが止めました。もう少し小さく分けてください。',
+      'zh-HK': '佢想查嘅嘢太多，問到第四輪呢邊就停咗。拆細啲再問。',
+      'zh-TW': '她想查的太多了，問到第四輪這邊就停了。把問題拆小一點再問。',
+    },
+    voices: {
+      Voice.heiress: '查得也太多了。四轮够本小姐翻的了——你把问题拆小一点再来。',
+      Voice.heiressJa: '調べすぎですわ。四度で打ち切りました——ご質問を小分けになさいな。',
+      Voice.minister: 'The archive was consulted four times, at which point this end stopped; the question wants dividing.',
+    },
+  );
+  static const chatNew = CopyLine.withLanguages(
+    Translated.authored('新的一段'), Translated.authored('New'),
+    also: {'ja': '新しい会話', 'zh-HK': '新嘅一段', 'zh-TW': '新的一段'},
+  );
+  static const chatNewNote = CopyLine.withLanguages(
+    Translated.authored('上一段清掉了。新的从现在开始。'),
+    Translated.authored('The last conversation is cleared; the new one starts here.'),
+    also: {
+      'ja': '前のやりとりは消しました。ここから新しく始めます。',
+      'zh-HK': '上一段清咗。新嘅由而家開始。',
+      'zh-TW': '上一段清掉了。新的從現在開始。',
+    },
+  );
+  static const chatStop = CopyLine.withLanguages(
+    Translated.authored('停'), Translated.authored('Stop'),
+    also: {'ja': '止める', 'zh-HK': '停', 'zh-TW': '停'},
+  );
+  static const chatStopped = CopyLine.withLanguages(
+    Translated.authored('停了。她说到一半的话留在上面。'),
+    Translated.authored('Stopped. Whatever she had said so far stays above.'),
+    also: {
+      'ja': '止めました。言いかけたところは上に残っています。',
+      'zh-HK': '停咗。佢講到一半嘅留喺上面。',
+      'zh-TW': '停了。她說到一半的話留在上面。',
+    },
+  );
+  static const chatThinking = CopyLine.withLanguages(
+    Translated.authored('在想'), Translated.authored('Thinking'),
+    also: {'ja': '考え中', 'zh-HK': '諗緊', 'zh-TW': '在想'},
+  );
+  static const chatChartBroken = CopyLine.withLanguages(
+    Translated.authored('这张图的数据读不出来，下面留的是原文。'),
+    Translated.authored('The data behind this chart could not be read; the text is kept below it.'),
+    also: {
+      'ja': 'この図のデータが読めませんでした。以下は元の文です。',
+      'zh-HK': '呢幅圖嘅數據讀唔到，下面留返原文。',
+      'zh-TW': '這張圖的數據讀不出來，下面留的是原文。',
+    },
+  );
+  static const chatPhoto = CopyLine.withLanguages(
+    Translated.authored('一张照片'), Translated.authored('A photograph'),
+    also: {'ja': '写真', 'zh-HK': '一張相', 'zh-TW': '一張照片'},
+  );
+
   /// The settings block. Three fields and one sentence about what is stored where.
   // ---------------------------------------------------------------- the newest release
 

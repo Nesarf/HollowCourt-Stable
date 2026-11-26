@@ -82,6 +82,11 @@
       "why": "Flutter's Linux host"
     },
     {
+      "glob": "macos/**",
+      "class": "platform",
+      "why": "Flutter's macOS host, written by `flutter create --platforms=macos` on 2026-11-27. **Counted as the platform rather than claimed as ours**, the same way the Windows and Linux hosts are: the runner, the Xcode project and the asset catalogue are the template, and what this repository changed inside them -- `PRODUCT_NAME`, the camera and network entitlements, `NSCameraUsageDescription` -- is stated in the commit that added them instead of pretending the surrounding files are hand-written. **It was added without this rule and the suite said so on the next full run**, which is the rule working: a file nobody decided about is exactly what it is meant to catch."
+    },
+    {
       "glob": "android/app/src/main/kotlin/**",
       "class": "platform",
       "why": "Flutter's Android entry point"

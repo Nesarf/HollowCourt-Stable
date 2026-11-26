@@ -12,9 +12,14 @@
 import 'dart:convert';
 
 import '../adapters/chat_client.dart';
+import '../domain/dosing/abv.dart';
+import '../domain/dosing/dilution.dart';
 import '../domain/events/stock.dart';
+import '../domain/model/drink.dart';
 import '../domain/model/ingredient.dart';
+import '../domain/model/item_role.dart';
 import '../domain/model/recipe.dart';
+import '../domain/units/quantity.dart';
 
 /// **One change she wants the reader to make.** Nothing here performs it; the screen does, through the same methods
 /// the rest of the application uses.
@@ -119,6 +124,43 @@ class CellarToolBox {
             'name': 'read_recipes',
             'description': 'List the recipes this cellar knows, by name and id. Use it when asked what can be made.',
             'parameters': <String, Object?>{'type': 'object', 'properties': <String, Object?>{}},
+          },
+        },
+        <String, Object?>{
+          'type': 'function',
+          'function': <String, Object?>{
+            'name': 'read_recipe',
+            'description': 'Read one recipe in full: its lines with the library names and amounts, the method, the '
+                'glass and the steps. Use it when asked how to make something -- read_recipes only lists them.',
+            'parameters': <String, Object?>{
+              'type': 'object',
+              'properties': <String, Object?>{
+                'name': <String, Object?>{
+                  'type': 'string',
+                  'description': 'The recipe name or its id, as read_recipes gave it.',
+                },
+              },
+              'required': <String>['name'],
+            },
+          },
+        },
+        <String, Object?>{
+          'type': 'function',
+          'function': <String, Object?>{
+            'name': 'recipe_strength',
+            'description': 'Work out how strong a recipe is: undiluted, and after the ice has melted in the glass. '
+                'Reads the alcohol figure each ingredient carries, and the method decides how much water the ice '
+                'adds. An ingredient with no figure counts as non-alcoholic and is named in the answer.',
+            'parameters': <String, Object?>{
+              'type': 'object',
+              'properties': <String, Object?>{
+                'name': <String, Object?>{
+                  'type': 'string',
+                  'description': 'The recipe name or its id.',
+                },
+              },
+              'required': <String>['name'],
+            },
           },
         },
         <String, Object?>{
@@ -268,6 +310,21 @@ class CellarToolBox {
         },
       ];
 
+  /// The recipe a tool call named: by id first, then by name, case-insensitively.
+  ///
+  /// Two passes rather than one predicate, so an id that happens to equal another recipe's name still resolves to the
+  /// id -- which is what a caller who copied it out of `read_recipes` meant.
+  Recipe? _recipeCalled(String wanted) {
+    for (final recipe in recipes) {
+      if (recipe.id == wanted) return recipe;
+    }
+    final lower = wanted.toLowerCase();
+    for (final recipe in recipes) {
+      if (recipe.name.toLowerCase() == lower) return recipe;
+    }
+    return null;
+  }
+
   /// Runs one call and answers with text for the model. **Never throws**: a tool that failed is a fact the model
   /// should be told, not an exception that kills the turn.
   Future<String> run(
@@ -311,6 +368,66 @@ class CellarToolBox {
           }
         }
         return out.join('\n');
+
+      case 'read_recipe':
+        final wanted = '${call.arguments['name'] ?? ''}'.trim();
+        if (wanted.isEmpty) return 'A read needs a recipe name or id.';
+        final recipe = _recipeCalled(wanted);
+        if (recipe == null) return 'No recipe is called $wanted. read_recipes lists the ones there are.';
+        final lines = <String>['${recipe.name} · id: ${recipe.id}'];
+        if (recipe.method != null) lines.add('  method: ${recipe.method!.name}');
+        if (recipe.glass != null) lines.add('  glass: ${recipe.glass}');
+        for (final item in recipe.items) {
+          final name = ingredients
+                  .where((ingredient) => ingredient.id == item.ingredientId)
+                  .map((ingredient) => ingredient.name)
+                  .firstOrNull ??
+              item.ingredientId;
+          final amount = item.count != null
+              ? '${item.count} x'
+              : '${(item.amount / 1000).round()}${item.unit == null ? ' ml' : ' ${item.unit}'}';
+          lines.add('  - $name: $amount');
+        }
+        for (final step in recipe.methodSteps) {
+          lines.add('  · $step');
+        }
+        return lines.join('\n');
+
+      case 'recipe_strength':
+        final wanted = '${call.arguments['name'] ?? ''}'.trim();
+        if (wanted.isEmpty) return 'A strength needs a recipe name or id.';
+        final recipe = _recipeCalled(wanted);
+        if (recipe == null) return 'No recipe is called $wanted. read_recipes lists the ones there are.';
+        if (recipe.items.isEmpty) return '${recipe.name} has no measured lines, so there is nothing to work out.';
+        final unknown = <String>[];
+        final components = <Component>[];
+        for (final item in recipe.items) {
+          final ingredient = ingredients.where((one) => one.id == item.ingredientId).firstOrNull;
+          if (ingredient != null && ingredient.abvPercent == null && item.role != ItemRole.garnish) {
+            unknown.add(ingredient.name);
+          }
+          components.add(Component(
+            volume: Volume.fromMicrolitres(item.amount),
+            abvPercent: ingredient?.abvPercent,
+            role: item.role,
+          ));
+        }
+        // **`built` when the recipe does not say.** It is the method that adds no water, and claiming ice melt for a
+        // drink whose method nobody wrote down would invent a number rather than leave one out.
+        final method = recipe.method ?? Method.built;
+        final drink = Drink(components: components, method: method);
+        final dilution = Dilution.forMethod(method);
+        final poured = (drink.undilutedVolume.microlitres / 1000).round();
+        final served = (dilution.dilutedVolumeOf(drink).microlitres / 1000).round();
+        final lines2 = <String>[
+          '${recipe.name} · ${method.name}',
+          '  未稀释 $poured ml · ${drink.abvPercentUndiluted().toDouble().toStringAsFixed(1)}%',
+          '  加冰后 $served ml · ${drink.abvPercentServed(dilution).toDouble().toStringAsFixed(1)}%',
+        ];
+        if (unknown.isNotEmpty) {
+          lines2.add('  没写酒精度、按不含酒精算：${unknown.join('、')}');
+        }
+        return lines2.join('\n');
 
       case 'propose_add_bottle':
         final sku = '${call.arguments['sku'] ?? ''}'.trim();

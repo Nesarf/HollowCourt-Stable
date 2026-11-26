@@ -82,7 +82,7 @@ class ChatMessage {
   bool get hasImage => image != null && image!.isNotEmpty;
 }
 
-/// **What went wrong, in the four ways it goes wrong.**
+/// **What went wrong, in the five ways it goes wrong.**
 ///
 /// Told apart because the screen says something different for each, and because "no key" and "the key is wrong" send
 /// the reader to two different places: the first to the settings, the second to the provider's console.
@@ -95,6 +95,10 @@ enum ChatTrouble {
   refused,
   /// No network, a timeout, a broken stream, or a 5xx.
   unreachable,
+  /// **She kept asking for tools and never answered.** Its own case rather than `refused`, because it is not the
+  /// provider's judgement about the key or the quota -- it is this application stopping a loop it will not pay for,
+  /// and the reader reading "refused" would go and check a key that is working perfectly.
+  toolLoop,
 }
 
 class ChatFailure implements Exception {
@@ -130,6 +134,46 @@ class ChatClient {
 
   final ChatTransport? _transport;
 
+  /// **The part of a transcript the next request carries.**
+  ///
+  /// A conversation is persisted and grows without limit, and every turn re-sends all of it: the prompt, every reply,
+  /// and whatever the tools read. `read_recipes` alone can return thirty recipes with every line of every one, and
+  /// that answer then rides along on every request after it. The cost is not the size of one reply; it is the size of
+  /// the archive multiplied by the number of turns, and it is paid again on each one.
+  ///
+  /// **What is trimmed is the request, not the conversation.** The screen keeps every turn and the store keeps every
+  /// turn; this only decides what the model is asked to read. The cut is made at a `user` message and never inside a
+  /// tool round, because a `tool_calls` message whose `tool` answers were dropped is a request the provider rejects
+  /// outright -- so exchanges are kept or dropped whole.
+  static List<ChatMessage> trimHistory(List<ChatMessage> history, {int keepTurns = 8}) {
+    final system = <ChatMessage>[for (final message in history) if (message.role == ChatRole.system) message];
+    final rest = <ChatMessage>[for (final message in history) if (message.role != ChatRole.system) message];
+    if (rest.isEmpty) return system;
+
+    var turns = 0;
+    var cut = 0;
+    for (var i = rest.length - 1; i >= 0; i--) {
+      if (rest[i].role == ChatRole.user) {
+        turns++;
+        if (turns == keepTurns) {
+          cut = i;
+          break;
+        }
+      }
+    }
+    final kept = rest.sublist(cut);
+    if (cut == 0) return <ChatMessage>[...system, ...kept];
+
+    // **The model is told the transcript is partial.** A reader who resumes a stored conversation would otherwise be
+    // answered by someone who cannot remember the beginning and does not say so -- which reads as a memory problem
+    // rather than as a decision made here.
+    return <ChatMessage>[
+      ...system,
+      const ChatMessage.system('（更早的对话这一段不再发送，只保留最近的部分。需要旧内容时，请读者再说一次。）'),
+      ...kept,
+    ];
+  }
+
   /// The reply as it arrives, piece by piece. **A stream rather than a future**, because a reply that appears as it is
   /// written is the difference between a conversation and a wait; the collector gets the whole text by joining.
   Stream<String> stream(ChatEndpoint endpoint, List<ChatMessage> history) {
@@ -143,6 +187,34 @@ class ChatClient {
     };
     final raw = (_transport ?? _httpTransport)(endpoint, body);
     return _pieces(raw);
+  }
+
+  /// **What the bytes actually are.** The library picker hands back whatever the gallery holds -- PNG, WebP, and
+  /// HEIC or AVIF on newer Android -- while the camera writes JPEG. Declaring all of it `image/jpeg` was a claim
+  /// about the file that the file could contradict, and a provider that trusts the label over the bytes is the one
+  /// that breaks. Four signatures cover everything this application can produce.
+  static String mimeOf(Uint8List bytes) {
+    bool at(int index, List<int> signature) {
+      if (bytes.length < index + signature.length) return false;
+      for (var i = 0; i < signature.length; i++) {
+        if (bytes[index + i] != signature[i]) return false;
+      }
+      return true;
+    }
+
+    if (at(0, <int>[0x89, 0x50, 0x4E, 0x47])) return 'image/png';
+    if (at(0, <int>[0xFF, 0xD8, 0xFF])) return 'image/jpeg';
+    if (at(0, <int>[0x47, 0x49, 0x46, 0x38])) return 'image/gif';
+    if (at(0, <int>[0x52, 0x49, 0x46, 0x46]) && at(8, <int>[0x57, 0x45, 0x42, 0x50])) return 'image/webp';
+    if (at(4, <int>[0x66, 0x74, 0x79, 0x70]) && bytes.length >= 12) {
+      // ISO base media: the brand at offset 8 says which member of the family this is.
+      final brand = String.fromCharCodes(bytes.sublist(8, 12));
+      if (brand.startsWith('hei') || brand.startsWith('mif') || brand.startsWith('msf')) return 'image/heic';
+      if (brand.startsWith('avi')) return 'image/avif';
+    }
+    // A fourth answer is worse than a plausible guess here: every provider accepts JPEG, and an unlabelled blob it
+    // cannot type is the failure that arrives as a 400 with no explanation.
+    return 'image/jpeg';
   }
 
   /// The wire shape. An image becomes a `data:` URL inside a content list; text alone stays a plain string, because
@@ -187,7 +259,7 @@ class ChatClient {
         <String, Object?>{
           'type': 'image_url',
           'image_url': <String, Object?>{
-            'url': 'data:image/jpeg;base64,${base64Encode(message.image!)}',
+            'url': 'data:${mimeOf(message.image!)};base64,${base64Encode(message.image!)}',
           },
         },
       ],
@@ -245,11 +317,15 @@ class ChatClient {
   /// **`reasoning_content` is carried through.** DeepSeek's own documentation is explicit: a request that carries
   /// `tools` and then comes back without the reasoning of the earlier turns is answered with 400. So each assistant
   /// turn keeps what the model thought, even though the reader never sees it.
+  ///
+  /// [onThought] receives the reasoning as it streams, for a screen that wants to show that something is happening
+  /// before the first word of the answer exists.
   Stream<String> converse(
     ChatEndpoint endpoint,
     List<ChatMessage> history, {
     List<Map<String, Object?>> tools = const <Map<String, Object?>>[],
     Future<String> Function(ChatToolCall call)? runTool,
+    void Function(String piece)? onThought,
     int maxRounds = 4,
   }) async* {
     if (endpoint.apiKey.trim().isEmpty) {
@@ -299,7 +375,10 @@ class ChatClient {
         final delta = first['delta'];
         if (delta is! Map<String, Object?>) continue;
         final thought = delta['reasoning_content'];
-        if (thought is String) reasoning.write(thought);
+        if (thought is String && thought.isNotEmpty) {
+          reasoning.write(thought);
+          onThought?.call(thought);
+        }
         final piece = delta['content'];
         if (piece is String && piece.isNotEmpty) {
           text.write(piece);
@@ -336,7 +415,7 @@ class ChatClient {
         messages.add(ChatMessage.tool(answer, toolCallId: call.id));
       }
     }
-    throw const ChatFailure(ChatTrouble.refused, 'the model kept asking for tools');
+    throw const ChatFailure(ChatTrouble.toolLoop, 'the model kept asking for tools');
   }
 
   /// The real transport: one POST, and the body read as lines.
@@ -358,9 +437,25 @@ class ChatClient {
         final text = await response.transform(utf8.decoder).join();
         throw ChatFailure(ChatTrouble.refused, 'HTTP ${response.statusCode}: ${text.trim()}');
       }
-      yield* response.transform(utf8.decoder).transform(const LineSplitter());
+      // **An idle timeout, because `connectionTimeout` covers only the handshake.** A provider that accepts the
+      // connection and then says nothing held the screen on its spinner for as long as the application ran. Sixty
+      // seconds between events, not sixty seconds in total: keep-alive lines reset it, so a slow answer survives and
+      // a dead one does not.
+      yield* response.transform(utf8.decoder).transform(const LineSplitter()).timeout(
+        const Duration(seconds: 60),
+        onTimeout: (EventSink<String> sink) {
+          sink.addError(const ChatFailure(ChatTrouble.unreachable, 'the reply stopped arriving'));
+          sink.close();
+        },
+      );
     } on SocketException catch (error) {
       throw ChatFailure(ChatTrouble.unreachable, error.message);
+    } on IOException catch (error) {
+      // **`SocketException` is not the only way a connection fails.** `HandshakeException` (TLS refused, which is what
+      // a proxy or an intercepting certificate produces) and `HttpException` (the server closed mid-stream) are
+      // siblings under `IOException`, and catching only the first let the other two escape as themselves -- straight
+      // past the screen's `on ChatFailure`, leaving it busy for the rest of the run with no way back but a restart.
+      throw ChatFailure(ChatTrouble.unreachable, '$error');
     } finally {
       client.close();
     }

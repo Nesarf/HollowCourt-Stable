@@ -62,7 +62,11 @@ class _PhotoCapturePageState extends ConsumerState<PhotoCapturePage> {
       setState(() => _controller = controller);
     } on CameraException {
       if (mounted) setState(() => _problem = true);
-    } on Exception {
+      // **`catch (_)` rather than `on Exception`, for the same reason as the scanner.** `camera` has no
+      // Linux or macOS implementation, and the interface's default body throws `UnimplementedError`,
+      // which is an `Error` rather than an `Exception`; `on Exception` did not catch it, so a machine
+      // without a camera showed an uncaught error instead of the "no camera" message.
+    } catch (_) {
       if (mounted) setState(() => _problem = true);
     }
   }

@@ -10,6 +10,7 @@ import '../adapters/chat_client.dart';
 import '../adapters/elizabeth_prompt.dart';
 import '../adapters/web_search.dart';
 import '../data/chat_actions.dart';
+import '../data/image_compress.dart';
 import '../data/chat_settings.dart';
 import '../data/image_picker_channel.dart';
 import '../domain/events/ingredient_authoring.dart';
@@ -19,6 +20,7 @@ import '../domain/model/ingredient.dart';
 import '../domain/model/recipe.dart';
 import '../domain/units/quantity.dart';
 import 'chat_providers.dart';
+import 'chat_render.dart';
 import '../adapters/registry.dart';
 import 'adapters_providers.dart';
 import 'library.dart';
@@ -30,11 +32,12 @@ import 'theme.dart';
 
 /// **The room she is in.**
 ///
-/// A conversation rather than an assistant: the transcript is kept in this widget's state and forgotten when the page
-/// closes, because storing a conversation is a different feature with its own disclosure, and nobody asked for it.
+/// A conversation rather than an assistant: the transcript is kept in this widget's state, written to its own store
+/// after every turn, and never sent anywhere the adapter card has not agreed to.
 ///
-/// What is sent, on every turn, is the prompt and the transcript -- nothing about the cellar. That is the shape the
-/// adapter disclosure promises, and it holds only for as long as this page keeps its hands off `cellarProvider`.
+/// What is sent, on every turn, is the prompt and the recent transcript -- nothing about the cellar until she asks a
+/// tool for it. That is the shape the adapter disclosure promises, and it holds only for as long as this page keeps
+/// its hands off `cellarProvider` except through [CellarToolBox].
 class ChatPage extends ConsumerStatefulWidget {
   const ChatPage({super.key});
 
@@ -45,10 +48,17 @@ class ChatPage extends ConsumerStatefulWidget {
 class _ChatPageState extends ConsumerState<ChatPage> {
   final _input = TextEditingController();
   final _scroll = ScrollController();
+
+  /// **Every turn, in the order it was said.** This is what the screen draws and the store keeps; what the *model*
+  /// reads is `ChatClient.trimHistory` of it, because a transcript that grows forever is paid for on every turn.
   final List<ChatMessage> _messages = <ChatMessage>[];
+
   String _pending = '';
-  /// The photograph waiting to be sent with the next message.
+  String _thought = '';
   Uint8List? _attachment;
+
+  /// The stream being read, so it can be cancelled. Null when nothing is in flight.
+  StreamSubscription<String>? _subscription;
 
   /// **What she wants recorded, and has not recorded.** The proposal is shown and the reader decides; nothing is
   /// written until they press the button, which is the rule `cellar_tools.dart` exists to keep.
@@ -56,6 +66,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   bool _proposalApplied = false;
   String? _trouble;
   bool _busy = false;
+
+  /// **Set when the reader presses stop before anything has been sent.** The picture is scaled on another isolate
+  /// and the answer comes back a fraction of a second later; without this, a stop pressed in that window would be
+  /// ignored and the message would go out anyway.
+  bool _stopped = false;
 
   @override
   void initState() {
@@ -80,9 +95,47 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   @override
   void dispose() {
+    unawaited(_subscription?.cancel());
     _input.dispose();
     _scroll.dispose();
     super.dispose();
+  }
+
+  /// **Set this conversation aside and start another.** The store is cleared with it, and the note says so: keeping
+  /// a record that is never sent again would mean two kinds of "still here" on one screen.
+  Future<void> _startNew() async {
+    await _subscription?.cancel();
+    _subscription = null;
+    if (!mounted) return;
+    setState(() {
+      _messages.clear();
+      _pending = '';
+      _thought = '';
+      _proposal = null;
+      _proposalApplied = false;
+      _trouble = 'newNote';
+      _busy = false;
+    });
+    unawaited(_persist());
+  }
+
+  /// **Stop reading and keep what arrived.** The half-sentence is a real half-sentence, so it is kept as a turn
+  /// rather than thrown away -- and the button exists because a stream with nothing arriving had no other way out
+  /// than closing the application.
+  Future<void> _stop() async {
+    _stopped = true;
+    final subscription = _subscription;
+    _subscription = null;
+    await subscription?.cancel();
+    if (!mounted) return;
+    setState(() {
+      if (_pending.isNotEmpty) _messages.add(ChatMessage.assistant(_pending));
+      _pending = '';
+      _thought = '';
+      _busy = false;
+      _trouble = 'stopped';
+    });
+    unawaited(_persist());
   }
 
   Future<void> _send() async {
@@ -113,13 +166,32 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     }
     final attachment = _attachment;
     setState(() {
-      _messages.add(ChatMessage.user(text, image: attachment));
       _input.clear();
       _attachment = null;
       _busy = true;
+      _stopped = false;
       _trouble = null;
       _pending = '';
+      _thought = '';
     });
+    // **The photograph is scaled before it is sent, not after.** A gallery original is several thousand pixels of
+    // label; a vision model downscales it anyway, so what the full size buys is a base64 string four times the size
+    // -- carried by this request and by every request after it, since the turn stays in the history. Decoding one is
+    // tens of megabytes of pixels, so it happens off the UI isolate.
+    Uint8List? sent = attachment;
+    if (attachment != null) {
+      try {
+        sent = await compressForChat(attachment);
+      } on Exception {
+        // A decode that failed leaves the original: the provider may still read it, and refusing to send would turn
+        // a photograph into an error message about a photograph.
+        sent = attachment;
+      }
+    }
+    // The reader may have pressed stop while the picture was being scaled, and a message that arrives after that is
+    // a message they cancelled.
+    if (!mounted || _stopped) return;
+    setState(() => _messages.add(ChatMessage.user(text, image: sent)));
     _follow();
 
     final endpoint = ChatEndpoint(
@@ -139,64 +211,96 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       ingredients: seed?.ingredients ?? const <Ingredient>[],
       recipes: seed?.recipes ?? const <Recipe>[],
     );
+    // **The request carries the recent part, the screen keeps all of it.** Trimmed at a turn boundary, never inside
+    // a tool round, so no `tool_calls` message is ever left without its answers.
     final history = <ChatMessage>[
-      const ChatMessage.system(elizabethSystemPrompt),
-      ..._messages,
+      ...ChatClient.trimHistory(<ChatMessage>[
+        ChatMessage.system(elizabethSystemPromptOn(DateTime.now())),
+        ..._messages,
+      ]),
     ];
-    try {
-      await for (final piece in const ChatClient().converse(
-        endpoint,
-        history,
-        tools: CellarToolBox.tools,
-        runTool: (call) async {
-          // **The line goes down before the work, and is filled in after it.** A call that never returns still leaves
-          // evidence that it was attempted, which is the only thing an action log is worth anything for.
-          final store = await ref.read(chatActionsProvider.future);
-          final index = await store.start(ChatAction(
-            at: DateTime.now(),
-            tool: call.name,
-            arguments: call.arguments,
-          ));
-          final answer = await box.run(
-            call,
-            search: (query) => const DeepSeekSearch().search(endpoint, query),
-            propose: (proposal) {
-              if (mounted) {
-                setState(() {
-                  _proposal = proposal;
-                  _proposalApplied = false;
-                });
-              }
-            },
-          );
-          await store.settle(index, answer);
-          return answer;
-        },
-      )) {
+
+    final done = Completer<void>();
+    final subscription = const ChatClient().converse(
+      endpoint,
+      history,
+      tools: CellarToolBox.tools,
+      onThought: (piece) {
+        if (!mounted) return;
+        setState(() => _thought += piece);
+        _follow();
+      },
+      runTool: (call) async {
+        // **The line goes down before the work, and is filled in after it.** A call that never returns still leaves
+        // evidence that it was attempted, which is the only thing an action log is worth anything for.
+        final store = await ref.read(chatActionsProvider.future);
+        final index = await store.start(ChatAction(
+          at: DateTime.now(),
+          tool: call.name,
+          arguments: call.arguments,
+        ));
+        final answer = await box.run(
+          call,
+          search: (query) => const DeepSeekSearch().search(endpoint, query),
+          propose: (proposal) {
+            if (mounted) {
+              setState(() {
+                _proposal = proposal;
+                _proposalApplied = false;
+              });
+            }
+          },
+        );
+        await store.settle(index, answer);
+        return answer;
+      },
+    ).listen(
+      (piece) {
         if (!mounted) return;
         setState(() => _pending += piece);
         _follow();
-      }
-      if (!mounted) return;
-      setState(() {
-        if (_pending.isNotEmpty) _messages.add(ChatMessage.assistant(_pending));
-        _pending = '';
-        _busy = false;
-      });
-      unawaited(_persist());
-    } on ChatFailure catch (failure) {
-      if (!mounted) return;
-      setState(() {
-        _pending = '';
-        _busy = false;
-        _trouble = switch (failure.trouble) {
-          ChatTrouble.notConfigured => 'needKey',
-          ChatTrouble.unauthorised => 'unauthorised',
-          ChatTrouble.refused => 'refused',
-          ChatTrouble.unreachable => 'unreachable',
-        };
-      });
-    }
+      },
+      onError: (Object error) {
+        if (!mounted) return;
+        setState(() {
+          _pending = '';
+          _thought = '';
+          _busy = false;
+          _trouble = switch (error) {
+            ChatFailure(:final trouble) => switch (trouble) {
+              ChatTrouble.notConfigured => 'needKey',
+              ChatTrouble.unauthorised => 'unauthorised',
+              ChatTrouble.refused => 'refused',
+              ChatTrouble.unreachable => 'unreachable',
+              ChatTrouble.toolLoop => 'toolLoop',
+            },
+            // **Anything that is not a `ChatFailure` used to leave this screen busy for the rest of the run.** A
+            // `HandshakeException`, an assertion, a bug in a painter: none of them is a `ChatFailure`, all of them
+            // arrived here, and the only way back was restarting the application.
+            _ => 'unreachable',
+          };
+        });
+        if (!done.isCompleted) done.complete();
+      },
+      onDone: () {
+        if (!mounted) {
+          if (!done.isCompleted) done.complete();
+          return;
+        }
+        setState(() {
+          if (_pending.isNotEmpty) _messages.add(ChatMessage.assistant(_pending));
+          _pending = '';
+          _thought = '';
+          _busy = false;
+        });
+        unawaited(_persist());
+        if (!done.isCompleted) done.complete();
+      },
+      cancelOnError: true,
+    );
+    _subscription = subscription;
+    await done.future;
+    if (identical(_subscription, subscription)) _subscription = null;
   }
 
   void _follow() {
@@ -213,8 +317,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     });
   }
 
-  /// **The card, and the only place a write happens.** Two buttons: one records through the same `addBottle` the
-  /// stock form uses, the other drops the proposal. There is no third path, and no path where the model writes.
+  /// **The card, and the only place a write happens.** Two buttons: one records through the same method the stock
+  /// form uses, the other drops the proposal. There is no third path, and no path where the model writes.
   Widget _proposalCard(PendingChange proposal) {
     // What it is, and what it is about. A bottle id is not a name, so the seed is asked before the id is shown.
     final (CopyLine verb, String subject) = switch (proposal) {
@@ -288,18 +392,33 @@ class _ChatPageState extends ConsumerState<ChatPage> {
         'unauthorised' => Copy.chatTroubleUnauthorised,
         'refused' => Copy.chatTroubleRefused,
         'unreachable' => Copy.chatTroubleUnreachable,
+        'toolLoop' => Copy.chatTroubleToolLoop,
+        'stopped' => Copy.chatStopped,
+        'newNote' => Copy.chatNewNote,
         _ => null,
       };
 
   @override
   Widget build(BuildContext context) {
     final trouble = _troubleLine();
+    final brokenChart = ref.copy(Copy.chatChartBroken);
+    final photoNote = ref.copy(Copy.chatPhoto);
     return Scaffold(
-      appBar: AppBar(title: DualCopyText(Copy.chatTitle, style: HollowType.title)),
+      appBar: AppBar(
+        title: DualCopyText(Copy.chatTitle, style: HollowType.title),
+        actions: <Widget>[
+          IconButton(
+            key: const ValueKey('chat-new'),
+            onPressed: _busy ? null : () => unawaited(_startNew()),
+            icon: const Icon(Icons.add_comment_outlined, size: 20),
+            tooltip: null,
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
-            child: _messages.isEmpty && _pending.isEmpty
+            child: _messages.isEmpty && _pending.isEmpty && _thought.isEmpty
                 ? Center(
                     child: Padding(
                       padding: const EdgeInsets.all(32),
@@ -310,9 +429,19 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     controller: _scroll,
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                     children: [
-                      for (final message in _messages) _Bubble(message: message),
-                      if (_pending.isNotEmpty) _Bubble(message: ChatMessage.assistant(_pending)),
-                      if (_busy && _pending.isEmpty)
+                      for (final message in _messages)
+                        _Bubble(message: message, brokenChart: brokenChart, photoNote: photoNote),
+                      // **What she is thinking, while she is thinking it.** A turn that opens with tools can be
+                      // silent for several seconds; the reasoning is the only thing arriving during it.
+                      if (_thought.isNotEmpty && _pending.isEmpty)
+                        _ThoughtStrip(text: _thought),
+                      if (_pending.isNotEmpty)
+                        _Bubble(
+                          message: ChatMessage.assistant(_pending),
+                          brokenChart: brokenChart,
+                          photoNote: photoNote,
+                        ),
+                      if (_busy && _pending.isEmpty && _thought.isEmpty)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 12),
                           child: Center(child: SizedBox(
@@ -400,10 +529,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     ),
                   ),
                   const SizedBox(width: 8),
+                  // **The same button stops and sends.** A separate stop control is a second thing to find in the
+                  // one moment a reader wants the first thing they can reach; this one is already under the thumb.
                   FilledButton(
                     key: const ValueKey('chat-send'),
-                    onPressed: _busy ? null : _send,
-                    child: DualCopyText(Copy.chatSend, style: HollowType.body),
+                    onPressed: _busy ? () => unawaited(_stop()) : _send,
+                    child: DualCopyText(_busy ? Copy.chatStop : Copy.chatSend, style: HollowType.body),
                   ),
                 ],
               ),
@@ -415,15 +546,42 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 }
 
+/// **The reasoning, shown while it happens and not kept afterwards.** It arrives before the first word of the answer
+/// and is the only thing on screen during a turn that opens with a tool call.
+class _ThoughtStrip extends StatelessWidget {
+  const _ThoughtStrip({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    // Only the tail: a long reasoning scrolls far enough that its beginning is no longer about anything.
+    final tail = text.length > 240 ? '…${text.substring(text.length - 240)}' : text;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10, left: 4),
+      child: Text(
+        plainReply(tail),
+        style: HollowType.caption.copyWith(
+          color: HollowPalette.ink.withValues(alpha: 0.45),
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    );
+  }
+}
+
 /// One turn, drawn on the side it belongs to.
 class _Bubble extends StatelessWidget {
-  const _Bubble({required this.message});
+  const _Bubble({required this.message, required this.brokenChart, required this.photoNote});
 
   final ChatMessage message;
+  final String brokenChart;
+  final String photoNote;
 
   @override
   Widget build(BuildContext context) {
     final mine = message.role == ChatRole.user;
+    final body = HollowType.body.copyWith(color: HollowPalette.ink);
     return Align(
       alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
@@ -434,9 +592,35 @@ class _Bubble extends StatelessWidget {
           color: mine ? HollowPalette.gold.withValues(alpha: 0.16) : HollowPalette.ink.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(14),
         ),
-        child: Text(
-          plainReply(message.text),
-          style: HollowType.body.copyWith(color: HollowPalette.ink),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            // **The photograph is drawn, not implied.** It travelled to the model and stayed in the transcript, and
+            // a reader scrolling back to "what did I show her" needs to see the same picture.
+            if (message.hasImage)
+              Padding(
+                padding: EdgeInsets.only(bottom: message.text.trim().isEmpty ? 0 : 8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.memory(
+                    message.image!,
+                    height: 180,
+                    fit: BoxFit.cover,
+                    // A transcript restored from disk can hold bytes a decoder refuses; the turn is still the turn.
+                    errorBuilder: (context, error, stack) => Text(
+                      photoNote,
+                      style: body.copyWith(color: HollowPalette.ink.withValues(alpha: 0.6)),
+                    ),
+                  ),
+                ),
+              )
+            else if (mine)
+              Text(message.text, style: body)
+            else
+              ReplyView(text: message.text, brokenChart: brokenChart),
+            if (message.hasImage && message.text.trim().isEmpty)
+              const SizedBox.shrink(),
+          ],
         ),
       ),
     );
@@ -475,36 +659,4 @@ Future<void> applyWrite(CellarWrite write, CellarNotifier notifier) async {
     case WriteAuthorIngredient(:final name, :final category):
       await notifier.authorIngredient(AuthoredIngredient(id: '', name: name, category: category));
   }
-}
-
-/// Take the Markdown out of a reply, because nothing here renders it.
-///
-/// The model answers in Markdown by habit and this transcript is a plain `Text`, so a reader was shown
-/// `**成这样**` with the asterisks still in it. Two things are done about that: the prompt tells her not
-/// to write it, and this removes the marks that arrive anyway. It strips rather than renders on purpose --
-/// a Markdown renderer is a dependency, and a package-size argument already cost this application its
-/// voice.
-String plainReply(String text) {
-  var out = text;
-
-  // Fenced blocks: the content stays, the fence and its language tag go.
-  out = out.replaceAll(RegExp(r'^```[^\n]*$', multiLine: true), '');
-  // Inline code and every emphasis marker.
-  out = out.replaceAll('`', '');
-  out = out.replaceAll(RegExp(r'\*\*\*|___'), '');
-  out = out.replaceAll(RegExp(r'\*\*|__'), '');
-  out = out.replaceAll('*', '');
-  // Headings and block quotes: the words are the content, the prefix is not.
-  out = out.replaceAll(RegExp(r'^\s{0,3}#{1,6}\s*', multiLine: true), '');
-  out = out.replaceAll(RegExp(r'^\s{0,3}>\s?', multiLine: true), '');
-  // A list keeps one mark, the one this interface already uses for a list.
-  out = out.replaceAll(RegExp(r'^\s*[-+]\s+', multiLine: true), '\u00b7 ');
-  // Table rules and pipes: the cells stay, the drawing goes.
-  out = out.replaceAll(RegExp(r'^\s*\|?[-: ]+\|[-: |]*$', multiLine: true), '');
-  out = out.replaceAll('|', ' ');
-  // Links keep their words and lose their targets.
-  out = out.replaceAllMapped(RegExp(r'\[([^\]]+)\]\([^)]*\)'), (match) => match[1] ?? '');
-  // Whatever the removals left behind.
-  out = out.replaceAll(RegExp(r'\n{3,}'), '\n\n');
-  return out.trim();
 }

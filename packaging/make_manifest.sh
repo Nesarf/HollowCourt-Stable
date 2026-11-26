@@ -17,6 +17,46 @@ COMMIT="$(git rev-parse HEAD)"
 SUBJECT="$(git log -1 --format=%s)"
 COMMIT_EPOCH="$(git log -1 --format=%ct)"
 
+# **`OTHER` was one condition wearing two meanings.** Four artifacts here were built from
+# `b166909` and stood beside four that said `ok`, because commits after that build touched
+# `android/gradle.properties` (the JVM heap, and Kotlin's incremental cache turned off because it
+# could not be closed) and `linux/CMakeLists.txt` (the CMake 4 install-prefix guard). Neither
+# decides what is compiled, so "rebuild it" there asks for a build that would hand back the same
+# bytes -- and a row that can never turn green is how the real `OTHER` stops being read, which is
+# the failure this file's own header warns about.
+#
+# **The list below is of compiled inputs, not of build configuration, and the first attempt got
+# that backwards.** A list of configuration files has to grow every time somebody adds a script,
+# so it goes red for the least interesting reason available -- including on the commit that adds
+# it, because every receipt's `src-paths` covers `packaging`. Compiled inputs are a small and
+# stable set, and a file outside it falls to the harmless verdict rather than to a demand for a
+# rebuild, which is the direction an unknown file should fall.
+#
+# What this does not catch: a `linux/CMakeLists.txt` edit that changes the source list rather
+# than the install prefix. Both of its edits so far were the prefix, and the names of the files
+# that moved are printed beside every `cfg` row, so a reader can tell without trusting this
+# paragraph.
+COMPILED_INPUTS_RE='^(lib|assets|art|character)/|^pubspec\.(yaml|lock)$|^windows/runner/|^linux/(runner/|my_application\.)|^android/app/src/|^android/app/build\.gradle|^macos/Runner/'
+
+CFG_FILES=''
+NOTES=''
+
+# Succeeds when nothing since the receipt touched a compiled input, and records what did move.
+compiled_inputs_unchanged() {
+  local from="$1"; shift
+  local files f
+  files="$(git diff --name-only "$from" HEAD -- "$@" 2>/dev/null)" || return 1
+  [ -n "$files" ] || return 1
+  while IFS= read -r f; do
+    [ -n "$f" ] || continue
+    if printf '%s' "$f" | grep -Eq "$COMPILED_INPUTS_RE"; then
+      return 1
+    fi
+  done <<< "$files"
+  CFG_FILES="$(printf '%s' "$files" | tr '\n' ' ' | sed 's/ $//')"
+  return 0
+}
+
 {
   echo "Hollow Court -- artifact provenance"
   echo
@@ -35,6 +75,8 @@ COMMIT_EPOCH="$(git log -1 --format=%ct)"
   echo "  ok          the source this was built from is the source in the tree now"
   echo "  src-dirty   built from uncommitted source, so no commit fully describes it"
   echo "  OTHER:<sha> built from different source; rebuild it"
+  echo "  cfg:<sha>   no compiled input moved since the receipt, so a rebuild would hand back the"
+  echo "              same bytes; the files that did move are listed under the table"
   echo "  unrecorded  no receipt. Unknown, NOT fine -- unknown and fine are different words."
   echo
   printf '%-42s %-11s %-18s %s
@@ -64,6 +106,10 @@ COMMIT_EPOCH="$(git log -1 --format=%ct)"
         rec="ok"
       elif [ "$rc" = "$now" ]; then
         rec="src-dirty"
+      elif [ -n "$rp" ] && compiled_inputs_unchanged "$rc" $rp; then
+        rec="cfg:$(echo "$rc" | cut -c1-7)"
+        NOTES="$NOTES$(printf '  %-42s %s' "$(basename "$f")" "$CFG_FILES")
+"
       else
         rec="OTHER:$(echo "$rc" | cut -c1-7)"
       fi
@@ -73,6 +119,11 @@ COMMIT_EPOCH="$(git log -1 --format=%ct)"
     printf '%-42s %-11s %-18s %s
 ' "$(basename "$f")" "$(stat -c%s "$f")" "$rec" "$(sha256sum "$f" | cut -c1-16)"
   done
+  if [ -n "$NOTES" ]; then
+    echo
+    echo "cfg rows: what moved since the receipt was written, and no compiled input did."
+    printf '%s\n' "$NOTES"
+  fi
   echo
   echo "unrecorded is not a defect and not a pass. It means the source is unknown, which is a"
   echo "different statement, and the fix is to rebuild with the receipt in place rather than to"

@@ -93,7 +93,13 @@ class _BarcodeScannerPageState extends ConsumerState<BarcodeScannerPage> {
       }
     } on CameraException {
       if (mounted) setState(() => _problemLine = Copy.barcodeScanNoCamera);
-    } on Exception {
+      // **`catch (_)` rather than `on Exception`, because a platform with no camera implementation
+      // does not throw an Exception to say so.** `camera` ships implementations for Android, iOS,
+      // Windows and web; Linux and macOS have none, so `availableCameras()` reaches the interface's
+      // default body and throws `UnimplementedError` -- an `Error`, which `on Exception` lets through.
+      // The visible result was an uncaught async error on Linux while the "no camera on this machine"
+      // line below sat unused, written for exactly this case.
+    } catch (_) {
       if (mounted) setState(() => _problemLine = Copy.barcodeScanNoCamera);
     }
   }
