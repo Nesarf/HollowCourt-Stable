@@ -212,6 +212,11 @@
       "why": "this repository's own tooling"
     },
     {
+      "glob": "design/**",
+      "class": "self",
+      "why": "the engineering map -- `design/PLAN.json`, the goal network mim's tooling reads. Written here. **It was added on 2026-11-23 without a rule, and CI stayed red from that day until 2026-11-27**, because `test/data/principles_test.dart` refuses an unclassified tracked file rather than assuming it is ours. That is the rule doing its job: a file nobody decided about is exactly what it is meant to catch, and the fix belongs here rather than in the test."
+    },
+    {
       "glob": "docs/**",
       "class": "self",
       "why": "written here"

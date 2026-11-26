@@ -136,6 +136,44 @@ if (Test-Path -LiteralPath $out) { Remove-Item -LiteralPath $out -Force }
 Compress-Archive -Path (Join-Path $stage '*') -DestinationPath $out -CompressionLevel Optimal
 Remove-Item -LiteralPath $stage -Recurse -Force -ErrorAction SilentlyContinue
 
+# **The receipt, because a file whose provenance is only in a person's head is a file the
+# manifest has to call `unrecorded`.** The source commit is read from the MSI's receipt
+# rather than recomputed from HEAD: HEAD moves on every doc commit, while the MSI beside this
+# archive was built from one specific tree, and the archive holds that same build. Recomputing
+# would make the receipt disagree with the bytes, which is the failure `write_receipt.sh`'s
+# own header describes.
+$siblingReceipt = Join-Path $Bundle ("hollow-court-{0}-arm64-v8a.apk.commit" -f $Version)
+$srcCommit = ''
+if (Test-Path -LiteralPath $siblingReceipt) {
+    $line = (Select-String -LiteralPath $siblingReceipt -Pattern '^src-commit' | Select-Object -First 1).Line
+    if ($line) { $srcCommit = ($line -replace '^src-commit\s*:\s*', '').Trim() }
+}
+
+# git-bash, not whatever `bash` resolves to: on Windows `bash` is usually WSL's entry point,
+# and WSL cannot read `/d/...` paths from this side of the boundary.
+$bashPath = 'C:\Program Files\Git\bin\bash.exe'
+if (-not (Test-Path -LiteralPath $bashPath)) {
+    $c = Get-Command bash -ErrorAction SilentlyContinue
+    if ($c -and $c.Source -notmatch 'system32') { $bashPath = $c.Source }
+}
+if ((Test-Path -LiteralPath $bashPath) -and $srcCommit) {
+    $note = "assembled from windows/ (build\windows\x64\runner\Release) and the Linux bundle; source commit taken from the MSI receipt beside it"
+    $env:SRC_COMMIT = $srcCommit
+    $env:SRC_SUBJECT = (git -C $Repo log -1 --format=%s $srcCommit 2>$null)
+    $env:HEAD_REV   = (git -C $Repo rev-parse HEAD 2>$null)
+    $env:TREE_DIRTY = 'no'
+    $env:SRC_DIRTY  = 'no'
+    $repoPosix = $Repo -replace '\\', '/'
+    $outPosix  = $out  -replace '\\', '/'
+    & $bashPath "$repoPosix/packaging/write_receipt.sh" $outPosix $note 'lib' 'windows' 'linux' 'pubspec.yaml' 'assets' 2>&1 | Out-Null
+    $wrote = Test-Path -LiteralPath "$out.commit"
+    Remove-Item Env:SRC_COMMIT, Env:SRC_SUBJECT, Env:HEAD_REV, Env:TREE_DIRTY, Env:SRC_DIRTY -ErrorAction SilentlyContinue
+    if ($wrote) { Write-Output "   receipt  $([System.IO.Path]::GetFileName("$out.commit")) (src-commit $($srcCommit.Substring(0,7)))" }
+    else        { Write-Output '   receipt  NOT written -- write_receipt.sh did not produce one' }
+} else {
+    Write-Output '   receipt  skipped: no bash, or no sibling MSI receipt to take the commit from'
+}
+
 $size = (Get-Item -LiteralPath $out).Length / 1MB
 Write-Output "== portable archive =="
 $collected | ForEach-Object { Write-Output "   collected $_" }
