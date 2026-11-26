@@ -119,7 +119,7 @@
     },
     {
       "id": "packaging",
-      "title": "Three platforms from one commit: APK, MSI, AppImage -- and one command to install each",
+      "title": "Three platforms from one commit: three APKs, a Windows installer and one portable archive -- and one command to install each",
       "scope": "release",
       "status": "done",
       "parent": "app",
@@ -127,7 +127,7 @@
         "adapters"
       ],
       "source": "packaging/README.md, packaging/build_all.sh",
-      "notes": "build_all.sh builds the three targets in parallel worktrees and lands receipts and a manifest in one bundle directory -- `D:\\hollow-court\\dist` since 2026-11-26, when the bundle moved off E: together with the checkout. install_appimage.sh finishes WSLg's half of a Linux install: it corrects the Windows shortcut, marks it read-only, and writes /usr/share/pixmaps/hollow_court.png -- measured as the one file WSLg actually reads for the menu icon. Two version walls are measured rather than assumed: the MSI needs WiX 5.x, because 7.x stops at WIX7015 asking for the paid Open Source Maintenance Fee licence; and the Linux target needs `linux/CMakeLists.txt`'s install-prefix fallback, because CMake 4 no longer sets CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT for this template and the install step then writes to /usr/local.",
+      "notes": "build_all.sh builds the three targets in parallel worktrees, then assembles the portable archive from their outputs, and lands receipts and a manifest in one bundle directory -- `D:\\hollow-court\\dist` since 2026-11-26, when the bundle moved off E: together with the checkout. Two version walls are measured rather than assumed: the MSI needs WiX 5.x, because 7.x stops at WIX7015 asking for the paid Open Source Maintenance Fee licence; and the Linux target needs `linux/CMakeLists.txt`'s install-prefix fallback, because CMake 4 no longer sets CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT for this template and the install step then writes to /usr/local. The two `linux/*appimage*.sh` scripts are kept but called by nothing since 2026-11-27: they are the record of how an AppImage was built and installed, including the WSLg measurement that its menu icon is `/usr/share/pixmaps/hollow_court.png` and nothing else.",
       "touches": [
         "packaging/build_all.sh",
         "packaging/make_manifest.sh",
