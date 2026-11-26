@@ -17,7 +17,7 @@ import os
 import re
 import sys
 
-ROOT = r'E:\hollow-court'
+ROOT = r'D:\hollow-court'
 PATTERN = re.compile(r'Copy\.([A-Za-z]+)\.primary\.text')
 IMPORT_LINE = "import 'l10n/copy_resolution.dart';\n"
 SKIP = {'copy_resolution.dart'}
