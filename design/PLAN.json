@@ -53,14 +53,15 @@
         "domain"
       ],
       "source": "docs/DESIGN.md sections 6, 15",
-      "notes": "The event store is one JSON object per line, appended and never rewritten; a torn tail is expected, not corruption. Chat history is bounded at 200 turns, the action log at 500 lines, and the chat key is sealed with AES-GCM beside the settings.",
+      "notes": "The event store is one JSON object per line, appended and never rewritten; a torn tail is expected, not corruption. Chat history is bounded at 200 turns, the action log at 500 lines, and the chat key is sealed with AES-GCM beside the settings. **A photograph is scaled before it leaves** -- `image_compress.dart` bounds the long side at 1280 and re-encodes as JPEG on a background isolate, because a gallery original is several thousand pixels of label and the turn carrying it is re-sent on every request after it. Bytes that isolate cannot decode come back untouched, since deciding here that a file is unreadable is a decision about what a provider accepts.",
       "touches": [
         "lib/data/event_store.dart",
         "lib/data/event_log.dart",
         "lib/data/seed/",
         "lib/data/chat_history.dart",
         "lib/data/chat_settings.dart",
-        "lib/data/chat_actions.dart"
+        "lib/data/chat_actions.dart",
+        "lib/data/image_compress.dart"
       ],
       "verifiedBy": [
         "test/data/",
@@ -77,9 +78,11 @@
         "data"
       ],
       "source": "docs/DESIGN.md section 12",
-      "notes": "The proposal cards are the write path's only door: a confirmed proposal calls applyWrite, which is the one place that names the method each write becomes. The transcript is plain text; replies pass through plainReply so Markdown marks never reach a reader.",
+      "notes": "The proposal cards are the write path's only door: a confirmed proposal calls applyWrite, which is the one place that names the method each write becomes. **A reply is drawn as the shapes it is made of.** `chat_render.dart` parses paragraphs, headings, lists, fenced blocks and tables, draws bold, italic and inline code instead of stripping them, and renders four charts -- line, candle, bar, pie -- with the canvas rather than a package. `chat_icons.dart` turns `:name:` into a glyph from a curated table of forty names, a character in the icon font rather than a WidgetSpan so the paragraph still lays out as one line. The transcript itself is kept whole on screen; what the model reads is trimmed in the adapter. A name or a chart body the renderer cannot use is printed as it arrived, because a visible mistake is better than a word that disappears.",
       "touches": [
         "lib/ui/chat_page.dart",
+        "lib/ui/chat_render.dart",
+        "lib/ui/chat_icons.dart",
         "lib/ui/stock_page.dart",
         "lib/ui/library.dart",
         "lib/ui/barcode_scanner_page.dart",
@@ -177,17 +180,24 @@
         "ui"
       ],
       "source": "docs/HMA.md, lib/adapters/elizabeth_prompt.dart",
-      "notes": "OpenAI-compatible chat over SSE with a tool loop capped at four rounds. Tools: web search, read cellar, read recipes with amounts, and seven proposals. The prompt bans inventing bottle facts, flattery, pretending to act, and Markdown; the last of these is also enforced in the UI by plainReply. The key is the reader's own, sealed on this machine.",
+      "notes": "OpenAI-compatible chat over SSE with a tool loop capped at four rounds, plus a fifth trouble -- `toolLoop` -- kept apart from `refused`, because that word sends a reader to check a quota that is working. Nine tools: web search, read cellar, read recipes, read one recipe in full, work out a recipe's strength through `dosing/abv.dart` and `dosing/dilution.dart`, and the six proposals that write nothing. **What the request carries is `ChatClient.trimHistory`** -- the newest eight exchanges, cut at a user message and never inside a tool round, so a `tool_calls` message is never left without its answers; the screen and the store keep every turn. **Every failure is one of five kinds**, and `IOException` as well as `SocketException` becomes `unreachable`, because a TLS handshake and a server closing mid-stream are siblings of the failure the first version caught. The prompt bans inventing bottle facts, flattery, pretending to act, and Markdown; it is prefixed with today's date because a model has no clock, names the four chart fences, and quotes the icon names. `replyIconNames` and `chatIcons` are two lists locked together by a test, because `lib/adapters` has no Flutter dependency and cannot share the constant. The key is the reader's own, sealed on this machine.",
       "touches": [
         "lib/adapters/chat_client.dart",
         "lib/adapters/elizabeth_prompt.dart",
         "lib/adapters/cellar_tools.dart",
         "lib/adapters/web_search.dart",
+        "lib/data/image_compress.dart",
         "lib/ui/chat_page.dart",
+        "lib/ui/chat_render.dart",
+        "lib/ui/chat_icons.dart",
         "lib/ui/chat_seam.dart"
       ],
       "verifiedBy": [
         "test/adapters/chat_client_test.dart",
+        "test/adapters/chat_converse_test.dart",
+        "test/adapters/chat_render_test.dart",
+        "test/adapters/chat_icon_names_test.dart",
+        "test/adapters/cellar_tools_test.dart",
         "test/adapters/proposed_writes_test.dart"
       ]
     }
