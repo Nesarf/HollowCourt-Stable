@@ -24,9 +24,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # **Which architecture this produced, said out loud in the log.** `macos-latest` is an Intel runner, so the
-      # bundle is x86_64 and an Apple Silicon reader needs Rosetta 2 to run it. An arm64 runner would change that.
-      # This line is how a reader finds out which one they got without unpacking the artifact to check.
+      # **Which architecture this produced, said out loud in the log.** The run of 2026-11-27 answered what this
+      # comment used to guess at: `macos-latest` is an Intel runner, and the bundle came out **universal** -- the
+      # main executable, `FlutterMacOS.framework` and `App.framework` each carry x86_64 and arm64, so an Apple
+      # Silicon reader needs no conversion and neither does an Intel one. The line stays, because that is a fact
+      # about the runner of the day rather than about Flutter.
       - name: the runner, named
         run: uname -m && sw_vers
 
