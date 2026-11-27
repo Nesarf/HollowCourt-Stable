@@ -41,9 +41,15 @@ for arg in "$@"; do
   esac
 done
 
-export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-E:/DaShaoHuo/art-tools/android-sdk}"
+# **These two defaults name where the toolchains are on this machine, and both of them moved.**
+# The Android SDK was under `E:` until that drive was cleared; WiX is not a folder of binaries any
+# more -- it is a `dotnet tool` in the global tool directory, already on PATH, which is exactly what
+# `packaging/windows/build.sh` has always assumed (`WIX="${WIX:-wix}"`). The outer script was
+# overriding that assumption with a path that no longer exists, so the first `wix build` would have
+# died on a directory rather than on anything the build did.
+export ANDROID_SDK_ROOT="${ANDROID_SDK_ROOT:-D:/DaShaoHuo/art-tools/android-sdk}"
 export ANDROID_HOME="$ANDROID_SDK_ROOT"
-WIX="${WIX:-/e/DaShaoHuo/tools/dotnet-tools/wix}"
+WIX="${WIX:-wix}"
 WSL_DISTRO="${WSL_DISTRO:-Nyarch}"
 
 log() { printf '%s  %s\n' "$(date +%H:%M:%S)" "$*"; }
