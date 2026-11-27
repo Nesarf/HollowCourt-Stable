@@ -39,7 +39,7 @@ PRODUCT_BUNDLE_IDENTIFIER = com.nesarf.hollowCourt
 
 `.github/workflows/macos.yml`：`workflow_dispatch` 触发，`macos-latest`，用 `ditto -c -k --sequesterRsrc --keepParent` 打包（`upload-artifact` 写的是条目不是符号链接，直接传目录会把 framework 里的版本链接压平）。
 
-`packaging/portable/make_portable.ps1` 已经在收 `build\macos\Build\Products\Release\*.app`，这个脚本不用改。
+`packaging/portable/make_portable.ps1` 收 `build\macos\Build\Products\Release\*.app`；本机没有这个目录时，改用 `-MacArtifact` 指向 CI 上传的那份 ZIP。合并怎么做的、旧做法错在哪里，见下面「合并进 portable 归档」。
 
 ### 构建跑过一次，而且成功了
 
@@ -53,24 +53,46 @@ PRODUCT_BUNDLE_IDENTIFIER = com.nesarf.hollowCourt
 
 产物在 `D:\DaShaoHuo\downloads\hc-macos-artifact\hollow-court-macos.zip`。**不要用 Windows 的解压去开它** —— 那会把九个符号链接压平成普通文件，bundle 看起来完整而加载不起来。要看内容用 `zipfile` 只读，要解开只能在一台 Mac 上或者用保留符号链接的工具。
 
+### 合并进 portable 归档
+
+**这一节记的是打包，不是应用。** 做完之后 portable 归档真的装得下三个平台；之所以值得单开一节，是因为上一版归档里有两个从没人看过的错误。
+
+**旧归档 45 个条目的 `ExternalAttributes` 全是 0。** `Compress-Archive` 不写 Unix mode，于是两件事同时成立：`linux/hollow_court` 的可执行位没有记进归档（这是 README 要教读者 `chmod +x` 的由来），以及没有任何条目能说「我是一个符号链接」—— 一个 `.app` 解开之后会是九个装着路径文本的小文件，目录树完整，加载失败。
+
+**新归档由 `packaging/portable/make_portable_zip.py` 写。** 它逐条构造 `ZipInfo`，`create_system = 3`，mode 自己声明，所以归档的含义与装配它的机器是哪一台无关。三个来源走三条路：
+
+| 来源 | 怎么进来 | 为什么是这条路 |
+| --- | --- | --- |
+| `windows/` | `--tree` 直接读 `build\windows\x64\runner\Release` | 没有链接要处理，但 mode 仍要声明，否则解开后分不清文件与目录 |
+| `linux/` | `--tree` 直接读 `build/linux/x64/release/bundle`，`hollow_court` 标 0755 | 可执行位只能在这里写进去 |
+| `macos/` | `--zip` 把 CI artifact 的条目逐条重发，`external_attr` 一个字节不动 | 解压这一步在 Windows 上就已经把链接毁了，所以整条路不经过解压 |
+
+**连「在一台 Mac 上跑」那条路也走 `--tree`，不走 `Copy-Item`。** `Copy-Item -Recurse` 跟随符号链接，在一台真有 Mac 的机器上把 `.app` 复制到暂存目录再打包，同样会把九个链接变成九个文件。`--tree` 用 `os.readlink` 自己读、自己写回链接条目，中间没有一步要信任复制工具。
+
+**这一次装配能核对的：** 139 个条目（README 1、windows 33、linux 32、macos 73），九个符号链接，`create_system` 全为 3，51.4 MB。111 个非目录条目逐条与源比过 CRC：windows 20 个对 `build\windows\x64\runner\Release`，linux 18 个对 `build\linux\x64\release\bundle`，macOS 73 条对 CI artifact，零处不符。符号链接这件事由两个互不相关的实现分别确认 —— Python 的 `zipfile` 读出 `0o120000` 与目标路径，Windows 自带的 `tar.exe`（libarchive）把它显示成 `lrwxr-xr-x ... -> Versions/Current/Resources`。只看一个实现不算验证。
+
+**没有做到的：** 没有在一台 Mac 上解开过。归档说那九条是链接，两个实现都同意，而真正把链接还原出来发生在 macOS 上。`-MacArtifact` 也要手工指路径，脚本不会自己去 GitHub 找最新的 artifact。
+
 ---
 
-## 二、已写好，但没有在 Mac 上跑过一次
+## 二、没有在 Mac 上使用过
 
-**上面第一节的每一项都属于这一段。** 没有任何一次 `flutter build macos` 发生过，`macos.yml` 也从未被触发。写下的配置是按 Flutter 模板与本项目的实际情况填的，不是按一次成功构建的输出校对的。
+**这里的「用过」指一次真实的双击与一轮使用，不是一次 CI 构建。** 第一节那次构建已经证明了四件事：脚手架能编译，图标能被 `xcodebuild` 接受，插件登记在 SPM 下能生成并链接，现有依赖树接受 12.0 这个部署目标。它没有证明的是这个应用打开之后的行为。
 
-具体来说，下面这些在 Windows 上无从验证：
+仍然只能在一台 Mac 上回答的：
 
-- 第一次 `flutter pub get` 在 macOS 上生成的 `macos/Flutter/ephemeral/GeneratedPluginRegistrant.swift` 是否正确登记了各个插件。
-- SPM 与 CocoaPods 的选择。这套脚手架目前走 Swift Package Manager（没有 `Podfile`），如果以后接入一个只支持 CocoaPods 的插件，Flutter 会回退并生成 `Podfile`。那一步没有发生过。
-- `MACOSX_DEPLOYMENT_TARGET = 12.0` 是否与将来的依赖相符。模板给的是 12.0。
-- entitlements 是否够用、是否过量。没有一次运行去观察沙箱实际拒绝了什么。
+- **entitlements 够不够、有没有过量。** 沙箱实际拒绝什么只有运行才知道；构建只证明它们语法合法。
+- **第一次打开会不会被 Gatekeeper 拦住，拦住之后右键打开能不能过。** 这是 ad-hoc 签名的包带着 quarantine 标记时的运行时行为。
+- **窗口尺寸、字体、控件看起来对不对。** 桌面端的布局只在桌面端成立，Windows 与 Linux 的截图替不了它。
+- **局域网发现能不能连上另一台设备。** `network.client` 与 `network.server` 都在 release entitlements 里，而沙箱放不放行要两家都跑起来才知道。
+
+这里原来还列着 `GeneratedPluginRegistrant.swift`、SPM 与 CocoaPods 的选择、`MACOSX_DEPLOYMENT_TARGET = 12.0` 三项。它们是**构建期**的问题，2026-11-27 那次构建把它们变成了观测：插件登记生成了，SPM 这条路走通了，12.0 与现有依赖相符。**而 SPM 那一条只说明「这一次没有问题」** —— 将来接入一个只支持 CocoaPods 的插件时，Flutter 会回退并生成 `Podfile`，那一步仍然没有发生过。
 
 ---
 
 ## 三、需要一台 Mac，缺的就是这台机器
 
-- `flutter build macos --release`。Flutter 的 macOS 目标驱动 `xcodebuild`，而 `xcodebuild` 只在 macOS 上存在。
+- `flutter build macos --release`。Flutter 的 macOS 目标驱动 `xcodebuild`，而 `xcodebuild` 只在 macOS 上存在。**这一条已经被一个 `macos-latest` runner 满足（见第一节）**；它留在这里是因为它说明的是「为什么这台 Windows 机器做不了」，而那个理由没有变。
 - Dart 的 AOT 步骤需要一份 darwin 宿主的 `gen_snapshot`，它只在 macOS 上被下载。
 - 关于交叉编译：`osxcross` 与 `zig cc` 能从 Linux 产出 Mach-O 目标文件，`apple-codesign`（`rcodesign`）能在 Linux 上签名与公证，但没有任何东西能在没有 Xcode 的情况下组装一个 `.app`。Darling 把 Xcode 列在它跑不起来的软件里。这条路是通的环节已经通了，卡住的是中间那一段。
 

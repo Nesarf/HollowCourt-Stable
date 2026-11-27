@@ -187,9 +187,40 @@ python tool/release.py --version 1.0.1+1021 --apply    # 真做
 ### 不声称什么
 
 - **没有在任何 Mac 上启动过。** 构建成功与能运行是两件事，中间隔着签名、quarantine 与一次真实的双击。
-- **没有合并进 portable 归档。** Windows 的解压会把九个符号链接压平，bundle 会变成看着完整、加载不起来的文件。要合并得用保留条目的方式写 zip，那是另一件工作。
+- **这一次只产出了 `.app` 本身。** 合并进 portable 归档是下一件工作，记在下面那一节里。
 - **相机在 macOS 上仍然没有。** `camera` 没有 macOS 实现，`camera_macos` 是第三方且 API 与它不同。
 - **签名是 ad-hoc 的。** 没有 Apple Developer 账号，从网上下来的包第一次打开要 `xattr -dr com.apple.quarantine`。
+
+---
+
+## 构建号 51541 之后：portable 归档拿到 macOS（2026-11-27）
+
+**这一条同样写在同一版构建之后。它记的是打包这一步，不是应用本身。**
+
+portable 归档现在真的装得下三个平台。`packaging/portable/make_portable.ps1` 多了一个 `-MacArtifact` 参数，收的是 macOS 那个 job 上传的 ZIP；本机自己的 `build\macos\Build\Products\Release\*.app` 仍然优先，所以在一台 Mac 上跑时行为不变。
+
+### 变了什么
+
+- **归档不再由 `Compress-Archive` 写。** 新的 `packaging/portable/make_portable_zip.py` 逐条写 `ZipInfo`，每条都明说 `create_system = 3` 与自己的 Unix mode。理由与实测数字见 `docs/macos.md` 第一节「合并进 portable 归档」。
+- **Linux 的可执行位现在记在归档里。** 旧归档 45 条全是 `ExternalAttributes = 0`，`linux/hollow_court` 也在其中 —— 那正是 README 要教读者 `chmod +x` 的原因。现在它是 `0o100755`，保留 Unix mode 的解压器不需要那一步。README 也按这个事实重写了。
+- **macOS 那一段的 README 按有没有 `.app` 分两种写法。** 有就写双击、被 Gatekeeper 拦住怎么办；没有就说这一份不在归档里。以前那句「build it on a Mac first」是写死的，两种情况下都印。
+
+### 修了什么
+
+- **`writestr` 的第二个参数是数据，不是文件名。** 第一版写成 `sink.writestr(info, path)`，于是 windows/ 与 linux/ 每一个条目的内容都成了它自己的路径字符串。产物 23.6 MB，比被它替换掉的 27.8 MB 还小，脚本一句抱怨都没有。改成显式 `open(path, 'rb').read()` 之后 51.4 MB。
+- **三个平台都齐时，README 的 `Not included:` 下面是空的。** 空列表读起来像漏写，现在那一行写 `nothing -- all three platforms are in this archive`。
+
+### 从那一次装配里能核对的
+
+- 139 个条目：README 1、windows 33、linux 32、macos 73。九个符号链接，`create_system` 全是 3。
+- 111 个非目录条目逐条与源比过 CRC：windows 20 个文件对 `build\windows\x64\runner\Release`，linux 18 个对 `build\linux\x64\release\bundle`，macOS 73 条对 CI artifact，零处不符。
+- 符号链接这件事由两个互不相关的实现分别确认：Python 的 `zipfile` 读出 `0o120000` 与目标路径，Windows 自带的 `tar.exe`（libarchive）把它显示成 `lrwxr-xr-x ... -> Versions/Current/Resources`。只看一个实现不算验证。
+
+### 不声称什么
+
+- **没有在一台 Mac 上解开过。** 归档的条目说它们是符号链接，两个实现都同意，而真正把九个链接还原出来这件事发生在 macOS 上，那一步这台机器做不到。
+- **这一批产物的版本号是 `1.0.0.zipcheck`。** 它是一次装配检查，不进 release；正式的那一份要等下一次改 `pubspec.yaml` 并全量重建。
+- **`-MacArtifact` 要手工指路径。** 没有自动去 GitHub 取最新 artifact 的那一步，因为那需要 token 与一次网络调用，而这两样在打包脚本里都是新的失败面。
 
 ---
 
