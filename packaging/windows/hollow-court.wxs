@@ -32,9 +32,9 @@
   <Package
       Name="空庭 Hollow Court"
       Manufacturer="S.M.Y.T."
-      Version="1.0.51541"
+      Version="1.0.51542"
       UpgradeCode="7C4E1B62-5A3D-4F18-9E77-2B6D4A0C51E3"
-      ProductCode="57345858-A0C4-422D-94B3-2DF50F6FEAC3"
+      ProductCode="147D1D43-E215-4AB2-9624-7C1073096082"
       Scope="perUser"
       Compressed="yes">
 
@@ -45,6 +45,12 @@
          successfully" and "the new code is on the machine" are two different facts, and the second is the one
          the fourth consequence of this rule exists for: bump Version and ProductCode together, even for a
          rebuild of the same round. -->
+
+    <!-- **2026-11-28, the round that went to 51542.** Version to 1.0.51542 and ProductCode to the GUID beside it,
+         together. This is the first Windows binary to carry the conversation work: the reply renderer, the icon
+         table, the four chart types, the image compression and the nine cellar tools. It is also the first
+         portable archive assembled with a macOS bundle inside it. **The guard below caught the stale version
+         before a single MSI byte was written**, which is the one moment it can still be cheap. -->
 
     <!-- **2026-10-22, the round that went to 51524.** Version to 1.0.51524 and ProductCode to the GUID beside it,
           together. **What the build script now does is the point**: it compares this file's `Version` with
