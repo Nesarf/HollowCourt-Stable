@@ -186,10 +186,10 @@ python tool/release.py --version 1.0.1+1021 --apply    # 真做
 
 ### 不声称什么
 
-- **没有在任何 Mac 上启动过。** 构建成功与能运行是两件事，中间隔着签名、quarantine 与一次真实的双击。
-- **这一次只产出了 `.app` 本身。** 合并进 portable 归档是下一件工作，记在下面那一节里。
-- **相机在 macOS 上仍然没有。** `camera` 没有 macOS 实现，`camera_macos` 是第三方且 API 与它不同。
-- **签名是 ad-hoc 的。** 没有 Apple Developer 账号，从网上下来的包第一次打开要 `xattr -dr com.apple.quarantine`。
+- **没有在任何 Mac 上启动过** —— 无对应条件（缺一台 Mac）。构建成功与能运行是两件事，中间隔着签名、quarantine 与一次真实的双击。
+- **合并进 portable 归档当时还没有做。** 它记在下面那一节里，现在做完了。
+- **相机在 macOS 上仍然没有** —— 无对应条件（缺一台 Mac，也缺一个与 `camera` 同接口的实现）。`camera` 没有 macOS 实现，`camera_macos` 是第三方且 API 与它不同，接入后也只有在一台 Mac 上才验得了。
+- **签名是 ad-hoc 的** —— 无对应条件（缺一个 Apple Developer 账号）。从网上下来的包第一次打开要 `xattr -dr com.apple.quarantine`。
 
 ---
 
@@ -218,7 +218,7 @@ portable 归档现在真的装得下三个平台。`packaging/portable/make_port
 
 ### 不声称什么
 
-- **没有在一台 Mac 上解开过。** 归档的条目说它们是符号链接，两个实现都同意，而真正把九个链接还原出来这件事发生在 macOS 上，那一步这台机器做不到。
+- **没有在一台 Mac 上解开过** —— 无对应条件（缺一台 Mac）。归档的条目说它们是符号链接，两个实现都同意，而真正把九个链接还原出来这件事发生在 macOS 上。
 - **这一批产物的版本号是 `1.0.0.zipcheck`。** 它是一次装配检查，不进 release；正式的那一份要等下一次改 `pubspec.yaml` 并全量重建。
 - **`-MacArtifact` 要手工指路径。** 没有自动去 GitHub 取最新 artifact 的那一步，因为那需要 token 与一次网络调用，而这两样在打包脚本里都是新的失败面。
 

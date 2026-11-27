@@ -2,7 +2,7 @@
 
 这份文件回答一个问题：仓库里已经有的 macOS 东西，哪些是真做完了，哪些只是因为手上没有那台机器而停在这里。
 
-判断的标准只有一条：**在 Windows 上完成并验证过的，写在第一段；需要一台 Mac 或一个苹果开发者账号才能继续的，写在后面的段里，并说明缺的具体是什么条件。** 不把「没验证」写成「应该没问题」，那两句话对读者的用处完全不同。
+判断的标准只有一条：**在 Windows 上完成并验证过的，写在第一段；需要一台 Mac 或一个苹果开发者账号才能继续的，写在后面的段里，并标上「无对应条件」、说明缺的具体是什么。** 不把「没验证」写成「应该没问题」，那两句话对读者的用处完全不同。而「无对应条件」也不是「不做」—— 第六段说明这四个字的确切含义。
 
 ---
 
@@ -71,7 +71,7 @@ PRODUCT_BUNDLE_IDENTIFIER = com.nesarf.hollowCourt
 
 **这一次装配能核对的：** 139 个条目（README 1、windows 33、linux 32、macos 73），九个符号链接，`create_system` 全为 3，51.4 MB。111 个非目录条目逐条与源比过 CRC：windows 20 个对 `build\windows\x64\runner\Release`，linux 18 个对 `build\linux\x64\release\bundle`，macOS 73 条对 CI artifact，零处不符。符号链接这件事由两个互不相关的实现分别确认 —— Python 的 `zipfile` 读出 `0o120000` 与目标路径，Windows 自带的 `tar.exe`（libarchive）把它显示成 `lrwxr-xr-x ... -> Versions/Current/Resources`。只看一个实现不算验证。
 
-**没有做到的：** 没有在一台 Mac 上解开过。归档说那九条是链接，两个实现都同意，而真正把链接还原出来发生在 macOS 上。`-MacArtifact` 也要手工指路径，脚本不会自己去 GitHub 找最新的 artifact。
+**没有做到的：** 把归档真的解开来、看那九个链接还原得对不对 —— **无对应条件（缺一台 Mac）**。归档说那九条是链接，两个实现都同意，而还原发生在 macOS 上。`-MacArtifact` 要手工指路径是另一回事：它缺的是一个自动取 artifact 的环节，与有没有 Mac 无关。
 
 ---
 
@@ -79,7 +79,7 @@ PRODUCT_BUNDLE_IDENTIFIER = com.nesarf.hollowCourt
 
 **这里的「用过」指一次真实的双击与一轮使用，不是一次 CI 构建。** 第一节那次构建已经证明了四件事：脚手架能编译，图标能被 `xcodebuild` 接受，插件登记在 SPM 下能生成并链接，现有依赖树接受 12.0 这个部署目标。它没有证明的是这个应用打开之后的行为。
 
-仍然只能在一台 Mac 上回答的：
+下面四条都只能在一台 Mac 上回答 —— **无对应条件（缺一台 Mac）**：
 
 - **entitlements 够不够、有没有过量。** 沙箱实际拒绝什么只有运行才知道；构建只证明它们语法合法。
 - **第一次打开会不会被 Gatekeeper 拦住，拦住之后右键打开能不能过。** 这是 ad-hoc 签名的包带着 quarantine 标记时的运行时行为。
@@ -90,18 +90,21 @@ PRODUCT_BUNDLE_IDENTIFIER = com.nesarf.hollowCourt
 
 ---
 
-## 三、需要一台 Mac，缺的就是这台机器
+## 三、无对应条件：需要一台 Mac
 
-- `flutter build macos --release`。Flutter 的 macOS 目标驱动 `xcodebuild`，而 `xcodebuild` 只在 macOS 上存在。**这一条已经被一个 `macos-latest` runner 满足（见第一节）**；它留在这里是因为它说明的是「为什么这台 Windows 机器做不了」，而那个理由没有变。
-- Dart 的 AOT 步骤需要一份 darwin 宿主的 `gen_snapshot`，它只在 macOS 上被下载。
-- 关于交叉编译：`osxcross` 与 `zig cc` 能从 Linux 产出 Mach-O 目标文件，`apple-codesign`（`rcodesign`）能在 Linux 上签名与公证，但没有任何东西能在没有 Xcode 的情况下组装一个 `.app`。Darling 把 Xcode 列在它跑不起来的软件里。这条路是通的环节已经通了，卡住的是中间那一段。
+**这一段缺的是同一样东西 —— 一台 Mac。** 这些条目记为「无对应条件」，因为推进它们需要的不是更多时间或更多代码，而是这台机器没有的硬件与操作系统。
+
+- **在本机上构建与运行。** CI 的 `macos-latest` runner 已经能产出 `.app`（见第一节），所以「构建」这一格不再是缺口。缺的是本机做不了：Flutter 的 macOS 目标驱动 `xcodebuild`，而 `xcodebuild` 只在 macOS 上存在；Dart 的 AOT 步骤要一份 darwin 宿主的 `gen_snapshot`，它只在 macOS 上被下载。
+- **交叉编译这条路，查过，通不了。** `osxcross` 与 `zig cc` 能从 Linux 产出 Mach-O 目标文件，`apple-codesign`（`rcodesign`）能在 Linux 上签名与公证，但没有任何东西能在没有 Xcode 的情况下组装一个 `.app`。Darling 把 Xcode 列在它跑不起来的软件里。能通的环节都通了，卡住的是中间那一段。**这一条查过一次就不必再查**，除非上面某个工具发生了变化。
 
 ---
 
-## 四、需要一个苹果开发者账号，缺的是那份凭据
+## 四、无对应条件：需要一个苹果开发者账号
 
-- 开发者证书签名。没有它，产物是 **ad-hoc 签名**（`project.pbxproj` 里 `CODE_SIGN_IDENTITY = "-"`，这是模板自己的选择），从网上下载之后带 quarantine 标记，第一次打开要先 `xattr -dr com.apple.quarantine "Hollow Court.app"`。
-- 公证与 `stapler`。去掉上一步的办法是公证，而那需要账号。
+**这一段缺的是一份凭据。** 代码层面该做的已经在做了：产物是 **ad-hoc 签名**（`project.pbxproj` 里 `CODE_SIGN_IDENTITY = "-"`，这是模板自己的选择），portable 归档的 README 写清了第一次打开怎么过 Gatekeeper。
+
+- **开发者证书签名。** 有证书，产物就不带 quarantine 的麻烦，读者不必先跑一遍 `xattr -dr com.apple.quarantine "Hollow Court.app"`。
+- **公证与 `stapler`。** 去掉那一步的另一种办法是公证，那同样要账号。
 
 没有账号时，ad-hoc 加一行说明是能给出的最好结果，这一行写在 portable 归档的 README 里。
 
@@ -111,7 +114,7 @@ PRODUCT_BUNDLE_IDENTIFIER = com.nesarf.hollowCourt
 
 相机在 macOS 上不可用。`camera` 的实现只有 Android、iOS、Windows 与 web，macOS 与 Linux 都没有，`availableCameras()` 在这两个平台上会抛 `UnimplementedError`。
 
-第三方有 `camera_macos`，但它的 API 与 `camera` 不同（给的是 `CameraMacOSView` 与 `CameraMacOSController`），接入等于在两个页面里重写相机那一段，而且它只能在一个 macOS 构建里被验证。这件事在拿到一台 Mac 之前不动。
+第三方有 `camera_macos`，但它的 API 与 `camera` 不同（给的是 `CameraMacOSView` 与 `CameraMacOSController`），接入等于在两个页面里重写相机那一段，而且它只能在一个 macOS 构建里被验证 —— **无对应条件（缺一台 Mac，也缺一个与 `camera` 同接口的实现）**。这件事在拿到一台 Mac 之前不动。
 
 实际影响比听起来小：这个应用把「没有相机」当成正常路径，手动输入条码是第一等的输入方式，相机是后加的。所以 macOS 版能跑、能手动输入、点扫条码时说出「这台机器没有相机」。
 
@@ -119,4 +122,6 @@ PRODUCT_BUNDLE_IDENTIFIER = com.nesarf.hollowCourt
 
 ## 六、这张表以后再改时
 
-每一项改动都应当能在上面五段里找到它的位置。新做到的一步，从第三段挪到第一段；新发现的、需要某个条件的，写清缺的是什么。**「应该能用」不属于任何一段。**
+**「无对应条件」是一个状态，不是一句待办。** 它说的是：这件事已经想清楚、写下来了，而继续推进它需要某个这台机器没有的东西 —— 一台 Mac、一个 Apple 开发者账号。这样的条目不该读成「还没做」，也不该读成「不做」；条件出现时，它们就是下一批要做的事。**四个字是固定的，因为它要能被 grep**：`grep -rn '无对应条件（' docs/` 会列出全部条目，因为条目统一写成「这四个字紧跟一个括号，括号里是缺的那个条件」；定义句与段落标题后面跟的是冒号或句号，所以不会混进来。
+
+每一项改动都应当能在上面五段里找到它的位置。新做到的一步，从第三段或第四段挪到第一段；新发现的、需要某个条件的，写清缺的是什么并标上「无对应条件」。**「应该能用」不属于任何一段。**
