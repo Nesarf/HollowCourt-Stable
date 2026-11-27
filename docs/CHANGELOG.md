@@ -132,6 +132,37 @@ python tool/release.py --version 1.0.1+1021 --apply    # 真做
 
 ---
 
+## 构建号 51541 之后：伊丽莎白的对话（2026-11-27）
+
+**这一条写在同一版构建之后，因为它改的是应用，产物还没有重建。**
+
+### 变了什么
+
+- **回复不再是一段纯文本。** `lib/ui/chat_render.dart` 把回复解析成段落、标题、无序与有序列表、围栏代码块和表格；粗体、斜体、行内代码画出来而不是剥掉。四张图（折线、K 线、柱状、饼）由一个围栏代码块里的 JSON 画出来，用的是画布，不是图表库。数据读不出来时原文留在图上并附一句说明。
+- **图标。** 句子里写 `:wine:` 会变成一个小图标。表在 `lib/ui/chat_icons.dart`，四十个名字，都是这个应用真正关心的事情。名单外的一律原样显示成冒号和字母 —— 猜错一个名字应当看起来是错的，而不是让一个词消失。
+- **两个只读工具。** `read_recipe` 按名字或 id 读一条完整配方（含做法与步骤）；`recipe_strength` 走 `domain/dosing/abv.dart` 与 `dilution.dart`，按每条原料自己的酒精度和做法算成品度数。测试里那杯琴蕾：未稀释 26.7%，加冰后 22.7%。原料没写酒精度时会在答案里被点名，而不是当作零。
+- **对话可以重开，也可以中途喊停。** 标题栏一个按钮清掉当前这一段（内存与磁盘一起）；流式回复期间发送键变成「停」，说过一半的话留作一条回复。
+- **附件先缩再发。** `lib/data/image_compress.dart` 把长边压到 1280、重新编码成 JPEG，在后台 isolate 里跑。认不出的字节原样送出去。
+- **提示词带日期。** `elizabethSystemPromptOn(DateTime)` 在前面加一句今天几号。模型没有钟，问「今年」时它会拿训练数据里的年份当现在。
+
+### 修了什么
+
+- **`_busy` 卡死。** `chat_client` 只把 `SocketException` 转成 `ChatFailure`，而 `HandshakeException`（代理、中间证书）与 `HttpException`（服务端半途断开）都是 `IOException` 的兄弟，会原样穿到界面上，`_busy` 停在 true，除了重启应用没有别的出路。现在两者都归到 `unreachable`，界面另有一个兜底。
+- **请求没有超时。** `connectionTimeout` 只管握手，之后服务端不说话就一直等下去。现在两个事件之间超过六十秒算超时，keep-alive 行会把它重置。
+- **附件一律声明成 JPEG。** 相机写的就是 JPEG，而相册里选的可能是 PNG、WebP、HEIC。现在按 magic bytes 认六种，认不出才退回 JPEG。
+- **每一轮重发全部历史。** `ChatClient.trimHistory` 只发最近八轮，切在 user 消息上，绝不切进工具往返中间 —— 一条 `tool_calls` 少了它的 `tool` 回答，整个请求会被直接拒。被裁掉的只是发给模型的那一部分，屏幕和磁盘仍然完整。
+- **`converse` 没有测试。** 五条既有用例走的是 `stream`，而界面走的是 `converse`。现在有 14 项，最要紧的一项把 `tool_calls` 的 arguments 按三个字符一片喂进去，验证能拼回一个完整对象。
+- **相机缺席是 Error 不是 Exception。** `camera` 没有 Linux 与 macOS 实现，`availableCameras()` 落到接口默认体抛 `UnimplementedError`；两个相机页面只 `on Exception`，所以 Linux 上点「用摄像头扫」会抛未捕获异常，而那句早已写好的「这台机器没有相机」一直没被用上。
+- **`macos/` 缺 provenance 规则。** 它随平台一起进来，`principles_test` 在下一次完整测试里报了出来：二十八个未分类的跟踪文件。
+
+### 不声称什么
+
+- **`dist` 里那八份产物还是旧的。** 它们全部显示 `OTHER:b166909`，而这是真话：这一轮改了 `lib/`，它们不含这些改动。要让 manifest 重新全绿只有提升版本号重建 —— 同版本重建在 Windows 上什么也换不掉，那句话已经写在 `b166909` 的提交信息里。
+- **macOS 那一份没有在真 Mac 上构建过。** `macos/` 平台、entitlements、`NSCameraUsageDescription` 与一份手动触发的 workflow 都在树里，但没有一次真实构建。相机在 macOS 上仍然不可用，`camera_macos` 是第三方包且 API 与 `camera` 不同。
+- **图表与图标只在她的回复里生效。** 读者自己打的字仍然按纯文本显示 —— 一个人说的话不该被当成标记来解释。
+
+---
+
 ## 模板（下一版从这里开始 ✓）
 
 ```
