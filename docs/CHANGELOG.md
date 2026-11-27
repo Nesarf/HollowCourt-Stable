@@ -163,6 +163,36 @@ python tool/release.py --version 1.0.1+1021 --apply    # 真做
 
 ---
 
+## 构建号 51541 之后：macOS 的第一次真机构建（2026-11-27）
+
+**这一条也写在同一版构建之后。这一次不是推测，是一次跑通的记录。**
+
+`flutter build macos --release` 在 GitHub 的 `macos-latest` runner 上跑了一次，四分三十九秒，通过。
+
+### 变了什么
+
+- **图标。** `art/render_icons.sh` 一直只给三个平台装图标，macOS 那份还是 Flutter 的占位图。现在七个尺寸（16 到 1024）从同一张源图的同一套 SVG 层级装进 `AppIcon.appiconset`，文件名照模板带来的 `Contents.json`。源码里没有 macOS 平台时这一段跳过。
+- **提示词里那句「Intel runner 产 x86_64」被实测推翻。** 产物是 universal：主可执行文件、`FlutterMacOS.framework`（30.0 MB）、`App.framework`（23.9 MB）各自带 x86_64 与 arm64。模板不设 `ONLY_ACTIVE_ARCH`，所以在 Intel 上也能出双架构。`docs/macos.md` 与 `macos.yml` 的注释都按实测改过。
+
+### 修了什么
+
+- **144 那一档的图标每次渲染字节都不同。** 两次实测 `56869b03` 与 `671d6998`，而旁边的 256 稳定。原因是 144 是唯一要过 `magick` 减半的一档，而 `magick` 会往 PNG 的文本块里写 `date:create` 与 `date:modify`。加上 `-define png:exclude-chunks=date,time` 之后两次一致。Android 的 xxhdpi 启动图标从同一个文件装，所以这一条以前每渲染一次就留下两个没头没脑的 diff。
+
+### 从那一次构建里能核对的
+
+- 73 个条目全在 `Hollow Court.app` 里 —— `PRODUCT_NAME` 那条覆盖生效了，不是模板默认值。
+- 九个符号链接都保住了：`objective_c`、`FlutterMacOS`、`App` 三个 framework 的 `Versions/Current` 与它们的顶层链接都在，`ditto` 的选择是对的。
+- 产物在 `D:\DaShaoHuo\downloads\hc-macos-artifact\hollow-court-macos.zip`。
+
+### 不声称什么
+
+- **没有在任何 Mac 上启动过。** 构建成功与能运行是两件事，中间隔着签名、quarantine 与一次真实的双击。
+- **没有合并进 portable 归档。** Windows 的解压会把九个符号链接压平，bundle 会变成看着完整、加载不起来的文件。要合并得用保留条目的方式写 zip，那是另一件工作。
+- **相机在 macOS 上仍然没有。** `camera` 没有 macOS 实现，`camera_macos` 是第三方且 API 与它不同。
+- **签名是 ad-hoc 的。** 没有 Apple Developer 账号，从网上下来的包第一次打开要 `xattr -dr com.apple.quarantine`。
+
+---
+
 ## 模板（下一版从这里开始 ✓）
 
 ```

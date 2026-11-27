@@ -41,6 +41,18 @@ PRODUCT_BUNDLE_IDENTIFIER = com.nesarf.hollowCourt
 
 `packaging/portable/make_portable.ps1` 已经在收 `build\macos\Build\Products\Release\*.app`，这个脚本不用改。
 
+### 构建跑过一次，而且成功了
+
+**2026-11-27，GitHub 的 `macos-latest` runner，`flutter build macos --release` 通过，四分钟三十九秒。** 产物 73 个条目、23.07 MB，全部在 `Hollow Court.app` 里 —— `PRODUCT_NAME` 那条覆盖确实生效了，不是模板默认值。
+
+三件事因此从猜测变成事实：
+
+- **符号链接保住了九个。** `ditto -c -k --sequesterRsrc --keepParent` 写出的条目带 `0o120000` 的 mode 位，`objective_c`、`FlutterMacOS`、`App` 三个 framework 的 `Versions/Current` 与它们的顶层链接都在。`ditto` 的选择是对的。
+- **三个二进制都是 universal。** 主可执行文件、`FlutterMacOS.framework`（30.0 MB）、`App.framework`（23.9 MB）各自带 x86_64 与 arm64 两套代码。**这一条与原先的猜测相反** —— 原来写的是「Intel runner 产 x86_64，Apple Silicon 需要 Rosetta 2」。模板不设 `ONLY_ACTIVE_ARCH`，所以 Flutter 在 Intel 上也能出双架构。`.github/workflows/macos.yml` 里那段注释已经按实测改过。
+- **整个平台脚手架能编译。** 之前这条只能在 Mac 上验证，现在有了一个替代路径。
+
+产物在 `D:\DaShaoHuo\downloads\hc-macos-artifact\hollow-court-macos.zip`。**不要用 Windows 的解压去开它** —— 那会把九个符号链接压平成普通文件，bundle 看起来完整而加载不起来。要看内容用 `zipfile` 只读，要解开只能在一台 Mac 上或者用保留符号链接的工具。
+
 ---
 
 ## 二、已写好，但没有在 Mac 上跑过一次
