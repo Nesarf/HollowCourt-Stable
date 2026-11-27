@@ -239,7 +239,15 @@ for size in 1024 512 432 384 256 192 144 128 96 72 64 48 32 24 16; do
   if [ "$shrink" -gt 1 ]; then
     # Halved by ImageMagick rather than rendered small, so the reduction is one exact step: every source
     # pixel becomes a whole block of two.
-    magick "$RENDER/icon-hc-$size.png" -resize "$((100 / shrink))%" "$RENDER/icon-hc-$size.png"
+    #
+    # **`-define png:exclude-chunks=date,time` is about reproducibility rather than size.** ImageMagick writes
+    # `date:create` and `date:modify` into the PNG's text chunks, so two runs over one unchanged source produced
+    # two files with different bytes and identical pictures. Measured on 2026-11-27: 144 was the only tier that
+    # differed between runs, and it is the only tier that passes through ImageMagick at all -- which is what
+    # pointed at the write rather than the render. A repository that gains a diff on every icon render is a
+    # repository whose icon diffs stop being read.
+    magick "$RENDER/icon-hc-$size.png" -resize "$((100 / shrink))%" \
+      -define png:exclude-chunks=date,time "$RENDER/icon-hc-$size.png"
   fi
   printf '  %-4s %-14s %-4s %s\n' "$size" "$(basename "$source")" \
     "$([ "$shrink" -gt 1 ] && echo "${shrink}x" || echo '')" "$(du -h "$RENDER/icon-hc-$size.png" | cut -f1)"
@@ -272,6 +280,31 @@ install_one 192 "$REPO/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png"
 # keeps it from drifting away from the render.
 mkdir -p "$REPO/assets/icon"
 install_one 256 "$REPO/assets/icon/hollow-court.png"
+
+# **macOS: seven files rather than one archive.** An appiconset is a directory of PNGs beside a
+# `Contents.json` that names which size each one is, and Xcode picks by the size the display asks for --
+# which is why the 16 in a window title and the 1024 in the Finder cover are different files and
+# neither is a downscale of the other. The template shipped that json and its own placeholder
+# pictures, so this replaces the pictures and leaves the json alone; the names come from the json
+# rather than from this script, because the json is what Xcode reads.
+#
+# **Skipped when the checkout has no macOS platform**, and that is a fact about the tree rather than a
+# failure: a checkout that never ran `flutter create --platforms=macos` has nowhere to put them, and
+# the render should still finish for the platforms it does have. Before 2026-11-27 this section did
+# not exist at all, so a macOS build would have shipped Flutter's default icon -- the one place the
+# three-platform promise was quietly untrue.
+MACOS_ICONS="$REPO/macos/Runner/Assets.xcassets/AppIcon.appiconset"
+if [ -d "$MACOS_ICONS" ]; then
+  install_one 16   "$MACOS_ICONS/app_icon_16.png"
+  install_one 32   "$MACOS_ICONS/app_icon_32.png"
+  install_one 64   "$MACOS_ICONS/app_icon_64.png"
+  install_one 128  "$MACOS_ICONS/app_icon_128.png"
+  install_one 256  "$MACOS_ICONS/app_icon_256.png"
+  install_one 512  "$MACOS_ICONS/app_icon_512.png"
+  install_one 1024 "$MACOS_ICONS/app_icon_1024.png"
+else
+  echo "  macos: no appiconset at $MACOS_ICONS -- skipped (this checkout has no macOS platform)"
+fi
 
 # ImageMagick rather than Pillow, and the reason is in this script's own comment above: Pillow's
 # ICO writer takes ONE image and resizes it to each size, which is exactly the downscaling the note
