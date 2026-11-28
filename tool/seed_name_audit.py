@@ -23,9 +23,11 @@
 #      *Bramble* is 悬钩子属 (the plant genus), so this kind is reported as a **candidate** and never applied:
 #      an audit that renamed the Zombie 喪屍 would be worse than no audit.
 #
-# NETWORK: this machine reaches the internet only through the local proxy (`127.0.0.1:10090`), and
-# `zh.wikipedia.org` resolves to a poisoned address, so every request here goes through the proxy. Nothing is
-# written unless `--apply-traps` is passed, and even then only findings of kind 1.
+# NETWORK: `zh.wikipedia.org` resolved to a poisoned address on this host (2001::1 and a Twitter range), which
+# is why this ever went through a proxy. **That proxy (`127.0.0.1:10090`) is gone**, and on 2026-11-28 the host
+# reached github.com and ordinary HTTPS directly, so the default is now a direct request. A reader behind a
+# proxy sets `HC_PROXY=http://host:port`; nothing else here changes. Nothing is written unless `--apply-traps`
+# is passed, and even then only findings of kind 1.
 import json
 import os
 import re
@@ -34,7 +36,7 @@ import sys
 import urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROXY = 'http://127.0.0.1:10090'
+PROXY = os.environ.get('HC_PROXY', '').strip()
 UA = 'hollow-court-i18n-audit/1.0 (https://github.com/hollow-court)'
 
 LIBRARY = os.path.join(ROOT, 'data', 'drinks', 'library.json')
@@ -50,8 +52,10 @@ TRAPS = {
 
 
 def fetch(url: str) -> str:
+    # `-x` is only passed when a proxy is set: `curl -x ''` is an error, not "no proxy".
     done = subprocess.run(
-        ['curl', '-sS', '--max-time', '60', '-x', PROXY, '-H', f'User-Agent: {UA}', url],
+        ['curl', '-sS', '--max-time', '60', *(['-x', PROXY] if PROXY else []),
+         '-H', f'User-Agent: {UA}', url],
         capture_output=True, text=True, encoding='utf-8',
     )
     if done.returncode != 0:
