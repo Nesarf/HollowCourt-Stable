@@ -34,10 +34,17 @@ PAR_UNIX="$(echo "$PAR" | sed 's|\\|/|g')"
 REV="$(git -C "$REPO" rev-parse HEAD)"
 OUT_DIR="${OUT_DIR:-D:\\hollow-court\\dist}"
 MANIFEST=0
+CLEAN=0
 
+# **`--clean` used to mean "run the manifest at the end", which is the opposite of what it says.** It now
+# clears the two kinds of state that outlive a checkout (see `clean_every_worktree` further down) and
+# still asks for the manifest, because a build from zero is one whose result is worth recording.
+# `--manifest` alone exists for what the old spelling was reaching for: record what is already there
+# without rebuilding it.
 for arg in "$@"; do
   case "$arg" in
-    --clean) MANIFEST=1 ;;
+    --clean)    CLEAN=1; MANIFEST=1 ;;
+    --manifest) MANIFEST=1 ;;
   esac
 done
 
@@ -125,15 +132,49 @@ sync_working_tree() {
   done
 }
 
+# **Clears the state that outlives a checkout, because two of the three caches can lie about where they are.**
+#
+# Measured on 2026-11-28, on the first build after the worktrees moved from E: to D:. Two targets failed for
+# reasons no source change could explain:
+#
+#   * `build/linux/x64/release/CMakeCache.txt` still said `/mnt/e/hollow-court-par/...`, and CMake refused with
+#     "the current CMakeCache.txt directory ... is different than the directory ... where it was created".
+#   * `windows/flutter/ephemeral/.plugin_symlinks/` held links made against the old tree, and Flutter's
+#     `createPluginSymlinks` answered the attempt to re-link with `PathExistsException ... errno = 183`.
+#
+# **The second one names a platform you are not building.** `flutter build windows` calls
+# `createPluginSymlinks` without a platform argument, so it refreshes the links for *every* desktop platform in
+# that checkout -- the failure surfaced under `windows/linux/flutter/ephemeral/`, which is easy to delete the
+# wrong half of. All three are cleared here.
+#
+# `build/` holds the platform build trees and `ephemeral/` the generated plugin links; both are git-ignored, so
+# `checkout --detach --force` leaves them alone and nothing else in this script would ever remove them.
+clean_every_worktree() {
+  for name in android linux windows; do
+    for relative in build windows/flutter/ephemeral linux/flutter/ephemeral macos/Flutter/ephemeral; do
+      if [ -e "$PAR_UNIX/$name/$relative" ]; then rm -rf "$PAR_UNIX/$name/$relative"; fi
+    done
+  done
+}
+
 ensure_worktree android > /dev/null
 ensure_worktree linux   > /dev/null
 ensure_worktree windows > /dev/null
+
+if [ "$CLEAN" -eq 1 ]; then
+  clean_every_worktree
+  log "==> cleared build/ and every platform's ephemeral/ in all three checkouts"
+fi
+
 log "==> three checkouts at ${REV:0:7}; nothing shared but the pub cache"
 
 # **Logs are kept rather than discarded, and the first version got this wrong in a way worth recording.** They
 # lived in a `mktemp -d` that an EXIT trap removed, so a failing run printed "the logs are worth reading" and
 # then showed nothing at all. A report that offers evidence and delivers none is worse than a bare failure.
-LOG_DIR="${LOG_DIR:-/e/DaShaoHuo/cache/build-logs}"
+# **On D:, like everything else this repository owns.** These logs lived under
+# `/e/DaShaoHuo/cache/build-logs`: E: is where the shared toolchain caches live, and a log of this
+# repository's own builds is not a shared cache.
+LOG_DIR="${LOG_DIR:-D:/DaShaoHuo/cache/build-logs}"
 T="$LOG_DIR/$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$T"
 # `latest` is replaced rather than linked: **the first version used `ln -s` and failed on the second run**, because a
