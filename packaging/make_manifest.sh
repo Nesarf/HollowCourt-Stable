@@ -36,7 +36,16 @@ COMMIT_EPOCH="$(git log -1 --format=%ct)"
 # than the install prefix. Both of its edits so far were the prefix, and the names of the files
 # that moved are printed beside every `cfg` row, so a reader can tell without trusting this
 # paragraph.
-COMPILED_INPUTS_RE='^(lib|assets|art|character)/|^pubspec\.(yaml|lock)$|^windows/runner/|^linux/(runner/|my_application\.)|^android/app/src/|^android/app/build\.gradle|^macos/Runner/'
+#
+# **`packaging/windows/` belongs in this list, and its absence made this file give the wrong answer.**
+# The installer's version lives in `hollow-court.wxs`, not in `pubspec.yaml`, so a `.wxs` edit that
+# changes the version produces a genuinely different MSI -- and on 2026-11-28 the MSI group still came
+# out `cfg`, because `.wxs` matched nothing here. `tool/release.py` judged the same receipts by "did
+# anything under `src-paths` move", refused that build, and was right. Two mechanisms disagreed about
+# one file and the lenient one was the wrong one. The fix belongs here rather than there: judging by
+# HEAD alone would also refuse after a documentation commit, which is the failure the paragraph above
+# argues against.
+COMPILED_INPUTS_RE='^(lib|assets|art|character)/|^pubspec\.(yaml|lock)$|^windows/runner/|^linux/(runner/|my_application\.)|^android/app/src/|^android/app/build\.gradle|^macos/Runner/|^packaging/windows/'
 
 CFG_FILES=''
 NOTES=''

@@ -562,9 +562,9 @@ that had been shipping:
 kind of finding (identical English titles lead to concept articles: Zombie → 喪屍). `tool/l10n_status.dart` now
 answers the whole question in one run: copy 240/240, steps 88/88, names 88+187, units 26, per language.
 
-**A machine fact this depends on**: `zh.wikipedia.org` resolves to a poisoned address here (2001::1 and a Twitter
-range), and this host reaches the internet only through the proxy at `127.0.0.1:10090`. `curl -x` that proxy and
-Wikipedia answers normally.
+**A machine fact this depends on**: `zh.wikipedia.org` resolved to a poisoned address here (2001::1 and a Twitter
+range), which is why this audit once ran through a local proxy. That proxy is gone, and a direct request answers
+normally. `tool/seed_name_audit.py` still takes one through `HC_PROXY` when a reader needs it.
 
 ### `GLib-GIO-CRITICAL` on every Linux launch: one string was doing two jobs
 

@@ -383,13 +383,21 @@ def main(argv: list[str]) -> int:
     print('  · 取回镜像上那个提交，在它上面打标签')
     run(['git', 'remote', 'remove', 'origin'])
     run(['git', 'remote', 'add', 'origin', REMOTE])
-    fetched = run(['git', '-c', 'http.proxy=http://127.0.0.1:10090',
-                   '-c', 'credential.helper=manager', 'fetch', 'origin', args.branch], timeout=600)
+    # **`http.proxy=` rather than a port, because the port these two commands used to name is dead.** They
+    # carried `http.proxy=http://127.0.0.1:10090`, and on 2026-11-28 the publish they follow failed with
+    # `Failed to connect to github.com port 443 via 127.0.0.1 after 0 ms`. A setting repeated in two places
+    # outlives the machine it was true on; an empty value means "no proxy" and needs no maintenance.
+    fetched = run(['git', '-c', 'http.proxy=', '-c', 'credential.helper=manager',
+                   'fetch', 'origin', args.branch], timeout=600)
     if fetched.returncode != 0:
         print('  ✗ 取不回来：%s' % fetched.stderr[:200])
         return 1
-    run(['git', 'tag', tag, 'FETCH_HEAD'])
-    pushed_tag = run(['git', '-c', 'http.proxy=http://127.0.0.1:10090',
+    # **`-a ... -m`, because a bare `git tag NAME` opens an editor.** With the capture in `run()` there is no
+    # terminal for it to draw in, so it waits until the timeout and leaves a `vim` behind -- which is exactly
+    # what happened on 2026-11-28 when this step was done by hand as `git tag v1.0.0.51542 <sha>`.
+    run(['git', '-c', 'tag.gpgSign=false', 'tag', '-a', tag, 'FETCH_HEAD',
+         '-m', 'Hollow Court %s' % (args.version or tag)])
+    pushed_tag = run(['git', '-c', 'http.proxy=',
                       '-c', 'credential.helper=manager', 'push', 'origin', tag], timeout=600)
     if pushed_tag.returncode != 0:
         print('  ✗ 标签推不上去：%s' % pushed_tag.stderr[:200])
